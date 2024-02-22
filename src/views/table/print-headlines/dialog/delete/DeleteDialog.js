@@ -6,7 +6,7 @@ import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 
-const DeleteDialog = ({ open, onClose }) => {
+const DeleteDialog = ({ open, onClose, selectedArticles }) => {
   const [password, setPassword] = useState('')
 
   const handleConfirm = () => {

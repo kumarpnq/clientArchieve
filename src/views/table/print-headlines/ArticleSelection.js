@@ -273,6 +273,7 @@ const TableSelection = () => {
   }
 
   useEffect(() => {
+    setSelectedArticles([])
     fetchArticlesApi()
   }, [
     selectedEndDate,

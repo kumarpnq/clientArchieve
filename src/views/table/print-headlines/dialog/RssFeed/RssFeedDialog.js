@@ -21,6 +21,8 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
   const theme = useTheme()
   const [feedType, setFeedType] = useState('xml') // Default to XML feed
 
+  console.log(selectedArticles)
+
   // Check if selectedArticles is null or empty
   if (!selectedArticles || selectedArticles.length === 0) {
     return (

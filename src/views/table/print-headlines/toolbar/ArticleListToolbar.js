@@ -428,7 +428,7 @@ const ArticleListToolbar = ({
           <DeleteIcon />
         </Button>
       </CustomTooltip>
-      <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />
+      <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} selectedArticles={selectedArticles} />
 
       <CustomTooltip title='Email'>
         <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
