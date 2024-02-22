@@ -19,7 +19,9 @@ export const fetchArticles = async ({
   wordCombo,
   anyWord,
   ignoreWords,
-  phrase
+  phrase,
+  editionType,
+  sortby
 }) => {
   try {
     const storedToken = localStorage.getItem('accessToken')
@@ -40,27 +42,16 @@ export const fetchArticles = async ({
       wordCombo,
       anyWord,
       ignoreWords,
-      phrase
+      phrase,
+      editionType,
+      sortby
     }
 
     const response = await axios.get(`${base_url}/clientWisePrintArticles/`, {
       headers: {
         Authorization: `Bearer ${storedToken}`
       },
-      params: request_params,
-      paramsSerializer: params => {
-        // Custom serializer to handle duplicate parameter names
-        return Object.entries(params)
-          .map(([key, value]) => {
-            if (Array.isArray(value)) {
-              // If the value is an array, create multiple parameters with the same name
-              return value.map(v => `${key}=${encodeURIComponent(v)}`).join('&')
-            } else {
-              return `${key}=${encodeURIComponent(value)}`
-            }
-          })
-          .join('&')
-      }
+      params: request_params
     })
 
     return response.data
