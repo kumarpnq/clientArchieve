@@ -85,7 +85,7 @@ const TaggingIcon = () => (
 )
 
 // Sort By Icon
-const SortByIcon = ({ handleSortByLatest, handleSortByMedia }) => (
+const SortByIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='32' height='27' viewBox='0 0 36 36'>
       <path
@@ -127,15 +127,7 @@ const PublicationTypeIcon = ({
 )
 
 // Edition Type Icon
-const EditionTypeIcon = ({
-  handleEditionTypeBD,
-  handleEditionTypeBIM,
-  handleEditionTypeND,
-  handleEditionTypePIMRD,
-  handleEditionTypeTAP,
-  handleEditionTypeTM,
-  handleEditionTypeWP
-}) => (
+const EditionTypeIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' viewBox='0 0 24 24'>
       <path
@@ -189,7 +181,9 @@ const ArticleListToolbar = ({
   setSelectedEndDate,
   primaryColor,
   selectedArticles,
-  setSearchParameters
+  setSearchParameters,
+  setSelectedEditionType,
+  setSelectedSortBy
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -319,12 +313,12 @@ const ArticleListToolbar = ({
   }
 
   const handleSortByLatest = () => {
-    // Implement the logic to sort by latest
+    setSelectedSortBy('latest') // Pass the selected sort-by ID
     handleSortByClose()
   }
 
   const handleSortByMedia = () => {
-    // Implement the logic to sort by media
+    setSelectedSortBy('media') // Pass the selected sort-by ID
     handleSortByClose()
   }
 
@@ -354,8 +348,33 @@ const ArticleListToolbar = ({
     handlePublicationTypeClose()
   }
 
-  //EditionTypeIcon
+  // Edition Type state and logic
+  const [editionTypes, setEditionTypes] = useState([])
   const [isEditionTypeMenuOpen, setEditionTypeMenuOpen] = useState(null)
+
+  useEffect(() => {
+    const fetchEditionTypes = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const response = await fetch('http://51.68.220.77:8001/editionTypesList/', {
+          headers: { Authorization: `Bearer ${storedToken}` }
+        })
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        const data = await response.json()
+        setEditionTypes(data.editionTypesList)
+      } catch (error) {
+        console.error('Error fetching edition types:', error)
+
+        // Handle error appropriately, e.g., display an error message to the user
+      }
+    }
+
+    fetchEditionTypes()
+  }, []) // Fetch edition types only once on component mount
 
   const handleEditionTypeClick = event => {
     setEditionTypeMenuOpen(event.currentTarget)
@@ -365,38 +384,8 @@ const ArticleListToolbar = ({
     setEditionTypeMenuOpen(null)
   }
 
-  const handleEditionTypeBD = () => {
-    // Implement the logic for "BD" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeBIM = () => {
-    // Implement the logic for "BIM" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeND = () => {
-    // Implement the logic for "ND" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypePIMRD = () => {
-    // Implement the logic for "PIMRD" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeTAP = () => {
-    // Implement the logic for "TAP" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeTM = () => {
-    // Implement the logic for "TM" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeWP = () => {
-    // Implement the logic for "WP" edition type
+  const handleEditionTypeSelection = editionType => {
+    setSelectedEditionType(editionType)
     handleEditionTypeClose()
   }
 
@@ -531,13 +520,14 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       <Menu anchorEl={isEditionTypeMenuOpen} open={Boolean(isEditionTypeMenuOpen)} onClose={handleEditionTypeClose}>
-        <MenuItem onClick={handleEditionTypeBD}>BD</MenuItem>
-        <MenuItem onClick={handleEditionTypeBIM}>BIM</MenuItem>
-        <MenuItem onClick={handleEditionTypeND}>ND</MenuItem>
-        <MenuItem onClick={handleEditionTypePIMRD}>PIMRD</MenuItem>
-        <MenuItem onClick={handleEditionTypeTAP}>TAP</MenuItem>
-        <MenuItem onClick={handleEditionTypeTM}>TM</MenuItem>
-        <MenuItem onClick={handleEditionTypeWP}>WP</MenuItem>
+        {editionTypes.map(editionType => (
+          <MenuItem
+            key={editionType.editionTypeId}
+            onClick={() => handleEditionTypeSelection(editionType.editionTypeId)}
+          >
+            {editionType.editionTypeName}
+          </MenuItem>
+        ))}
       </Menu>
 
       <CustomTooltip title='Date Range'>

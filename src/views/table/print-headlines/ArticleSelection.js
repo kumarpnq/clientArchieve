@@ -171,6 +171,8 @@ const TableSelection = () => {
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
+  const [selectedEditionType, setSelectedEditionType] = useState(null)
+  const [selectedSortBy, setSelectedSortBy] = useState(null)
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -182,7 +184,7 @@ const TableSelection = () => {
     journalist: ''
   })
 
-  console.log(searchParameters)
+  console.log('Selected Sort by:', selectedSortBy)
 
   //console.log()
 
@@ -222,21 +224,25 @@ const TableSelection = () => {
 
         const formattedStartDate = selectedStartDate ? formatDateTime(selectedStartDate, true, false) : null
         const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+        const selectedCompaniesString = selectedCompanyIds.join(', ')
+        const selectedMediaString = selectedMedia.join(', ')
+        const selectedTagString = selectedTag.join(', ')
+        const selectedCitiesString = selectedCities.join(', ')
 
         console.log('Formatted Start Date:', formattedStartDate)
         console.log('Formatted End Date:', formattedEndDate)
 
         const response = await fetchArticles({
           clientIds: clientId,
-          companyIds: selectedCompanyIds,
+          companyIds: selectedCompaniesString,
           fromDate: formattedStartDate,
           toDate: formattedEndDate,
           page: currentPage,
           recordsPerPage: recordsPerPage,
 
-          media: selectedMedia,
-          tags: selectedTag,
-          geography: selectedCities,
+          media: selectedMediaString,
+          tags: selectedTagString,
+          geography: selectedCitiesString,
 
           // Advanced search
           headline: searchParameters.searchHeadline,
@@ -245,7 +251,10 @@ const TableSelection = () => {
           wordCombo: searchParameters.combinationOfWords,
           anyWord: searchParameters.anyOfWords,
           ignoreWords: searchParameters.ignoreThis,
-          phrase: searchParameters.exactPhrase
+          phrase: searchParameters.exactPhrase,
+
+          editionType: selectedEditionType,
+          sortby: selectedSortBy
         })
 
         const totalRecords = response.totalRecords
@@ -275,7 +284,9 @@ const TableSelection = () => {
     selectedMedia,
     selectedTag,
     selectedCities,
-    searchParameters
+    searchParameters,
+    selectedEditionType,
+    selectedSortBy
   ])
 
   // Filter articles based on the selected date range and search query
@@ -439,6 +450,8 @@ const TableSelection = () => {
         setSelectedEndDate={setSelectedEndDate}
         selectedArticles={selectedArticles}
         setSearchParameters={setSearchParameters}
+        setSelectedEditionType={setSelectedEditionType}
+        setSelectedSortBy={setSelectedSortBy}
       />
       {/* DataGrid */}
       <Box p={2}>
