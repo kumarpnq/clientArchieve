@@ -416,9 +416,20 @@ const TableSelection = () => {
     }
   }
 
+  const handleReset = () => {
+    setSelectedCompanyIds([])
+  }
+
   return (
     <Card>
-      <CardHeader title={<Typography variant='title-lg'>{priorityCompanyName}</Typography>} />{' '}
+      <span></span>
+      <CardHeader
+        title={
+          <Typography variant='title-lg'>
+            <span onClick={handleReset}>{priorityCompanyName}</span>
+          </Typography>
+        }
+      />{' '}
       {/* Use priorityCompanyName in the title */}
       {/* Top Toolbar */}
       <ToolbarComponent
