@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { AppBar, Toolbar, Typography, IconButton, Menu, MenuItem } from '@mui/material'
 import DateRangeIcon from '@mui/icons-material/DateRange'
 
-const ChartsAppBar = ({ handleDateRangeChange }) => {
+const ChartsAppBar = ({ setSelectedDateRange }) => {
   const [anchorEl, setAnchorEl] = useState(null)
 
   const handleMenuOpen = event => {
@@ -14,7 +14,7 @@ const ChartsAppBar = ({ handleDateRangeChange }) => {
   }
 
   const handleMenuItemClick = range => {
-    handleDateRangeChange(range)
+    setSelectedDateRange(range)
     handleMenuClose()
   }
 
@@ -37,9 +37,9 @@ const ChartsAppBar = ({ handleDateRangeChange }) => {
         </IconButton>
         <Menu id='date-range-menu' anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <MenuItem onClick={() => handleMenuItemClick('today')}>Today</MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick('last_week')}>Last Week</MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick('last_month')}>Last Month</MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick('last_three_months')}>Last 3 Months</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('lastWeek')}>Last Week</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('lastMonth')}>Last Month</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('lastThreeMonth')}>Last 3 Months</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

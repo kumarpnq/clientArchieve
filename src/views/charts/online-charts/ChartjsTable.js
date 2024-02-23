@@ -11,11 +11,43 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
+import DownloadIcon from '@mui/icons-material/Download'
+import * as XLSX from 'xlsx'
 
 const ChartjsTable = ({ tableData }) => {
+  const handleDownload = () => {
+    if (tableData && tableData.length > 0) {
+      const flattenData = tableData.map(item => {
+        return {
+          'Company ID': item.companyId,
+          'Company Name': item.companyName,
+          'Articles Count': item.articlesCount
+        }
+      })
+
+      if (flattenData.length > 0) {
+        const ws = XLSX.utils.json_to_sheet(flattenData)
+        const wb = XLSX.utils.book_new()
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet 1')
+        XLSX.writeFile(wb, 'exported_data.xlsx')
+      } else {
+        console.error('No valid data is available for download.')
+      }
+    } else {
+      console.error('Data is not available for download.')
+    }
+  }
+
   return (
     <Card>
-      <CardHeader title='Article Count by Company' />
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <CardHeader title={`Article Count by Company`} />
+        <IconButton onClick={handleDownload} disabled={tableData?.length <= 0}>
+          <DownloadIcon />
+        </IconButton>
+      </Box>
       <CardContent>
         {/* Table */}
         <TableContainer>
@@ -28,11 +60,11 @@ const ChartjsTable = ({ tableData }) => {
             </TableHead>
             <TableBody>
               {tableData.map(row => (
-                <TableRow key={row.company}>
+                <TableRow key={row.companyId}>
                   <TableCell component='th' scope='row'>
-                    {row.company}
+                    {row.companyName}
                   </TableCell>
-                  <TableCell align='right'>{row.articleCount}</TableCell>
+                  <TableCell align='right'>{row.articlesCount}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
