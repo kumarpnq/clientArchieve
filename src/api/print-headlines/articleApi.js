@@ -22,6 +22,8 @@ export const fetchArticles = async ({
   phrase,
   editionType,
   sortby
+
+  // publicationType
 }) => {
   try {
     const storedToken = localStorage.getItem('accessToken')
@@ -45,6 +47,8 @@ export const fetchArticles = async ({
       phrase,
       editionType,
       sortby
+
+      // publicationType
     }
 
     const response = await axios.get(`${base_url}/clientWisePrintArticles/`, {

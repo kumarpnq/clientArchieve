@@ -183,6 +183,7 @@ const ArticleListToolbar = ({
   selectedArticles,
   setSearchParameters,
   setSelectedEditionType,
+  setSelectedPublicationType,
   setSelectedSortBy
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
@@ -322,8 +323,33 @@ const ArticleListToolbar = ({
     handleSortByClose()
   }
 
-  //publicationType mangzine
+  // Publication Type state and logic
+  const [publicationTypes, setPublicationTypes] = useState([])
   const [isPublicationTypeMenuOpen, setPublicationTypeMenuOpen] = useState(null)
+
+  useEffect(() => {
+    const fetchPublicationTypes = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const response = await fetch('http://51.68.220.77:8001/publicationTypesList/', {
+          headers: { Authorization: `Bearer ${storedToken}` }
+        })
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        const data = await response.json()
+        setPublicationTypes(data.publicationsTypeList)
+      } catch (error) {
+        console.error('Error fetching publication types:', error)
+
+        // Handle error appropriately, e.g., display an error message to the user
+      }
+    }
+
+    fetchPublicationTypes()
+  }, []) // Fetch publication types only once on component mount
 
   const handlePublicationTypeClick = event => {
     setPublicationTypeMenuOpen(event.currentTarget)
@@ -333,18 +359,8 @@ const ArticleListToolbar = ({
     setPublicationTypeMenuOpen(null)
   }
 
-  const handlePublicationTypeAll = () => {
-    // Implement the logic for "All" publication type
-    handlePublicationTypeClose()
-  }
-
-  const handlePublicationTypeNews = () => {
-    // Implement the logic for "News" publication type
-    handlePublicationTypeClose()
-  }
-
-  const handlePublicationTypeMagazine = () => {
-    // Implement the logic for "Magazine" publication type
+  const handlePublicationTypeSelection = publicationType => {
+    setSelectedPublicationType(publicationType)
     handlePublicationTypeClose()
   }
 
@@ -509,9 +525,17 @@ const ArticleListToolbar = ({
         open={Boolean(isPublicationTypeMenuOpen)}
         onClose={handlePublicationTypeClose}
       >
-        <MenuItem onClick={handlePublicationTypeAll}>All</MenuItem>
-        <MenuItem onClick={handlePublicationTypeNews}>News</MenuItem>
-        <MenuItem onClick={handlePublicationTypeMagazine}>Magazine</MenuItem>
+        {publicationTypes.map(publicationType => (
+          <MenuItem
+            key={publicationType.publicationTypeId}
+            onClick={() => handlePublicationTypeSelection(publicationType)}
+            selected={
+              selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId
+            }
+          >
+            {publicationType.publicationTypeName}
+          </MenuItem>
+        ))}
       </Menu>
 
       <CustomTooltip title='Edition'>
