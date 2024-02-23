@@ -158,6 +158,7 @@ const TableSelection = () => {
     pageSize: 0, // Default pageSize
     totalRecords: 0 // New state for totalRecords
   })
+  const [selectedFilter, setSelectedFilter] = useState('1D')
   const [selectedStartDate, setSelectedStartDate] = useState(null)
   const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
@@ -186,7 +187,7 @@ const TableSelection = () => {
     journalist: ''
   })
 
-  console.log('Selected Sort by:', selectedSortBy)
+  console.log('Selected Sort by:', selectedPublicationType.publicationTypeId)
 
   //console.log()
 
@@ -256,9 +257,9 @@ const TableSelection = () => {
           phrase: searchParameters.exactPhrase,
 
           editionType: selectedEditionType.editionTypeId,
-          sortby: selectedSortBy
+          sortby: selectedSortBy,
 
-          // publicationType:selectedPublicationType,
+          publicationId: selectedPublicationType.publicationTypeId
         })
 
         const totalRecords = response.totalRecords
@@ -293,7 +294,7 @@ const TableSelection = () => {
 
     selectedEditionType,
 
-    //selectedPublicationType,
+    selectedPublicationType,
     selectedSortBy
   ])
 
@@ -434,6 +435,13 @@ const TableSelection = () => {
     //ArticleListToolbar
     setSelectedEditionType('')
     setSelectedPublicationType('')
+
+    //Date
+    const calculateDate = days => dayjs().subtract(days, 'day')
+    const startDate = calculateDate(1)
+    setSelectedStartDate(startDate)
+    setSelectedEndDate(startDate)
+    setSelectedFilter('1D')
   }
 
   return (
@@ -475,6 +483,8 @@ const TableSelection = () => {
         setSelectedStartDate={setSelectedStartDate}
         selectedEndDate={selectedEndDate}
         setSelectedEndDate={setSelectedEndDate}
+        selectedFilter={selectedFilter}
+        setSelectedFilter={setSelectedFilter}
         selectedArticles={selectedArticles}
         setSearchParameters={setSearchParameters}
         selectedEditionType={selectedEditionType}
