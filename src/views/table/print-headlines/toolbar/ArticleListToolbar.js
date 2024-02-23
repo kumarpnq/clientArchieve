@@ -182,7 +182,9 @@ const ArticleListToolbar = ({
   primaryColor,
   selectedArticles,
   setSearchParameters,
+  selectedEditionType,
   setSelectedEditionType,
+  selectedPublicationType,
   setSelectedPublicationType,
   setSelectedSortBy
 }) => {
@@ -547,7 +549,8 @@ const ArticleListToolbar = ({
         {editionTypes.map(editionType => (
           <MenuItem
             key={editionType.editionTypeId}
-            onClick={() => handleEditionTypeSelection(editionType.editionTypeId)}
+            onClick={() => handleEditionTypeSelection(editionType)}
+            selected={selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId}
           >
             {editionType.editionTypeName}
           </MenuItem>

@@ -254,7 +254,7 @@ const TableSelection = () => {
           ignoreWords: searchParameters.ignoreThis,
           phrase: searchParameters.exactPhrase,
 
-          editionType: selectedEditionType,
+          editionType: selectedEditionType.editionTypeId,
           sortby: selectedSortBy
 
           // publicationType:selectedPublicationType,
@@ -467,7 +467,9 @@ const TableSelection = () => {
         setSelectedEndDate={setSelectedEndDate}
         selectedArticles={selectedArticles}
         setSearchParameters={setSearchParameters}
+        selectedEditionType={selectedEditionType}
         setSelectedEditionType={setSelectedEditionType}
+        selectedPublicationType={selectedPublicationType}
         setSelectedPublicationType={setSelectedPublicationType}
         setSelectedSortBy={setSelectedSortBy}
       />
