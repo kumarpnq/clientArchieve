@@ -109,11 +109,7 @@ const SortByIcon = () => (
 )
 
 // Publication Type Icon
-const PublicationTypeIcon = ({
-  handlePublicationTypeAll,
-  handlePublicationTypeNews,
-  handlePublicationTypeMagazine
-}) => (
+const PublicationTypeIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'>
       <path
@@ -186,11 +182,11 @@ const ArticleListToolbar = ({
   setSelectedEditionType,
   selectedPublicationType,
   setSelectedPublicationType,
-  setSelectedSortBy
+  setSelectedSortBy,
+  selectedFilter,
+  setSelectedFilter
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
-
-  const [selectedFilter, setSelectedFilter] = useState('1D')
 
   // Helper function to calculate date by subtracting days from the current date
   const calculateDate = days => dayjs().subtract(days, 'day')
