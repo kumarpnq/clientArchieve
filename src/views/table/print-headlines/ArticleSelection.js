@@ -172,6 +172,7 @@ const TableSelection = () => {
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
   const [selectedEditionType, setSelectedEditionType] = useState(null)
+  const [selectedPublicationType, setSelectedPublicationType] = useState(null)
   const [selectedSortBy, setSelectedSortBy] = useState(null)
 
   const [searchParameters, setSearchParameters] = useState({
@@ -255,6 +256,8 @@ const TableSelection = () => {
 
           editionType: selectedEditionType,
           sortby: selectedSortBy
+
+          // publicationType:selectedPublicationType,
         })
 
         const totalRecords = response.totalRecords
@@ -287,6 +290,8 @@ const TableSelection = () => {
     selectedCities,
     searchParameters,
     selectedEditionType,
+
+    //selectedPublicationType,
     selectedSortBy
   ])
 
@@ -463,6 +468,7 @@ const TableSelection = () => {
         selectedArticles={selectedArticles}
         setSearchParameters={setSearchParameters}
         setSelectedEditionType={setSelectedEditionType}
+        setSelectedPublicationType={setSelectedPublicationType}
         setSelectedSortBy={setSelectedSortBy}
       />
       {/* DataGrid */}
