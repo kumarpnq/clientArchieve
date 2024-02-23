@@ -13,6 +13,7 @@ import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
 import ViewDialog from './dialog/view/MoreDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
+import Button from '@mui/material/Button'
 
 // ** MUI icons
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -171,8 +172,8 @@ const TableSelection = () => {
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
-  const [selectedEditionType, setSelectedEditionType] = useState(null)
-  const [selectedPublicationType, setSelectedPublicationType] = useState(null)
+  const [selectedEditionType, setSelectedEditionType] = useState('')
+  const [selectedPublicationType, setSelectedPublicationType] = useState('')
   const [selectedSortBy, setSelectedSortBy] = useState(null)
 
   const [searchParameters, setSearchParameters] = useState({
@@ -289,6 +290,7 @@ const TableSelection = () => {
     selectedTag,
     selectedCities,
     searchParameters,
+
     selectedEditionType,
 
     //selectedPublicationType,
@@ -422,16 +424,24 @@ const TableSelection = () => {
   }
 
   const handleReset = () => {
+    //Toolbar
     setSelectedCompanyIds([])
+    setSelectedMedia([])
+    setSelectedCities([])
+
+    //setSelectedTags([])
+
+    //ArticleListToolbar
+    setSelectedEditionType('')
+    setSelectedPublicationType('')
   }
 
   return (
     <Card>
-      <span></span>
       <CardHeader
         title={
           <Typography variant='title-lg'>
-            <span onClick={handleReset}>{priorityCompanyName}</span>
+            <Button onClick={handleReset}>{priorityCompanyName}</Button>
           </Typography>
         }
       />{' '}
