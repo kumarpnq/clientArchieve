@@ -428,7 +428,8 @@ const TableSelection = () => {
 
   const handleReset = () => {
     //Toolbar
-    setSelectedCompanyIds([])
+    const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
+    setSelectedCompanyIds([priorityCompanyId])
     setSelectedMedia([])
     setSelectedCities([])
 
