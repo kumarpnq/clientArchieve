@@ -43,7 +43,7 @@ const DeleteDialog = ({ open, onClose, selectedArticles }) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Delete</DialogTitle>
+      <DialogTitle color='primary'>Delete</DialogTitle>
       <DialogContent>
         <p>Are you sure you want to delete?</p>
         <TextField

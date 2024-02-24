@@ -83,7 +83,7 @@ const AdvancedSearchForm = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
-      <DialogTitle>Advanced Search</DialogTitle>
+      <DialogTitle color='primary'>Advanced Search</DialogTitle>
       <DialogContent>
         <TextField
           label='Search Headline'

@@ -61,7 +61,7 @@ const EmailDialog = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Send Email</DialogTitle>
+      <DialogTitle color='primary'>Send Email</DialogTitle>
 
       <FormGroup style={{ marginLeft: '20px', marginRight: '20px' }}>
         <FormControlLabel

@@ -146,7 +146,7 @@ const ImageDialog = ({ open, handleClose, selectedArticles }) => {
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>
+      <DialogTitle color='primary'>
         Download
         <IconButton aria-label='close' onClick={handleClose} style={{ position: 'absolute', right: 8, top: 8 }}>
           <CloseIcon />
