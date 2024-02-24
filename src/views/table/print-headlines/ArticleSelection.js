@@ -499,6 +499,7 @@ const TableSelection = () => {
         setSelectedEditionType={setSelectedEditionType}
         selectedPublicationType={selectedPublicationType}
         setSelectedPublicationType={setSelectedPublicationType}
+        selectedSortBy={selectedSortBy}
         setSelectedSortBy={setSelectedSortBy}
       />
       {/* DataGrid */}

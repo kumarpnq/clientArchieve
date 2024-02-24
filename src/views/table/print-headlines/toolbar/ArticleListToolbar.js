@@ -181,6 +181,7 @@ const ArticleListToolbar = ({
   selectedEditionType,
   setSelectedEditionType,
   selectedPublicationType,
+  selectedSortBy,
   setSelectedPublicationType,
   setSelectedSortBy,
   selectedFilter,
@@ -313,13 +314,14 @@ const ArticleListToolbar = ({
     setSortByMenuOpen(null)
   }
 
-  const handleSortByLatest = () => {
-    setSelectedSortBy('latest') // Pass the selected sort-by ID
-    handleSortByClose()
-  }
-
-  const handleSortByMedia = () => {
-    setSelectedSortBy('media') // Pass the selected sort-by ID
+  const handleSortBySelection = sortBy => {
+    if (selectedSortBy === sortBy) {
+      // If the clicked sort-by is already selected, deselect it
+      setSelectedSortBy(null)
+    } else {
+      // If not selected, set it as the selected sort-by
+      setSelectedSortBy(sortBy)
+    }
     handleSortByClose()
   }
 
@@ -407,7 +409,13 @@ const ArticleListToolbar = ({
   }
 
   const handleEditionTypeSelection = editionType => {
-    setSelectedEditionType(editionType)
+    if (selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId) {
+      // If the clicked edition type is already selected, deselect it
+      setSelectedEditionType(' ')
+    } else {
+      // If not selected, set it as the selected edition type
+      setSelectedEditionType(editionType)
+    }
     handleEditionTypeClose()
   }
 
@@ -513,13 +521,18 @@ const ArticleListToolbar = ({
       <TaggingDialog open={taggingDialogOpen} onClose={handleTaggingDialogClose} />
 
       <CustomTooltip title='Sort By'>
-        <Button onClick={handleSortByClick} sx={{ color: primaryColor, mr: 0 }}>
+        <Button onClick={handleSortByClick} sx={{ color: selectedSortBy ? primaryColor : undefined, mr: 0 }}>
           <SortByIcon />
         </Button>
       </CustomTooltip>
+
       <Menu anchorEl={isSortByMenuOpen} open={Boolean(isSortByMenuOpen)} onClose={handleSortByClose}>
-        <MenuItem onClick={handleSortByLatest}>Sort by Latest</MenuItem>
-        <MenuItem onClick={handleSortByMedia}>Sort by Media</MenuItem>
+        <MenuItem onClick={() => handleSortBySelection('latest')} selected={selectedSortBy === 'latest'}>
+          Sort by Latest
+        </MenuItem>
+        <MenuItem onClick={() => handleSortBySelection('media')} selected={selectedSortBy === 'media'}>
+          Sort by Media
+        </MenuItem>
       </Menu>
 
       <CustomTooltip title='Publication'>
