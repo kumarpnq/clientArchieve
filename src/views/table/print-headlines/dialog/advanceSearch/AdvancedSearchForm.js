@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -6,7 +6,13 @@ import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 
-const AdvancedSearchForm = ({ open, onClose, setSearchParameters }) => {
+const AdvancedSearchForm = ({
+  open,
+  onClose,
+  setSearchParameters,
+  clearAdvancedSearchField,
+  setClearAdvancedSearchField
+}) => {
   const [searchHeadline, setSearchHeadline] = useState('')
   const [searchBody, setSearchBody] = useState('')
   const [combinationOfWords, setCombinationOfWords] = useState('')
@@ -40,19 +46,14 @@ const AdvancedSearchForm = ({ open, onClose, setSearchParameters }) => {
         journalist: ''
       })
     }
+    setClearAdvancedSearchField(false) // Reset clearAdvancedSearchField state
   }
 
-  // Set searchParams values to null
-  //   setSearchParameters({
-  //     searchHeadline: '',
-  //     searchBody: '',
-  //     combinationOfWords: '',
-  //     anyOfWords: '',
-  //     exactPhrase: '',
-  //     ignoreThis: '',
-  //     journalist: ''
-  //   })
-  // }
+  useEffect(() => {
+    if (clearAdvancedSearchField) {
+      resetFormFields()
+    }
+  }, [clearAdvancedSearchField])
 
   const handleSearch = () => {
     const searchParams = {
