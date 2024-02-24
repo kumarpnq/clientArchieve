@@ -1,5 +1,6 @@
 // ** React Import
 import { useState, useMemo, useEffect } from 'react'
+import { BASE_URL } from 'src/api/base'
 import axios from 'axios'
 
 // ** MUI Imports
@@ -10,6 +11,7 @@ import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import { DataGrid } from '@mui/x-data-grid'
 import Checkbox from '@mui/material/Checkbox'
+import Button from '@mui/material/Button'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
@@ -20,64 +22,89 @@ import ArticleListToolbar from './toolbar/ArticleListToolbar'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 // ** Article Database
-import { articles } from './Db-Articles'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 import dayjs from 'dayjs'
-
-import ArticlePopover from './ArticlePopover' // Update the path accordingly
 
 //pagination
 import Pagination from './PrintOnlinePagination.js'
 
 import CircularProgress from '@mui/material/CircularProgress'
 
+// ** Redux
+import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+
+// ** Tooltip
+import Tooltip from '@mui/material/Tooltip'
+import { styled } from '@mui/system'
+import { List, ListItem } from '@mui/material'
+import { tooltipClasses } from '@mui/material/Tooltip'
+
+const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.background.default, // Use default background color for dark theme
+      color: theme.palette.text.primary, // Use primary text color for dark theme
+      boxShadow: theme.shadows[1],
+      fontSize: 11,
+      maxWidth: '300px', // Set the maximum width for better readability
+      '& .MuiTooltip-arrow': {
+        color: theme.palette.background.default // Use default background color for the arrow in dark theme
+      }
+    }
+  })
+)
+
 const TableSelection = () => {
-  // State to handle popover open/close
-  const [popoverOpen, setPopoverOpen] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [popoverSummary, setPopoverSummary] = useState('')
-
-  const handlePopoverOpen = (event, summary) => {
-    setAnchorEl(event.currentTarget)
-    setPopoverSummary(summary)
-    setPopoverOpen(true)
-  }
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null)
-    setPopoverOpen(false)
-  }
-
   // ** Renders social feed column
   const renderArticle = params => {
     const { row } = params
 
     const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
 
+    const getTooltipContent = row => (
+      <List>
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Summary:
+          </Typography>
+        </ListItem>
+        <ListItem>{row.summary}</ListItem>
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Companies:
+          </Typography>{' '}
+          {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+        </ListItem>
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Edition Type:
+          </Typography>{' '}
+          {row.editionTypeName}
+        </ListItem>
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Page Number:
+          </Typography>{' '}
+          {row.pageNumber}
+        </ListItem>
+      </List>
+    )
+
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography
-          noWrap
-          variant='body2'
-          sx={{ color: 'text.primary', fontWeight: 600 }}
-          onMouseEnter={e => handlePopoverOpen(e, row.summary)}
-          onMouseLeave={handlePopoverClose}
-        >
-          {row.headline}
-        </Typography>
-        <ArticlePopover
-          isOpen={popoverOpen}
-          anchorEl={anchorEl}
-          handleClose={handlePopoverClose}
-          summary={popoverSummary}
-        />
-        <Typography noWrap variant='caption'>
-          {row.publisher}
-          <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
-        </Typography>
-      </Box>
+      <CustomTooltip title={getTooltipContent(row)} arrow>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
+            {row.headline}
+          </Typography>
+          <Typography noWrap variant='caption'>
+            {row.publisher}
+            <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
+          </Typography>
+        </Box>
+      </CustomTooltip>
     )
   }
 
@@ -89,9 +116,10 @@ const TableSelection = () => {
       field: 'select',
       renderCell: params => (
         <Checkbox
-          checked={params.row.isSelected}
-          onChange={() => params.api.selectRow(params.row.articleId, !params.row.isSelected, false)}
-          onClick={e => e.stopPropagation()} // Stop propagation to prevent opening the dialog
+          onClick={e => {
+            e.stopPropagation()
+            handleSelect(params.row)
+          }}
         />
       )
     },
@@ -140,10 +168,31 @@ const TableSelection = () => {
   const [selectedDuration, setSelectedDuration] = useState(null)
   const [isEditDialogOpen, setEditDialogOpen] = useState(false)
   const getRowId = row => row.articleId
-  const [selectedCompanyId, setSelectedCompanyId] = useState(null)
+  const [selectedCompanyId, setSelectedCompanyId] = useState([])
+  const [selectedGeography, setSelectedGeography] = useState([])
+  const [selectedLanguages, setSelectedLanguages] = useState([])
+  const [selectedMedia, setSelectedMedia] = useState([])
+  const [selectedTags, setSelectedTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(10)
+
+  const [searchParameters, setSearchParameters] = useState({
+    searchHeadline: '',
+    searchBody: '',
+    combinationOfWords: '',
+    anyOfWords: '',
+    exactPhrase: '',
+    ignoreThis: '',
+    journalist: ''
+  })
+
+  //Redux call
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+
+  // Access priorityCompanyName from selectedClient
+  const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
 
   const handleEdit = row => {
     setSelectedArticle(row)
@@ -160,14 +209,10 @@ const TableSelection = () => {
     try {
       setLoading(true)
       const storedToken = localStorage.getItem('accessToken')
-      const userData = JSON.parse(localStorage.getItem('userData')) // Parse JSON string to object
-      const storedClientId = userData?.clientId // Access clientId from userData
 
       if (storedToken) {
-        const base_url = 'http://51.68.220.77:8001'
-
         const request_params = {
-          clientIds: storedClientId,
+          clientIds: clientId,
           companyIds: selectedCompanyId,
           fromDate: selectedStartDate?.toISOString(),
           toDate: selectedEndDate?.toISOString(),
@@ -175,10 +220,7 @@ const TableSelection = () => {
           recordsPerPage: recordsPerPage
         }
 
-        console.log(selectedEndDate?.toISOString())
-        console.log(selectedEndDate?.toISOString())
-
-        const response = await axios.get(`${base_url}/clientWiseSocialFeedAndArticles/`, {
+        const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -199,7 +241,7 @@ const TableSelection = () => {
     } catch (error) {
       console.error('Error fetching social feeds:', error)
     } finally {
-      setLoading(false) // Set loading to false after API call is complete
+      setLoading(false)
     }
   }
 
@@ -323,6 +365,24 @@ const TableSelection = () => {
     setPopupOpen(true)
   }
 
+  const [selectedArticles, setSelectedArticles] = useState([])
+
+  const handleSelect = article => {
+    // Check if the article is already selected
+    const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
+
+    // Update selectedArticles based on whether the article is already selected or not
+    setSelectedArticles(prevSelectedArticles => {
+      if (isSelected) {
+        // If article is already selected, remove it from the selection
+        return prevSelectedArticles.filter(selectedArticle => selectedArticle.articleId !== article.articleId)
+      } else {
+        // If article is not selected, add it to the selection
+        return [...prevSelectedArticles, article]
+      }
+    })
+  }
+
   const handleLeftPagination = () => {
     if (currentPage > 1) {
       setCurrentPage(prevPage => prevPage - 1)
@@ -342,11 +402,37 @@ const TableSelection = () => {
     setCurrentPage(1) // Reset current page when changing records per page
   }
 
+  const handleReset = () => {
+    setSelectedCompanyId([])
+    setSelectedGeography([])
+    setSelectedLanguages([])
+    setSelectedMedia([])
+    setSelectedTags([])
+  }
+
   return (
     <Card>
-      <CardHeader title='Article Selection' />
+      <CardHeader
+        title={
+          <Typography variant='title-lg' sx={{ cursor: 'pointer' }}>
+            {' '}
+            <Button onClick={handleReset}>{priorityCompanyName}</Button>
+          </Typography>
+        }
+      />
       {/* Top Toolbar */}
-      <ToolbarComponent selectedCompanyId={selectedCompanyId} setSelectedCompanyId={setSelectedCompanyId} />
+      <ToolbarComponent
+        selectedCompanyId={selectedCompanyId}
+        setSelectedCompanyId={setSelectedCompanyId}
+        selectedGeography={selectedGeography}
+        setSelectedGeography={setSelectedGeography}
+        selectedLanguages={selectedLanguages}
+        setSelectedLanguages={setSelectedLanguages}
+        selectedMedia={selectedMedia}
+        setSelectedMedia={setSelectedMedia}
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+      />
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
         setSearchQuery={setSearchQuery}
@@ -367,6 +453,8 @@ const TableSelection = () => {
         setSelectedStartDate={setSelectedStartDate}
         selectedEndDate={selectedEndDate}
         setSelectedEndDate={setSelectedEndDate}
+        setSearchParameters={setSearchParameters}
+        selectedArticles={selectedArticles}
       />
       {/* DataGrid */}
       <Box p={2}>
@@ -434,7 +522,7 @@ const TableSelection = () => {
                 recordsPerPage={recordsPerPage}
                 handleLeftPagination={handleLeftPagination}
                 handleRightPagination={handleRightPagination}
-                handleRecordsPerPageChange={handleRecordsPerPageChange}
+                handleRecordsPerPageUpdate={handleRecordsPerPageChange}
               />
             )}
           </>
