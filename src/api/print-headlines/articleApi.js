@@ -21,6 +21,7 @@ export const fetchArticles = async ({
   ignoreWords,
   phrase,
   editionType,
+  publicationCategory,
   sortby,
 
   publicationId
@@ -46,9 +47,8 @@ export const fetchArticles = async ({
       ignoreWords,
       phrase,
       editionType,
-      sortby,
-
-      publicationId
+      publicationCategory,
+      sortby
     }
 
     const response = await axios.get(`${base_url}/clientWisePrintArticles/`, {

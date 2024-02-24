@@ -329,7 +329,7 @@ const ArticleListToolbar = ({
     const fetchPublicationTypes = async () => {
       const storedToken = localStorage.getItem('accessToken')
       try {
-        const response = await fetch('http://51.68.220.77:8001/publicationTypesList/', {
+        const response = await fetch('http://51.68.220.77:8001/publicationCategoryList/', {
           headers: { Authorization: `Bearer ${storedToken}` }
         })
 
