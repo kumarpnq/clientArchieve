@@ -187,6 +187,8 @@ const TableSelection = () => {
     journalist: ''
   })
 
+  const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
+
   console.log('Selected Sort by:', selectedPublicationType.publicationTypeId)
 
   //console.log()
@@ -435,6 +437,8 @@ const TableSelection = () => {
     //ArticleListToolbar
     setSelectedEditionType('')
     setSelectedPublicationType('')
+    setSelectedSortBy(null)
+    setClearAdvancedSearchField(true)
 
     //Date
     const calculateDate = days => dayjs().subtract(days, 'day')
@@ -490,6 +494,8 @@ const TableSelection = () => {
         setSelectedFilter={setSelectedFilter}
         selectedArticles={selectedArticles}
         setSearchParameters={setSearchParameters}
+        clearAdvancedSearchField={clearAdvancedSearchField}
+        setClearAdvancedSearchField={setClearAdvancedSearchField}
         selectedEditionType={selectedEditionType}
         setSelectedEditionType={setSelectedEditionType}
         selectedPublicationType={selectedPublicationType}

@@ -184,7 +184,9 @@ const ArticleListToolbar = ({
   setSelectedPublicationType,
   setSelectedSortBy,
   selectedFilter,
-  setSelectedFilter
+  setSelectedFilter,
+  setClearAdvancedSearchField,
+  clearAdvancedSearchField
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -435,6 +437,8 @@ const ArticleListToolbar = ({
         open={isAdvancedSearchOpen}
         onClose={handleAdvancedSearchClose}
         setSearchParameters={setSearchParameters}
+        clearAdvancedSearchField={clearAdvancedSearchField}
+        setClearAdvancedSearchField={setClearAdvancedSearchField}
       />
 
       <CustomTooltip title='Delete'>
