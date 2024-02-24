@@ -34,7 +34,7 @@ const TaggingDialog = ({ open, onClose }) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Select Tag</DialogTitle>
+      <DialogTitle color='primary'>Select Tag</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus

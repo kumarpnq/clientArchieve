@@ -81,7 +81,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate }
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Dossier</DialogTitle>
+      <DialogTitle color='primary'>Dossier</DialogTitle>
       <DialogContent>
         {/* Dossier Type Radio Buttons */}
         <FormControl component='fieldset' fullWidth>
