@@ -189,8 +189,6 @@ const TableSelection = () => {
 
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
 
-  console.log('Selected Sort by:', selectedPublicationType.publicationTypeId)
-
   //console.log()
 
   //Redux call

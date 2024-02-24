@@ -360,7 +360,13 @@ const ArticleListToolbar = ({
   }
 
   const handlePublicationTypeSelection = publicationType => {
-    setSelectedPublicationType(publicationType)
+    if (selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId) {
+      // If the clicked publication type is already selected, deselect it
+      setSelectedPublicationType('')
+    } else {
+      // If not selected, set it as the selected publication type
+      setSelectedPublicationType(publicationType)
+    }
     handlePublicationTypeClose()
   }
 
@@ -563,27 +569,35 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
 
-      <Button
-        onClick={handleFilter1D}
-        sx={{ color: primaryColor, mr: 0 }}
-        variant={selectedFilter === '1D' ? 'contained' : 'text'}
-      >
-        <OneDIcon />
-      </Button>
-      <Button
-        onClick={handleFilter7D}
-        sx={{ color: primaryColor, mr: 0 }}
-        variant={selectedFilter === '7D' ? 'contained' : 'text'}
-      >
-        <SevenDIcon />
-      </Button>
-      <Button
-        onClick={handleFilter1M}
-        sx={{ color: primaryColor, mr: 0 }}
-        variant={selectedFilter === '1M' ? 'contained' : 'text'}
-      >
-        <OneMIcon />
-      </Button>
+      <CustomTooltip title='1 Day'>
+        <Button
+          onClick={handleFilter1D}
+          sx={{ color: primaryColor, mr: 0 }}
+          variant={selectedFilter === '1D' ? 'contained' : 'text'}
+        >
+          <OneDIcon />
+        </Button>
+      </CustomTooltip>
+
+      <CustomTooltip title='7 Days'>
+        <Button
+          onClick={handleFilter7D}
+          sx={{ color: primaryColor, mr: 0 }}
+          variant={selectedFilter === '7D' ? 'contained' : 'text'}
+        >
+          <SevenDIcon />
+        </Button>
+      </CustomTooltip>
+
+      <CustomTooltip title='1 Month'>
+        <Button
+          onClick={handleFilter1M}
+          sx={{ color: primaryColor, mr: 0 }}
+          variant={selectedFilter === '1M' ? 'contained' : 'text'}
+        >
+          <OneMIcon />
+        </Button>
+      </CustomTooltip>
       <Popover
         open={Boolean(filterPopoverAnchor)}
         anchorEl={filterPopoverAnchor}
