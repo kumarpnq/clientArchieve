@@ -259,7 +259,7 @@ const TableSelection = () => {
           editionType: selectedEditionType.editionTypeId,
           sortby: selectedSortBy,
 
-          publicationId: selectedPublicationType.publicationTypeId
+          publicationCategory: selectedPublicationType.publicationTypeId
         })
 
         const totalRecords = response.totalRecords
@@ -442,6 +442,9 @@ const TableSelection = () => {
     setSelectedStartDate(startDate)
     setSelectedEndDate(startDate)
     setSelectedFilter('1D')
+
+    //selected Article
+    setSelectedArticles([])
   }
 
   return (
