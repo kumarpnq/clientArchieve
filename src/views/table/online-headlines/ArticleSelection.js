@@ -10,6 +10,9 @@ import CardHeader from '@mui/material/CardHeader'
 import IconButton from '@mui/material/IconButton'
 import { DataGrid } from '@mui/x-data-grid'
 import Checkbox from '@mui/material/Checkbox'
+import Tooltip from '@mui/material/Tooltip'
+import { styled } from '@mui/system'
+import { tooltipClasses } from '@mui/material/Tooltip'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import SocialFeedFullScreenDialog from './dialog/ArticleDialog'
@@ -29,26 +32,51 @@ import Pagination from './OnlineHeadlinePagination'
 
 import CircularProgress from '@mui/material/CircularProgress'
 
+// ** Redux
+import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+
+const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.background.default, // Use default background color for dark theme
+      color: theme.palette.text.primary, // Use primary text color for dark theme
+      boxShadow: theme.shadows[1],
+      fontSize: 11,
+      maxWidth: '300px', // Set the maximum width for better readability
+      '& .MuiTooltip-arrow': {
+        color: theme.palette.background.default // Use default background color for the arrow in dark theme
+      }
+    }
+  })
+)
+
 // ** Renders social feed column
 const renderSocialFeed = params => {
   const { row } = params
 
   const formattedDate = dayjs(row.feedDate).format('DD-MM-YYYY')
 
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
-        {row.headline}
-      </Typography>
-      <Typography noWrap variant='caption'>
-        {row.publisher}
-        <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
-      </Typography>
-      {/* Displaying the summary */}
-      <Typography noWrap variant='caption'>
+  const tooltipToShow = row => (
+    <Box>
+      <Typography variant='body-2' sx={{ fontWeight: 600 }}>
         {row.summary}
       </Typography>
     </Box>
+  )
+
+  return (
+    <CustomTooltip title={tooltipToShow(row)} arrow>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
+          {row.headline}
+        </Typography>
+        <Typography noWrap variant='caption'>
+          {row.publisher}
+          <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
+        </Typography>
+      </Box>
+    </CustomTooltip>
   )
 }
 
@@ -61,9 +89,10 @@ const TableSelection = () => {
       field: 'select',
       renderCell: params => (
         <Checkbox
-          checked={params.row.isSelected}
-          onChange={() => params.api.selectRow(params.row.socialFeedId, !params.row.isSelected, false)}
-          onClick={e => e.stopPropagation()} // Stop propagation to prevent opening the dialog
+          onClick={e => {
+            e.stopPropagation()
+            handleSelect(params.row)
+          }}
         />
       )
     },
@@ -104,22 +133,40 @@ const TableSelection = () => {
     pageSize: 0, // Default pageSize
     totalRecords: 0 // New state for totalRecords
   })
+
+  const [searchParameters, setSearchParameters] = useState({
+    searchHeadline: '',
+    searchBody: '',
+    combinationOfWords: '',
+    anyOfWords: '',
+    exactPhrase: '',
+    ignoreThis: ''
+  })
   const [selectedStartDate, setSelectedStartDate] = useState(null)
   const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
-  const [selectedDuration, setSelectedDuration] = useState(null)
-  const [isEditDialogOpen, setEditDialogOpen] = useState(false)
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+
+  // Access priorityCompanyName from selectedClient
+  const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
+
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const getRowId = row => row.socialFeedId
-  const [selectedCompanyId, setSelectedCompanyId] = useState(null)
+  const [selectedCompanyId, setSelectedCompanyId] = useState([])
+  const [selectedGeography, setSelectedGeography] = useState([])
+  const [selectedLanguage, setSelectedLanguage] = useState([])
+  const [selectedMedia, setSelectedMedia] = useState([])
+  const [selectedTags, setSelectedTags] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(10)
   const [loading, setLoading] = useState(true)
 
   const handleEdit = row => {
     setSelectedArticle(row)
-    setEditDialogOpen(true)
+    setIsEditDialogOpen(true)
   }
 
   const handleSaveChanges = editedArticle => {
@@ -132,22 +179,40 @@ const TableSelection = () => {
     try {
       setLoading(true)
       const storedToken = localStorage.getItem('accessToken')
-      const userData = JSON.parse(localStorage.getItem('userData')) // Parse JSON string to object
-      const storedClientId = userData?.clientId // Access clientId from userData
       if (storedToken) {
-        const base_url = 'http://51.68.220.77:8001'
+        const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
-        const request_params = {
-          clientIds: storedClientId,
-          companyIds: selectedCompanyId,
-          fromDate: selectedStartDate?.toISOString(),
-          toDate: selectedEndDate?.toISOString(),
-          page: currentPage,
-          recordsPerPage: recordsPerPage
+        // Format start and end dates
+        const formatDateTime = (date, setTime, isEnd) => {
+          const isoString = date.toISOString().slice(0, 10)
+          const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+
+          return `${isoString} ${timeString}`
         }
 
-        console.log(selectedEndDate?.toISOString())
-        console.log(selectedEndDate?.toISOString())
+        const formattedStartDate = selectedStartDate ? formatDateTime(selectedStartDate, true, false) : null
+        const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+
+        const request_params = {
+          clientIds: clientId,
+          companyIds: selectedCompanyId,
+          fromDate: formattedStartDate,
+          toDate: formattedEndDate,
+          page: currentPage,
+          recordsPerPage: recordsPerPage,
+
+          geography: selectedGeography,
+          media: selectedMedia,
+          tags: selectedTags,
+
+          // Advanced search
+          headline: searchParameters.searchHeadline,
+          body: searchParameters.searchBody,
+          wordCombo: searchParameters.combinationOfWords,
+          anyWord: searchParameters.anyOfWords,
+          ignoreWords: searchParameters.ignoreThis,
+          phrase: searchParameters.exactPhrase
+        }
 
         const response = await axios.get(`${base_url}/clientWiseSocialFeeds/`, {
           headers: {
@@ -158,7 +223,6 @@ const TableSelection = () => {
 
         const totalRecords = response.data.totalRecords || 0
 
-        // Assuming the API response contains socialFeeds
         setSocialFeeds(response.data.socialFeeds)
 
         // Update totalRecords in the state
@@ -170,13 +234,25 @@ const TableSelection = () => {
     } catch (error) {
       console.error('Error fetching social feeds:', error)
     } finally {
-      setLoading(false) // Set loading to false after API call is complete
+      setLoading(false)
     }
   }
 
   useEffect(() => {
     fetchSocialFeeds()
-  }, [selectedEndDate, selectedStartDate, currentPage, recordsPerPage])
+  }, [
+    clientId,
+    selectedCompanyId,
+    selectedEndDate,
+    selectedStartDate,
+    currentPage,
+    recordsPerPage,
+    selectedGeography,
+    selectedLanguage,
+    selectedMedia,
+    selectedTags,
+    searchParameters
+  ])
 
   // Filter articles based on the selected date range and search query
   const filteredArticles = useMemo(() => {
@@ -252,6 +328,23 @@ const TableSelection = () => {
     setSelectedArticle(params.row)
     setPopupOpen(true)
   }
+  const [selectedArticles, setSelectedArticles] = useState([])
+
+  const handleSelect = article => {
+    // Check if the article is already selected
+    const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
+
+    // Update selectedArticles based on whether the article is already selected or not
+    setSelectedArticles(prevSelectedArticles => {
+      if (isSelected) {
+        // If article is already selected, remove it from the selection
+        return prevSelectedArticles.filter(selectedArticle => selectedArticle.articleId !== article.articleId)
+      } else {
+        // If article is not selected, add it to the selection
+        return [...prevSelectedArticles, article]
+      }
+    })
+  }
 
   const handleLeftPagination = () => {
     if (currentPage > 1) {
@@ -272,11 +365,45 @@ const TableSelection = () => {
     setCurrentPage(1) // Reset current page when changing records per page
   }
 
+  const handleResetValues = () => {
+    setSelectedCompanyId([])
+    setSelectedGeography([])
+    setSelectedLanguage([])
+    setSelectedMedia([])
+    setSelectedTags([])
+    setSearchParameters({
+      searchHeadline: '',
+      searchBody: '',
+      combinationOfWords: '',
+      anyOfWords: '',
+      exactPhrase: '',
+      ignoreThis: ''
+    })
+    setCurrentPage(1)
+  }
+
   return (
     <Card>
-      <CardHeader title='Social Feed' />
+      <CardHeader
+        title={
+          <Typography variant='title-lg' sx={{ cursor: 'pointer' }}>
+            <span onClick={handleResetValues}>{priorityCompanyName}</span>
+          </Typography>
+        }
+      />
       {/* Top Toolbar */}
-      <ToolbarComponent selectedCompanyId={selectedCompanyId} setSelectedCompanyId={setSelectedCompanyId} />
+      <ToolbarComponent
+        selectedCompanyId={selectedCompanyId}
+        setSelectedCompanyId={setSelectedCompanyId}
+        selectedGeography={selectedGeography}
+        setSelectedGeography={setSelectedGeography}
+        selectedLanguage={selectedLanguage}
+        setSelectedLanguage={setSelectedLanguage}
+        selectedMedia={selectedMedia}
+        setSelectedMedia={setSelectedMedia}
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+      />
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
         setSearchQuery={setSearchQuery}
@@ -294,6 +421,8 @@ const TableSelection = () => {
         setSelectedStartDate={setSelectedStartDate}
         selectedEndDate={selectedEndDate}
         setSelectedEndDate={setSelectedEndDate}
+        setSearchParameters={setSearchParameters}
+        selectedArticles={selectedArticles}
       />
       {/* DataGrid */}
       <Box p={2}>
@@ -373,7 +502,7 @@ const TableSelection = () => {
       {/* Edit Dialog */}
       <EditDialog
         open={isEditDialogOpen}
-        handleClose={() => setEditDialogOpen(false)}
+        handleClose={() => setIsEditDialogOpen(false)}
         socialFeed={selectedArticle}
         handleSave={handleSaveChanges}
       />

@@ -38,7 +38,6 @@ const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
 
   const handleSaveChanges = () => {
     const { socialFeedId } = socialFeed
-
     if (socialFeedId) {
       const storedToken = localStorage.getItem('accessToken')
 
@@ -48,7 +47,6 @@ const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
         const base_url = 'http://51.68.220.77:8001'
 
         if (author) {
-          // Make the API request using axios
           axios
             .post(
               `${base_url}/updateSocialFeedAuthorName/`,
@@ -81,7 +79,7 @@ const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
       {/* Set maxWidth and fullWidth props */}
-      <DialogTitle>Edit Social Feed</DialogTitle>
+      <DialogTitle color='primary'>Edit Social Feed</DialogTitle>
       <DialogContent>
         <TextField
           label='Headline'
@@ -91,7 +89,7 @@ const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
           margin='normal'
         />
         <TextField
-          label='Author'
+          label='Journalist'
           value={editedSocialFeed.author}
           onChange={e => handleInputChange('author', e.target.value)}
           fullWidth
