@@ -85,7 +85,7 @@ const TaggingIcon = () => (
 )
 
 // Sort By Icon
-const SortByIcon = ({ handleSortByLatest, handleSortByMedia }) => (
+const SortByIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='32' height='27' viewBox='0 0 36 36'>
       <path
@@ -109,11 +109,7 @@ const SortByIcon = ({ handleSortByLatest, handleSortByMedia }) => (
 )
 
 // Publication Type Icon
-const PublicationTypeIcon = ({
-  handlePublicationTypeAll,
-  handlePublicationTypeNews,
-  handlePublicationTypeMagazine
-}) => (
+const PublicationTypeIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'>
       <path
@@ -127,15 +123,7 @@ const PublicationTypeIcon = ({
 )
 
 // Edition Type Icon
-const EditionTypeIcon = ({
-  handleEditionTypeBD,
-  handleEditionTypeBIM,
-  handleEditionTypeND,
-  handleEditionTypePIMRD,
-  handleEditionTypeTAP,
-  handleEditionTypeTM,
-  handleEditionTypeWP
-}) => (
+const EditionTypeIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' viewBox='0 0 24 24'>
       <path
@@ -189,11 +177,19 @@ const ArticleListToolbar = ({
   setSelectedEndDate,
   primaryColor,
   selectedArticles,
-  setSearchParameters
+  setSearchParameters,
+  selectedEditionType,
+  setSelectedEditionType,
+  selectedPublicationType,
+  selectedSortBy,
+  setSelectedPublicationType,
+  setSelectedSortBy,
+  selectedFilter,
+  setSelectedFilter,
+  setClearAdvancedSearchField,
+  clearAdvancedSearchField
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
-
-  const [selectedFilter, setSelectedFilter] = useState('1D')
 
   // Helper function to calculate date by subtracting days from the current date
   const calculateDate = days => dayjs().subtract(days, 'day')
@@ -318,18 +314,44 @@ const ArticleListToolbar = ({
     setSortByMenuOpen(null)
   }
 
-  const handleSortByLatest = () => {
-    // Implement the logic to sort by latest
+  const handleSortBySelection = sortBy => {
+    if (selectedSortBy === sortBy) {
+      // If the clicked sort-by is already selected, deselect it
+      setSelectedSortBy(null)
+    } else {
+      // If not selected, set it as the selected sort-by
+      setSelectedSortBy(sortBy)
+    }
     handleSortByClose()
   }
 
-  const handleSortByMedia = () => {
-    // Implement the logic to sort by media
-    handleSortByClose()
-  }
-
-  //publicationType mangzine
+  // Publication Type state and logic
+  const [publicationTypes, setPublicationTypes] = useState([])
   const [isPublicationTypeMenuOpen, setPublicationTypeMenuOpen] = useState(null)
+
+  useEffect(() => {
+    const fetchPublicationTypes = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const response = await fetch('http://51.68.220.77:8001/publicationCategoryList/', {
+          headers: { Authorization: `Bearer ${storedToken}` }
+        })
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        const data = await response.json()
+        setPublicationTypes(data.publicationsTypeList)
+      } catch (error) {
+        console.error('Error fetching publication types:', error)
+
+        // Handle error appropriately, e.g., display an error message to the user
+      }
+    }
+
+    fetchPublicationTypes()
+  }, []) // Fetch publication types only once on component mount
 
   const handlePublicationTypeClick = event => {
     setPublicationTypeMenuOpen(event.currentTarget)
@@ -339,23 +361,44 @@ const ArticleListToolbar = ({
     setPublicationTypeMenuOpen(null)
   }
 
-  const handlePublicationTypeAll = () => {
-    // Implement the logic for "All" publication type
+  const handlePublicationTypeSelection = publicationType => {
+    if (selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId) {
+      // If the clicked publication type is already selected, deselect it
+      setSelectedPublicationType('')
+    } else {
+      // If not selected, set it as the selected publication type
+      setSelectedPublicationType(publicationType)
+    }
     handlePublicationTypeClose()
   }
 
-  const handlePublicationTypeNews = () => {
-    // Implement the logic for "News" publication type
-    handlePublicationTypeClose()
-  }
-
-  const handlePublicationTypeMagazine = () => {
-    // Implement the logic for "Magazine" publication type
-    handlePublicationTypeClose()
-  }
-
-  //EditionTypeIcon
+  // Edition Type state and logic
+  const [editionTypes, setEditionTypes] = useState([])
   const [isEditionTypeMenuOpen, setEditionTypeMenuOpen] = useState(null)
+
+  useEffect(() => {
+    const fetchEditionTypes = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const response = await fetch('http://51.68.220.77:8001/editionTypesList/', {
+          headers: { Authorization: `Bearer ${storedToken}` }
+        })
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        const data = await response.json()
+        setEditionTypes(data.editionTypesList)
+      } catch (error) {
+        console.error('Error fetching edition types:', error)
+
+        // Handle error appropriately, e.g., display an error message to the user
+      }
+    }
+
+    fetchEditionTypes()
+  }, []) // Fetch edition types only once on component mount
 
   const handleEditionTypeClick = event => {
     setEditionTypeMenuOpen(event.currentTarget)
@@ -365,38 +408,14 @@ const ArticleListToolbar = ({
     setEditionTypeMenuOpen(null)
   }
 
-  const handleEditionTypeBD = () => {
-    // Implement the logic for "BD" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeBIM = () => {
-    // Implement the logic for "BIM" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeND = () => {
-    // Implement the logic for "ND" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypePIMRD = () => {
-    // Implement the logic for "PIMRD" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeTAP = () => {
-    // Implement the logic for "TAP" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeTM = () => {
-    // Implement the logic for "TM" edition type
-    handleEditionTypeClose()
-  }
-
-  const handleEditionTypeWP = () => {
-    // Implement the logic for "WP" edition type
+  const handleEditionTypeSelection = editionType => {
+    if (selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId) {
+      // If the clicked edition type is already selected, deselect it
+      setSelectedEditionType(' ')
+    } else {
+      // If not selected, set it as the selected edition type
+      setSelectedEditionType(editionType)
+    }
     handleEditionTypeClose()
   }
 
@@ -432,6 +451,8 @@ const ArticleListToolbar = ({
         open={isAdvancedSearchOpen}
         onClose={handleAdvancedSearchClose}
         setSearchParameters={setSearchParameters}
+        clearAdvancedSearchField={clearAdvancedSearchField}
+        setClearAdvancedSearchField={setClearAdvancedSearchField}
       />
 
       <CustomTooltip title='Delete'>
@@ -439,7 +460,7 @@ const ArticleListToolbar = ({
           <DeleteIcon />
         </Button>
       </CustomTooltip>
-      <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />
+      <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} selectedArticles={selectedArticles} />
 
       <CustomTooltip title='Email'>
         <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
@@ -500,13 +521,18 @@ const ArticleListToolbar = ({
       <TaggingDialog open={taggingDialogOpen} onClose={handleTaggingDialogClose} />
 
       <CustomTooltip title='Sort By'>
-        <Button onClick={handleSortByClick} sx={{ color: primaryColor, mr: 0 }}>
+        <Button onClick={handleSortByClick} sx={{ color: selectedSortBy ? primaryColor : undefined, mr: 0 }}>
           <SortByIcon />
         </Button>
       </CustomTooltip>
+
       <Menu anchorEl={isSortByMenuOpen} open={Boolean(isSortByMenuOpen)} onClose={handleSortByClose}>
-        <MenuItem onClick={handleSortByLatest}>Sort by Latest</MenuItem>
-        <MenuItem onClick={handleSortByMedia}>Sort by Media</MenuItem>
+        <MenuItem onClick={() => handleSortBySelection('latest')} selected={selectedSortBy === 'latest'}>
+          Sort by Latest
+        </MenuItem>
+        <MenuItem onClick={() => handleSortBySelection('media')} selected={selectedSortBy === 'media'}>
+          Sort by Media
+        </MenuItem>
       </Menu>
 
       <CustomTooltip title='Publication'>
@@ -520,9 +546,17 @@ const ArticleListToolbar = ({
         open={Boolean(isPublicationTypeMenuOpen)}
         onClose={handlePublicationTypeClose}
       >
-        <MenuItem onClick={handlePublicationTypeAll}>All</MenuItem>
-        <MenuItem onClick={handlePublicationTypeNews}>News</MenuItem>
-        <MenuItem onClick={handlePublicationTypeMagazine}>Magazine</MenuItem>
+        {publicationTypes.map(publicationType => (
+          <MenuItem
+            key={publicationType.publicationTypeId}
+            onClick={() => handlePublicationTypeSelection(publicationType)}
+            selected={
+              selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId
+            }
+          >
+            {publicationType.publicationTypeName}
+          </MenuItem>
+        ))}
       </Menu>
 
       <CustomTooltip title='Edition'>
@@ -531,13 +565,15 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       <Menu anchorEl={isEditionTypeMenuOpen} open={Boolean(isEditionTypeMenuOpen)} onClose={handleEditionTypeClose}>
-        <MenuItem onClick={handleEditionTypeBD}>BD</MenuItem>
-        <MenuItem onClick={handleEditionTypeBIM}>BIM</MenuItem>
-        <MenuItem onClick={handleEditionTypeND}>ND</MenuItem>
-        <MenuItem onClick={handleEditionTypePIMRD}>PIMRD</MenuItem>
-        <MenuItem onClick={handleEditionTypeTAP}>TAP</MenuItem>
-        <MenuItem onClick={handleEditionTypeTM}>TM</MenuItem>
-        <MenuItem onClick={handleEditionTypeWP}>WP</MenuItem>
+        {editionTypes.map(editionType => (
+          <MenuItem
+            key={editionType.editionTypeId}
+            onClick={() => handleEditionTypeSelection(editionType)}
+            selected={selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId}
+          >
+            {editionType.editionTypeName}
+          </MenuItem>
+        ))}
       </Menu>
 
       <CustomTooltip title='Date Range'>
@@ -546,27 +582,35 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
 
-      <Button
-        onClick={handleFilter1D}
-        sx={{ color: primaryColor, mr: 0 }}
-        variant={selectedFilter === '1D' ? 'contained' : 'text'}
-      >
-        <OneDIcon />
-      </Button>
-      <Button
-        onClick={handleFilter7D}
-        sx={{ color: primaryColor, mr: 0 }}
-        variant={selectedFilter === '7D' ? 'contained' : 'text'}
-      >
-        <SevenDIcon />
-      </Button>
-      <Button
-        onClick={handleFilter1M}
-        sx={{ color: primaryColor, mr: 0 }}
-        variant={selectedFilter === '1M' ? 'contained' : 'text'}
-      >
-        <OneMIcon />
-      </Button>
+      <CustomTooltip title='1 Day'>
+        <Button
+          onClick={handleFilter1D}
+          sx={{ color: primaryColor, mr: 0 }}
+          variant={selectedFilter === '1D' ? 'contained' : 'text'}
+        >
+          <OneDIcon />
+        </Button>
+      </CustomTooltip>
+
+      <CustomTooltip title='7 Days'>
+        <Button
+          onClick={handleFilter7D}
+          sx={{ color: primaryColor, mr: 0 }}
+          variant={selectedFilter === '7D' ? 'contained' : 'text'}
+        >
+          <SevenDIcon />
+        </Button>
+      </CustomTooltip>
+
+      <CustomTooltip title='1 Month'>
+        <Button
+          onClick={handleFilter1M}
+          sx={{ color: primaryColor, mr: 0 }}
+          variant={selectedFilter === '1M' ? 'contained' : 'text'}
+        >
+          <OneMIcon />
+        </Button>
+      </CustomTooltip>
       <Popover
         open={Boolean(filterPopoverAnchor)}
         anchorEl={filterPopoverAnchor}

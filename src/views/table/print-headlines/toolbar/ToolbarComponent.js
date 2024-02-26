@@ -156,7 +156,15 @@ const ToolbarComponent = ({
               clientId: clientId
             }
           })
-          setCompanies(response.data.companies)
+
+          const fetchedCompanies = response.data.companies
+          setCompanies(fetchedCompanies)
+
+          // Set default selectedCompanyIds based on priorityCompanyId
+          const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
+          if (priorityCompanyId && fetchedCompanies.some(company => company.companyId === priorityCompanyId)) {
+            setSelectedCompanyIds([priorityCompanyId])
+          }
         }
 
         // Fetch languages
@@ -204,7 +212,7 @@ const ToolbarComponent = ({
     }
 
     fetchUserDataAndCompanies()
-  }, [clientId])
+  }, [clientId, selectedClient])
 
   return (
     <AppBar sx={{ position: 'static' }}>

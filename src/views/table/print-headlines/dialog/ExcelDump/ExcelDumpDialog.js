@@ -69,7 +69,7 @@ const ExcelDumpDialog = ({ open, handleClose }) => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='xs'>
-      <DialogTitle>Excel Dump</DialogTitle>
+      <DialogTitle color='primary'>Excel Dump</DialogTitle>
       <DialogContent>
         <FormControlLabel
           control={<Checkbox checked={selectAll} onChange={handleSelectAllChange} />}

@@ -13,6 +13,7 @@ import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
 import ViewDialog from './dialog/view/MoreDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
+import Button from '@mui/material/Button'
 
 // ** MUI icons
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -157,6 +158,7 @@ const TableSelection = () => {
     pageSize: 0, // Default pageSize
     totalRecords: 0 // New state for totalRecords
   })
+  const [selectedFilter, setSelectedFilter] = useState('1D')
   const [selectedStartDate, setSelectedStartDate] = useState(null)
   const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
@@ -171,6 +173,9 @@ const TableSelection = () => {
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
+  const [selectedEditionType, setSelectedEditionType] = useState('')
+  const [selectedPublicationType, setSelectedPublicationType] = useState('')
+  const [selectedSortBy, setSelectedSortBy] = useState(null)
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -182,7 +187,7 @@ const TableSelection = () => {
     journalist: ''
   })
 
-  console.log(searchParameters)
+  const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
 
   //console.log()
 
@@ -222,21 +227,25 @@ const TableSelection = () => {
 
         const formattedStartDate = selectedStartDate ? formatDateTime(selectedStartDate, true, false) : null
         const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+        const selectedCompaniesString = selectedCompanyIds.join(', ')
+        const selectedMediaString = selectedMedia.join(', ')
+        const selectedTagString = selectedTag.join(', ')
+        const selectedCitiesString = selectedCities.join(', ')
 
         console.log('Formatted Start Date:', formattedStartDate)
         console.log('Formatted End Date:', formattedEndDate)
 
         const response = await fetchArticles({
           clientIds: clientId,
-          companyIds: selectedCompanyIds,
+          companyIds: selectedCompaniesString,
           fromDate: formattedStartDate,
           toDate: formattedEndDate,
           page: currentPage,
           recordsPerPage: recordsPerPage,
 
-          media: selectedMedia,
-          tags: selectedTag,
-          geography: selectedCities,
+          media: selectedMediaString,
+          tags: selectedTagString,
+          geography: selectedCitiesString,
 
           // Advanced search
           headline: searchParameters.searchHeadline,
@@ -245,7 +254,12 @@ const TableSelection = () => {
           wordCombo: searchParameters.combinationOfWords,
           anyWord: searchParameters.anyOfWords,
           ignoreWords: searchParameters.ignoreThis,
-          phrase: searchParameters.exactPhrase
+          phrase: searchParameters.exactPhrase,
+
+          editionType: selectedEditionType.editionTypeId,
+          sortby: selectedSortBy,
+
+          publicationCategory: selectedPublicationType.publicationTypeId
         })
 
         const totalRecords = response.totalRecords
@@ -264,6 +278,7 @@ const TableSelection = () => {
   }
 
   useEffect(() => {
+    setSelectedArticles([])
     fetchArticlesApi()
   }, [
     selectedEndDate,
@@ -275,7 +290,12 @@ const TableSelection = () => {
     selectedMedia,
     selectedTag,
     selectedCities,
-    searchParameters
+    searchParameters,
+
+    selectedEditionType,
+
+    selectedPublicationType,
+    selectedSortBy
   ])
 
   // Filter articles based on the selected date range and search query
@@ -404,9 +424,41 @@ const TableSelection = () => {
     }
   }
 
+  const handleReset = () => {
+    //Toolbar
+    const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
+    setSelectedCompanyIds([priorityCompanyId])
+    setSelectedMedia([])
+    setSelectedCities([])
+
+    //setSelectedTags([])
+
+    //ArticleListToolbar
+    setSelectedEditionType('')
+    setSelectedPublicationType('')
+    setSelectedSortBy(null)
+    setClearAdvancedSearchField(true)
+
+    //Date
+    const calculateDate = days => dayjs().subtract(days, 'day')
+    const startDate = calculateDate(1)
+    setSelectedStartDate(startDate)
+    setSelectedEndDate(startDate)
+    setSelectedFilter('1D')
+
+    //selected Article
+    setSelectedArticles([])
+  }
+
   return (
     <Card>
-      <CardHeader title={<Typography variant='title-lg'>{priorityCompanyName}</Typography>} />{' '}
+      <CardHeader
+        title={
+          <Typography variant='title-lg'>
+            <Button onClick={handleReset}>{priorityCompanyName}</Button>
+          </Typography>
+        }
+      />{' '}
       {/* Use priorityCompanyName in the title */}
       {/* Top Toolbar */}
       <ToolbarComponent
@@ -437,8 +489,18 @@ const TableSelection = () => {
         setSelectedStartDate={setSelectedStartDate}
         selectedEndDate={selectedEndDate}
         setSelectedEndDate={setSelectedEndDate}
+        selectedFilter={selectedFilter}
+        setSelectedFilter={setSelectedFilter}
         selectedArticles={selectedArticles}
         setSearchParameters={setSearchParameters}
+        clearAdvancedSearchField={clearAdvancedSearchField}
+        setClearAdvancedSearchField={setClearAdvancedSearchField}
+        selectedEditionType={selectedEditionType}
+        setSelectedEditionType={setSelectedEditionType}
+        selectedPublicationType={selectedPublicationType}
+        setSelectedPublicationType={setSelectedPublicationType}
+        selectedSortBy={selectedSortBy}
+        setSelectedSortBy={setSelectedSortBy}
       />
       {/* DataGrid */}
       <Box p={2}>

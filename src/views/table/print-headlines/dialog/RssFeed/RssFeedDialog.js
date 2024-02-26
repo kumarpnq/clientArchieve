@@ -20,12 +20,13 @@ import { useTheme } from '@mui/material/styles'
 const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
   const theme = useTheme()
   const [feedType, setFeedType] = useState('xml') // Default to XML feed
+  //style={{ backgroundColor: theme.palette.primary.main, color: 'white', textAlign: 'center' }}
 
   // Check if selectedArticles is null or empty
   if (!selectedArticles || selectedArticles.length === 0) {
     return (
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle style={{ backgroundColor: theme.palette.primary.main, color: 'white', textAlign: 'center' }}>
+        <DialogTitle>
           <WarningIcon style={{ marginRight: '8px' }} />
           Please Select At Least One Article
         </DialogTitle>
@@ -91,7 +92,7 @@ ${xmlContent.join('\n\n')}`
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
-      <DialogTitle>
+      <DialogTitle color='primary'>
         RSS Feed
         <RadioGroup row value={feedType} onChange={e => setFeedType(e.target.value)} style={{ marginLeft: '20px' }}>
           <FormControlLabel value='xml' control={<Radio />} label='XML' />
