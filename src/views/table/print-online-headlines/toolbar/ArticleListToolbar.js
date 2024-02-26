@@ -23,6 +23,40 @@ import SvgIcon from '@mui/material/SvgIcon'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
 
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
+import { styled } from '@mui/material/styles'
+import AdvancedSearchForm from '../dialog/advance-search/AdvanceSearchForm'
+import DeleteDialog from '../dialog/delete/DeleteDialog'
+import EmailDialog from '../dialog/email/EmailDialog'
+import ImageDialog from '../dialog/image/ImageDialog'
+import DossierDialog from '../dialog/download/DossierDownload'
+import RssFeedDialog from '../dialog/rss-feed/RssFeedDialog'
+
+const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.primary.main, // Set the background color to the primary theme color
+      color: theme.palette.common.white, // Set the text color to white or another suitable color
+      boxShadow: theme.shadows[1],
+      fontSize: 12
+    }
+  })
+)
+
+// Advanced Search Icon
+const AdvancedSearchIcon = () => (
+  <SvgIcon>
+    <svg xmlns='http://www.w3.org/2000/svg' width='27' height='25' viewBox='0 0 24 24'>
+      <path
+        fill='currentColor'
+        d='m15.5 14l5 5l-1.5 1.5l-5-5v-.79l-.27-.28A6.471 6.471 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.57 4.23l.28.27zm-6 0C12 14 14 12 14 9.5S12 5 9.5 5S5 7 5 9.5S7 14 9.5 14m2.5-4h-2v2H9v-2H7V9h2V7h1v2h2z'
+      />
+    </svg>
+  </SvgIcon>
+)
+
 // 1D Icon
 const OneDIcon = props => (
   <SvgIcon {...props}>
@@ -66,7 +100,9 @@ const ArticleListToolbar = ({
   setSelectedStartDate,
   selectedEndDate,
   setSelectedEndDate,
-  primaryColor
+  primaryColor,
+  setSearchParameters,
+  selectedArticles
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -104,6 +140,61 @@ const ArticleListToolbar = ({
     handleFilter1D()
   }, []) // Empty dependency array to run the effect only once
 
+  const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false)
+
+  const handleAdvancedSearchOpen = () => {
+    setAdvancedSearchOpen(true)
+  }
+
+  const handleAdvancedSearchClose = () => {
+    setAdvancedSearchOpen(false)
+  }
+  const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false)
+
+  const handleDeleteDialogOpen = () => {
+    setDeleteDialogOpen(true)
+  }
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false)
+  }
+  const [isEmailDialogOpen, setEmailDialogOpen] = useState(false)
+
+  const handleEmailDialogOpen = () => {
+    setEmailDialogOpen(true)
+  }
+
+  const handleEmailDialogClose = () => {
+    setEmailDialogOpen(false)
+  }
+  const [isImageDialogOpen, setImageDialogOpen] = useState(false)
+
+  const handleImageDialogOpen = () => {
+    setImageDialogOpen(true)
+  }
+
+  const handleImageDialogClose = () => {
+    setImageDialogOpen(false)
+  }
+  const [dossierDialogOpen, setDossierDialogOpen] = React.useState(false)
+
+  const handleDossierDialogOpen = () => {
+    setDossierDialogOpen(true)
+  }
+
+  const handleDossierDialogClose = () => {
+    setDossierDialogOpen(false)
+  }
+  const [isRssFeedDialogOpen, setRssFeedDialogOpen] = useState(false)
+
+  const handleRssFeedDialogOpen = () => {
+    setRssFeedDialogOpen(true)
+  }
+
+  const handleRssFeedDialogClose = () => {
+    setRssFeedDialogOpen(false)
+  }
+
   return (
     <Toolbar
       sx={{
@@ -124,24 +215,59 @@ const ArticleListToolbar = ({
           onChange={e => setSearchQuery(e.target.value)}
         />
       )}
-      <Button onClick={toggleSearchBarVisibility} sx={{ color: primaryColor, mr: 0 }}>
+      {/* <Button onClick={toggleSearchBarVisibility} sx={{ color: primaryColor, mr: 0 }}>
         <SearchIcon />
-      </Button>
-      <Button onClick={handleDelete} sx={{ color: primaryColor, mr: 0 }}>
-        <DeleteIcon />
-      </Button>
-      <Button onClick={handleEmail} sx={{ color: primaryColor, mr: 0 }}>
-        <EmailIcon />
-      </Button>
-      <Button onClick={handleImage} sx={{ color: primaryColor, mr: 0 }}>
-        <ImageIcon />
-      </Button>
-      <Button onClick={handleDownload} sx={{ color: primaryColor, mr: 0 }}>
-        <DownloadIcon />
-      </Button>
-      <Button onClick={handleRssFeed} sx={{ color: primaryColor, mr: 0 }}>
-        <RssFeedIcon />
-      </Button>
+      </Button> */}
+      <CustomTooltip title='Advance Search'>
+        <Button sx={{ color: primaryColor, mr: 0 }} onClick={handleAdvancedSearchOpen}>
+          <AdvancedSearchIcon />
+        </Button>
+      </CustomTooltip>
+      <AdvancedSearchForm
+        open={isAdvancedSearchOpen}
+        onClose={handleAdvancedSearchClose}
+        setSearchParameters={setSearchParameters}
+      />
+      <CustomTooltip title='Delete'>
+        <Button onClick={handleDeleteDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+          <DeleteIcon />
+        </Button>
+      </CustomTooltip>
+      <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />
+      <CustomTooltip title='Email'>
+        <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+          <EmailIcon />
+        </Button>
+      </CustomTooltip>
+      <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />
+      <CustomTooltip title='Image'>
+        <Button onClick={handleImageDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+          <ImageIcon />
+        </Button>
+      </CustomTooltip>
+      <ImageDialog open={isImageDialogOpen} handleClose={handleImageDialogClose} selectedArticles={selectedArticles} />
+      <CustomTooltip title='Download'>
+        <Button onClick={handleDossierDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+          <DownloadIcon />
+        </Button>
+      </CustomTooltip>
+
+      <DossierDialog
+        open={dossierDialogOpen}
+        handleClose={handleDossierDialogClose}
+        selectedStartDate={selectedStartDate}
+        selectedEndDate={selectedEndDate}
+      />
+      <CustomTooltip title='Rss Feed'>
+        <Button onClick={handleRssFeedDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+          <RssFeedIcon />
+        </Button>
+      </CustomTooltip>
+      <RssFeedDialog
+        open={isRssFeedDialogOpen}
+        handleClose={handleRssFeedDialogClose}
+        selectedArticles={selectedArticles}
+      />
       <Button onClick={openFilterPopover} sx={{ color: primaryColor, mr: 0 }}>
         <DateRangeIcon />
       </Button>

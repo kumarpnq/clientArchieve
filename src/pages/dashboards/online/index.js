@@ -34,6 +34,7 @@ import ChartjsBarChart from 'src/views/charts/online-charts/ChartjsBarChart'
 import ArticleCountDistribution from 'src/views/charts/online-charts/ArticleCountDistribution'
 import TopNewsToday from 'src/views/charts/online-charts/TopNewsToday'
 import TopNewsForCompetitors from 'src/views/charts/online-charts/TopNewsForCompetitors'
+import useArticlesStatsForCompetition from 'src/api/dashboard-online/useArticlesStatsForCompetition'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -42,19 +43,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const ChartJS = () => {
   const [selectedDateRange, setSelectedDateRange] = useState('')
-  const [tableData, setTableData] = useState([])
-  const [shareOfVoiceData, setShareOfVoiceData] = useState([])
-
-  const handleDateRangeChange = range => {
-    setSelectedDateRange(range)
-
-    const filteredArticles = filterArticlesByDateRange(articles, range)
-    const newTableData = countArticlesByCompany(filteredArticles)
-    const newShareOfVoiceData = calculateShareOfVoice(filteredArticles)
-
-    setTableData(newTableData)
-    setShareOfVoiceData(newShareOfVoiceData)
-  }
+  const shareOfVoiceData = useArticlesStatsForCompetition(selectedDateRange)
 
   // ** Hook
   const theme = useTheme()
@@ -87,24 +76,20 @@ const ChartJS = () => {
       <Grid container spacing={6} className='match-height'>
         <PageHeader
           title={
-            <Typography variant='h4'>
-              <LinkStyled href='https://github.com/reactchartjs/react-chartjs-2' target='_blank'>
-                React ChartJS 2
-              </LinkStyled>
+            <Typography variant='h4' color='primary'>
+              Online DashBoard
             </Typography>
           }
-          subtitle={<Typography sx={{ color: 'text.secondary' }}>React wrapper for Chart.js</Typography>}
         />
         <Grid item xs={12}>
-          <ArticleCountDistribution companyData={calculateArticleCountsByCompany(articles)} />
+          <ArticleCountDistribution />
         </Grid>
 
         <Grid item xs={12}>
-          <ChartsAppBar handleDateRangeChange={handleDateRangeChange} />
+          <ChartsAppBar setSelectedDateRange={setSelectedDateRange} />
         </Grid>
 
         <Grid item xs={12} md={6}>
-          {/* Pass color variables as props */}
           <ChartjsPolarAreaChart
             shareOfVoiceData={shareOfVoiceData}
             legendColor={legendColor}
@@ -117,11 +102,11 @@ const ChartJS = () => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <ChartjsTable tableData={tableData} />
+          <ChartjsTable tableData={shareOfVoiceData} />
         </Grid>
         <Grid item xs={12}>
           <ChartjsBarChart
-            companyData={tableData} // Pass the company data to the bar chart
+            companyData={shareOfVoiceData}
             primary={primaryColor}
             labelColor={theme.palette.text.disabled}
             borderColor={theme.palette.divider}
