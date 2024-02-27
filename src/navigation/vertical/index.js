@@ -3,7 +3,8 @@ const navigation = () => {
     {
       title: 'Dashboards',
       icon: 'tabler:smart-home',
-      badgeContent: 'new',
+
+      // badgeContent: 'new',
       badgeColor: 'error',
       children: [
         {
@@ -462,7 +463,7 @@ const navigation = () => {
     //   ]
     // },
     {
-      sectionTitle: 'Forms & Tables'
+      sectionTitle: 'Archive' //'Forms & Tables'
     },
 
     // {
@@ -564,19 +565,20 @@ const navigation = () => {
       icon: 'material-symbols:article-shortcut-outline-rounded',
       path: '/headlines/print-online'
     },
-    {
-      sectionTitle: 'Charts & Misc'
-    },
-    {
-      title: 'Online Dashboard',
-      icon: 'tabler:chart-pie',
-      path: '/charts/online-dashboard'
-    },
-    {
-      title: 'Print Dashboard',
-      icon: 'tabler:toggle-left',
-      path: '/charts/print-dashboard'
-    },
+
+    // {
+    //   sectionTitle: 'Charts & Misc'
+    // },
+    // {
+    //   title: 'Online Dashboard',
+    //   icon: 'tabler:chart-pie',
+    //   path: '/charts/online-dashboard'
+    // },
+    // {
+    //   title: 'Print Dashboard',
+    //   icon: 'tabler:toggle-left',
+    //   path: '/charts/print-dashboard'
+    // },
     {
       sectionTitle: 'Demo'
     },

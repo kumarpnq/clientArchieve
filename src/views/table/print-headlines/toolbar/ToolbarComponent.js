@@ -304,10 +304,13 @@ const ToolbarComponent = ({
           anchorEl={competitionAnchor}
           onClose={() => closeDropdown(setCompetitionAnchor)}
         >
-          <ListItem sx={{ justifyContent: 'space-between' }}>
-            <Button onClick={handleSelectAllCompetitions}>Select All</Button>
-            <Button onClick={handleDeselectAllCompetitions}>Deselect All</Button>
-          </ListItem>
+          {companies.length > 0 && (
+            <ListItem sx={{ justifyContent: 'space-between' }}>
+              <Button onClick={handleSelectAllCompetitions}>Select All</Button>
+              <Button onClick={handleDeselectAllCompetitions}>Deselect All</Button>
+            </ListItem>
+          )}
+
           {companies.map(company => (
             <MenuItem
               key={company.companyId}

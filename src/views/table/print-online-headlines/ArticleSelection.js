@@ -217,7 +217,12 @@ const TableSelection = () => {
           fromDate: selectedStartDate?.toISOString(),
           toDate: selectedEndDate?.toISOString(),
           page: currentPage,
-          recordsPerPage: recordsPerPage
+          recordsPerPage: recordsPerPage,
+
+          geography: selectedGeography,
+          language: selectedLanguages,
+          media: selectedMedia,
+          tags: selectedTags
         }
 
         const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
@@ -247,7 +252,17 @@ const TableSelection = () => {
 
   useEffect(() => {
     fetchArticles()
-  }, [selectedEndDate, selectedStartDate, currentPage, recordsPerPage])
+  }, [
+    selectedEndDate,
+    selectedStartDate,
+    currentPage,
+    recordsPerPage,
+    selectedCompanyId,
+    selectedGeography,
+    selectedLanguages,
+    selectedMedia,
+    selectedTags
+  ])
 
   // Filter articles based on the selected date range and search query
   const filteredArticles = useMemo(() => {
@@ -536,6 +551,7 @@ const TableSelection = () => {
         handleClose={() => setEditDialogOpen(false)}
         socialFeed={selectedArticle}
         handleSave={handleSaveChanges}
+        articles={selectedArticle}
       />
     </Card>
   )
