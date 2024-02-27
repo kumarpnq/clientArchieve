@@ -8,10 +8,10 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import axios from 'axios'
-import FullScreenJPGDialog from './view/FullScreenJPGDialog'
-import FullScreenHTMLDialog from './view/FullScreenHTMLDialog'
-import FullScreenPDFDialog from './view/FullScreenPDFDialog'
-import FullScreenEditDetailsDialog from './view/FullScreenEditDetailsDialog'
+import FullScreenJPGDialog from './FullScreenJPGDialog'
+import FullScreenHTMLDialog from './FullScreenHTMLDialog'
+import FullScreenPDFDialog from './FullScreenPDFDialog'
+import FullScreenEditDetailsDialog from './FullScreenEditDetailsDialog'
 
 const ViewDialog = ({ open, handleClose, articles }) => {
   const [jpgDialogOpen, setJpgDialogOpen] = useState(false)

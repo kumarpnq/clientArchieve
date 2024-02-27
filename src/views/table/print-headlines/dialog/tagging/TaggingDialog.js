@@ -10,10 +10,18 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import useFetchTags from 'src/api/print-headlines/dialog/tagging/useTagFetch'
+
+// ** Redux
+import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 const TaggingDialog = ({ open, onClose }) => {
   const [tag, setTag] = useState('')
   const [selectedTag, setSelectedTag] = useState('')
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+  const tags = useFetchTags(clientId)
 
   const handleTagChange = event => {
     setTag(event.target.value)
@@ -57,10 +65,11 @@ const TaggingDialog = ({ open, onClose }) => {
               label='Select Tag'
               onChange={handleTagSelectChange}
             >
-              <MenuItem value='tag1'>Tag 1</MenuItem>
-              <MenuItem value='tag2'>Tag 2</MenuItem>
-              <MenuItem value='tag3'>Tag 3</MenuItem>
-              <MenuItem value='tag4'>Tag 4</MenuItem>
+              {tags.map(tag => (
+                <MenuItem key={tag} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>

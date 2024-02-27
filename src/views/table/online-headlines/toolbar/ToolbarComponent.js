@@ -352,7 +352,7 @@ const ToolbarComponent = ({
             </ListItem>
           )}
           {tags?.map(item => (
-            <MenuItem key={item} onClick={() => handleTagSelect(item)} selected={selectedTag.includes(item)}>
+            <MenuItem key={item} onClick={() => handleTagSelect(item)} selected={selectedTags.includes(item)}>
               {item}
             </MenuItem>
           ))}

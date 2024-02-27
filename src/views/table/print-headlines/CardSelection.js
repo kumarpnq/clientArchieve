@@ -171,7 +171,7 @@ const CardSelection = () => {
               {companyData.map(company => (
                 <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                   <Card sx={{ width: '100%', textAlign: 'center' }}>
-                    <CardHeader title={company.companyName} />
+                    <CardHeader title={<Typography color='primary'>{company.companyName}</Typography>} />{' '}
                     {company.articles.length > 0 ? (
                       <Table>
                         <TableBody>

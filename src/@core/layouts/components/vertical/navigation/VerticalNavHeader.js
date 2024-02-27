@@ -108,7 +108,6 @@ const VerticalNavHeader = props => {
           </HeaderTitle>
         </LinkStyled>
       )}
-
       {hidden ? (
         <IconButton
           disableRipple
