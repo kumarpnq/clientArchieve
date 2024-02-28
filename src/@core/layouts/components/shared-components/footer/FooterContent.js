@@ -27,16 +27,14 @@ const FooterContent = () => {
 
   return (
     <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
-      <Typography sx={{ mr: 2, display: 'flex', color: 'text.secondary' }}>
-        {`© ${new Date().getFullYear()}, Made with `}
-        <Box component='span' sx={{ mx: 1, color: 'error.main' }}>
-          ❤️
+      <Typography sx={{ mr: 2, display: 'flex', color: 'primary' }}>
+        {`Copyright © ${new Date().getFullYear()},  `}
+        <Box component='span' sx={{ mx: 1, color: 'primary' }}>
+          Perception & Quant All rights reserved.
         </Box>
-       
       </Typography>
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
-          
           <Typography
             target='_blank'
             component={LinkStyled}
