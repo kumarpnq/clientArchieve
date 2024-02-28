@@ -359,10 +359,13 @@ const TableSelection = () => {
     }
   }
 
-  const handleRecordsPerPageChange = event => {
-    const newRecordsPerPage = parseInt(event.target.value, 10)
-    setRecordsPerPage(newRecordsPerPage)
-    setCurrentPage(1) // Reset current page when changing records per page
+  const handleRecordsPerPageChange = value => {
+    const newRecordsPerPage = parseInt(value, 10)
+
+    if (!isNaN(newRecordsPerPage) && newRecordsPerPage > 0) {
+      setRecordsPerPage(newRecordsPerPage)
+      setCurrentPage(1) // Reset current page when changing records per page
+    }
   }
 
   const handleResetValues = () => {
@@ -486,7 +489,7 @@ const TableSelection = () => {
                 recordsPerPage={recordsPerPage}
                 handleLeftPagination={handleLeftPagination}
                 handleRightPagination={handleRightPagination}
-                handleRecordsPerPageChange={handleRecordsPerPageChange}
+                handleRecordsPerPageUpdate={handleRecordsPerPageChange}
               />
             )}
           </>

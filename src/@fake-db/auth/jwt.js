@@ -2,15 +2,18 @@
 
 import axios from 'axios'
 import mock from 'src/@fake-db/mock'
-import defaultAuthConfig from 'src/configs/auth'
+
+// import defaultAuthConfig from 'src/configs/auth'
 
 mock.onPost('/jwt/login').reply(async request => {
   const { loginName, password } = JSON.parse(request.data)
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   try {
     const response = await axios.post('http://51.68.220.77:8001/authenticateUser', {
       loginName,
-      password
+      password,
+      timeZone
     })
 
     const { accessToken, email, fullName, clientList } = response.data
