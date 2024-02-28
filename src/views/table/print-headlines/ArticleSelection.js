@@ -24,7 +24,7 @@ import dayjs from 'dayjs'
 import { fetchArticles } from '../../../api/print-headlines/articleApi'
 
 //pagination
-import Pagination from './Pagination'
+import Pagination from '../online-headlines/Pagination'
 
 import CircularProgress from '@mui/material/CircularProgress'
 
