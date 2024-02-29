@@ -8,7 +8,6 @@ import AppBar from '@mui/material/AppBar'
 import Grid from '@mui/material/Grid'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import axios from 'axios'
-import Checkbox from '@mui/material/Checkbox'
 import ListItem from '@mui/material/ListItem'
 
 // ** Redux

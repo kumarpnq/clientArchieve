@@ -33,7 +33,7 @@ const FooterContent = () => {
           Perception & Quant All rights reserved.
         </Box>
       </Typography>
-      {hidden ? null : (
+      {/* {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
           <Typography
             target='_blank'
@@ -43,7 +43,7 @@ const FooterContent = () => {
             Documentation
           </Typography>
         </Box>
-      )}
+      )} */}
     </Box>
   )
 }

@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton'
 import { DataGrid } from '@mui/x-data-grid'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
+import { FormControlLabel, FormGroup } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
@@ -120,6 +121,7 @@ const TableSelection = () => {
             e.stopPropagation()
             handleSelect(params.row)
           }}
+          checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
         />
       )
     },
@@ -176,6 +178,8 @@ const TableSelection = () => {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(10)
+  const [pageCheck, setPageCheck] = useState(false)
+  const [allCheck, setAllCheck] = useState(false)
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -265,50 +269,50 @@ const TableSelection = () => {
   ])
 
   // Filter articles based on the selected date range and search query
-  const filteredArticles = useMemo(() => {
-    let result = articles
+  // const filteredArticles = useMemo(() => {
+  //   let result = articles
 
-    // Apply date range filter
-    if (selectedStartDate && selectedEndDate) {
-      result = result.filter(article => {
-        const articleDate = new Date(article.date)
+  //   // Apply date range filter
+  //   if (selectedStartDate && selectedEndDate) {
+  //     result = result.filter(article => {
+  //       const articleDate = new Date(article.date)
 
-        return articleDate >= selectedStartDate && articleDate <= selectedEndDate
-      })
-    }
+  //       return articleDate >= selectedStartDate && articleDate <= selectedEndDate
+  //     })
+  //   }
 
-    // Apply search query filter
-    if (searchQuery) {
-      result = result.filter(
-        article =>
-          article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
+  //   // Apply search query filter
+  //   if (searchQuery) {
+  //     result = result.filter(
+  //       article =>
+  //         article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         article.description.toLowerCase().includes(searchQuery.toLowerCase())
+  //     )
+  //   }
 
-    // Apply duration filter
-    if (selectedDuration) {
-      const currentDate = new Date()
-      const startDate = new Date(currentDate)
+  //   // Apply duration filter
+  //   if (selectedDuration) {
+  //     const currentDate = new Date()
+  //     const startDate = new Date(currentDate)
 
-      if (selectedDuration === 1) {
-        startDate.setDate(currentDate.getDate() - 1)
-      } else if (selectedDuration === 7) {
-        startDate.setDate(currentDate.getDate() - selectedDuration)
-      } else if (selectedDuration === 30) {
-        startDate.setMonth(currentDate.getMonth() - 1)
-      }
+  //     if (selectedDuration === 1) {
+  //       startDate.setDate(currentDate.getDate() - 1)
+  //     } else if (selectedDuration === 7) {
+  //       startDate.setDate(currentDate.getDate() - selectedDuration)
+  //     } else if (selectedDuration === 30) {
+  //       startDate.setMonth(currentDate.getMonth() - 1)
+  //     }
 
-      result = result.filter(article => {
-        const articleDate = new Date(article.date)
+  //     result = result.filter(article => {
+  //       const articleDate = new Date(article.date)
 
-        return articleDate >= startDate && articleDate <= currentDate
-      })
-    }
+  //       return articleDate >= startDate && articleDate <= currentDate
+  //     })
+  //   }
 
-    return result
-  }, [selectedStartDate, selectedEndDate, searchQuery, selectedDuration])
+  //   return result
+  // }, [selectedStartDate, selectedEndDate, searchQuery, selectedDuration])
 
   // Divide social feeds into left and right columns
   const leftArticles = articles.filter((_, index) => index % 2 === 0)
@@ -428,6 +432,19 @@ const TableSelection = () => {
     setSelectedTags([])
   }
 
+  const handlePageCheckChange = event => {
+    setPageCheck(event.target.checked)
+    if (event.target.checked) {
+      setSelectedArticles([...articles])
+    } else {
+      setSelectedArticles([])
+    }
+  }
+
+  const handleAllCheckChange = event => {
+    setAllCheck(event.target.checked)
+  }
+
   return (
     <Card>
       <CardHeader
@@ -474,6 +491,21 @@ const TableSelection = () => {
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
       />
+      {/* multiple selection */}
+      {articles.length > 0 && (
+        <Box pl={3}>
+          <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+            <FormControlLabel
+              control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+              label='Page'
+            />
+            <FormControlLabel
+              control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+              label='All Articles'
+            />
+          </FormGroup>
+        </Box>
+      )}
       {/* DataGrid */}
       <Box p={2}>
         {loading ? (
