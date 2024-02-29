@@ -4,7 +4,7 @@ import { BASE_URL } from '../base'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
-const useClientWiseWordCloud = () => {
+const useClientWiseWordCloud = ({ selectedCompanyIds }) => {
   const [clientWiseWordCloud, setClientWiseWordCloud] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -14,6 +14,7 @@ const useClientWiseWordCloud = () => {
 
   const requestParamsArticlesWordCloud = {
     clientIds: clientId,
+    companyIds: selectedCompanyIds,
     fromDate: '2024-02-26 00:00:00',
     toDate: '2024-02-27 00:00:00'
   }
@@ -38,7 +39,7 @@ const useClientWiseWordCloud = () => {
     }
 
     fetchData()
-  }, [clientId])
+  }, [clientId, selectedCompanyIds])
 
   return { clientWiseWordCloud, loading, error }
 }

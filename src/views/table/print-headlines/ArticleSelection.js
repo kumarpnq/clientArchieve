@@ -14,6 +14,7 @@ import ArticleDialog from './dialog/ArticleDialog'
 import ViewDialog from './dialog/view/MoreDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
 import Button from '@mui/material/Button'
+import { FormControlLabel, FormGroup } from '@mui/material'
 
 // ** MUI icons
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -117,6 +118,7 @@ const TableSelection = () => {
             e.stopPropagation()
             handleSelect(params.row)
           }}
+          checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
         />
       )
     },
@@ -176,6 +178,8 @@ const TableSelection = () => {
   const [selectedEditionType, setSelectedEditionType] = useState('')
   const [selectedPublicationType, setSelectedPublicationType] = useState('')
   const [selectedSortBy, setSelectedSortBy] = useState(null)
+  const [pageCheck, setPageCheck] = useState(false)
+  const [allCheck, setAllCheck] = useState(false)
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -299,30 +303,30 @@ const TableSelection = () => {
   ])
 
   // Filter articles based on the selected date range and search query
-  const filteredArticles = useMemo(() => {
-    let result = articles
+  // const filteredArticles = useMemo(() => {
+  //   let result = articles
 
-    // Apply date range filter
-    if (selectedStartDate && selectedEndDate) {
-      result = result.filter(article => {
-        const articleDate = new Date(article.date)
+  //   // Apply date range filter
+  //   if (selectedStartDate && selectedEndDate) {
+  //     result = result.filter(article => {
+  //       const articleDate = new Date(article.date)
 
-        return articleDate >= selectedStartDate && articleDate <= selectedEndDate
-      })
-    }
+  //       return articleDate >= selectedStartDate && articleDate <= selectedEndDate
+  //     })
+  //   }
 
-    // Apply search query filter
-    if (searchQuery) {
-      result = result.filter(
-        article =>
-          article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
+  //   // Apply search query filter
+  //   if (searchQuery) {
+  //     result = result.filter(
+  //       article =>
+  //         article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         article.description.toLowerCase().includes(searchQuery.toLowerCase())
+  //     )
+  //   }
 
-    return result
-  }, [searchQuery])
+  //   return result
+  // }, [searchQuery])
 
   // Divide social feeds into left and right columns
   const leftArticles = articles.filter((_, index) => index % 2 === 0)
@@ -449,6 +453,20 @@ const TableSelection = () => {
     //selected Article
     setSelectedArticles([])
   }
+  console.log(articles)
+
+  const handlePageCheckChange = event => {
+    setPageCheck(event.target.checked)
+    if (event.target.checked) {
+      setSelectedArticles([...articles])
+    } else {
+      setSelectedArticles([])
+    }
+  }
+
+  const handleAllCheckChange = event => {
+    setAllCheck(event.target.checked)
+  }
 
   return (
     <Card>
@@ -502,6 +520,21 @@ const TableSelection = () => {
         selectedSortBy={selectedSortBy}
         setSelectedSortBy={setSelectedSortBy}
       />
+      {/* multiple selection */}
+      {articles.length > 0 && (
+        <Box pl={3}>
+          <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+            <FormControlLabel
+              control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+              label='Page'
+            />
+            <FormControlLabel
+              control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+              label='All Articles'
+            />
+          </FormGroup>
+        </Box>
+      )}
       {/* DataGrid */}
       <Box p={2}>
         {loading ? (

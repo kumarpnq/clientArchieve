@@ -13,6 +13,8 @@ import Checkbox from '@mui/material/Checkbox'
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import Button from '@mui/material/Button'
+import { FormControlLabel, FormGroup } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import SocialFeedFullScreenDialog from './dialog/ArticleDialog'
@@ -23,7 +25,7 @@ import ArticleListToolbar from './toolbar/ArticleListToolbar'
 import EditIcon from '@mui/icons-material/Edit'
 
 // ** Article Database
-import { articles } from './Db-Articles'
+// import { articles } from './Db-Articles'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
@@ -93,6 +95,7 @@ const TableSelection = () => {
             e.stopPropagation()
             handleSelect(params.row)
           }}
+          checked={selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === params.row.socialFeedId)}
         />
       )
     },
@@ -163,6 +166,8 @@ const TableSelection = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(10)
   const [loading, setLoading] = useState(true)
+  const [pageCheck, setPageCheck] = useState(false)
+  const [allCheck, setAllCheck] = useState(false)
 
   const handleEdit = row => {
     setSelectedArticle(row)
@@ -255,21 +260,21 @@ const TableSelection = () => {
   ])
 
   // Filter articles based on the selected date range and search query
-  const filteredArticles = useMemo(() => {
-    let result = articles
+  // const filteredArticles = useMemo(() => {
+  //   let result = articles
 
-    // Apply search query filter
-    if (searchQuery) {
-      result = result.filter(
-        article =>
-          article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          article.description.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
+  //   // Apply search query filter
+  //   if (searchQuery) {
+  //     result = result.filter(
+  //       article =>
+  //         article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         article.description.toLowerCase().includes(searchQuery.toLowerCase())
+  //     )
+  //   }
 
-    return result
-  }, [searchQuery])
+  //   return result
+  // }, [searchQuery])
 
   // Divide social feeds into left and right columns
   const leftSocialFeeds = socialFeeds.filter((_, index) => index % 2 === 0)
@@ -331,16 +336,12 @@ const TableSelection = () => {
   const [selectedArticles, setSelectedArticles] = useState([])
 
   const handleSelect = article => {
-    // Check if the article is already selected
-    const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
+    const isSelected = selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
 
-    // Update selectedArticles based on whether the article is already selected or not
     setSelectedArticles(prevSelectedArticles => {
       if (isSelected) {
-        // If article is already selected, remove it from the selection
-        return prevSelectedArticles.filter(selectedArticle => selectedArticle.articleId !== article.articleId)
+        return prevSelectedArticles.filter(selectedArticle => selectedArticle.socialFeedId !== article.socialFeedId)
       } else {
-        // If article is not selected, add it to the selection
         return [...prevSelectedArticles, article]
       }
     })
@@ -385,12 +386,25 @@ const TableSelection = () => {
     setCurrentPage(1)
   }
 
+  const handlePageCheckChange = event => {
+    setPageCheck(event.target.checked)
+    if (event.target.checked) {
+      setSelectedArticles([...socialFeeds])
+    } else {
+      setSelectedArticles([])
+    }
+  }
+
+  const handleAllCheckChange = event => {
+    setAllCheck(event.target.checked)
+  }
+
   return (
     <Card>
       <CardHeader
         title={
-          <Typography variant='title-lg' sx={{ cursor: 'pointer' }}>
-            <span onClick={handleResetValues}>{priorityCompanyName}</span>
+          <Typography variant='title-lg' sx={{ cursor: 'pointer', color: 'primary' }}>
+            <Button onClick={handleResetValues}>{priorityCompanyName}</Button>
           </Typography>
         }
       />
@@ -427,6 +441,21 @@ const TableSelection = () => {
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
       />
+      {/* multiple selection */}
+      {socialFeeds.length > 0 && (
+        <Box pl={3}>
+          <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+            <FormControlLabel
+              control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+              label='Page'
+            />
+            <FormControlLabel
+              control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+              label='All Articles'
+            />
+          </FormGroup>
+        </Box>
+      )}
       {/* DataGrid */}
       <Box p={2}>
         {loading ? (
