@@ -9,11 +9,22 @@ import Grid from '@mui/material/Grid'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import { getArticleFieldList } from '../../../../../api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi' // Adjust the import path accordingly
+import useExcelDump from 'src/api/dump/useExcelDump'
 
-const ExcelDumpDialog = ({ open, handleClose }) => {
+// ** Redux
+import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { selectSelectedClient, setNotificationFlag, selectNotificationFlag } from 'src/store/apps/user/userSlice'
+
+const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
+  //Redux call
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
   const [fields, setFields] = useState({})
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
+  const fetchData = useExcelDump()
+  const dispatch = useDispatch()
+  const notificationFlag = useSelector(selectNotificationFlag)
 
   useEffect(() => {
     const fetchFieldList = async () => {
@@ -63,7 +74,14 @@ const ExcelDumpDialog = ({ open, handleClose }) => {
   }
 
   const handleDownload = () => {
-    console.log('Selected Fields:', selectedFields)
+    dispatch(setNotificationFlag(!notificationFlag))
+    fetchData({
+      clientId,
+      selectedFields,
+      searchCriteria: dataForExcelDump.length > 0 ? dataForExcelDump : [],
+      notificationFlag
+    })
+    dispatch(setNotificationFlag(!notificationFlag))
     handleClose()
   }
 
