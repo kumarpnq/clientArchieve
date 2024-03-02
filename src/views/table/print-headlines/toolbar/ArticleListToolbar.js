@@ -187,7 +187,8 @@ const ArticleListToolbar = ({
   selectedFilter,
   setSelectedFilter,
   setClearAdvancedSearchField,
-  clearAdvancedSearchField
+  clearAdvancedSearchField,
+  dataForExcelDump
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -499,7 +500,11 @@ const ArticleListToolbar = ({
       </CustomTooltip>
 
       {/* Add the ExcelDumpDialog component */}
-      <ExcelDumpDialog open={excelDumpDialogOpen} handleClose={handleExcelDumpDialogClose} />
+      <ExcelDumpDialog
+        open={excelDumpDialogOpen}
+        handleClose={handleExcelDumpDialogClose}
+        dataForExcelDump={dataForExcelDump}
+      />
 
       <CustomTooltip title='Rss Feed'>
         <Button onClick={handleRssFeedDialogOpen} sx={{ color: primaryColor, mr: 0 }}>

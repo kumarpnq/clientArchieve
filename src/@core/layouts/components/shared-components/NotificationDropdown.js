@@ -1,5 +1,6 @@
 // ** React Imports
 import { useState, Fragment } from 'react'
+import Link from 'next/link'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -24,6 +25,7 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 
 // ** Util Import
 import { getInitials } from 'src/@core/utils/get-initials'
+import useFetchNotifications from 'src/api/notifications/useFetchNotifications'
 
 // ** Styled Menu component
 const Menu = styled(MuiMenu)(({ theme }) => ({
@@ -107,6 +109,9 @@ const NotificationDropdown = props => {
   // ** Vars
   const { direction } = settings
 
+  //  ** notifications
+  const { notificationList, loading } = useFetchNotifications()
+
   const handleDropdownOpen = event => {
     setAnchorEl(event.currentTarget)
   }
@@ -140,7 +145,7 @@ const NotificationDropdown = props => {
         <Badge
           color='error'
           variant='dot'
-          invisible={!notifications.length}
+          invisible={!notificationList.length}
           sx={{
             '& .MuiBadge-badge': { top: 4, right: 4, boxShadow: theme => `0 0 0 2px ${theme.palette.background.paper}` }
           }}
@@ -164,20 +169,24 @@ const NotificationDropdown = props => {
             <Typography variant='h5' sx={{ cursor: 'text' }}>
               Notifications
             </Typography>
-            <CustomChip skin='light' size='small' color='primary' label={`${notifications.length} New`} />
+            <CustomChip skin='light' size='small' color='primary' label={`${notificationList.length} New`} />
           </Box>
         </MenuItem>
         <ScrollWrapper hidden={hidden}>
-          {notifications.map((notification, index) => (
+          {notificationList.map((notification, index) => (
             <MenuItem key={index} disableRipple disableTouchRipple onClick={handleDropdownClose}>
               <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                <RenderAvatar notification={notification} />
+                {/* <RenderAvatar notification={notification} /> */}
                 <Box sx={{ mr: 4, ml: 2.5, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                  <MenuItemTitle>{notification.title}</MenuItemTitle>
-                  <MenuItemSubtitle variant='body2'>{notification.subtitle}</MenuItemSubtitle>
+                  <MenuItemTitle>{notification.jobName}</MenuItemTitle>
+                  <MenuItemSubtitle variant='body2'>
+                    <Link href={'https://www.google.com'} target='_blank' color='primary'>
+                      {notification.downloadLink}
+                    </Link>
+                  </MenuItemSubtitle>
                 </Box>
                 <Typography variant='body2' sx={{ color: 'text.disabled' }}>
-                  {notification.meta}
+                  {notification.jobStatus}
                 </Typography>
               </Box>
             </MenuItem>

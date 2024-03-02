@@ -37,7 +37,6 @@ const Competition = props => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-  console.log(selectedCompetitions)
 
   return (
     <Fragment>

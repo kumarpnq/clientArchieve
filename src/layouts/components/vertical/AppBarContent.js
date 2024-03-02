@@ -19,6 +19,7 @@ import ClientDropdown from 'src/@core/layouts/components/shared-components/Clien
 import { useAuth } from 'src/hooks/useAuth'
 import Competition from 'src/@core/layouts/components/shared-components/CompetitionDropdown'
 import DateBar from 'src/@core/layouts/components/shared-components/DatePicker'
+import DaysJumper from 'src/@core/layouts/components/shared-components/DaysJumper'
 
 const notifications = [
   {
@@ -117,7 +118,6 @@ const shortcuts = [
 ]
 
 const AppBarContent = props => {
-  // ** Props
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
 
   // ** Hook
@@ -144,6 +144,7 @@ const AppBarContent = props => {
             <ClientDropdown />
             <Competition settings={settings} />
             <DateBar />
+            <DaysJumper settings={settings} />
             <UserDropdown settings={settings} />
           </>
         )}

@@ -191,6 +191,12 @@ const TableSelection = () => {
     journalist: ''
   })
 
+  const dataForExcelDump = [
+    selectedCompanyIds && { companyIds: selectedCompanyIds },
+    selectedCities && { geography: selectedCities },
+    selectedMedia && { media: selectedMedia },
+    selectedTag && { tags: selectedTag }
+  ].filter(Boolean)
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
 
   //console.log()
@@ -235,9 +241,6 @@ const TableSelection = () => {
         const selectedMediaString = selectedMedia.join(', ')
         const selectedTagString = selectedTag.join(', ')
         const selectedCitiesString = selectedCities.join(', ')
-
-        console.log('Formatted Start Date:', formattedStartDate)
-        console.log('Formatted End Date:', formattedEndDate)
 
         const response = await fetchArticles({
           clientIds: clientId,
@@ -453,7 +456,6 @@ const TableSelection = () => {
     //selected Article
     setSelectedArticles([])
   }
-  console.log(articles)
 
   const handlePageCheckChange = event => {
     setPageCheck(event.target.checked)
@@ -519,6 +521,7 @@ const TableSelection = () => {
         setSelectedPublicationType={setSelectedPublicationType}
         selectedSortBy={selectedSortBy}
         setSelectedSortBy={setSelectedSortBy}
+        dataForExcelDump={dataForExcelDump}
       />
       {/* multiple selection */}
       {articles.length > 0 && (
