@@ -153,7 +153,7 @@ const AppBarContent = props => {
       {auth.user && (
         <>
           <Divider sx={{ mt: 1 }} />
-          <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <Competition settings={settings} />
             <Box>
               <DateBar />
