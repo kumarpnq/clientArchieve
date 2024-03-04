@@ -226,7 +226,7 @@ const TableSelection = () => {
       if (storedToken) {
         const request_params = {
           clientIds: clientId,
-          companyIds: selectedCompanyId,
+          companyIds: selectedCompetitions,
           fromDate: selectedFromDate?.toISOString(),
           toDate: selectedEndDate?.toISOString(),
           page: currentPage,
@@ -270,7 +270,7 @@ const TableSelection = () => {
     selectedFromDate,
     currentPage,
     recordsPerPage,
-    selectedCompanyId,
+    selectedCompetitions,
     selectedGeography,
     selectedLanguages,
     selectedMedia,
@@ -466,8 +466,8 @@ const TableSelection = () => {
       />
       {/* Top Toolbar */}
       <ToolbarComponent
-        selectedCompanyId={selectedCompanyId}
-        setSelectedCompanyId={setSelectedCompanyId}
+        // selectedCompanyId={selectedCompanyId}
+        // setSelectedCompanyId={setSelectedCompanyId}
         selectedGeography={selectedGeography}
         setSelectedGeography={setSelectedGeography}
         selectedLanguages={selectedLanguages}

@@ -15,8 +15,8 @@ import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 const ToolbarComponent = ({
-  selectedCompanyId,
-  setSelectedCompanyId,
+  // selectedCompanyId,
+  // setSelectedCompanyId,
   selectedGeography,
   setSelectedGeography,
   selectedLanguages,
@@ -26,7 +26,7 @@ const ToolbarComponent = ({
   selectedTags,
   setSelectedTags
 }) => {
-  const [competitionAnchor, setCompetitionAnchor] = useState(null)
+  // const [competitionAnchor, setCompetitionAnchor] = useState(null)
   const [geographyAnchor, setGeographyAnchor] = useState(null)
   const [languageAnchor, setLanguageAnchor] = useState(null)
   const [mediaAnchor, setMediaAnchor] = useState(null)
@@ -35,7 +35,6 @@ const ToolbarComponent = ({
   const { companies, languages, cities, media, tags } = useUserDataAndCompanies()
 
   const selectedClient = useSelector(selectSelectedClient)
-  const clientId = selectedClient ? selectedClient.clientId : null
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
 
   const openDropdown = (event, anchorSetter) => {
@@ -46,24 +45,24 @@ const ToolbarComponent = ({
     anchorSetter(null)
   }
 
-  const handleCheckboxChange = companyId => {
-    setSelectedCompanyId(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(companyId)
+  // const handleCheckboxChange = companyId => {
+  //   setSelectedCompanyId(prevSelected => {
+  //     const isAlreadySelected = prevSelected.includes(companyId)
 
-      if (isAlreadySelected) {
-        // If already selected, remove from the list
-        return prevSelected.filter(id => id !== companyId)
-      } else {
-        // If not selected, add to the list
-        return [...prevSelected, companyId]
-      }
-    })
-  }
+  //     if (isAlreadySelected) {
+  //       // If already selected, remove from the list
+  //       return prevSelected.filter(id => id !== companyId)
+  //     } else {
+  //       // If not selected, add to the list
+  //       return [...prevSelected, companyId]
+  //     }
+  //   })
+  // }
 
-  const handleSelectAllCompetitions = () => {
-    const allCompanyIds = companies.map(company => company.companyId)
-    setSelectedCompanyId(allCompanyIds)
-  }
+  // const handleSelectAllCompetitions = () => {
+  //   const allCompanyIds = companies.map(company => company.companyId)
+  //   setSelectedCompanyId(allCompanyIds)
+  // }
 
   const handleCityClick = cityId => {
     setSelectedGeography(prevSelected => {
@@ -147,7 +146,7 @@ const ToolbarComponent = ({
       <Toolbar>
         {isMobile ? (
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <Button
                 endIcon={<ExpandMoreIcon />}
                 onClick={e => openDropdown(e, setCompetitionAnchor)}
@@ -156,7 +155,7 @@ const ToolbarComponent = ({
               >
                 Competition
               </Button>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={6}>
               <Button
@@ -204,9 +203,9 @@ const ToolbarComponent = ({
           </Grid>
         ) : (
           <>
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
+            {/* <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
               Competition
-            </Button>
+            </Button> */}
 
             <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
               Geography
@@ -225,7 +224,7 @@ const ToolbarComponent = ({
             </Button>
           </>
         )}
-
+        {/*
         <Menu
           open={Boolean(competitionAnchor)}
           anchorEl={competitionAnchor}
@@ -244,7 +243,7 @@ const ToolbarComponent = ({
               {company.companyName}
             </MenuItem>
           ))}
-        </Menu>
+        </Menu> */}
         {/* Geography Dropdown Menu */}
         <Menu
           open={Boolean(geographyAnchor)}
