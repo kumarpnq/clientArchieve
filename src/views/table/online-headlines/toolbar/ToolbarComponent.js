@@ -15,8 +15,8 @@ import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 const ToolbarComponent = ({
-  selectedCompanyId,
-  setSelectedCompanyId,
+  // selectedCompanyId,
+  // setSelectedCompanyId,
   selectedGeography,
   setSelectedGeography,
   selectedLanguage,
@@ -26,7 +26,7 @@ const ToolbarComponent = ({
   selectedTags,
   setSelectedTags
 }) => {
-  const [competitionAnchor, setCompetitionAnchor] = useState(null)
+  // const [competitionAnchor, setCompetitionAnchor] = useState(null)
   const [geographyAnchor, setGeographyAnchor] = useState(null)
   const [languageAnchor, setLanguageAnchor] = useState(null)
   const [mediaAnchor, setMediaAnchor] = useState(null)
@@ -121,17 +121,18 @@ const ToolbarComponent = ({
     const fetchUserDataAndCompanies = async () => {
       try {
         const storedToken = localStorage.getItem('accessToken')
-        if (storedToken) {
-          const response = await axios.get('http://51.68.220.77:8001/companyListByClient/', {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            params: {
-              clientId: clientId
-            }
-          })
-          setCompanies(response.data.companies)
-        }
+
+        // if (storedToken) {
+        //   const response = await axios.get('http://51.68.220.77:8001/companyListByClient/', {
+        //     headers: {
+        //       Authorization: `Bearer ${storedToken}`
+        //     },
+        //     params: {
+        //       clientId: clientId
+        //     }
+        //   })
+        //   setCompanies(response.data.companies)
+        // }
 
         // Fetch languages
         const languageResponse = await axios.get('http://51.68.220.77:8001/languagelist/', {
@@ -183,7 +184,7 @@ const ToolbarComponent = ({
       <Toolbar>
         {isMobile ? (
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <Button
                 endIcon={<ExpandMoreIcon />}
                 onClick={e => openDropdown(e, setCompetitionAnchor)}
@@ -192,7 +193,7 @@ const ToolbarComponent = ({
               >
                 Competition
               </Button>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={6}>
               <Button
@@ -240,9 +241,9 @@ const ToolbarComponent = ({
           </Grid>
         ) : (
           <>
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
+            {/* <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
               Competition
-            </Button>
+            </Button> */}
 
             <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
               Geography
@@ -262,7 +263,7 @@ const ToolbarComponent = ({
           </>
         )}
 
-        <Menu
+        {/* <Menu
           open={Boolean(competitionAnchor)}
           anchorEl={competitionAnchor}
           onClose={() => closeDropdown(setCompetitionAnchor)}
@@ -283,7 +284,7 @@ const ToolbarComponent = ({
               {company.companyName}
             </MenuItem>
           ))}
-        </Menu>
+        </Menu> */}
         {/* Geography Dropdown Menu */}
         <Menu
           open={Boolean(geographyAnchor)}

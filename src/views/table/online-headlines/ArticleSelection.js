@@ -36,7 +36,13 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import {
+  selectSelectedClient,
+  selectSelectedCompetitions,
+  selectSelectedStartDate,
+  selectSelectedEndDate
+} from 'src/store/apps/user/userSlice'
+import { formatDateTime } from 'src/utils/formatDateTime'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -145,12 +151,18 @@ const TableSelection = () => {
     exactPhrase: '',
     ignoreThis: ''
   })
+
   const [selectedStartDate, setSelectedStartDate] = useState(null)
   const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
   const selectedClient = useSelector(selectSelectedClient)
+
+  const selectedCompetitions = useSelector(selectSelectedCompetitions)
+
+  const selectedFromDate = useSelector(selectSelectedStartDate)
+  const selectedEndsDate = useSelector(selectSelectedEndDate)
   const clientId = selectedClient ? selectedClient.clientId : null
 
   // Access priorityCompanyName from selectedClient
@@ -158,7 +170,8 @@ const TableSelection = () => {
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const getRowId = row => row.socialFeedId
-  const [selectedCompanyId, setSelectedCompanyId] = useState([])
+
+  // const [selectedCompanyId, setSelectedCompanyId] = useState([])
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
@@ -187,20 +200,12 @@ const TableSelection = () => {
       if (storedToken) {
         const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
-        // Format start and end dates
-        const formatDateTime = (date, setTime, isEnd) => {
-          const isoString = date.toISOString().slice(0, 10)
-          const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
-          return `${isoString} ${timeString}`
-        }
-
-        const formattedStartDate = selectedStartDate ? formatDateTime(selectedStartDate, true, false) : null
-        const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+        const formattedStartDate = selectedStartDate ? formatDateTime(selectedFromDate, true, false) : null
+        const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndsDate, true, true) : null
 
         const request_params = {
           clientIds: clientId,
-          companyIds: selectedCompanyId,
+          companyIds: selectedCompetitions,
           fromDate: formattedStartDate,
           toDate: formattedEndDate,
           page: currentPage,
@@ -247,9 +252,9 @@ const TableSelection = () => {
     fetchSocialFeeds()
   }, [
     clientId,
-    selectedCompanyId,
-    selectedEndDate,
-    selectedStartDate,
+    selectedCompetitions,
+    selectedEndsDate,
+    selectedFromDate,
     currentPage,
     recordsPerPage,
     selectedGeography,
@@ -370,7 +375,7 @@ const TableSelection = () => {
   }
 
   const handleResetValues = () => {
-    setSelectedCompanyId([])
+    // setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguage([])
     setSelectedMedia([])
@@ -410,8 +415,8 @@ const TableSelection = () => {
       />
       {/* Top Toolbar */}
       <ToolbarComponent
-        selectedCompanyId={selectedCompanyId}
-        setSelectedCompanyId={setSelectedCompanyId}
+        // selectedCompanyId={selectedCompanyId}
+        // setSelectedCompanyId={setSelectedCompanyId}
         selectedGeography={selectedGeography}
         setSelectedGeography={setSelectedGeography}
         selectedLanguage={selectedLanguage}
