@@ -158,9 +158,7 @@ const TableSelection = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
   const selectedClient = useSelector(selectSelectedClient)
-
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
-
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const clientId = selectedClient ? selectedClient.clientId : null
