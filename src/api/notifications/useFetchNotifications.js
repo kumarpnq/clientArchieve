@@ -18,7 +18,7 @@ const useFetchNotifications = () => {
       const storedToken = localStorage.getItem('accessToken')
       try {
         // Check if notificationFlag is true before making the API request
-        if (notificationFlag) {
+        if (notificationFlag || clientId) {
           setLoading(true)
 
           const response = await axios.get(`${BASE_URL}/excelDumpNotification`, {

@@ -11,7 +11,7 @@ import dayjs from 'dayjs'
 // D Icon
 const DIcon = props => (
   <SvgIcon {...props}>
-    <text x='50%' y='50%' fontSize='18px' textAnchor='middle' alignmentBaseline='middle'>
+    <text x='50%' y='60%' fontSize='22px' textAnchor='middle' alignmentBaseline='middle'>
       D
     </text>
   </SvgIcon>
