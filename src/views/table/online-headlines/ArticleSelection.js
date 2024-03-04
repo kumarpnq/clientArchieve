@@ -152,8 +152,8 @@ const TableSelection = () => {
     ignoreThis: ''
   })
 
-  const [selectedStartDate, setSelectedStartDate] = useState(null)
-  const [selectedEndDate, setSelectedEndDate] = useState(null)
+  // const [selectedStartDate, setSelectedStartDate] = useState(null)
+  // const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
@@ -162,7 +162,7 @@ const TableSelection = () => {
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
 
   const selectedFromDate = useSelector(selectSelectedStartDate)
-  const selectedEndsDate = useSelector(selectSelectedEndDate)
+  const selectedEndDate = useSelector(selectSelectedEndDate)
   const clientId = selectedClient ? selectedClient.clientId : null
 
   // Access priorityCompanyName from selectedClient
@@ -200,8 +200,8 @@ const TableSelection = () => {
       if (storedToken) {
         const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
-        const formattedStartDate = selectedStartDate ? formatDateTime(selectedFromDate, true, false) : null
-        const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndsDate, true, true) : null
+        const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
+        const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
 
         const request_params = {
           clientIds: clientId,
@@ -253,7 +253,7 @@ const TableSelection = () => {
   }, [
     clientId,
     selectedCompetitions,
-    selectedEndsDate,
+    selectedEndDate,
     selectedFromDate,
     currentPage,
     recordsPerPage,
@@ -439,10 +439,10 @@ const TableSelection = () => {
         openFilterPopover={openFilterPopover}
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
-        selectedStartDate={selectedStartDate}
-        setSelectedStartDate={setSelectedStartDate}
-        selectedEndDate={selectedEndDate}
-        setSelectedEndDate={setSelectedEndDate}
+        // selectedStartDate={selectedStartDate}
+        // setSelectedStartDate={setSelectedStartDate}
+        // selectedEndDate={selectedEndDate}
+        // setSelectedEndDate={setSelectedEndDate}
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
       />
