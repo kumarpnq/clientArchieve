@@ -1,4 +1,4 @@
-import { useState, Fragment } from 'react'
+import { useState, Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import BusinessIcon from '@mui/icons-material/Business'
 import { IconButton, Menu, ListItem, MenuItem, Button } from '@mui/material'
@@ -13,13 +13,27 @@ const Competition = props => {
   const { direction } = settings
   const dispatch = useDispatch()
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const [localeComps, setLocaleComps] = useState([])
 
   const [anchorEl, setAnchorEl] = useState(null)
   const { competitions } = useFetchCompetition()
 
   const handleClientClick = selectedComp => {
-    dispatch(setSelectedCompetitions(selectedComp))
+    setLocaleComps(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(selectedComp)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== selectedComp)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, selectedComp]
+      }
+    })
   }
+  useEffect(() => {
+    dispatch(setSelectedCompetitions(localeComps))
+  }, [localeComps])
 
   const handleSelectAllCompetitions = () => {
     const allCompanyIds = competitions.map(company => company.companyId)
@@ -40,7 +54,7 @@ const Competition = props => {
 
   return (
     <Fragment>
-      <IconButton onClick={handleIconClick} color='inherit' aria-haspopup='true'>
+      <IconButton onClick={handleIconClick} color='primary' aria-haspopup='true'>
         <BusinessIcon fontSize='1.625rem' />
       </IconButton>
       <Menu

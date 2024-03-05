@@ -103,7 +103,7 @@ const UserDropdown = props => {
           alt={UserName || 'Profile Pic'}
           src='/images/avatars/1.pn'
           onClick={handleDropdownOpen}
-          sx={{ width: 38, height: 38 }}
+          sx={{ width: 38, height: 38, color: 'primary.main' }}
         />{' '}
         {/*make pn to png */}
       </Badge>

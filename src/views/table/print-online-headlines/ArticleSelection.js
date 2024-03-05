@@ -35,7 +35,12 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import {
+  selectSelectedClient,
+  selectSelectedCompetitions,
+  selectSelectedStartDate,
+  selectSelectedEndDate
+} from 'src/store/apps/user/userSlice'
 
 // ** Tooltip
 import Tooltip from '@mui/material/Tooltip'
@@ -162,8 +167,9 @@ const TableSelection = () => {
     pageSize: 0, // Default pageSize
     totalRecords: 0 // New state for totalRecords
   })
-  const [selectedStartDate, setSelectedStartDate] = useState(null)
-  const [selectedEndDate, setSelectedEndDate] = useState(null)
+
+  // const [selectedStartDate, setSelectedStartDate] = useState(null)
+  // const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
@@ -194,6 +200,9 @@ const TableSelection = () => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedFromDate = useSelector(selectSelectedStartDate)
+  const selectedEndDate = useSelector(selectSelectedEndDate)
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
@@ -217,8 +226,8 @@ const TableSelection = () => {
       if (storedToken) {
         const request_params = {
           clientIds: clientId,
-          companyIds: selectedCompanyId,
-          fromDate: selectedStartDate?.toISOString(),
+          companyIds: selectedCompetitions,
+          fromDate: selectedFromDate?.toISOString(),
           toDate: selectedEndDate?.toISOString(),
           page: currentPage,
           recordsPerPage: recordsPerPage,
@@ -258,10 +267,10 @@ const TableSelection = () => {
     fetchArticles()
   }, [
     selectedEndDate,
-    selectedStartDate,
+    selectedFromDate,
     currentPage,
     recordsPerPage,
-    selectedCompanyId,
+    selectedCompetitions,
     selectedGeography,
     selectedLanguages,
     selectedMedia,
@@ -425,7 +434,7 @@ const TableSelection = () => {
   }
 
   const handleReset = () => {
-    setSelectedCompanyId([])
+    // setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguages([])
     setSelectedMedia([])
@@ -457,8 +466,8 @@ const TableSelection = () => {
       />
       {/* Top Toolbar */}
       <ToolbarComponent
-        selectedCompanyId={selectedCompanyId}
-        setSelectedCompanyId={setSelectedCompanyId}
+        // selectedCompanyId={selectedCompanyId}
+        // setSelectedCompanyId={setSelectedCompanyId}
         selectedGeography={selectedGeography}
         setSelectedGeography={setSelectedGeography}
         selectedLanguages={selectedLanguages}
@@ -484,10 +493,8 @@ const TableSelection = () => {
         handleFilter1M={handleFilter1M}
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
-        selectedStartDate={selectedStartDate}
-        setSelectedStartDate={setSelectedStartDate}
+        selectedStartDate={selectedFromDate}
         selectedEndDate={selectedEndDate}
-        setSelectedEndDate={setSelectedEndDate}
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
       />

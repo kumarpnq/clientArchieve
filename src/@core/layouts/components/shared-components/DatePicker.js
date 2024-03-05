@@ -29,7 +29,7 @@ const DateBar = () => {
 
   return (
     <Fragment>
-      <IconButton onClick={handleIconClick} color='inherit' aria-haspopup='true'>
+      <IconButton onClick={handleIconClick} color='primary' aria-haspopup='true'>
         <DateRangeIcon fontSize='1.625rem' />
       </IconButton>
       <Popover

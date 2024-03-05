@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import TextField from '@mui/material/TextField'
-import SearchIcon from '@mui/icons-material/Search'
+
+// import IconButton from '@mui/material/IconButton'
+// import TextField from '@mui/material/TextField'
+// import SearchIcon from '@mui/icons-material/Search'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EmailIcon from '@mui/icons-material/Email'
 import ImageIcon from '@mui/icons-material/Image'
 import DownloadIcon from '@mui/icons-material/Download'
 import RssFeedIcon from '@mui/icons-material/RssFeed'
-import DateRangeIcon from '@mui/icons-material/DateRange'
+
+// import DateRangeIcon from '@mui/icons-material/DateRange'
 import Button from '@mui/material/Button'
-import Divider from '@mui/material/Divider'
-import Popover from '@mui/material/Popover'
-import Stack from '@mui/material/Stack'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-import ClearIcon from '@mui/icons-material/Clear'
-import Box from '@mui/material/Box'
+
+// import Divider from '@mui/material/Divider'
+// import Popover from '@mui/material/Popover'
+// import Stack from '@mui/material/Stack'
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+// import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+// import ClearIcon from '@mui/icons-material/Clear'
+// import Box from '@mui/material/Box'
 import SvgIcon from '@mui/material/SvgIcon'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import dayjs from 'dayjs'
+
+// import dayjs from 'dayjs'
 
 import AdvancedSearchForm from '../dialog/advanceSearch/AdvancedSearchForm'
 import DossierDialog from '../dialog/dossierDownload/DossierDialog'
@@ -135,31 +139,31 @@ const EditionTypeIcon = () => (
 )
 
 // 1D Icon
-const OneDIcon = props => (
-  <SvgIcon {...props}>
-    <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-      1D
-    </text>
-  </SvgIcon>
-)
+// const OneDIcon = props => (
+//   <SvgIcon {...props}>
+//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
+//       1D
+//     </text>
+//   </SvgIcon>
+// )
 
 // 7D Icon
-const SevenDIcon = props => (
-  <SvgIcon {...props}>
-    <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-      7D
-    </text>
-  </SvgIcon>
-)
+// const SevenDIcon = props => (
+//   <SvgIcon {...props}>
+//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
+//       7D
+//     </text>
+//   </SvgIcon>
+// )
 
 // 1M Icon
-const OneMIcon = props => (
-  <SvgIcon {...props}>
-    <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-      1M
-    </text>
-  </SvgIcon>
-)
+// const OneMIcon = props => (
+//   <SvgIcon {...props}>
+//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
+//       1M
+//     </text>
+//   </SvgIcon>
+// )
 
 const ArticleListToolbar = ({
   setSearchQuery,
@@ -171,10 +175,14 @@ const ArticleListToolbar = ({
   openFilterPopover,
   filterPopoverAnchor,
   closeFilterPopover,
+
   selectedStartDate,
-  setSelectedStartDate,
+
+  // setSelectedStartDate,
+
   selectedEndDate,
-  setSelectedEndDate,
+
+  // setSelectedEndDate,
   primaryColor,
   selectedArticles,
   setSearchParameters,
@@ -193,36 +201,36 @@ const ArticleListToolbar = ({
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
   // Helper function to calculate date by subtracting days from the current date
-  const calculateDate = days => dayjs().subtract(days, 'day')
+  // const calculateDate = days => dayjs().subtract(days, 'day')
 
   // Function to handle 1D filter
-  const handleFilter1D = () => {
-    const startDate = calculateDate(1)
-    setSelectedStartDate(startDate)
-    setSelectedEndDate(startDate)
-    setSelectedFilter('1D')
-  }
+  // const handleFilter1D = () => {
+  //   const startDate = calculateDate(1)
+  //   setSelectedStartDate(startDate)
+  //   setSelectedEndDate(startDate)
+  //   setSelectedFilter('1D')
+  // }
 
-  // Function to handle 7D filter
-  const handleFilter7D = () => {
-    const startDate = calculateDate(7)
-    setSelectedStartDate(startDate)
-    setSelectedEndDate(dayjs()) // Set end date to today
-    setSelectedFilter('7D')
-  }
+  // // Function to handle 7D filter
+  // const handleFilter7D = () => {
+  //   const startDate = calculateDate(7)
+  //   setSelectedStartDate(startDate)
+  //   setSelectedEndDate(dayjs()) // Set end date to today
+  //   setSelectedFilter('7D')
+  // }
 
-  // Function to handle 1M filter
-  const handleFilter1M = () => {
-    const startDate = calculateDate(30)
-    setSelectedStartDate(startDate)
-    setSelectedEndDate(dayjs()) // Set end date to today
-    setSelectedFilter('1M')
-  }
+  // // Function to handle 1M filter
+  // const handleFilter1M = () => {
+  //   const startDate = calculateDate(30)
+  //   setSelectedStartDate(startDate)
+  //   setSelectedEndDate(dayjs()) // Set end date to today
+  //   setSelectedFilter('1M')
+  // }
 
-  // useEffect to set default date for 1D filter and highlight the icon when component mounts
-  useEffect(() => {
-    handleFilter1D()
-  }, []) // Empty dependency array to run the effect only once
+  // // useEffect to set default date for 1D filter and highlight the icon when component mounts
+  // useEffect(() => {
+  //   handleFilter1D()
+  // }, []) // Empty dependency array to run the effect only once
 
   const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false)
 
@@ -580,22 +588,22 @@ const ArticleListToolbar = ({
           </MenuItem>
         ))}
       </Menu>
-
+      {/*
       <CustomTooltip title='Date Range'>
         <Button onClick={openFilterPopover} sx={{ color: primaryColor, mr: 0 }}>
           <DateRangeIcon />
         </Button>
       </CustomTooltip>
 
-      <CustomTooltip title='1 Day'>
-        <Button
-          onClick={handleFilter1D}
-          sx={{ color: primaryColor, mr: 0 }}
-          variant={selectedFilter === '1D' ? 'contained' : 'text'}
-        >
-          <OneDIcon />
-        </Button>
-      </CustomTooltip>
+      // <CustomTooltip title='1 Day'>
+      //   <Button
+      //     onClick={handleFilter1D}
+      //     sx={{ color: primaryColor, mr: 0 }}
+      //     variant={selectedFilter === '1D' ? 'contained' : 'text'}
+      //   >
+      //     <OneDIcon />
+      //   </Button>
+      // </CustomTooltip>
 
       <CustomTooltip title='7 Days'>
         <Button
@@ -655,7 +663,7 @@ const ArticleListToolbar = ({
             Clear
           </Button>
         </Stack>
-      </Popover>
+      </Popover> */}
     </Toolbar>
   )
 }

@@ -8,18 +8,12 @@ import {
   selectSelectedStartDate,
   selectSelectedEndDate
 } from 'src/store/apps/user/userSlice'
+import { formatDateTime } from 'src/utils/formatDateTime'
 
 const useClientWiseWordCloud = () => {
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
-
-  const formatDateTime = (date, setTime, isEnd) => {
-    const isoString = date.toISOString().slice(0, 10)
-    const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
-    return `${isoString} ${timeString}`
-  }
 
   const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
   const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null

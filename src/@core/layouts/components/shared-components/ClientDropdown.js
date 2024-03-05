@@ -51,7 +51,7 @@ const ClientListDropdown = () => {
   return (
     <>
       <OptionsMenu
-        iconButtonProps={{ color: 'inherit' }}
+        iconButtonProps={{ color: 'primary' }}
         icon={
           <Icon
             fontSize='1.625rem'
