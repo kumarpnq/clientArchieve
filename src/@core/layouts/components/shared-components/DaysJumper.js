@@ -1,27 +1,33 @@
 // src/@core/layouts/components/shared-components/DaysJumper.js
-import React, { useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { setSelectedDateRange } from 'src/store/apps/user/userSlice'
-import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 import SvgIcon from '@mui/material/SvgIcon'
 import dayjs from 'dayjs'
+import Button from '@mui/material/Button'
+import IconButton from '@mui/material/IconButton'
 
-// D Icon
-const DIcon = props => (
-  <SvgIcon {...props}>
-    <text x='50%' y='60%' fontSize='22px' textAnchor='middle' alignmentBaseline='middle'>
-      D
+// Generic Icon component
+const GenericIcon = ({ label, component: IconComponent, ...props }) => (
+  <SvgIcon {...props} sx={{ background: 'primary' }}>
+    <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
+      {label}
     </text>
   </SvgIcon>
 )
+
+// Define icons array
+const icons = [
+  { label: '1D', days: 1, component: GenericIcon },
+  { label: '7D', days: 7, component: GenericIcon },
+  { label: '1M', days: 30, component: GenericIcon },
+  { label: '3M', days: 90, component: GenericIcon }
+]
 
 const DaysJumper = ({ settings }) => {
   const { direction } = settings
   const dispatch = useDispatch()
   const [selectedDayFilter, setSelectedDayFilter] = useState('1D')
-  const [anchorEl, setAnchorEl] = useState(null)
 
   const calculateDate = days => dayjs().subtract(days, 'day')
 
@@ -29,22 +35,12 @@ const DaysJumper = ({ settings }) => {
     const start = calculateDate(days)
     dispatch(setSelectedDateRange({ startDate: start, endDate: start }))
     setSelectedDayFilter(label)
-    setAnchorEl(null)
   }
 
-  const handleOpenMenu = event => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null)
-  }
-
-  const handleFilterChange = days => {
+  const handleFilterChange = (days, label) => {
     const startDate = calculateDate(days)
     dispatch(setSelectedDateRange({ startDate, endDate: dayjs() }))
-    setSelectedDayFilter(`${days}D`)
-    handleCloseMenu()
+    setSelectedDayFilter(label)
   }
 
   useEffect(() => {
@@ -52,31 +48,20 @@ const DaysJumper = ({ settings }) => {
   }, [])
 
   return (
-    <>
-      <IconButton onClick={handleOpenMenu} color='inherit'>
-        <DIcon fontSize='1.625rem' />
-      </IconButton>
-
-      <Menu
-        id='time-filter-menu'
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleCloseMenu}
-        sx={{ mt: 4.25, minWidth: 200 }}
-        anchorOrigin={{ vertical: 'bottom', horizontal: direction === 'ltr' ? 'right' : 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: direction === 'ltr' ? 'right' : 'left' }}
-      >
-        <MenuItem onClick={() => handleFilterChange(1)} selected={selectedDayFilter === '1D'}>
-          1D
-        </MenuItem>
-        <MenuItem onClick={() => handleFilterChange(7)} selected={selectedDayFilter === '7D'}>
-          7D
-        </MenuItem>
-        <MenuItem onClick={() => handleFilterChange(30)} selected={selectedDayFilter === '30D'}>
-          30D
-        </MenuItem>
-      </Menu>
-    </>
+    <Fragment>
+      {icons.map(({ label, days, component: IconComponent }) => (
+        <IconButton
+          key={label}
+          onClick={() => handleFilterChange(days, label)}
+          sx={{
+            backgroundColor: selectedDayFilter === label ? 'primary.main' : '',
+            color: selectedDayFilter === label ? 'inherit' : 'primary.main'
+          }}
+        >
+          <IconComponent label={label} component={GenericIcon} />
+        </IconButton>
+      ))}
+    </Fragment>
   )
 }
 

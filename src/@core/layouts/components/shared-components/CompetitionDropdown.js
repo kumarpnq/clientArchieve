@@ -54,7 +54,7 @@ const Competition = props => {
 
   return (
     <Fragment>
-      <IconButton onClick={handleIconClick} color='inherit' aria-haspopup='true'>
+      <IconButton onClick={handleIconClick} color='primary' aria-haspopup='true'>
         <BusinessIcon fontSize='1.625rem' />
       </IconButton>
       <Menu

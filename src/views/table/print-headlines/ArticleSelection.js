@@ -31,7 +31,12 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import {
+  selectSelectedClient,
+  selectSelectedCompetitions,
+  selectSelectedStartDate,
+  selectSelectedEndDate
+} from 'src/store/apps/user/userSlice'
 
 // ** Tooltip
 import Tooltip from '@mui/material/Tooltip'
@@ -161,8 +166,9 @@ const TableSelection = () => {
     totalRecords: 0 // New state for totalRecords
   })
   const [selectedFilter, setSelectedFilter] = useState('1D')
-  const [selectedStartDate, setSelectedStartDate] = useState(null)
-  const [selectedEndDate, setSelectedEndDate] = useState(null)
+
+  // const [selectedStartDate, setSelectedStartDate] = useState(null)
+  // const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
@@ -171,7 +177,8 @@ const TableSelection = () => {
   const getRowId = row => row.articleId
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(10)
-  const [selectedCompanyIds, setSelectedCompanyIds] = useState([])
+
+  // const [selectedCompanyIds, setSelectedCompanyIds] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
@@ -190,12 +197,16 @@ const TableSelection = () => {
     ignoreThis: '',
     journalist: ''
   })
+  const [selectedArticles, setSelectedArticles] = useState([])
 
   const dataForExcelDump = [
-    selectedCompanyIds && { companyIds: selectedCompanyIds },
-    selectedCities && { geography: selectedCities },
-    selectedMedia && { media: selectedMedia },
-    selectedTag && { tags: selectedTag }
+    selectedCities.length && { geography: selectedCities },
+    selectedMedia.length && { media: selectedMedia },
+    selectedTag.length && { tags: selectedTag },
+    selectedArticles.length &&
+      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
+    selectedArticles.length === recordsPerPage && { page: currentPage },
+    allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
 
@@ -204,6 +215,9 @@ const TableSelection = () => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedFromDate = useSelector(selectSelectedStartDate)
+  const selectedEndDate = useSelector(selectSelectedEndDate)
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
@@ -235,9 +249,9 @@ const TableSelection = () => {
           return `${isoString} ${timeString}`
         }
 
-        const formattedStartDate = selectedStartDate ? formatDateTime(selectedStartDate, true, false) : null
+        const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
         const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
-        const selectedCompaniesString = selectedCompanyIds.join(', ')
+        const selectedCompaniesString = selectedCompetitions.join(', ')
         const selectedMediaString = selectedMedia.join(', ')
         const selectedTagString = selectedTag.join(', ')
         const selectedCitiesString = selectedCities.join(', ')
@@ -280,7 +294,7 @@ const TableSelection = () => {
     } catch (error) {
       console.error('Error fetching articles:', error)
     } finally {
-      setLoading(false) // Set loading to false after API call is complete
+      setLoading(false)
     }
   }
 
@@ -289,10 +303,10 @@ const TableSelection = () => {
     fetchArticlesApi()
   }, [
     selectedEndDate,
-    selectedStartDate,
+    selectedFromDate,
     currentPage,
     recordsPerPage,
-    selectedCompanyIds,
+    selectedCompetitions,
     clientId,
     selectedMedia,
     selectedTag,
@@ -391,8 +405,6 @@ const TableSelection = () => {
     setPopupOpen(true)
   }
 
-  const [selectedArticles, setSelectedArticles] = useState([])
-
   const handleSelect = article => {
     // Check if the article is already selected
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
@@ -433,8 +445,8 @@ const TableSelection = () => {
 
   const handleReset = () => {
     //Toolbar
-    const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
-    setSelectedCompanyIds([priorityCompanyId])
+    // const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
+    // setSelectedCompanyIds([priorityCompanyId])
     setSelectedMedia([])
     setSelectedCities([])
 
@@ -447,11 +459,11 @@ const TableSelection = () => {
     setClearAdvancedSearchField(true)
 
     //Date
-    const calculateDate = days => dayjs().subtract(days, 'day')
-    const startDate = calculateDate(1)
-    setSelectedStartDate(startDate)
-    setSelectedEndDate(startDate)
-    setSelectedFilter('1D')
+    // const calculateDate = days => dayjs().subtract(days, 'day')
+    // const startDate = calculateDate(1)
+    // setSelectedStartDate(startDate)
+    // setSelectedEndDate(startDate)
+    // setSelectedFilter('1D')
 
     //selected Article
     setSelectedArticles([])
@@ -482,8 +494,8 @@ const TableSelection = () => {
       {/* Use priorityCompanyName in the title */}
       {/* Top Toolbar */}
       <ToolbarComponent
-        selectedCompanyIds={selectedCompanyIds}
-        setSelectedCompanyIds={setSelectedCompanyIds}
+        // selectedCompanyIds={selectedCompanyIds}
+        // setSelectedCompanyIds={setSelectedCompanyIds}
         selectedMedia={selectedMedia}
         setSelectedMedia={setSelectedMedia}
         selectedTag={selectedTag}
@@ -505,10 +517,10 @@ const TableSelection = () => {
         handleFilter1M={handleFilter1M}
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
-        selectedStartDate={selectedStartDate}
-        setSelectedStartDate={setSelectedStartDate}
+        selectedStartDate={selectedFromDate}
+        // setSelectedStartDate={setSelectedStartDate}
         selectedEndDate={selectedEndDate}
-        setSelectedEndDate={setSelectedEndDate}
+        // setSelectedEndDate={setSelectedEndDate}
         selectedFilter={selectedFilter}
         setSelectedFilter={setSelectedFilter}
         selectedArticles={selectedArticles}

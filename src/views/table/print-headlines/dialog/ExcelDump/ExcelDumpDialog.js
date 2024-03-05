@@ -13,16 +13,29 @@ import useExcelDump from 'src/api/dump/useExcelDump'
 
 // ** Redux
 import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient, setNotificationFlag, selectNotificationFlag } from 'src/store/apps/user/userSlice'
+import {
+  selectSelectedClient,
+  selectSelectedCompetitions,
+  setNotificationFlag,
+  selectNotificationFlag,
+  selectSelectedStartDate,
+  selectSelectedEndDate
+} from 'src/store/apps/user/userSlice'
+import { formatDateTime } from 'src/utils/formatDateTime'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
+  const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedFromDate = useSelector(selectSelectedStartDate)
+  const selectedEndDate = useSelector(selectSelectedEndDate)
+  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
+  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
   const [fields, setFields] = useState({})
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
-  const fetchData = useExcelDump()
+  const postData = useExcelDump()
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
 
@@ -75,12 +88,26 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
 
   const handleDownload = () => {
     dispatch(setNotificationFlag(!notificationFlag))
-    fetchData({
+
+    const searchCriteria = {}
+    dataForExcelDump.forEach(item => {
+      const [key] = Object.keys(item)
+      const value = item[key]
+      searchCriteria[key] = value
+    })
+
+    searchCriteria.fromDate = formattedStartDate
+    searchCriteria.toDate = formattedEndDate
+    searchCriteria.selectedCompanyIds = selectedCompanyIds
+    console.log(searchCriteria)
+
+    postData({
       clientId,
       selectedFields,
-      searchCriteria: dataForExcelDump.length > 0 ? dataForExcelDump : [],
+      searchCriteria,
       notificationFlag
     })
+
     dispatch(setNotificationFlag(!notificationFlag))
     handleClose()
   }

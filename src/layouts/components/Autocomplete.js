@@ -412,7 +412,7 @@ const AutocompleteComponent = ({ hidden, settings }) => {
         onClick={() => !openDialog && setOpenDialog(true)}
         sx={{ display: 'flex', cursor: 'pointer', alignItems: 'center' }}
       >
-        <IconButton color='inherit' sx={!hidden && layout === 'vertical' ? { mr: 0.5, ml: -2.75 } : {}}>
+        <IconButton color='primary' sx={!hidden && layout === 'vertical' ? { mr: 0.5, ml: -2.75 } : {}}>
           <Icon fontSize='1.625rem' icon='tabler:search' />
         </IconButton>
         {!hidden && layout === 'vertical' ? (

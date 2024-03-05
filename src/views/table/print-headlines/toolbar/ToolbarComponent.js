@@ -15,8 +15,8 @@ import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 const ToolbarComponent = ({
-  selectedCompanyIds,
-  setSelectedCompanyIds,
+  // selectedCompanyIds,
+  // setSelectedCompanyIds,
   selectedMedia,
   setSelectedMedia,
   selectedTag,
@@ -24,31 +24,32 @@ const ToolbarComponent = ({
   selectedCities,
   setSelectedCities
 }) => {
-  const [competitionAnchor, setCompetitionAnchor] = useState(null)
+  // const [competitionAnchor, setCompetitionAnchor] = useState(null)
   const [geographyAnchor, setGeographyAnchor] = useState(null)
   const [languageAnchor, setLanguageAnchor] = useState(null)
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
-  const [companies, setCompanies] = useState([])
+
+  // const [companies, setCompanies] = useState([])
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
   const [tags, setTags] = useState([])
 
-  const [selectAllCompetitions, setSelectAllCompetitions] = useState(false)
+  // const [selectAllCompetitions, setSelectAllCompetitions] = useState(false)
 
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 
-  const handleSelectAllCompetitions = () => {
-    const allCompanyIds = companies.map(company => company.companyId)
-    setSelectedCompanyIds(allCompanyIds)
-  }
+  // const handleSelectAllCompetitions = () => {
+  //   const allCompanyIds = companies.map(company => company.companyId)
+  //   setSelectedCompanyIds(allCompanyIds)
+  // }
 
-  const handleDeselectAllCompetitions = () => {
-    setSelectedCompanyIds([])
-  }
+  // const handleDeselectAllCompetitions = () => {
+  //   setSelectedCompanyIds([])
+  // }
 
   const handleSelectAllMedia = () => {
     const allMediaIds = media.map(item => item.publicationGroupId)
@@ -65,19 +66,19 @@ const ToolbarComponent = ({
     setSelectedCities(allCityIds)
   }
 
-  const handleCheckboxChange = companyId => {
-    setSelectedCompanyIds(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(companyId)
+  // const handleCheckboxChange = companyId => {
+  //   setSelectedCompanyIds(prevSelected => {
+  //     const isAlreadySelected = prevSelected.includes(companyId)
 
-      if (isAlreadySelected) {
-        // If already selected, remove from the list
-        return prevSelected.filter(id => id !== companyId)
-      } else {
-        // If not selected, add to the list
-        return [...prevSelected, companyId]
-      }
-    })
-  }
+  //     if (isAlreadySelected) {
+  //       // If already selected, remove from the list
+  //       return prevSelected.filter(id => id !== companyId)
+  //     } else {
+  //       // If not selected, add to the list
+  //       return [...prevSelected, companyId]
+  //     }
+  //   })
+  // }
 
   const handleTagSelect = item => {
     setSelectedTags(prevSelected => {
@@ -145,26 +146,27 @@ const ToolbarComponent = ({
     const fetchUserDataAndCompanies = async () => {
       try {
         const storedToken = localStorage.getItem('accessToken')
-        if (storedToken) {
-          // Fetch companies
-          const response = await axios.get('http://51.68.220.77:8001/companyListByClient/', {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            params: {
-              clientId: clientId
-            }
-          })
 
-          const fetchedCompanies = response.data.companies
-          setCompanies(fetchedCompanies)
+        // if (storedToken) {
+        //   // Fetch companies
+        //   const response = await axios.get('http://51.68.220.77:8001/companyListByClient/', {
+        //     headers: {
+        //       Authorization: `Bearer ${storedToken}`
+        //     },
+        //     params: {
+        //       clientId: clientId
+        //     }
+        //   })
 
-          // Set default selectedCompanyIds based on priorityCompanyId
-          const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
-          if (priorityCompanyId && fetchedCompanies.some(company => company.companyId === priorityCompanyId)) {
-            setSelectedCompanyIds([priorityCompanyId])
-          }
-        }
+        //   const fetchedCompanies = response.data.companies
+        //   setCompanies(fetchedCompanies)
+
+        //   // Set default selectedCompanyIds based on priorityCompanyId
+        //   const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
+        //   if (priorityCompanyId && fetchedCompanies.some(company => company.companyId === priorityCompanyId)) {
+        //     setSelectedCompanyIds([priorityCompanyId])
+        //   }
+        // }
 
         // Fetch languages
         const languageResponse = await axios.get('http://51.68.220.77:8001/languagelist/', {
@@ -218,7 +220,7 @@ const ToolbarComponent = ({
       <Toolbar>
         {isMobile ? (
           <Grid container spacing={2}>
-            <Grid item xs={6}>
+            {/* <Grid item xs={6}>
               <Button
                 endIcon={<ExpandMoreIcon />}
                 onClick={e => openDropdown(e, setCompetitionAnchor)}
@@ -227,7 +229,7 @@ const ToolbarComponent = ({
               >
                 Competition
               </Button>
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={6}>
               <Button
@@ -275,9 +277,9 @@ const ToolbarComponent = ({
           </Grid>
         ) : (
           <>
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
+            {/* <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
               Competition
-            </Button>
+            </Button> */}
 
             <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
               Geography
@@ -298,7 +300,7 @@ const ToolbarComponent = ({
         )}
 
         {/* Competition Dropdown Menu */}
-        <Menu
+        {/* <Menu
           open={Boolean(competitionAnchor)}
           anchorEl={competitionAnchor}
           onClose={() => closeDropdown(setCompetitionAnchor)}
@@ -319,7 +321,7 @@ const ToolbarComponent = ({
               {company.companyName}
             </MenuItem>
           ))}
-        </Menu>
+        </Menu> */}
 
         {/* Geography Dropdown Menu */}
         <Menu
