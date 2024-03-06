@@ -14,7 +14,7 @@ const updateClientTagsToCompany = async (clientId, companyId, clientTags, stored
     return response.data
   } catch (error) {
     console.error('Error updating client tags:', error)
-    throw error // Re-throw the error for the caller to handle if needed
+    throw error
   }
 }
 

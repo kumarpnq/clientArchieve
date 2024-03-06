@@ -16,12 +16,16 @@ import useFetchTags from 'src/api/print-headlines/dialog/tagging/useTagFetch'
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
+// import useUpdateClientTagsToCompanyForArticles from 'src/api/print-headlines/tags/useupdateClientTagsToCompanyForArticles'
+
 const TaggingDialog = ({ open, onClose }) => {
   const [tag, setTag] = useState('')
   const [selectedTag, setSelectedTag] = useState('')
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const tags = useFetchTags(clientId)
+
+  // const postData = useUpdateClientTagsToCompanyForArticles()
 
   const handleTagChange = event => {
     setTag(event.target.value)

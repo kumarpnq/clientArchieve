@@ -1,4 +1,4 @@
-// src/components/print-headlines/dialog/views/ArticleTagEdit.js
+// ArticleTagEdit.js
 import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
@@ -10,11 +10,20 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
-import { updateClientTagsToCompany } from '../../../../../api/print-headlines/dialog/view/articleTagEditApi'
 import Card from '@mui/material/Card'
+import useUpdateClientTagsToCompanyForArticles from 'src/api/print-headlines/tags/useupdateClientTagsToCompanyForArticles'
+import { useSelector } from 'react-redux'
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 const ArticleTagEdit = ({ articles, handleClose, token }) => {
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
   const [tags, setTags] = useState(articles.tags || [])
+  const companyId = articles.companies.map(i => i.id).join()
+  const articleId = articles.articleId
+  const tagsForPost = tags.length > 0 && tags.flatMap(Object.values)
+
+  const postData = useUpdateClientTagsToCompanyForArticles()
 
   const handleAddTag = (companyIndex, tagIndex, tag) => {
     const newTags = [...tags]
@@ -22,30 +31,19 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
     setTags(newTags)
   }
 
-  const handleSaveDetails = async () => {
+  const handleSaveDetails = () => {
     try {
-      const storedToken = localStorage.getItem('accessToken')
-      const clientId = articles.clientId
-
-      const companiesWithTags = articles.companies.filter((company, companyIndex) => {
-        const clientTags = tags[companyIndex]
-
-        return clientTags && Object.values(clientTags).some(tag => tag.trim() !== '')
+      postData({
+        clientId,
+        companyId,
+        tagsForPost,
+        articleId
       })
 
-      const promises = companiesWithTags.map((company, companyIndex) => {
-        const companyId = company.id
-        const clientTags = tags[companyIndex] ? Object.values(tags[companyIndex]) : []
-
-        return updateClientTagsToCompany(clientId, companyId, clientTags, storedToken)
-      })
-
-      const responses = await Promise.all(promises)
-      responses.forEach(response => {
-        console.log(response)
-      })
+      handleClose()
     } catch (error) {
-      console.error('Error saving tags:', error)
+      // Handle error state
+      console.error('Error:', error)
     }
   }
 
