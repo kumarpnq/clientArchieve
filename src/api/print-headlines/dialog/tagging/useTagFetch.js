@@ -11,17 +11,16 @@ const useFetchTags = clientId => {
         const storedToken = localStorage.getItem('accessToken')
 
         const requestParams = {
-          clientIds: clientId
+          clientId: clientId
         }
 
-        const response = await axios.get(`${BASE_URL}/printClientCompanyTags/`, {
+        const response = await axios.get(`${BASE_URL}/printClientCompanyTags`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
           params: requestParams
         })
-
-        setTags(response.data.tags || [])
+        setTags(response.data.clientTags || [])
       } catch (error) {
         console.error('Tags error', error)
       }

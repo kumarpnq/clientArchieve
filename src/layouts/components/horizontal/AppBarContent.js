@@ -1,7 +1,5 @@
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import Typography from '@mui/material/Typography'
 
 // ** Components
 import Autocomplete from 'src/layouts/components/Autocomplete'

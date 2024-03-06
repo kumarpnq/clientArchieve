@@ -245,7 +245,6 @@ const TableSelection = () => {
       setLoading(false)
     }
   }
-
   useEffect(() => {
     fetchSocialFeeds()
   }, [
