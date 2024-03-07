@@ -40,7 +40,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
-import { ToolPermission, useToolPermission } from 'src/utils/showHideDownloadTools'
+import { ToolPermission, useToolPermission } from 'src/hooks/showHideDownloadTools'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({

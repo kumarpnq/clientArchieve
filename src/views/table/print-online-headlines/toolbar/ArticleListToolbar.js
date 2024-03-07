@@ -38,7 +38,7 @@ import EmailDialog from '../dialog/email/EmailDialog'
 import ImageDialog from '../dialog/image/ImageDialog'
 import DossierDialog from '../dialog/download/DossierDownload'
 import RssFeedDialog from '../dialog/rss-feed/RssFeedDialog'
-import { useToolPermission } from 'src/utils/showHideDownloadTools'
+import { useToolPermission } from 'src/hooks/showHideDownloadTools'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({

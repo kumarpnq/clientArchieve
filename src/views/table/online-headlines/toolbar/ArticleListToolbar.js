@@ -39,7 +39,7 @@ import TaggingDialog from '../dialog/tagging/TaggingDialog'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import ExcelDumpDialog from '../dialog/Excel-dump/ExcelDump'
-import { useToolPermission } from 'src/utils/showHideDownloadTools'
+import { useToolPermission } from 'src/hooks/showHideDownloadTools'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
