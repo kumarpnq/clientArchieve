@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
@@ -39,6 +39,7 @@ import TaggingDialog from '../dialog/tagging/TaggingDialog'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import ExcelDumpDialog from '../dialog/Excel-dump/ExcelDump'
+import { useToolPermission } from 'src/utils/showHideDownloadTools'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -161,6 +162,9 @@ const ArticleListToolbar = ({
   selectedArticles
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
+
+  // tools visibility
+  const { isMailVisible, isExcelDumpVisible } = useToolPermission()
 
   // const [selectedFilter, setSelectedFilter] = useState('1D')
 
@@ -322,19 +326,31 @@ const ArticleListToolbar = ({
       </CustomTooltip>
       <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />
       {/* email */}
-      <CustomTooltip title='Send Mail'>
-        <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
-          <EmailIcon />
-        </Button>
-      </CustomTooltip>
-      <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />
+      {isMailVisible && (
+        <Fragment>
+          {' '}
+          <CustomTooltip title='Send Mail'>
+            <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+              <EmailIcon />
+            </Button>
+          </CustomTooltip>
+          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />{' '}
+        </Fragment>
+      )}
+
       {/* excel dump  */}
-      <CustomTooltip title='Excel Dump'>
-        <Button onClick={handleExcelDumpDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
-          <ExcelDumpIcon />
-        </Button>
-      </CustomTooltip>
-      <ExcelDumpDialog open={isExcelDumpOpen} handleClose={handleExcelDumpDialogClose} />
+      {isExcelDumpVisible && (
+        <Fragment>
+          {' '}
+          <CustomTooltip title='Excel Dump'>
+            <Button onClick={handleExcelDumpDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+              <ExcelDumpIcon />
+            </Button>
+          </CustomTooltip>
+          <ExcelDumpDialog open={isExcelDumpOpen} handleClose={handleExcelDumpDialogClose} />
+        </Fragment>
+      )}
+
       {/* rss feed */}
       <CustomTooltip title='Rss Feed'>
         <Button onClick={handleRssFeedDialogOpen} sx={{ color: primaryColor, mr: 0 }}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
@@ -38,6 +38,7 @@ import EmailDialog from '../dialog/email/EmailDialog'
 import ImageDialog from '../dialog/image/ImageDialog'
 import DossierDialog from '../dialog/download/DossierDownload'
 import RssFeedDialog from '../dialog/rss-feed/RssFeedDialog'
+import { useToolPermission } from 'src/utils/showHideDownloadTools'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -109,6 +110,9 @@ const ArticleListToolbar = ({
   selectedArticles
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
+
+  //tools visibility
+  const { isDossierVisible, isMailVisible } = useToolPermission()
 
   // const [selectedFilter, setSelectedFilter] = useState('1D')
 
@@ -238,30 +242,40 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />
-      <CustomTooltip title='Email'>
-        <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
-          <EmailIcon />
-        </Button>
-      </CustomTooltip>
-      <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />
+      {isMailVisible && (
+        <Fragment>
+          <CustomTooltip title='Email'>
+            <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+              <EmailIcon />
+            </Button>
+          </CustomTooltip>
+          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />
+        </Fragment>
+      )}
+
       <CustomTooltip title='Image'>
         <Button onClick={handleImageDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
           <ImageIcon />
         </Button>
       </CustomTooltip>
       <ImageDialog open={isImageDialogOpen} handleClose={handleImageDialogClose} selectedArticles={selectedArticles} />
-      <CustomTooltip title='Download'>
-        <Button onClick={handleDossierDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
-          <DownloadIcon />
-        </Button>
-      </CustomTooltip>
+      {isDossierVisible && (
+        <Fragment>
+          <CustomTooltip title='Download'>
+            <Button onClick={handleDossierDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+              <DownloadIcon />
+            </Button>
+          </CustomTooltip>
 
-      <DossierDialog
-        open={dossierDialogOpen}
-        handleClose={handleDossierDialogClose}
-        selectedStartDate={selectedFromDate}
-        selectedEndDate={selectedEndDate}
-      />
+          <DossierDialog
+            open={dossierDialogOpen}
+            handleClose={handleDossierDialogClose}
+            selectedStartDate={selectedFromDate}
+            selectedEndDate={selectedEndDate}
+          />
+        </Fragment>
+      )}
+
       <CustomTooltip title='Rss Feed'>
         <Button onClick={handleRssFeedDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
           <RssFeedIcon />
