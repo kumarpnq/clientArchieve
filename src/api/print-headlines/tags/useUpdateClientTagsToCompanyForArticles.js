@@ -4,8 +4,6 @@ import { BASE_URL } from 'src/api/base'
 
 const useUpdateClientTagsToCompanyForArticles = () => {
   const postData = async ({ clientId, companyId, tagsForPost, articleId }) => {
-    // const companyIdsAndTags = [{ companyId, tags: tagsForPost }]
-    // console.log('Company IDs and Tags:', companyIdsAndTags)
     console.log('Article ID:', articleId)
 
     const storedToken = localStorage.getItem('accessToken')

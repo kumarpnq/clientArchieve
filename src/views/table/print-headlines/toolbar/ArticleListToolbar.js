@@ -197,7 +197,10 @@ const ArticleListToolbar = ({
   setSelectedFilter,
   setClearAdvancedSearchField,
   clearAdvancedSearchField,
-  dataForExcelDump
+  dataForExcelDump,
+  tags,
+  fetchTagsFlag,
+  setFetchTagsFlag
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -546,7 +549,14 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       {/* Render the TaggingDialog with the open state and onClose function */}
-      <TaggingDialog open={taggingDialogOpen} onClose={handleTaggingDialogClose} />
+      <TaggingDialog
+        open={taggingDialogOpen}
+        onClose={handleTaggingDialogClose}
+        selectedArticles={selectedArticles}
+        tags={tags}
+        fetchTagsFlag={fetchTagsFlag}
+        setFetchTagsFlag={setFetchTagsFlag}
+      />
 
       <CustomTooltip title='Sort By'>
         <Button onClick={handleSortByClick} sx={{ color: selectedSortBy ? primaryColor : undefined, mr: 0 }}>

@@ -23,7 +23,10 @@ const ToolbarComponent = ({
   selectedTag,
   setSelectedTags,
   selectedCities,
-  setSelectedCities
+  setSelectedCities,
+  tags,
+  setTags,
+  fetchTagsFlag
 }) => {
   // const [competitionAnchor, setCompetitionAnchor] = useState(null)
   const [geographyAnchor, setGeographyAnchor] = useState(null)
@@ -35,7 +38,6 @@ const ToolbarComponent = ({
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
-  const [tags, setTags] = useState([])
 
   // const [selectAllCompetitions, setSelectAllCompetitions] = useState(false)
 
@@ -170,7 +172,7 @@ const ToolbarComponent = ({
         // }
 
         // Fetch languages
-        const languageResponse = await axios.get('http://51.68.220.77:8001/languagelist/', {
+        const languageResponse = await axios.get(`${BASE_URL}/languagelist/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           }
@@ -178,17 +180,15 @@ const ToolbarComponent = ({
         setLanguages(languageResponse.data.languages)
 
         // Fetch cities
-        const citiesResponse = await axios.get('http://51.68.220.77:8001/citieslist/', {
+        const citiesResponse = await axios.get(`${BASE_URL}/citieslist/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           }
         })
         setCities(citiesResponse.data.cities)
 
-        console.log()
-
         // Fetch media
-        const mediaResponse = await axios.get('http://51.68.220.77:8001/printMediaList', {
+        const mediaResponse = await axios.get(`${BASE_URL}/printMediaList`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -198,7 +198,27 @@ const ToolbarComponent = ({
         })
         setMedia(mediaResponse.data.mediaList)
 
-        // Fetch tags
+        // // Fetch tags
+        // const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
+        //   headers: {
+        //     Authorization: `Bearer ${storedToken}`
+        //   },
+        //   params: {
+        //     clientId: clientId
+        //   }
+        // })
+        // setTags(tagsResponse.data.clientTags)
+      } catch (error) {
+        console.error('Error fetching user data and companies:', error)
+      }
+    }
+
+    fetchUserDataAndCompanies()
+  }, [clientId, selectedClient])
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
         const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
@@ -209,12 +229,11 @@ const ToolbarComponent = ({
         })
         setTags(tagsResponse.data.clientTags)
       } catch (error) {
-        console.error('Error fetching user data and companies:', error)
+        console.log(error)
       }
     }
-
-    fetchUserDataAndCompanies()
-  }, [clientId, selectedClient])
+    fetchData()
+  }, [clientId, selectedClient, setTags, fetchTagsFlag])
 
   return (
     <AppBar sx={{ position: 'static' }}>
