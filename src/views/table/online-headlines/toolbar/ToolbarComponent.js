@@ -13,6 +13,7 @@ import axios from 'axios'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { BASE_URL } from 'src/api/base'
 
 const ToolbarComponent = ({
   // selectedCompanyId,
@@ -24,7 +25,10 @@ const ToolbarComponent = ({
   selectedMedia,
   setSelectedMedia,
   selectedTags,
-  setSelectedTags
+  setSelectedTags,
+  tags,
+  setTags,
+  fetchTagsFlag
 }) => {
   // const [competitionAnchor, setCompetitionAnchor] = useState(null)
   const [geographyAnchor, setGeographyAnchor] = useState(null)
@@ -35,7 +39,8 @@ const ToolbarComponent = ({
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
-  const [tags, setTags] = useState([])
+
+  // const [tags, setTags] = useState([])
 
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -161,16 +166,16 @@ const ToolbarComponent = ({
         })
         setMedia(mediaResponse.data.mediaList)
 
-        // fetch tags
-        const tagsResponse = await axios.get('http://51.68.220.77:8001/printClientCompanyTags', {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          params: {
-            clientId: clientId
-          }
-        })
-        setTags(tagsResponse?.data?.clientTags)
+        // // fetch tags
+        // const tagsResponse = await axios.get('http://51.68.220.77:8001/getTagsForOnlineArticle', {
+        //   headers: {
+        //     Authorization: `Bearer ${storedToken}`
+        //   },
+        //   params: {
+        //     clientId: clientId
+        //   }
+        // })
+        // setTags(tagsResponse?.data?.clientTags)
       } catch (error) {
         console.error('Error fetching user data and companies:', error)
       }
@@ -178,6 +183,27 @@ const ToolbarComponent = ({
 
     fetchUserDataAndCompanies()
   }, [clientId])
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const tagsResponse = await axios.get(`${BASE_URL}/getTagsForOnlineArticle`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            clientId: clientId
+          }
+        })
+        setTags(tagsResponse.dat.clientTags)
+        console.log(tagsResponse.data)
+      } catch (error) {
+        console.error('Error fetching user tags:', error)
+      }
+    }
+    fetchTags()
+  }, [clientId, fetchTagsFlag, setTags])
 
   return (
     <AppBar sx={{ position: 'static' }}>

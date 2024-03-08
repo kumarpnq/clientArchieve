@@ -9,19 +9,34 @@ import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import axios from 'axios'
+import Select from '@mui/material/Select'
+import WarningIcon from '@mui/icons-material/Warning'
+import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import useUpdateTagForMultipleOnlineArticles from 'src/api/online-headline/tag/useUpdateTagForMultipleOnlineArticle'
 
-const TaggingDialog = ({ open, onClose }) => {
+const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, setFetchTagsFlag }) => {
   const [tag, setTag] = useState('')
   const [selectedTag, setSelectedTag] = useState('')
-  const [tags, setTags] = useState([])
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+
+  const article = selectedArticles.map(({ articleId, companies }) => ({
+    articleId,
+    companyIds: companies.map(company => company.id)
+  }))
+
+  const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleOnlineArticles({
+    clientId: clientId,
+    article: article,
+    tag: tag
+  })
+  useEffect(() => {
+    setFetchTagsFlag(!fetchTagsFlag)
+  }, [])
 
   const handleTagChange = event => {
     setTag(event.target.value)
@@ -31,37 +46,36 @@ const TaggingDialog = ({ open, onClose }) => {
     setSelectedTag(event.target.value)
   }
 
-  const handleSave = () => {
-    console.log('Tag to be saved:', tag)
-    console.log('Selected Tag:', selectedTag)
-
-    // Close the dialog
-    onClose()
+  const handleSave = async () => {
+    try {
+      await updateTagForMultipleArticles()
+      setFetchTagsFlag(!fetchTagsFlag)
+      setTag('')
+      onClose()
+    } catch (error) {
+      console.error('Error updating tags:', error)
+      setTag('')
+    }
   }
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const storedToken = localStorage.getItem('accessToken')
-        const base_url = 'http://51.68.220.77:8001'
-
-        const request_params = {
-          clientIds: clientId
-        }
-
-        const response = await axios.get(`${base_url}/printClientCompanyTags/`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          params: request_params
-        })
-        setTags(response.data.tags || [])
-      } catch (error) {
-        console.log('Tags error', error)
-      }
-    }
-    fetchTags()
-  }, [clientId])
+  if (!selectedArticles || selectedArticles.length === 0) {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>
+          <WarningIcon style={{ marginRight: '8px' }} />
+          Please Select At Least One Article
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>To perform the tagging operation, you must select at least one article.</DialogContentText>
+          <Box display='flex' justifyContent='center'>
+            <Button onClick={onClose} color='primary'>
+              Close
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    )
+  }
 
   return (
     <Dialog open={open} onClose={onClose}>

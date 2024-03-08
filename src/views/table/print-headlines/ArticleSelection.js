@@ -212,8 +212,6 @@ const TableSelection = () => {
   ].filter(Boolean)
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
 
-  //console.log()
-
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null

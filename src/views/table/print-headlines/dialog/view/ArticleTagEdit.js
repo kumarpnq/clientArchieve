@@ -17,7 +17,6 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import useGetTagsForArticle from 'src/api/print-headlines/tags/useGetTagsForArticle'
 
 const ArticleTagEdit = ({ articles, handleClose, token }) => {
-  console.log(articles)
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const [tags, setTags] = useState([])
@@ -35,7 +34,7 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
       newTags[companyIndex] = newTags[companyIndex] || {}
       newTags[companyIndex][`tag${tagIndex + 1}`] = tag
 
-      return [...newTags] // Create a new array to force re-render
+      return [...newTags]
     })
   }
 

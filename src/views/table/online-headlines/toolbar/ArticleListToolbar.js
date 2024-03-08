@@ -159,7 +159,10 @@ const ArticleListToolbar = ({
   // setSelectedEndDate,
   primaryColor,
   setSearchParameters,
-  selectedArticles
+  selectedArticles,
+  tags,
+  fetchTagsFlag,
+  setFetchTagsFlag
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -368,7 +371,14 @@ const ArticleListToolbar = ({
           <TaggingIcon />
         </Button>
       </CustomTooltip>
-      <TaggingDialog open={taggingDialogOpen} onClose={handleTaggingDialogClose} />
+      <TaggingDialog
+        open={taggingDialogOpen}
+        onClose={handleTaggingDialogClose}
+        selectedArticles={selectedArticles}
+        tags={tags}
+        fetchTagsFlag={fetchTagsFlag}
+        setFetchTagsFlag={setFetchTagsFlag}
+      />
       {/* sort by */}
       <CustomTooltip title='Sort By'>
         <Button onClick={handleSortByClick} sx={{ color: primaryColor, mr: 0 }}>

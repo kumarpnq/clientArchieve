@@ -41,6 +41,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import { ToolPermission, useToolPermission } from 'src/hooks/showHideDownloadTools'
+import { BASE_URL } from 'src/api/base'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -396,7 +397,7 @@ const ArticleListToolbar = ({
     const fetchEditionTypes = async () => {
       const storedToken = localStorage.getItem('accessToken')
       try {
-        const response = await fetch('http://51.68.220.77:8001/editionTypesList/', {
+        const response = await fetch(`${BASE_URL}/editionTypesList/`, {
           headers: { Authorization: `Bearer ${storedToken}` }
         })
 
