@@ -188,7 +188,7 @@ const ToolbarComponent = ({
     const fetchTags = async () => {
       const storedToken = localStorage.getItem('accessToken')
       try {
-        const tagsResponse = await axios.get(`${BASE_URL}/getTagsForOnlineArticle`, {
+        const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -196,7 +196,7 @@ const ToolbarComponent = ({
             clientId: clientId
           }
         })
-        setTags(tagsResponse.dat.clientTags)
+        setTags(tagsResponse.data.clientTags)
         console.log(tagsResponse.data)
       } catch (error) {
         console.error('Error fetching user tags:', error)

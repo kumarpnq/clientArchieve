@@ -24,8 +24,8 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 
-  const article = selectedArticles.map(({ articleId, companies }) => ({
-    articleId,
+  const article = selectedArticles.map(({ socialFeedId, companies }) => ({
+    socialFeedId,
     companyIds: companies.map(company => company.id)
   }))
 
@@ -34,6 +34,7 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
     article: article,
     tag: tag
   })
+
   useEffect(() => {
     setFetchTagsFlag(!fetchTagsFlag)
   }, [])
