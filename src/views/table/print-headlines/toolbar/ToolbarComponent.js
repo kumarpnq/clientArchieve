@@ -13,6 +13,7 @@ import ListItem from '@mui/material/ListItem'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { BASE_URL } from 'src/api/base'
 
 const ToolbarComponent = ({
   // selectedCompanyIds,
@@ -198,7 +199,7 @@ const ToolbarComponent = ({
         setMedia(mediaResponse.data.mediaList)
 
         // Fetch tags
-        const tagsResponse = await axios.get('http://51.68.220.77:8001/printClientCompanyTags', {
+        const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
