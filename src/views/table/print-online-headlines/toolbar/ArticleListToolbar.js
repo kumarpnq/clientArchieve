@@ -39,6 +39,7 @@ import ImageDialog from '../dialog/image/ImageDialog'
 import DossierDialog from '../dialog/download/DossierDownload'
 import RssFeedDialog from '../dialog/rss-feed/RssFeedDialog'
 import { useToolPermission } from 'src/hooks/showHideDownloadTools'
+import TaggingDialog from '../dialog/tagging/taggingDialogPOH'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -49,6 +50,18 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
       fontSize: 12
     }
   })
+)
+
+// Tagging Icon
+const TaggingIcon = () => (
+  <SvgIcon>
+    <svg xmlns='http://www.w3.org/2000/svg' width='25' height='24' viewBox='0 0 24 24'>
+      <path
+        fill='currentColor'
+        d='M5.5 7A1.5 1.5 0 0 1 4 5.5A1.5 1.5 0 0 1 5.5 4A1.5 1.5 0 0 1 7 5.5A1.5 1.5 0 0 1 5.5 7m15.91 4.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.11 0-2 .89-2 2v7c0 .55.22 1.05.59 1.41l8.99 9c.37.36.87.59 1.42.59c.55 0 1.05-.23 1.41-.59l7-7c.37-.36.59-.86.59-1.41c0-.56-.23-1.06-.59-1.42'
+      />
+    </svg>
+  </SvgIcon>
 )
 
 // Advanced Search Icon
@@ -107,7 +120,10 @@ const ArticleListToolbar = ({
   selectedEndDate,
   primaryColor,
   setSearchParameters,
-  selectedArticles
+  selectedArticles,
+  tags,
+  fetchTagsFlag,
+  setFetchTagsFlag
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -193,6 +209,15 @@ const ArticleListToolbar = ({
   const handleDossierDialogClose = () => {
     setDossierDialogOpen(false)
   }
+  const [taggingDialogOpen, setTaggingDialogOpen] = useState(false)
+
+  const handleTaggingDialogOpen = () => {
+    setTaggingDialogOpen(true)
+  }
+
+  const handleTaggingDialogClose = () => {
+    setTaggingDialogOpen(false)
+  }
   const [isRssFeedDialogOpen, setRssFeedDialogOpen] = useState(false)
 
   const handleRssFeedDialogOpen = () => {
@@ -275,7 +300,20 @@ const ArticleListToolbar = ({
           />
         </Fragment>
       )}
-
+      <CustomTooltip title='Tagging'>
+        <Button onClick={handleTaggingDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+          <TaggingIcon />
+        </Button>
+      </CustomTooltip>
+      {/* Render the TaggingDialog with the open state and onClose function */}
+      <TaggingDialog
+        open={taggingDialogOpen}
+        onClose={handleTaggingDialogClose}
+        selectedArticles={selectedArticles}
+        tags={tags}
+        fetchTagsFlag={fetchTagsFlag}
+        setFetchTagsFlag={setFetchTagsFlag}
+      />
       <CustomTooltip title='Rss Feed'>
         <Button onClick={handleRssFeedDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
           <RssFeedIcon />

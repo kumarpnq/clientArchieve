@@ -13,6 +13,7 @@ import useUserDataAndCompanies from 'src/api/print-online-headlines/useToolbarCo
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { BASE_URL } from 'src/api/base'
 
 const ToolbarComponent = ({
   // selectedCompanyId,
@@ -24,7 +25,11 @@ const ToolbarComponent = ({
   selectedMedia,
   setSelectedMedia,
   selectedTags,
-  setSelectedTags
+  setSelectedTags,
+
+  // tags,
+  setTags,
+  fetchTagsFlag
 }) => {
   // const [competitionAnchor, setCompetitionAnchor] = useState(null)
   const [geographyAnchor, setGeographyAnchor] = useState(null)

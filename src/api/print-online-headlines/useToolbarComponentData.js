@@ -58,7 +58,7 @@ const useUserDataAndCompanies = () => {
         setMedia(responseMedia.data.mediaList)
 
         // Fetch tags
-        const responseTags = await axios.get(`${BASE_URL}/printClientCompanyTags`, {
+        const responseTags = await axios.get(`${BASE_URL}/getTagListForClient/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
