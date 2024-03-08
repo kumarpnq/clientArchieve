@@ -1,5 +1,5 @@
 // ArticleTagEdit.js
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
@@ -14,21 +14,38 @@ import Card from '@mui/material/Card'
 import useUpdateClientTagsToCompanyForArticles from 'src/api/print-headlines/tags/useupdateClientTagsToCompanyForArticles'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import useGetTagsForArticle from 'src/api/print-headlines/tags/useGetTagsForArticle'
 
 const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-  const [tags, setTags] = useState(articles.tags || [])
+  const [tags, setTags] = useState([])
+  const [fetchFlag, setFetchFlag] = useState(false)
   const companyId = articles.companies.map(i => i.id).join()
   const articleId = articles.articleId
   const tagsForPost = tags.length > 0 && tags.flatMap(Object.values)
 
   const postData = useUpdateClientTagsToCompanyForArticles()
+  const { tagsData, loading, error } = useGetTagsForArticle({ articleId, clientId, companyIds: companyId, fetchFlag })
 
   const handleAddTag = (companyIndex, tagIndex, tag) => {
-    const newTags = [...tags]
-    newTags[companyIndex] = { ...(newTags[companyIndex] || {}), [`tag${tagIndex + 1}`]: tag }
-    setTags(newTags)
+    setTags(prevTags => {
+      const newTags = [...prevTags]
+      newTags[companyIndex] = newTags[companyIndex] || {}
+      newTags[companyIndex][`tag${tagIndex + 1}`] = tag
+
+      return [...newTags]
+    })
+  }
+
+  useEffect(() => {
+    setFetchFlag(!fetchFlag)
+  }, [])
+
+  const getTagValue = (companyIndex, tagIndex) => {
+    const companyTags = tagsData.find(item => item.companyId === articles.companies[companyIndex].id)?.tags || []
+
+    return companyTags[tagIndex] || ''
   }
 
   const handleSaveDetails = () => {
@@ -39,10 +56,9 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
         tagsForPost,
         articleId
       })
-
+      setFetchFlag(!fetchFlag)
       handleClose()
     } catch (error) {
-      // Handle error state
       console.error('Error:', error)
     }
   }
@@ -63,7 +79,7 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
                     <TextField
                       size='small'
                       label={`Tag ${tagIndex}`}
-                      value={(tags[companyIndex] && tags[companyIndex][`tag${tagIndex}`]) || ''}
+                      value={getTagValue(companyIndex, tagIndex - 1)}
                       onChange={e => handleAddTag(companyIndex, tagIndex - 1, e.target.value)}
                     />
                   </TableCell>

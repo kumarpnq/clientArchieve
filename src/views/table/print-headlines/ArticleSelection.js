@@ -159,6 +159,8 @@ const TableSelection = () => {
 
   // ** State
   const [articles, setArticles] = useState([])
+  const [tags, setTags] = useState([])
+  const [fetchTagsFlag, setFetchTagsFlag] = useState([])
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -209,8 +211,6 @@ const TableSelection = () => {
     allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
-
-  //console.log()
 
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
@@ -502,6 +502,9 @@ const TableSelection = () => {
         setSelectedTags={setSelectedTag}
         selectedCities={selectedCities}
         setSelectedCities={setSelectedCities}
+        tags={tags}
+        setTags={setTags}
+        fetchTagsFlag={fetchTagsFlag}
       />{' '}
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
@@ -534,6 +537,9 @@ const TableSelection = () => {
         selectedSortBy={selectedSortBy}
         setSelectedSortBy={setSelectedSortBy}
         dataForExcelDump={dataForExcelDump}
+        tags={tags}
+        fetchTagsFlag={fetchTagsFlag}
+        setFetchTagsFlag={setFetchTagsFlag}
       />
       {/* multiple selection */}
       {articles.length > 0 && (

@@ -579,6 +579,7 @@ const navigation = () => {
       icon: 'tabler:chart-pie',
       path: '/charts/online-dashboard'
     },
+
     {
       title: 'Print Dashboard',
       icon: 'tabler:toggle-left',

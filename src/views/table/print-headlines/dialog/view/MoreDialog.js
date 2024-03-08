@@ -12,6 +12,7 @@ import FullScreenJPGDialog from './FullScreenJPGDialog'
 import FullScreenHTMLDialog from './FullScreenHTMLDialog'
 import FullScreenPDFDialog from './FullScreenPDFDialog'
 import FullScreenEditDetailsDialog from './FullScreenEditDetailsDialog'
+import { BASE_URL } from 'src/api/base'
 
 const ViewDialog = ({ open, handleClose, articles }) => {
   const [jpgDialogOpen, setJpgDialogOpen] = useState(false)
@@ -27,14 +28,12 @@ const ViewDialog = ({ open, handleClose, articles }) => {
       const storedToken = localStorage.getItem('accessToken')
 
       if (storedToken) {
-        const base_url = 'http://51.68.220.77:8001'
-
         const request_params = {
           articleId: articles.articleId,
           fileType: fileType
         }
 
-        const response = await axios.get(`${base_url}/readArticleFile/`, {
+        const response = await axios.get(`${BASE_URL}/readArticleFile/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },

@@ -136,6 +136,8 @@ const TableSelection = () => {
 
   // ** State
   const [socialFeeds, setSocialFeeds] = useState([])
+  const [tags, setTags] = useState([])
+  const [fetchTagsFlag, setFetchTagsFlag] = useState([])
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -422,6 +424,9 @@ const TableSelection = () => {
         setSelectedMedia={setSelectedMedia}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
+        tags={tags}
+        setTags={setTags}
+        fetchTagsFlag={fetchTagsFlag}
       />
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
@@ -442,6 +447,9 @@ const TableSelection = () => {
         // setSelectedEndDate={setSelectedEndDate}
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
+        tags={tags}
+        fetchTagsFlag={fetchTagsFlag}
+        setFetchTagsFlag={setFetchTagsFlag}
       />
       {/* multiple selection */}
       {socialFeeds.length > 0 && (

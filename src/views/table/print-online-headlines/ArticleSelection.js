@@ -161,6 +161,8 @@ const TableSelection = () => {
 
   // ** State
   const [articles, setArticles] = useState([])
+  const [tags, setTags] = useState([])
+  const [fetchTagsFlag, setFetchTagsFlag] = useState([])
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -274,7 +276,8 @@ const TableSelection = () => {
     selectedGeography,
     selectedLanguages,
     selectedMedia,
-    selectedTags
+    selectedTags,
+    clientId
   ])
 
   // Filter articles based on the selected date range and search query
@@ -476,6 +479,9 @@ const TableSelection = () => {
         setSelectedMedia={setSelectedMedia}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
+        tags={tags}
+        setTags={setTags}
+        fetchTagsFlag={fetchTagsFlag}
       />
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
@@ -497,6 +503,9 @@ const TableSelection = () => {
         selectedEndDate={selectedEndDate}
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
+        tags={tags}
+        fetchTagsFlag={fetchTagsFlag}
+        setFetchTagsFlag={setFetchTagsFlag}
       />
       {/* multiple selection */}
       {articles.length > 0 && (

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -9,23 +9,31 @@ import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import useFetchTags from 'src/api/print-headlines/dialog/tagging/useTagFetch'
+import Select from '@mui/material/Select'
+import WarningIcon from '@mui/icons-material/Warning'
+import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import useUpdateTagForMultipleArticles from 'src/api/print-headlines/tags/useUpdateTagsForMultipleArticles'
 
-// import useUpdateClientTagsToCompanyForArticles from 'src/api/print-headlines/tags/useupdateClientTagsToCompanyForArticles'
-
-const TaggingDialog = ({ open, onClose }) => {
+const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, setFetchTagsFlag }) => {
   const [tag, setTag] = useState('')
   const [selectedTag, setSelectedTag] = useState('')
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-  const tags = useFetchTags(clientId)
 
-  // const postData = useUpdateClientTagsToCompanyForArticles()
+  const article = selectedArticles.map(({ articleId, companies }) => ({
+    articleId,
+    companyIds: companies.map(company => company.id)
+  }))
+
+  const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleArticles({
+    clientId: clientId,
+    article: article,
+    tag: tag
+  })
 
   const handleTagChange = event => {
     setTag(event.target.value)
@@ -34,14 +42,38 @@ const TaggingDialog = ({ open, onClose }) => {
   const handleTagSelectChange = event => {
     setSelectedTag(event.target.value)
   }
+  useEffect(() => {
+    setFetchTagsFlag(!fetchTagsFlag)
+  }, [])
 
-  const handleSave = () => {
-    // Handle the save logic here (you can save the tag or perform any other actions)
-    console.log('Tag to be saved:', tag)
-    console.log('Selected Tag:', selectedTag)
-
-    // Close the dialog
-    onClose()
+  const handleSave = async () => {
+    try {
+      await updateTagForMultipleArticles()
+      setFetchTagsFlag(!fetchTagsFlag)
+      setTag('')
+      onClose()
+    } catch (error) {
+      console.error('Error updating tags:', error)
+      setTag('')
+    }
+  }
+  if (!selectedArticles || selectedArticles.length === 0) {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>
+          <WarningIcon style={{ marginRight: '8px' }} />
+          Please Select At Least One Article
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>To perform the tagging operation, you must select at least one article.</DialogContentText>
+          <Box display='flex' justifyContent='center'>
+            <Button onClick={onClose} color='primary'>
+              Close
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    )
   }
 
   return (

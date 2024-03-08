@@ -16,7 +16,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
-import useUpdateTagForMultipleOnlineArticles from 'src/api/online-headline/tag/useUpdateTagForMultipleOnlineArticle'
+import useUpdateTagForMultipleOnlineArticles from 'src/api/print-online-headlines/tags/useUpdateTagForMultiplePOHArticles'
 
 const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, setFetchTagsFlag }) => {
   const [tag, setTag] = useState('')
@@ -24,8 +24,9 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 
-  const article = selectedArticles.map(({ socialFeedId, companies }) => ({
-    socialFeedId,
+  const article = selectedArticles.map(({ articleId, articleType, companies }) => ({
+    id: articleId,
+    articleType,
     companyIds: companies.map(company => company.id)
   }))
 
@@ -35,10 +36,6 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
     tag: tag
   })
 
-  useEffect(() => {
-    setFetchTagsFlag(!fetchTagsFlag)
-  }, [])
-
   const handleTagChange = event => {
     setTag(event.target.value)
   }
@@ -46,6 +43,9 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
   const handleTagSelectChange = event => {
     setSelectedTag(event.target.value)
   }
+  useEffect(() => {
+    setFetchTagsFlag(!fetchTagsFlag)
+  }, [])
 
   const handleSave = async () => {
     try {
@@ -58,7 +58,6 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
       setTag('')
     }
   }
-
   if (!selectedArticles || selectedArticles.length === 0) {
     return (
       <Dialog open={open} onClose={onClose}>
