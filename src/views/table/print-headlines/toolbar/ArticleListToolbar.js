@@ -486,7 +486,12 @@ const ArticleListToolbar = ({
               <EmailIcon />
             </Button>
           </CustomTooltip>
-          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />
+          <EmailDialog
+            open={isEmailDialogOpen}
+            onClose={handleEmailDialogClose}
+            handleClose={handleEmailDialogClose}
+            dataForMail={dataForExcelDump}
+          />
         </Fragment>
       )}
 
@@ -512,6 +517,7 @@ const ArticleListToolbar = ({
             handleClose={handleDossierDialogClose}
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
+            dataForDossierDownload={dataForExcelDump}
           />
         </Fragment>
       )}

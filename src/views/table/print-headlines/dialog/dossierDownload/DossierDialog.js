@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -12,6 +13,11 @@ import Radio from '@mui/material/Radio'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Grid from '@mui/material/Grid'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
+import WarningIcon from '@mui/icons-material/Warning'
+import DialogContentText from '@mui/material/DialogContentText'
+import Box from '@mui/material/Box'
 
 // ** Date picker
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -21,20 +27,35 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 
-const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate }) => {
+// import useClientMailerList from 'src/api/global/useClientMailerList '
+import { BASE_URL } from 'src/api/base'
+
+const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, dataForDossierDownload }) => {
+  //redux state
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+  const clientName = selectedClient ? selectedClient.clientName : null
+
+  // hooks import
+  // const { mailList } = useClientMailerList()
   const [email, setEmail] = useState('')
   const [companyName, setCompanyName] = useState('')
   const [subject, setSubject] = useState('')
   const [dossierType, setDossierType] = useState('word') // Default to Word Dossier
-  const [selectedEmail, setSelectedEmail] = useState('') // Selected email from dropdown
-  const selectedClient = useSelector(selectSelectedClient)
-  const clientName = selectedClient ? selectedClient.clientName : null
+  const [selectedEmail, setSelectedEmail] = useState([]) // Selected email from dropdown
+  const [mailList, setMailList] = useState([])
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  const { response, error, sendDossierRequest } = useDossierRequest()
+  const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
+  const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join()
 
   const handleEmailChange = event => {
-    setEmail(event.target.value)
+    const { value } = event.target
+    setEmail(value)
+    setSelectedEmail(prev => [...prev, value])
   }
 
   const handleCompanyNameChange = event => {
@@ -43,14 +64,6 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate }
 
   const handleSubjectChange = event => {
     setSubject(event.target.value)
-  }
-
-  const handleFromDateChange = event => {
-    setFromDate(event.target.value)
-  }
-
-  const handleToDateChange = event => {
-    setToDate(event.target.value)
   }
 
   const handleDossierTypeChange = event => {
@@ -62,22 +75,64 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate }
   }
 
   const handleSubmit = () => {
-    // Add your logic to handle form submission
-    console.log('Email:', email)
-    console.log('Company Name:', companyName)
-    console.log('Subject:', subject)
-    console.log('Form Data To Date:', formDataToDate)
-    console.log('Dossier Type:', dossierType)
-    console.log('Selected Email:', selectedEmail)
-
-    // Display a message to the user
-    alert('After submitting the request, the system will send a Dossier link to the selected E-Mail IDs.')
+    const searchCriteria = { fromDate, toDate, selectPageOrAll }
+    const recipients = { recipients: selectedEmail }
+    sendDossierRequest(clientId, articleIds, dossierType, recipients, searchCriteria)
 
     // Close the dialog
     handleClose()
+    setEmail('')
+    setSelectedEmail([])
   }
+  useEffect(() => {
+    const getClientMailerList = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const url = `${BASE_URL}/clientMailerList/`
 
-  const emailIds = ['dummy1@example.com', 'dummy2@example.com', 'dummy3@example.com']
+        const headers = {
+          Authorization: `Bearer ${storedToken}`
+        }
+
+        const requestData = {
+          clientId
+        }
+
+        const axiosConfig = {
+          headers,
+          params: requestData
+        }
+
+        const axiosResponse = await axios.get(url, axiosConfig)
+        setMailList(axiosResponse.data.emails)
+      } catch (axiosError) {
+        console.log(axiosError)
+      }
+    }
+
+    getClientMailerList()
+  }, [clientId])
+
+  if (!dataForDossierDownload || dataForDossierDownload.length === 0) {
+    return (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>
+          <WarningIcon style={{ marginRight: '8px' }} />
+          Please Select At Least One Article
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText style={{ textAlign: 'center', marginBottom: '16px' }}>
+            To generate an Dossier Download, you must select at least one article.
+          </DialogContentText>
+          <Box display='flex' justifyContent='center'>
+            <Button onClick={handleClose} color='primary'>
+              Close
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    )
+  }
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -101,20 +156,23 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate }
         <Grid container spacing={2}>
           <Grid item xs={6}>
             {/* Email Dropdown */}
-            <TextField
-              fullWidth
-              select
-              label='Select Email ID'
-              value={selectedEmail}
-              onChange={handleSelectedEmailChange}
-              margin='normal'
-            >
-              {emailIds.map((emailId, index) => (
-                <MenuItem key={index} value={emailId}>
-                  {emailId}
-                </MenuItem>
-              ))}
-            </TextField>
+            <FormControl fullWidth margin='normal'>
+              <InputLabel id='demo-simple-select-label'>Emails</InputLabel>
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={selectedEmail}
+                label='Age'
+                multiple
+                onChange={handleSelectedEmailChange}
+              >
+                {mailList.map(emailId => (
+                  <MenuItem key={emailId} value={emailId}>
+                    {emailId}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={6}>
             {/* Email Text Field */}
