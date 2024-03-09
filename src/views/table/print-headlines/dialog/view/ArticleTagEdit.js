@@ -19,7 +19,7 @@ import useGetTagsForArticle from 'src/api/print-headlines/tags/useGetTagsForArti
 const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-  const [tags, setTags] = useState([])
+  const [tags, setTags] = useState(articles.tags || [])
   const [fetchFlag, setFetchFlag] = useState(false)
   const companyId = articles.companies.map(i => i.id).join()
   const articleId = articles.articleId
@@ -29,13 +29,9 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const { tagsData, loading, error } = useGetTagsForArticle({ articleId, clientId, companyIds: companyId, fetchFlag })
 
   const handleAddTag = (companyIndex, tagIndex, tag) => {
-    setTags(prevTags => {
-      const newTags = [...prevTags]
-      newTags[companyIndex] = newTags[companyIndex] || {}
-      newTags[companyIndex][`tag${tagIndex + 1}`] = tag
-
-      return [...newTags]
-    })
+    const newTags = [...tags]
+    newTags[companyIndex] = { ...(newTags[companyIndex] || {}), [`tag${tagIndex + 1}`]: tag }
+    setTags(newTags)
   }
 
   useEffect(() => {
@@ -79,7 +75,7 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
                     <TextField
                       size='small'
                       label={`Tag ${tagIndex}`}
-                      value={getTagValue(companyIndex, tagIndex - 1)}
+                      value={(tags[companyIndex] && tags[companyIndex][`tag${tagIndex}`]) || ''}
                       onChange={e => handleAddTag(companyIndex, tagIndex - 1, e.target.value)}
                     />
                   </TableCell>

@@ -38,6 +38,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   const postData = useExcelDump()
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
+  const articleIds = dataForExcelDump.length > 0 && dataForExcelDump.flatMap(item => item.articleId)
 
   useEffect(() => {
     const fetchFieldList = async () => {
@@ -95,14 +96,16 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       const value = item[key]
       searchCriteria[key] = value
     })
-
     searchCriteria.fromDate = formattedStartDate
     searchCriteria.toDate = formattedEndDate
     searchCriteria.selectedCompanyIds = selectedCompanyIds
-    console.log(searchCriteria)
+
+    // Remove articleIds from searchCriteria
+    delete searchCriteria.articleId
 
     postData({
       clientId,
+      articleIds,
       selectedFields,
       searchCriteria,
       notificationFlag

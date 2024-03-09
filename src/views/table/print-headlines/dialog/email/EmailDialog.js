@@ -8,22 +8,36 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import FormGroup from '@mui/material/FormGroup'
-import FormControl from '@mui/material/FormControl'
+import WarningIcon from '@mui/icons-material/Warning'
+import DialogContentText from '@mui/material/DialogContentText'
+import Box from '@mui/material/Box'
+
+// import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
+import useClientMailerList from 'src/api/global/useClientMailerList '
+import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 
-const EmailDialog = ({ open, onClose }) => {
+// * redux call
+import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { selectSelectedClient, selectSelectedStartDate, selectSelectedEndDate } from 'src/store/apps/user/userSlice'
+
+const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
+  //redux state
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedFromDate = useSelector(selectSelectedStartDate)
+  const selectedEndDate = useSelector(selectSelectedEndDate)
+
+  //states
   const [emailType, setEmailType] = useState({})
   const [selectAll, setSelectAll] = useState(false)
   const [selectedEmails, setSelectedEmails] = useState([])
+  const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
 
-  const dummyEmails = [
-    'dummy1@example.com',
-    'dummy2@example.com',
-    'dummy3@example.com',
-    'dummy4@example.com',
-    'dummy5@example.com'
-  ]
+  const { mailList } = useClientMailerList(fetchEmailFlag)
+  const { response, error, sendMailRequest } = useMailRequest()
+  const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join()
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -42,21 +56,43 @@ const EmailDialog = ({ open, onClose }) => {
 
   const handleSelectAllChange = () => {
     setSelectAll(!selectAll)
-    setSelectedEmails(selectAll ? [] : dummyEmails)
+    setSelectedEmails(selectAll ? [] : mailList)
   }
 
   const handleSendEmail = () => {
-    console.log('Email Types:', emailType)
-    console.log('Selected Emails:', selectedEmails)
+    setFetchEmailFlag(!fetchEmailFlag)
+    const recipients = emailType
+    const searchCriteria = { fromDate: selectedFromDate, toDate: selectedEndDate, selectPageOrAll }
+    sendMailRequest(clientId, recipients, searchCriteria)
     onClose()
   }
 
   const handleAllDropdownChange = value => {
     if (value === 'all') {
-      setSelectedEmails([...dummyEmails])
+      setSelectedEmails([...mailList])
     } else if (value === 'none') {
       setSelectedEmails([])
     }
+  }
+  if (!dataForMail || dataForMail.length === 0) {
+    return (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>
+          <WarningIcon style={{ marginRight: '8px' }} />
+          Please Select At Least One Article
+        </DialogTitle>
+        <DialogContentText>
+          <DialogContentText style={{ textAlign: 'center', marginBottom: '16px' }}>
+            To generate an Mail Download, you must select at least one article.
+          </DialogContentText>
+          <Box display='flex' justifyContent='center'>
+            <Button onClick={handleClose} color='primary'>
+              Close
+            </Button>
+          </Box>
+        </DialogContentText>
+      </Dialog>
+    )
   }
 
   return (
@@ -69,13 +105,13 @@ const EmailDialog = ({ open, onClose }) => {
             <Checkbox
               checked={selectAll}
               onChange={handleSelectAllChange}
-              indeterminate={selectedEmails.length > 0 && selectedEmails.length < dummyEmails.length}
+              indeterminate={selectedEmails.length > 0 && selectedEmails.length < mailList.length}
             />
           }
           label='Select All'
         />
 
-        {dummyEmails.map(email => (
+        {mailList.map(email => (
           <div key={email} style={{ display: 'flex', justifyContent: 'space-between' }}>
             <FormControlLabel
               control={
@@ -85,7 +121,7 @@ const EmailDialog = ({ open, onClose }) => {
             />
             <RadioGroup
               row
-              value={emailType[email] || 'to'}
+              value={emailType[email]}
               onChange={e => handleEmailTypeChange(e, email)}
               style={{ marginLeft: '10px' }}
             >

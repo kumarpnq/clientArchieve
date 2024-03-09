@@ -205,10 +205,21 @@ const TableSelection = () => {
     selectedCities.length && { geography: selectedCities },
     selectedMedia.length && { media: selectedMedia },
     selectedTag.length && { tags: selectedTag },
+    selectedEditionType && { editionType: selectedEditionType },
+    selectedPublicationType && { publicationCategory: selectedPublicationType },
+    selectedSortBy && { sortby: selectedSortBy },
+    searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
+    searchParameters.searchBody && { body: searchParameters.searchBody },
+    searchParameters.journalist && { journalist: searchParameters.journalist },
+    searchParameters.combinationOfWords && { wordCombo: searchParameters.combinationOfWords },
+    searchParameters.anyOfWords && { anyWord: searchParameters.anyOfWords },
+    searchParameters.ignoreThis && { ignoreWords: searchParameters.ignoreThis },
+    searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && { page: currentPage },
-    allCheck && { totalRecords: +allCheck }
+    selectedArticles.length === recordsPerPage && { selectPageorAll: currentPage || +allCheck }
+
+    // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
 

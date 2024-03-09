@@ -2,14 +2,15 @@ import axios from 'axios'
 import { BASE_URL } from '../base'
 
 const useExcelDump = () => {
-  const postData = async ({ clientId, selectedFields, searchCriteria }) => {
+  const postData = async ({ clientId, articleIds, selectedFields, searchCriteria }) => {
     try {
       const storedToken = localStorage.getItem('accessToken')
 
-      const res = await axios.post(
+      await axios.post(
         `${BASE_URL}/excelDumpRequest`,
         {
           clientId,
+          articleIds: articleIds.length > 0 ? articleIds : [],
           selectedFields,
           searchCriteria
         },
@@ -17,7 +18,6 @@ const useExcelDump = () => {
           headers: { Authorization: `Bearer ${storedToken}` }
         }
       )
-      console.log(res.data)
     } catch (error) {
       console.error(error)
     }
