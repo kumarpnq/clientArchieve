@@ -6,7 +6,7 @@ const useExcelDump = () => {
     try {
       const storedToken = localStorage.getItem('accessToken')
 
-      const response = await axios.post(
+      await axios.post(
         `${BASE_URL}/excelDumpRequest`,
         {
           clientId,
@@ -18,7 +18,6 @@ const useExcelDump = () => {
           headers: { Authorization: `Bearer ${storedToken}` }
         }
       )
-      console.log(response)
     } catch (error) {
       console.error(error)
     }
