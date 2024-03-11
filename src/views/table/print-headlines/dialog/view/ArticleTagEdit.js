@@ -29,9 +29,16 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const { tagsData, loading, error } = useGetTagsForArticle({ articleId, clientId, companyIds: companyId, fetchFlag })
 
   const handleAddTag = (companyIndex, tagIndex, tag) => {
-    const newTags = [...tags]
-    newTags[companyIndex] = { ...(newTags[companyIndex] || {}), [`tag${tagIndex + 1}`]: tag }
-    setTags(newTags)
+    // Check if the input value is empty
+    if (tag.trim() !== '') {
+      const newTags = [...tags]
+      newTags[companyIndex] = { ...(newTags[companyIndex] || {}), [`tag${tagIndex + 1}`]: tag }
+      setTags(newTags)
+    } else {
+      const newTags = [...tags]
+      newTags[companyIndex] = { ...(newTags[companyIndex] || {}), [`tag${tagIndex + 1}`]: '' }
+      setTags(newTags)
+    }
   }
 
   useEffect(() => {
@@ -75,7 +82,10 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
                     <TextField
                       size='small'
                       label={`Tag ${tagIndex}`}
-                      value={(tags[companyIndex] && tags[companyIndex][`tag${tagIndex}`]) || ''}
+                      value={
+                        (tags[companyIndex] && tags[companyIndex][`tag${tagIndex}`]) ||
+                        getTagValue(companyIndex, tagIndex - 1)
+                      }
                       onChange={e => handleAddTag(companyIndex, tagIndex - 1, e.target.value)}
                     />
                   </TableCell>

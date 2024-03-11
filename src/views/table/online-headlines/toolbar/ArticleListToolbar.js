@@ -332,7 +332,7 @@ const ArticleListToolbar = ({
       {isMailVisible && (
         <Fragment>
           {' '}
-          <CustomTooltip title='Send Mail'>
+          <CustomTooltip title='Mail'>
             <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
               <EmailIcon />
             </Button>
@@ -355,7 +355,7 @@ const ArticleListToolbar = ({
       )}
 
       {/* rss feed */}
-      <CustomTooltip title='Rss Feed'>
+      <CustomTooltip title='Feed'>
         <Button onClick={handleRssFeedDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
           <RssFeedIcon />
         </Button>

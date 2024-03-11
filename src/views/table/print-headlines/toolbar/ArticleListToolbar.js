@@ -505,7 +505,7 @@ const ArticleListToolbar = ({
       <ImageDialog open={isImageDialogOpen} handleClose={handleImageDialogClose} selectedArticles={selectedArticles} />
       {isDossierVisible && (
         <Fragment>
-          <CustomTooltip title='Download'>
+          <CustomTooltip title='Dossier'>
             <Button onClick={handleDossierDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
               <DownloadIcon />
             </Button>
@@ -539,7 +539,7 @@ const ArticleListToolbar = ({
         </Fragment>
       )}
 
-      <CustomTooltip title='Rss Feed'>
+      <CustomTooltip title='Feed'>
         <Button onClick={handleRssFeedDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
           <RssFeedIcon />
         </Button>
