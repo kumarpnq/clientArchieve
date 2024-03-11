@@ -217,7 +217,8 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && { selectPageorAll: currentPage || +allCheck }
+    selectedArticles.length === recordsPerPage ||
+      (allCheck && { selectPageorAll: (currentPage && 'P') || (allCheck && 'A') })
 
     // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
