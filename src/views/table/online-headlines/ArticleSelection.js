@@ -391,16 +391,24 @@ const TableSelection = () => {
   }
 
   const handlePageCheckChange = event => {
-    setPageCheck(event.target.checked)
-    if (event.target.checked) {
-      setSelectedArticles([...socialFeeds])
+    if (allCheck && event.target.checked) {
+      setAllCheck(false)
+      setPageCheck(true)
+      setSelectedArticles([...articles])
     } else {
-      setSelectedArticles([])
+      setPageCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
     }
   }
 
   const handleAllCheckChange = event => {
-    setAllCheck(event.target.checked)
+    if (pageCheck && event.target.checked) {
+      setPageCheck(false)
+      setAllCheck(true)
+      setSelectedArticles([])
+    } else {
+      setAllCheck(event.target.checked)
+    }
   }
 
   return (
