@@ -32,6 +32,9 @@ import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest
 // import useClientMailerList from 'src/api/global/useClientMailerList '
 import { BASE_URL } from 'src/api/base'
 
+// ** third party imports
+import toast from 'react-hot-toast'
+
 const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, dataForDossierDownload }) => {
   //redux state
   const selectedClient = useSelector(selectSelectedClient)
@@ -76,13 +79,18 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
 
   const handleSubmit = () => {
     const searchCriteria = { fromDate, toDate, selectPageOrAll }
-    const recipients = { recipients: selectedEmail }
+    const recipients = { recipients: selectedEmail || email }
     sendDossierRequest(clientId, articleIds, dossierType, recipients, searchCriteria)
 
     // Close the dialog
     handleClose()
     setEmail('')
     setSelectedEmail([])
+    if (error) {
+      toast.error('something wrong')
+    } else {
+      toast.success(response?.message ?? 'Success!')
+    }
   }
   useEffect(() => {
     const getClientMailerList = async () => {
