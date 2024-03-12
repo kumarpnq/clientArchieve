@@ -22,6 +22,9 @@ import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient, selectSelectedStartDate, selectSelectedEndDate } from 'src/store/apps/user/userSlice'
 
+//* third party imports
+import toast from 'react-hot-toast'
+
 const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   //redux state
   const selectedClient = useSelector(selectSelectedClient)
@@ -65,6 +68,11 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
     const searchCriteria = { fromDate: selectedFromDate, toDate: selectedEndDate, selectPageOrAll }
     sendMailRequest(clientId, recipients, searchCriteria)
     onClose()
+    if (error) {
+      toast.error('something wrong.')
+    } else {
+      toast.success(response?.message || 'success')
+    }
   }
 
   const handleAllDropdownChange = value => {
@@ -144,7 +152,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
         <Button onClick={onClose} color='primary'>
           Cancel
         </Button>
-        <Button onClick={handleSendEmail} color='primary'>
+        <Button onClick={handleSendEmail} color='primary' disabled={!selectedEmails.length}>
           Send
         </Button>
       </DialogActions>
