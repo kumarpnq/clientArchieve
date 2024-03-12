@@ -16,6 +16,9 @@ import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import useGetTagsForArticle from 'src/api/print-headlines/tags/useGetTagsForArticle'
 
+// * third party imports
+import toast from 'react-hot-toast'
+
 const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -23,7 +26,11 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const articleId = articles.articleId
   const [fetchFlag, setFetchFlag] = useState(false)
 
-  const { tagsData, loading, error } = useGetTagsForArticle({
+  const {
+    tagsData,
+    loading: fetchLoading,
+    error: fetchError
+  } = useGetTagsForArticle({
     articleId,
     clientId,
     companyIds: companyId,
@@ -68,7 +75,6 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const handleSaveDetails = () => {
     try {
       const tagsForPost = Object.values(tags).filter(tag => tag.trim() !== '')
-      console.log(tagsForPost)
       postData({
         clientId,
         companyId,
@@ -77,8 +83,12 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
       })
       setFetchFlag(!fetchFlag)
       handleClose()
+
+      toast.success('updated')
     } catch (error) {
-      console.error('Error:', error)
+      console.log(error)
+
+      toast.error('something wrong')
     }
   }
 
