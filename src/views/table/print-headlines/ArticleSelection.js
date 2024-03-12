@@ -518,8 +518,6 @@ const TableSelection = () => {
       {/* Use priorityCompanyName in the title */}
       {/* Top Toolbar */}
       <ToolbarComponent
-        // selectedCompanyIds={selectedCompanyIds}
-        // setSelectedCompanyIds={setSelectedCompanyIds}
         selectedMedia={selectedMedia}
         setSelectedMedia={setSelectedMedia}
         selectedTag={selectedTag}
@@ -547,9 +545,7 @@ const TableSelection = () => {
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
         selectedStartDate={selectedFromDate}
-        // setSelectedStartDate={setSelectedStartDate}
         selectedEndDate={selectedEndDate}
-        // setSelectedEndDate={setSelectedEndDate}
         selectedFilter={selectedFilter}
         setSelectedFilter={setSelectedFilter}
         selectedArticles={selectedArticles}
