@@ -157,6 +157,7 @@ const TableSelection = () => {
   const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
 
   // ** State
+  const [selectedArticles, setSelectedArticles] = useState([])
   const [socialFeeds, setSocialFeeds] = useState([])
   const [tags, setTags] = useState([])
   const [fetchTagsFlag, setFetchTagsFlag] = useState([])
@@ -203,6 +204,29 @@ const TableSelection = () => {
   const [loading, setLoading] = useState(true)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
+
+  const dataForDump = [
+    selectedGeography.length && { geography: selectedGeography },
+    selectedMedia.length && { media: selectedMedia },
+    selectedTags.length && { tags: selectedTags },
+
+    // selectedEditionType && { editionType: selectedEditionType },
+    // selectedPublicationType && { publicationCategory: selectedPublicationType },
+    // selectedSortBy && { sortby: selectedSortBy },
+    searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
+    searchParameters.searchBody && { body: searchParameters.searchBody },
+    searchParameters.journalist && { journalist: searchParameters.journalist },
+    searchParameters.combinationOfWords && { wordCombo: searchParameters.combinationOfWords },
+    searchParameters.anyOfWords && { anyWord: searchParameters.anyOfWords },
+    searchParameters.ignoreThis && { ignoreWords: searchParameters.ignoreThis },
+    searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
+    selectedArticles.length &&
+      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
+    selectedArticles.length === recordsPerPage ||
+      (allCheck && { selectPageorAll: (currentPage && 'P') || (allCheck && 'A') })
+
+    // allCheck && { totalRecords: +allCheck }
+  ].filter(Boolean)
 
   const handleEdit = row => {
     setSelectedArticle(row)
@@ -359,7 +383,6 @@ const TableSelection = () => {
     setSelectedArticle(params.row)
     setPopupOpen(true)
   }
-  const [selectedArticles, setSelectedArticles] = useState([])
 
   const handleSelect = article => {
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
@@ -471,10 +494,7 @@ const TableSelection = () => {
         openFilterPopover={openFilterPopover}
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
-        // selectedStartDate={selectedStartDate}
-        // setSelectedStartDate={setSelectedStartDate}
-        // selectedEndDate={selectedEndDate}
-        // setSelectedEndDate={setSelectedEndDate}
+        dataForDump={dataForDump}
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
         tags={tags}
