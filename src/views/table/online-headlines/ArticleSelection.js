@@ -14,7 +14,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
-import { FormControlLabel, FormGroup } from '@mui/material'
+import { FormControlLabel, FormGroup, List, ListItem } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import SocialFeedFullScreenDialog from './dialog/ArticleDialog'
@@ -65,16 +65,38 @@ const renderSocialFeed = params => {
 
   const formattedDate = dayjs(row.feedDate).format('DD-MM-YYYY')
 
-  const tooltipToShow = row => (
-    <Box>
-      <Typography variant='body-2' sx={{ fontWeight: 600 }}>
-        {row.summary}
-      </Typography>
-    </Box>
+  // Function to generate tooltip content using List
+  const getTooltipContent = row => (
+    <List>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Summary:
+        </Typography>
+      </ListItem>
+      <ListItem>{row.summary}</ListItem>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Companies:
+        </Typography>{' '}
+        {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+      </ListItem>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Edition Type:
+        </Typography>{' '}
+        {row.editionTypeName}
+      </ListItem>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Page Number:
+        </Typography>{' '}
+        {row.pageNumber}
+      </ListItem>
+    </List>
   )
 
   return (
-    <CustomTooltip title={tooltipToShow(row)} arrow>
+    <CustomTooltip title={getTooltipContent(row)} arrow>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
           {row.headline}
