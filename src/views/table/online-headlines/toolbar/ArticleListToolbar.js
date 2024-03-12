@@ -162,7 +162,8 @@ const ArticleListToolbar = ({
   selectedArticles,
   tags,
   fetchTagsFlag,
-  setFetchTagsFlag
+  setFetchTagsFlag,
+  dataForDump
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -332,12 +333,12 @@ const ArticleListToolbar = ({
       {isMailVisible && (
         <Fragment>
           {' '}
-          <CustomTooltip title='Send Mail'>
+          <CustomTooltip title='Mail'>
             <Button onClick={handleEmailDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
               <EmailIcon />
             </Button>
           </CustomTooltip>
-          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />{' '}
+          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} dataForMail={dataForDump} />{' '}
         </Fragment>
       )}
 
@@ -355,7 +356,7 @@ const ArticleListToolbar = ({
       )}
 
       {/* rss feed */}
-      <CustomTooltip title='Rss Feed'>
+      <CustomTooltip title='Feed'>
         <Button onClick={handleRssFeedDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
           <RssFeedIcon />
         </Button>

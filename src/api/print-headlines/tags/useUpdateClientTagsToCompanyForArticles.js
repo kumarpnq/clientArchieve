@@ -4,8 +4,6 @@ import { BASE_URL } from 'src/api/base'
 
 const useUpdateClientTagsToCompanyForArticles = () => {
   const postData = async ({ clientId, companyId, tagsForPost, articleId }) => {
-    console.log('Article ID:', articleId)
-
     const storedToken = localStorage.getItem('accessToken')
 
     try {
@@ -27,7 +25,7 @@ const useUpdateClientTagsToCompanyForArticles = () => {
 
       await axios.post(`${BASE_URL}/updateTagsForArticle`, requestData, { headers })
     } catch (error) {
-      console.error('Error:', error.message || error.response?.data || error)
+      console.log(error.message || error.response?.data || error)
     }
   }
 

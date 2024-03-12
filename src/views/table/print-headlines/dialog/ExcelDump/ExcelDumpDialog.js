@@ -23,6 +23,9 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
+// ** third party import
+import toast from 'react-hot-toast'
+
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
@@ -35,7 +38,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   const [fields, setFields] = useState({})
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
-  const postData = useExcelDump()
+  const { responseData, loading, error, postData } = useExcelDump()
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const articleIds = dataForExcelDump.length > 0 && dataForExcelDump.flatMap(item => item.articleId)
@@ -113,6 +116,12 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
 
     dispatch(setNotificationFlag(!notificationFlag))
     handleClose()
+    setSelectedFields([])
+    setSelectAll(false)
+    if (error) return toast.error('something wrong.')
+    if (responseData.message) {
+      responseData.message && toast.success(responseData.message)
+    }
   }
 
   return (

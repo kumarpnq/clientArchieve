@@ -14,7 +14,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
-import { FormControlLabel, FormGroup } from '@mui/material'
+import { FormControlLabel, FormGroup, List, ListItem } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import SocialFeedFullScreenDialog from './dialog/ArticleDialog'
@@ -65,16 +65,38 @@ const renderSocialFeed = params => {
 
   const formattedDate = dayjs(row.feedDate).format('DD-MM-YYYY')
 
-  const tooltipToShow = row => (
-    <Box>
-      <Typography variant='body-2' sx={{ fontWeight: 600 }}>
-        {row.summary}
-      </Typography>
-    </Box>
+  // Function to generate tooltip content using List
+  const getTooltipContent = row => (
+    <List>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Summary:
+        </Typography>
+      </ListItem>
+      <ListItem>{row.summary}</ListItem>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Companies:
+        </Typography>{' '}
+        {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+      </ListItem>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Edition Type:
+        </Typography>{' '}
+        {row.editionTypeName}
+      </ListItem>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Page Number:
+        </Typography>{' '}
+        {row.pageNumber}
+      </ListItem>
+    </List>
   )
 
   return (
-    <CustomTooltip title={tooltipToShow(row)} arrow>
+    <CustomTooltip title={getTooltipContent(row)} arrow>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
           {row.headline}
@@ -135,6 +157,7 @@ const TableSelection = () => {
   const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
 
   // ** State
+  const [selectedArticles, setSelectedArticles] = useState([])
   const [socialFeeds, setSocialFeeds] = useState([])
   const [tags, setTags] = useState([])
   const [fetchTagsFlag, setFetchTagsFlag] = useState([])
@@ -181,6 +204,29 @@ const TableSelection = () => {
   const [loading, setLoading] = useState(true)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
+
+  const dataForDump = [
+    selectedGeography.length && { geography: selectedGeography },
+    selectedMedia.length && { media: selectedMedia },
+    selectedTags.length && { tags: selectedTags },
+
+    // selectedEditionType && { editionType: selectedEditionType },
+    // selectedPublicationType && { publicationCategory: selectedPublicationType },
+    // selectedSortBy && { sortby: selectedSortBy },
+    searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
+    searchParameters.searchBody && { body: searchParameters.searchBody },
+    searchParameters.journalist && { journalist: searchParameters.journalist },
+    searchParameters.combinationOfWords && { wordCombo: searchParameters.combinationOfWords },
+    searchParameters.anyOfWords && { anyWord: searchParameters.anyOfWords },
+    searchParameters.ignoreThis && { ignoreWords: searchParameters.ignoreThis },
+    searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
+    selectedArticles.length &&
+      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
+    selectedArticles.length === recordsPerPage ||
+      (allCheck && { selectPageorAll: (currentPage && 'P') || (allCheck && 'A') })
+
+    // allCheck && { totalRecords: +allCheck }
+  ].filter(Boolean)
 
   const handleEdit = row => {
     setSelectedArticle(row)
@@ -337,7 +383,6 @@ const TableSelection = () => {
     setSelectedArticle(params.row)
     setPopupOpen(true)
   }
-  const [selectedArticles, setSelectedArticles] = useState([])
 
   const handleSelect = article => {
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
@@ -391,16 +436,24 @@ const TableSelection = () => {
   }
 
   const handlePageCheckChange = event => {
-    setPageCheck(event.target.checked)
-    if (event.target.checked) {
-      setSelectedArticles([...socialFeeds])
+    if (allCheck && event.target.checked) {
+      setAllCheck(false)
+      setPageCheck(true)
+      setSelectedArticles([...articles])
     } else {
-      setSelectedArticles([])
+      setPageCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
     }
   }
 
   const handleAllCheckChange = event => {
-    setAllCheck(event.target.checked)
+    if (pageCheck && event.target.checked) {
+      setPageCheck(false)
+      setAllCheck(true)
+      setSelectedArticles([])
+    } else {
+      setAllCheck(event.target.checked)
+    }
   }
 
   return (
@@ -441,10 +494,7 @@ const TableSelection = () => {
         openFilterPopover={openFilterPopover}
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
-        // selectedStartDate={selectedStartDate}
-        // setSelectedStartDate={setSelectedStartDate}
-        // selectedEndDate={selectedEndDate}
-        // setSelectedEndDate={setSelectedEndDate}
+        dataForDump={dataForDump}
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
         tags={tags}

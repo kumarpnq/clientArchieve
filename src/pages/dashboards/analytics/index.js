@@ -18,17 +18,30 @@ import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 import CardStatsWithAreaChart from 'src/@core/components/card-statistics/card-stats-with-area-chart'
 import AnalyticsWordCloud from 'src/views/dashboards/analytics/AnalyticsWordCloud'
 
+// ** redux import
+import { useSelector } from 'react-redux'
+import { selectUserData } from 'src/store/apps/user/userSlice'
+
 const AnalyticsDashboard = () => {
+  const userDetails = useSelector(selectUserData)
+  const wordCloudPermission = userDetails?.clientArchiveRoles?.find(i => i.name === 'wordCloud')?.permission
+
   return (
     <ApexChartWrapper>
       <KeenSliderWrapper>
         <Grid container spacing={6}>
-          <Grid item xs={12} md={6}>
-            <AnalyticsWordCloud />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <AnalyticsWordCloud />
-          </Grid>
+          {wordCloudPermission && (
+            <>
+              {' '}
+              <Grid item xs={12} md={6}>
+                <AnalyticsWordCloud />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <AnalyticsWordCloud />
+              </Grid>
+            </>
+          )}
+
           <Grid item xs={12} lg={6}>
             <AnalyticsWebsiteAnalyticsSlider />
           </Grid>

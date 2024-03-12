@@ -16,36 +16,65 @@ import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import useGetTagsForArticle from 'src/api/print-headlines/tags/useGetTagsForArticle'
 
+// * third party imports
+import toast from 'react-hot-toast'
+
 const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-  const [tags, setTags] = useState(articles.tags || [])
-  const [fetchFlag, setFetchFlag] = useState(false)
   const companyId = articles.companies.map(i => i.id).join()
   const articleId = articles.articleId
-  const tagsForPost = tags.length > 0 && tags.flatMap(Object.values)
+  const [fetchFlag, setFetchFlag] = useState(false)
+
+  const {
+    tagsData,
+    loading: fetchLoading,
+    error: fetchError
+  } = useGetTagsForArticle({
+    articleId,
+    clientId,
+    companyIds: companyId,
+    fetchFlag
+  })
 
   const postData = useUpdateClientTagsToCompanyForArticles()
-  const { tagsData, loading, error } = useGetTagsForArticle({ articleId, clientId, companyIds: companyId, fetchFlag })
 
-  const handleAddTag = (companyIndex, tagIndex, tag) => {
-    const newTags = [...tags]
-    newTags[companyIndex] = { ...(newTags[companyIndex] || {}), [`tag${tagIndex + 1}`]: tag }
-    setTags(newTags)
+  const [tags, setTags] = useState({
+    tag1: '',
+    tag2: '',
+    tag3: '',
+    tag4: '',
+    tag5: ''
+  })
+
+  useEffect(() => {
+    // Use the first company's data in tagsData or default to an empty object
+    const companyTagsData = tagsData[0] || { tags: [] }
+
+    setTags(prevTags => ({
+      ...prevTags,
+      tag1: companyTagsData.tags[0] || '',
+      tag2: companyTagsData.tags[1] || '',
+      tag3: companyTagsData.tags[2] || '',
+      tag4: companyTagsData.tags[3] || '',
+      tag5: companyTagsData.tags[4] || ''
+    }))
+  }, [tagsData])
+
+  const handleAddTag = (tagIndex, tag) => {
+    setTags(prevTags => ({
+      ...prevTags,
+      [`tag${tagIndex}`]: tag
+    }))
   }
 
   useEffect(() => {
     setFetchFlag(!fetchFlag)
   }, [])
 
-  const getTagValue = (companyIndex, tagIndex) => {
-    const companyTags = tagsData.find(item => item.companyId === articles.companies[companyIndex].id)?.tags || []
-
-    return companyTags[tagIndex] || ''
-  }
-
   const handleSaveDetails = () => {
     try {
+      const tagsForPost = Object.values(tags).filter(tag => tag.trim() !== '')
       postData({
         clientId,
         companyId,
@@ -54,8 +83,12 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
       })
       setFetchFlag(!fetchFlag)
       handleClose()
+
+      toast.success('updated')
     } catch (error) {
-      console.error('Error:', error)
+      console.log(error)
+
+      toast.error('something wrong')
     }
   }
 
@@ -67,21 +100,25 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
         </Typography>
         <Table>
           <TableBody>
-            {articles.companies.map((company, companyIndex) => (
-              <TableRow key={company.id}>
-                <TableCell>{company.name}</TableCell>
-                {[1, 2, 3, 4, 5].map(tagIndex => (
-                  <TableCell key={tagIndex}>
-                    <TextField
-                      size='small'
-                      label={`Tag ${tagIndex}`}
-                      value={(tags[companyIndex] && tags[companyIndex][`tag${tagIndex}`]) || ''}
-                      onChange={e => handleAddTag(companyIndex, tagIndex - 1, e.target.value)}
-                    />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
+            {articles.companies.map((company, companyIndex) => {
+              const companyTagsData = tagsData.find(data => data.companyId === company.id) || { tags: [] }
+
+              return (
+                <TableRow key={company.id}>
+                  <TableCell>{company.name}</TableCell>
+                  {[1, 2, 3, 4, 5].map(tagIndex => (
+                    <TableCell key={tagIndex}>
+                      <TextField
+                        size='small'
+                        label={`Tag ${tagIndex}`}
+                        value={tags[`tag${tagIndex}`]}
+                        onChange={e => handleAddTag(tagIndex, e.target.value)}
+                      />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
         <Grid container justifyContent='flex-end' sx={{ marginTop: 2 }}>

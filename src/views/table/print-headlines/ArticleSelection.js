@@ -184,6 +184,7 @@ const TableSelection = () => {
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
+  const [selectedLanguages, setSelectedLanguages] = useState([])
   const [selectedEditionType, setSelectedEditionType] = useState('')
   const [selectedPublicationType, setSelectedPublicationType] = useState('')
   const [selectedSortBy, setSelectedSortBy] = useState(null)
@@ -217,7 +218,8 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && { selectPageorAll: currentPage || +allCheck }
+    selectedArticles.length === recordsPerPage ||
+      (allCheck && { selectPageorAll: (currentPage && 'P') || (allCheck && 'A') })
 
     // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
@@ -266,6 +268,7 @@ const TableSelection = () => {
         const selectedMediaString = selectedMedia.join(', ')
         const selectedTagString = selectedTag.join(', ')
         const selectedCitiesString = selectedCities.join(', ')
+        const selectedLanguagesString = selectedLanguages.join(', ')
 
         const response = await fetchArticles({
           clientIds: clientId,
@@ -278,6 +281,7 @@ const TableSelection = () => {
           media: selectedMediaString,
           tags: selectedTagString,
           geography: selectedCitiesString,
+          language: selectedLanguagesString,
 
           // Advanced search
           headline: searchParameters.searchHeadline,
@@ -461,7 +465,8 @@ const TableSelection = () => {
     setSelectedMedia([])
     setSelectedCities([])
 
-    //setSelectedTags([])
+    setSelectedTags([])
+    setSelectedLanguages([])
 
     //ArticleListToolbar
     setSelectedEditionType('')
@@ -481,16 +486,24 @@ const TableSelection = () => {
   }
 
   const handlePageCheckChange = event => {
-    setPageCheck(event.target.checked)
-    if (event.target.checked) {
+    if (allCheck && event.target.checked) {
+      setAllCheck(false)
+      setPageCheck(true)
       setSelectedArticles([...articles])
     } else {
-      setSelectedArticles([])
+      setPageCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
     }
   }
 
   const handleAllCheckChange = event => {
-    setAllCheck(event.target.checked)
+    if (pageCheck && event.target.checked) {
+      setPageCheck(false)
+      setAllCheck(true)
+      setSelectedArticles([])
+    } else {
+      setAllCheck(event.target.checked)
+    }
   }
 
   return (
@@ -505,14 +518,14 @@ const TableSelection = () => {
       {/* Use priorityCompanyName in the title */}
       {/* Top Toolbar */}
       <ToolbarComponent
-        // selectedCompanyIds={selectedCompanyIds}
-        // setSelectedCompanyIds={setSelectedCompanyIds}
         selectedMedia={selectedMedia}
         setSelectedMedia={setSelectedMedia}
         selectedTag={selectedTag}
         setSelectedTags={setSelectedTag}
         selectedCities={selectedCities}
         setSelectedCities={setSelectedCities}
+        selectedLanguages={selectedLanguages}
+        setSelectedLanguages={setSelectedLanguages}
         tags={tags}
         setTags={setTags}
         fetchTagsFlag={fetchTagsFlag}
@@ -532,9 +545,7 @@ const TableSelection = () => {
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
         selectedStartDate={selectedFromDate}
-        // setSelectedStartDate={setSelectedStartDate}
         selectedEndDate={selectedEndDate}
-        // setSelectedEndDate={setSelectedEndDate}
         selectedFilter={selectedFilter}
         setSelectedFilter={setSelectedFilter}
         selectedArticles={selectedArticles}

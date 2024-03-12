@@ -11,16 +11,19 @@ import FormGroup from '@mui/material/FormGroup'
 import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 import Box from '@mui/material/Box'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
 
 // import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
 import useClientMailerList from 'src/api/global/useClientMailerList '
 import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 
 // * redux call
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient, selectSelectedStartDate, selectSelectedEndDate } from 'src/store/apps/user/userSlice'
+
+//* third party imports
+import toast from 'react-hot-toast'
 
 const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   //redux state
@@ -65,6 +68,11 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
     const searchCriteria = { fromDate: selectedFromDate, toDate: selectedEndDate, selectPageOrAll }
     sendMailRequest(clientId, recipients, searchCriteria)
     onClose()
+    if (error) {
+      toast.error('something wrong.')
+    } else {
+      toast.success(response?.message || 'success')
+    }
   }
 
   const handleAllDropdownChange = value => {
@@ -144,7 +152,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
         <Button onClick={onClose} color='primary'>
           Cancel
         </Button>
-        <Button onClick={handleSendEmail} color='primary'>
+        <Button onClick={handleSendEmail} color='primary' disabled={!selectedEmails.length}>
           Send
         </Button>
       </DialogActions>

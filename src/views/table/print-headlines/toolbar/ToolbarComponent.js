@@ -24,6 +24,8 @@ const ToolbarComponent = ({
   setSelectedTags,
   selectedCities,
   setSelectedCities,
+  selectedLanguages,
+  setSelectedLanguages,
   tags,
   setTags,
   fetchTagsFlag
@@ -67,6 +69,11 @@ const ToolbarComponent = ({
   const handleSelectAllCities = () => {
     const allCityIds = cities.map(city => city.cityId)
     setSelectedCities(allCityIds)
+  }
+
+  const handleSelectAllLanguage = () => {
+    const allLangs = Object.entries(languages).map(([_, languageCode]) => languageCode)
+    setSelectedLanguages(allLangs)
   }
 
   // const handleCheckboxChange = companyId => {
@@ -368,8 +375,18 @@ const ToolbarComponent = ({
 
         {/* Language Dropdown Menu */}
         <Menu open={Boolean(languageAnchor)} anchorEl={languageAnchor} onClose={() => closeDropdown(setLanguageAnchor)}>
+          {Object.entries(languages).length > 0 && (
+            <ListItem sx={{ justifyContent: 'space-between' }}>
+              <Button onClick={handleSelectAllLanguage}>Select All</Button>
+              <Button onClick={() => setSelectedLanguages([])}>Deselect All</Button>
+            </ListItem>
+          )}
           {Object.entries(languages).map(([languageName, languageCode]) => (
-            <MenuItem key={languageCode} onClick={handleDropdownItemClick}>
+            <MenuItem
+              key={languageCode}
+              onClick={handleDropdownItemClick}
+              selected={selectedLanguages.includes(languageCode)}
+            >
               {languageName}
             </MenuItem>
           ))}
