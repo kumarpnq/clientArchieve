@@ -23,6 +23,9 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
+// ** third party import
+import toast from 'react-hot-toast'
+
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
@@ -110,6 +113,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       searchCriteria,
       notificationFlag
     })
+    toast.success('something wrong.')
 
     dispatch(setNotificationFlag(!notificationFlag))
     handleClose()
