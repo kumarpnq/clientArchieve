@@ -18,6 +18,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+import toast from 'react-hot-toast'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
@@ -26,6 +27,11 @@ import CustomAvatar from 'src/@core/components/mui/avatar'
 // ** Util Import
 import { getInitials } from 'src/@core/utils/get-initials'
 import useFetchNotifications from 'src/api/notifications/useFetchNotifications'
+import useUpdateClientNotification from 'src/api/notifications/useUpdateReadClientNotification'
+
+// ** Redux
+import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { setNotificationFlag, selectNotificationFlag } from 'src/store/apps/user/userSlice'
 
 // ** Styled Menu component
 const Menu = styled(MuiMenu)(({ theme }) => ({
@@ -109,8 +115,35 @@ const NotificationDropdown = props => {
   // ** Vars
   const { direction } = settings
 
+  //  ** redux
+  const dispatch = useDispatch()
+  const notificationFlag = useSelector(selectNotificationFlag)
+
   //  ** notifications
   const { notificationList, loading } = useFetchNotifications()
+
+  //  ** notification status
+  const { loading: updateLoading, error, data, updateReadClientNotification } = useUpdateClientNotification()
+
+  const handleNotificationDetails = jobId => {
+    updateReadClientNotification(jobId)
+    dispatch(setNotificationFlag(!notificationFlag))
+    if (error) {
+      toast.error('something wrong.')
+    } else {
+      toast.success(data?.message || 'Successfully read.')
+    }
+  }
+
+  const handleReadAll = () => {
+    updateReadClientNotification()
+    dispatch(setNotificationFlag(!notificationFlag))
+    if (error) {
+      toast.error('something wrong.')
+    } else {
+      toast.success(data?.message || 'Successfully read.')
+    }
+  }
 
   const handleDropdownOpen = event => {
     setAnchorEl(event.currentTarget)
@@ -174,7 +207,12 @@ const NotificationDropdown = props => {
         </MenuItem>
         <ScrollWrapper hidden={hidden}>
           {notificationList.map((notification, index) => (
-            <MenuItem key={index} disableRipple disableTouchRipple onClick={handleDropdownClose}>
+            <Button
+              key={index}
+              fullWidth
+              onClick={() => handleNotificationDetails(notification.jobId)}
+              sx={{ padding: '15px', backgroundColor: !notification.readJobStatus ? 'primary.main' : '' }}
+            >
               <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
                 {/* <RenderAvatar notification={notification} /> */}
                 <Box sx={{ mr: 4, ml: 2.5, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
@@ -193,11 +231,11 @@ const NotificationDropdown = props => {
                     </Link>
                   </MenuItemSubtitle>
                 </Box>
-                <Typography variant='body2' sx={{ color: 'text.disabled' }}>
+                <Typography variant='body2' sx={{ color: 'text.primary' }}>
                   {notification.jobStatus}
                 </Typography>
               </Box>
-            </MenuItem>
+            </Button>
           ))}
         </ScrollWrapper>
         <MenuItem
@@ -211,7 +249,7 @@ const NotificationDropdown = props => {
             borderTop: theme => `1px solid ${theme.palette.divider}`
           }}
         >
-          <Button fullWidth variant='contained' onClick={handleDropdownClose}>
+          <Button fullWidth variant='contained' onClick={handleReadAll}>
             Read All Notifications
           </Button>
         </MenuItem>
