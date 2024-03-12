@@ -35,7 +35,9 @@ const ToolbarComponent = ({
   const [languageAnchor, setLanguageAnchor] = useState(null)
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
-  const [companies, setCompanies] = useState([])
+
+  // const [companies, setCompanies] = useState([])
+
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
@@ -44,7 +46,8 @@ const ToolbarComponent = ({
 
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-  const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
+
+  // const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
 
   const openDropdown = (event, anchorSetter) => {
     anchorSetter(event.currentTarget)
@@ -68,10 +71,10 @@ const ToolbarComponent = ({
     })
   }
 
-  const handleSelectAllCompetitions = () => {
-    const allCompanyIds = companies.map(company => company.companyId)
-    setSelectedCompanyId(allCompanyIds)
-  }
+  // const handleSelectAllCompetitions = () => {
+  //   const allCompanyIds = companies.map(company => company.companyId)
+  //   setSelectedCompanyId(allCompanyIds)
+  // }
 
   const handleSelectAllCities = () => {
     const allGeography = cities.map(city => city.cityId)
@@ -197,7 +200,6 @@ const ToolbarComponent = ({
           }
         })
         setTags(tagsResponse.data.clientTags)
-        console.log(tagsResponse.data)
       } catch (error) {
         console.error('Error fetching user tags:', error)
       }

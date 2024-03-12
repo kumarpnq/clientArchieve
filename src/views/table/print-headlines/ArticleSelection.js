@@ -184,6 +184,7 @@ const TableSelection = () => {
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
+  const [selectedLanguages, setSelectedLanguages] = useState([])
   const [selectedEditionType, setSelectedEditionType] = useState('')
   const [selectedPublicationType, setSelectedPublicationType] = useState('')
   const [selectedSortBy, setSelectedSortBy] = useState(null)
@@ -267,6 +268,7 @@ const TableSelection = () => {
         const selectedMediaString = selectedMedia.join(', ')
         const selectedTagString = selectedTag.join(', ')
         const selectedCitiesString = selectedCities.join(', ')
+        const selectedLanguagesString = selectedLanguages.join(', ')
 
         const response = await fetchArticles({
           clientIds: clientId,
@@ -279,6 +281,7 @@ const TableSelection = () => {
           media: selectedMediaString,
           tags: selectedTagString,
           geography: selectedCitiesString,
+          language: selectedLanguagesString,
 
           // Advanced search
           headline: searchParameters.searchHeadline,
@@ -462,7 +465,8 @@ const TableSelection = () => {
     setSelectedMedia([])
     setSelectedCities([])
 
-    //setSelectedTags([])
+    setSelectedTags([])
+    setSelectedLanguages([])
 
     //ArticleListToolbar
     setSelectedEditionType('')
@@ -522,6 +526,8 @@ const TableSelection = () => {
         setSelectedTags={setSelectedTag}
         selectedCities={selectedCities}
         setSelectedCities={setSelectedCities}
+        selectedLanguages={selectedLanguages}
+        setSelectedLanguages={setSelectedLanguages}
         tags={tags}
         setTags={setTags}
         fetchTagsFlag={fetchTagsFlag}
