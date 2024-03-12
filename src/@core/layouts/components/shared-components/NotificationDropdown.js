@@ -180,7 +180,15 @@ const NotificationDropdown = props => {
                 <Box sx={{ mr: 4, ml: 2.5, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
                   <MenuItemTitle>{notification.jobName}</MenuItemTitle>
                   <MenuItemSubtitle variant='body2'>
-                    <Link href={'https://www.google.com'} target='_blank' color='primary'>
+                    <Link
+                      href={'https://www.google.com'}
+                      target='_blank'
+                      style={{
+                        color:
+                          (notification.jobStatus === 'Processing' && 'orange') ||
+                          (notification.jobStatus === 'completed' && 'green')
+                      }}
+                    >
                       {notification.downloadLink}
                     </Link>
                   </MenuItemSubtitle>

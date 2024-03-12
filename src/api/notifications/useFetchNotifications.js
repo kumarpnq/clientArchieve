@@ -21,12 +21,13 @@ const useFetchNotifications = () => {
         if (notificationFlag || clientId) {
           setLoading(true)
 
-          const response = await axios.get(`${BASE_URL}/excelDumpNotification`, {
+          const response = await axios.get(`${BASE_URL}/clientArchiveNotificationList`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
             params: {
-              clientId: clientId
+              clientId: clientId,
+              days: 10
             }
           })
 
