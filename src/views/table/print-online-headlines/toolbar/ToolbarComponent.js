@@ -14,6 +14,7 @@ import useUserDataAndCompanies from 'src/api/print-online-headlines/useToolbarCo
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
+import axios from 'axios'
 
 const ToolbarComponent = ({
   // selectedCompanyId,
@@ -27,7 +28,7 @@ const ToolbarComponent = ({
   selectedTags,
   setSelectedTags,
 
-  // tags,
+  tags,
   setTags,
   fetchTagsFlag
 }) => {
@@ -37,10 +38,11 @@ const ToolbarComponent = ({
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
 
-  const { companies, languages, cities, media, tags } = useUserDataAndCompanies()
+  const { companies, languages, cities, media } = useUserDataAndCompanies()
 
   const selectedClient = useSelector(selectSelectedClient)
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
+  const clientId = selectedClient ? selectedClient.clientId : null
 
   const openDropdown = (event, anchorSetter) => {
     anchorSetter(event.currentTarget)
@@ -145,6 +147,26 @@ const ToolbarComponent = ({
     setSelectedTags(allTags)
   }
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            clientId: clientId
+          }
+        })
+        setTags(tagsResponse.data.clientTags)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    fetchData()
+  }, [clientId, selectedClient, setTags, fetchTagsFlag])
 
   return (
     <AppBar sx={{ position: 'static' }}>
