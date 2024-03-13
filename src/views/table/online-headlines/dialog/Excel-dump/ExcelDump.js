@@ -8,25 +8,52 @@ import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import axios from 'axios'
 
-const ExcelDumpDialog = ({ open, handleClose }) => {
+// ** third party imports
+import toast from 'react-hot-toast'
+
+// ** Redux
+import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import {
+  selectSelectedClient,
+  selectSelectedCompetitions,
+  setNotificationFlag,
+  selectNotificationFlag,
+  selectSelectedStartDate,
+  selectSelectedEndDate
+} from 'src/store/apps/user/userSlice'
+import { getArticleFieldList } from 'src/api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi'
+import { formatDateTime } from 'src/utils/formatDateTime'
+import useExcelDump from 'src/api/dump/useExcelDump'
+
+const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
+  //Redux call
+  const selectedClient = useSelector(selectSelectedClient)
+  const selectedCompanyIds = useSelector(selectSelectedCompetitions)
+  const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedFromDate = useSelector(selectSelectedStartDate)
+  const selectedEndDate = useSelector(selectSelectedEndDate)
+  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
+  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+
+  // states
   const [fields, setFields] = useState([])
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
+
+  const { responseData, loading, error, postData } = useExcelDump()
+  const dispatch = useDispatch()
+  const notificationFlag = useSelector(selectNotificationFlag)
+  const articleIds = dataForExcelDump.length > 0 && dataForExcelDump.flatMap(item => item.articleId)
+
   useEffect(() => {
     const fetchFieldList = async () => {
       try {
-        const accessToken = localStorage.getItem('accessToken')
-        const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+        const storedToken = localStorage.getItem('accessToken')
 
-        if (accessToken) {
-          const response = await axios.get(`${BASE_URL}/onlineDownloadFieldList`, {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          })
-          setFields(response.data.publicationsTypeList)
+        if (storedToken) {
+          const fields = await getArticleFieldList(storedToken)
+          setFields(fields)
         }
       } catch (error) {
         console.error('Error fetching field list:', error)
@@ -35,11 +62,10 @@ const ExcelDumpDialog = ({ open, handleClose }) => {
 
     fetchFieldList()
   }, [])
-
   useEffect(() => {
     if (selectAll) {
       // If "Select All" is checked, select all fields
-      setSelectedFields(fields.map(field => field.fieldId))
+      setSelectedFields(Object.keys(fields))
     } else {
       // If "Select All" is unchecked, clear selected fields
       setSelectedFields([])
@@ -66,8 +92,37 @@ const ExcelDumpDialog = ({ open, handleClose }) => {
   }
 
   const handleDownload = () => {
-    console.log('Selected Fields:', selectedFields)
+    dispatch(setNotificationFlag(!notificationFlag))
+
+    const searchCriteria = {}
+    dataForExcelDump.forEach(item => {
+      const [key] = Object.keys(item)
+      const value = item[key]
+      searchCriteria[key] = value
+    })
+    searchCriteria.fromDate = formattedStartDate
+    searchCriteria.toDate = formattedEndDate
+    searchCriteria.selectedCompanyIds = selectedCompanyIds
+
+    // Remove articleIds from searchCriteria
+    delete searchCriteria.articleId
+
+    postData({
+      clientId,
+      articleIds,
+      selectedFields,
+      searchCriteria,
+      notificationFlag
+    })
+
+    dispatch(setNotificationFlag(!notificationFlag))
     handleClose()
+    setSelectedFields([])
+    setSelectAll(false)
+    if (error) return toast.error('something wrong.')
+    if (responseData?.message) {
+      responseData.message && toast.success(responseData.message)
+    }
   }
 
   return (
@@ -79,16 +134,16 @@ const ExcelDumpDialog = ({ open, handleClose }) => {
           label='Select All'
         />
         <Grid container spacing={1}>
-          {fields.map(field => (
-            <Grid item xs={6} key={field.fieldId}>
+          {Object.entries(fields).map(([fieldName, fieldLabel]) => (
+            <Grid item xs={6} key={fieldName}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={selectedFields.includes(field.fieldId)}
-                    onChange={() => handleCheckboxChange(field.fieldId)}
+                    checked={selectedFields.includes(fieldName)}
+                    onChange={() => handleCheckboxChange(fieldName)}
                   />
                 }
-                label={field.fieldName}
+                label={fieldLabel}
               />
             </Grid>
           ))}
