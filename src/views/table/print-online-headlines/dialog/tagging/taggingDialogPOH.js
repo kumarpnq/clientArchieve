@@ -16,7 +16,10 @@ import DialogContentText from '@mui/material/DialogContentText'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
-import useUpdateTagForMultipleOnlineArticles from 'src/api/print-online-headlines/tags/useUpdateTagForMultiplePOHArticles'
+import useUpdateTagForMultipleArticles from 'src/api/print-headlines/tags/useUpdateTagsForMultipleArticles'
+
+// ** third party imports
+import toast from 'react-hot-toast'
 
 const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, setFetchTagsFlag }) => {
   const [tag, setTag] = useState('')
@@ -30,10 +33,10 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
     companyIds: companies.map(company => company.id)
   }))
 
-  const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleOnlineArticles({
+  const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleArticles({
     clientId: clientId,
     article: article,
-    tag: tag
+    tag: tag || selectedTag
   })
 
   const handleTagChange = event => {
@@ -48,16 +51,26 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
   }, [])
 
   const handleSave = async () => {
+    if (!tag && !selectedTag) return toast.error('Please enter a new or existing tag.')
     try {
       await updateTagForMultipleArticles()
       setFetchTagsFlag(!fetchTagsFlag)
       setTag('')
+      setSelectedTag('')
       onClose()
+      toast.success('tag updated.', {
+        duration: 2000
+      })
     } catch (error) {
       console.error('Error updating tags:', error)
+      toast.error("Couldn't save the changes.", {
+        duration: 2000
+      })
       setTag('')
+      setSelectedTag('')
     }
   }
+
   if (!selectedArticles || selectedArticles.length === 0) {
     return (
       <Dialog open={open} onClose={onClose}>

@@ -161,6 +161,7 @@ const TableSelection = () => {
 
   // ** State
   const [articles, setArticles] = useState([])
+  const [selectedArticles, setSelectedArticles] = useState([])
   const [tags, setTags] = useState([])
   const [fetchTagsFlag, setFetchTagsFlag] = useState([])
 
@@ -218,6 +219,28 @@ const TableSelection = () => {
     // Add logic to save changes to the article
     console.log('Saving changes:', editedArticle)
   }
+
+  const dataForDump = [
+    selectedGeography.length && { geography: selectedGeography },
+    selectedMedia.length && { media: selectedMedia },
+    selectedTags.length && { tags: selectedTags },
+
+    //  selectedEditionType && { editionType: selectedEditionType },
+    //  selectedPublicationType && { publicationCategory: selectedPublicationType },
+    //  selectedSortBy && { sortby: selectedSortBy },
+    searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
+    searchParameters.searchBody && { body: searchParameters.searchBody },
+    searchParameters.journalist && { journalist: searchParameters.journalist },
+    searchParameters.combinationOfWords && { wordCombo: searchParameters.combinationOfWords },
+    searchParameters.anyOfWords && { anyWord: searchParameters.anyOfWords },
+    searchParameters.ignoreThis && { ignoreWords: searchParameters.ignoreThis },
+    searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
+    selectedArticles.length &&
+      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
+    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && 'P') || (allCheck && 'A') }
+
+    // allCheck && { totalRecords: +allCheck }
+  ].filter(Boolean)
 
   // Fetch social feeds based on the provided API
   const fetchArticles = async () => {
@@ -396,8 +419,6 @@ const TableSelection = () => {
     setPopupOpen(true)
   }
 
-  const [selectedArticles, setSelectedArticles] = useState([])
-
   const handleSelect = article => {
     // Check if the article is already selected
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
@@ -514,6 +535,7 @@ const TableSelection = () => {
         tags={tags}
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
+        dataForDump={dataForDump}
       />
       {/* multiple selection */}
       {articles.length > 0 && (

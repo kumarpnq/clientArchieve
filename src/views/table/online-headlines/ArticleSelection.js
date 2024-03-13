@@ -209,10 +209,6 @@ const TableSelection = () => {
     selectedGeography.length && { geography: selectedGeography },
     selectedMedia.length && { media: selectedMedia },
     selectedTags.length && { tags: selectedTags },
-
-    // selectedEditionType && { editionType: selectedEditionType },
-    // selectedPublicationType && { publicationCategory: selectedPublicationType },
-    // selectedSortBy && { sortby: selectedSortBy },
     searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
     searchParameters.searchBody && { body: searchParameters.searchBody },
     searchParameters.journalist && { journalist: searchParameters.journalist },
@@ -221,9 +217,8 @@ const TableSelection = () => {
     searchParameters.ignoreThis && { ignoreWords: searchParameters.ignoreThis },
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
-      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage ||
-      (allCheck && { selectPageorAll: (currentPage && 'P') || (allCheck && 'A') })
+      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.socialFeedId) },
+    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && 'P') || (allCheck && 'A') }
 
     // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
@@ -439,10 +434,10 @@ const TableSelection = () => {
     if (allCheck && event.target.checked) {
       setAllCheck(false)
       setPageCheck(true)
-      setSelectedArticles([...articles])
+      setSelectedArticles([...socialFeeds])
     } else {
       setPageCheck(event.target.checked)
-      setSelectedArticles(event.target.checked ? [...articles] : [])
+      setSelectedArticles(event.target.checked ? [...socialFeeds] : [])
     }
   }
 

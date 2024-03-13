@@ -116,16 +116,18 @@ const ArticleListToolbar = ({
   filterPopoverAnchor,
   closeFilterPopover,
 
-  selectedFromDate,
+  selectedStartDate,
   selectedEndDate,
   primaryColor,
   setSearchParameters,
   selectedArticles,
   tags,
   fetchTagsFlag,
-  setFetchTagsFlag
+  setFetchTagsFlag,
+  dataForDump
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
+  console.log(tags)
 
   //tools visibility
   const { isDossierVisible, isMailVisible } = useToolPermission()
@@ -274,7 +276,7 @@ const ArticleListToolbar = ({
               <EmailIcon />
             </Button>
           </CustomTooltip>
-          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />
+          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} dataForMailDump={dataForDump} />
         </Fragment>
       )}
 
@@ -295,8 +297,9 @@ const ArticleListToolbar = ({
           <DossierDialog
             open={dossierDialogOpen}
             handleClose={handleDossierDialogClose}
-            selectedStartDate={selectedFromDate}
+            selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
+            dataForDossierDownload={dataForDump}
           />
         </Fragment>
       )}

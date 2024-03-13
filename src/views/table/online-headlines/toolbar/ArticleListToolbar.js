@@ -351,7 +351,11 @@ const ArticleListToolbar = ({
               <ExcelDumpIcon />
             </Button>
           </CustomTooltip>
-          <ExcelDumpDialog open={isExcelDumpOpen} handleClose={handleExcelDumpDialogClose} />
+          <ExcelDumpDialog
+            open={isExcelDumpOpen}
+            handleClose={handleExcelDumpDialogClose}
+            dataForExcelDump={dataForDump}
+          />
         </Fragment>
       )}
 
