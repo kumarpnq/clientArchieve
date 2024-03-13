@@ -123,7 +123,8 @@ const ArticleListToolbar = ({
   selectedArticles,
   tags,
   fetchTagsFlag,
-  setFetchTagsFlag
+  setFetchTagsFlag,
+  dataForDump
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -274,7 +275,7 @@ const ArticleListToolbar = ({
               <EmailIcon />
             </Button>
           </CustomTooltip>
-          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} />
+          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} dataForMailDump={dataForDump} />
         </Fragment>
       )}
 
