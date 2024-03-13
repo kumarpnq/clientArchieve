@@ -211,7 +211,11 @@ const NotificationDropdown = props => {
               key={index}
               fullWidth
               onClick={() => handleNotificationDetails(notification.jobId)}
-              sx={{ padding: '15px', backgroundColor: !notification.readJobStatus ? 'primary.main' : '' }}
+              sx={{
+                padding: '15px',
+
+                backgroundColor: !notification.readJobStatus ? theme => theme.palette.action.hover : ''
+              }}
             >
               <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
                 {/* <RenderAvatar notification={notification} /> */}
