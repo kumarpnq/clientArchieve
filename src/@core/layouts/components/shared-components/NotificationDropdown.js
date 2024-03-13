@@ -33,6 +33,9 @@ import useUpdateClientNotification from 'src/api/notifications/useUpdateReadClie
 import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
 import { setNotificationFlag, selectNotificationFlag } from 'src/store/apps/user/userSlice'
 
+// auto notification status import
+import useAutoNotification from 'src/api/notifications/useAutoNotificationStatus'
+
 // ** Styled Menu component
 const Menu = styled(MuiMenu)(({ theme }) => ({
   '& .MuiMenu-paper': {
@@ -103,6 +106,9 @@ const ScrollWrapper = ({ children, hidden }) => {
 }
 
 const NotificationDropdown = props => {
+  // ** auto notification
+  useAutoNotification()
+
   // ** Props
   const { settings, notifications } = props
 
