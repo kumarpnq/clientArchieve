@@ -116,7 +116,7 @@ const ArticleListToolbar = ({
   filterPopoverAnchor,
   closeFilterPopover,
 
-  selectedFromDate,
+  selectedStartDate,
   selectedEndDate,
   primaryColor,
   setSearchParameters,
@@ -296,8 +296,9 @@ const ArticleListToolbar = ({
           <DossierDialog
             open={dossierDialogOpen}
             handleClose={handleDossierDialogClose}
-            selectedStartDate={selectedFromDate}
+            selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
+            dataForDossierDownload={dataForDump}
           />
         </Fragment>
       )}
