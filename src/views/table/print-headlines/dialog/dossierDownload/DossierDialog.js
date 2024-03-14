@@ -25,8 +25,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import {
+  selectSelectedClient,
+  setNotificationFlag,
+  selectNotificationFlag,
+  setFetchAutoStatusFlag,
+  selectFetchAutoStatusFlag
+} from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 
 // import useClientMailerList from 'src/api/global/useClientMailerList '
@@ -55,6 +61,11 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
   const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join()
 
+  // redux states
+  const dispatch = useDispatch()
+  const notificationFlag = useSelector(selectNotificationFlag)
+  const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
+
   const handleEmailChange = event => {
     const { value } = event.target
     setEmail(value)
@@ -78,11 +89,14 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   }
 
   const handleSubmit = () => {
+    dispatch(setNotificationFlag(!notificationFlag))
     const searchCriteria = { fromDate, toDate, selectPageOrAll }
     const recipients = { recipients: selectedEmail || email }
     sendDossierRequest(clientId, articleIds, dossierType, recipients, searchCriteria)
 
     // Close the dialog
+    dispatch(setNotificationFlag(!notificationFlag))
+    dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     handleClose()
     setEmail('')
     setSelectedEmail([])

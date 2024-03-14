@@ -1,19 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import axios from 'axios'
 import { BASE_URL } from '../base'
-import { useSelector } from 'react-redux'
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectFetchAutoStatusFlag, selectSelectedClient, setFetchAutoStatusFlag } from 'src/store/apps/user/userSlice'
 import toast from 'react-hot-toast'
 
 // this hook (useAutoNotification) is using inside the NotificationDropdown.js
 const useAutoNotification = () => {
-  const [stopFetchingFlag, setStopFetchingFlag] = useState(false)
   const selectedClient = useSelector(selectSelectedClient)
+  const fetchAutoStatusFlag = useSelector(selectFetchAutoStatusFlag)
+
   const clientId = selectedClient ? selectedClient.clientId : null
+  const dispatch = useDispatch()
   const storedToken = localStorage.getItem('accessToken')
   const url = `${BASE_URL}/downloadStatusPopNotification`
 
   const fetchAutoNotificationStatus = async () => {
+    dispatch(setFetchAutoStatusFlag(true))
+
     try {
       const res = await axios.get(url, {
         headers: {
@@ -27,17 +31,14 @@ const useAutoNotification = () => {
       const jobData = res.data.job
       const completeJobs = jobData.filter(item => item.jobStatus === 'Completed')
       const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing')
-
       if (completeJobs.length) {
         completeJobs.map(item => toast.success(`Job: ${item.jobName}. Status: ${item.jobStatus}`, { duration: 6000 }))
 
         // Check if all jobs have a status of 'Completed'
-        if (!completeJobs.length) {
-          setStopFetchingFlag(true)
-        } else if (jobData.length) {
-          if (!keepFetching) return setStopFetchingFlag(true)
+        if (jobData.length && keepFetching) {
+          dispatch(setFetchAutoStatusFlag(true))
         } else {
-          setStopFetchingFlag(true)
+          dispatch(setFetchAutoStatusFlag(false))
         }
       }
     } catch (error) {
@@ -47,7 +48,7 @@ const useAutoNotification = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (storedToken && clientId && !stopFetchingFlag) {
+      if (storedToken && clientId && fetchAutoStatusFlag) {
         await fetchAutoNotificationStatus()
       }
     }
@@ -56,12 +57,12 @@ const useAutoNotification = () => {
 
     const intervalId = setInterval(() => {
       fetchData()
-    }, 25000)
+    }, 10000)
 
     return () => {
       clearInterval(intervalId)
     }
-  }, [clientId, storedToken, stopFetchingFlag])
+  }, [clientId, storedToken, fetchAutoStatusFlag])
 }
 
 export default useAutoNotification

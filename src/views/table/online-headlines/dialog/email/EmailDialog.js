@@ -19,8 +19,16 @@ import useClientMailerList from 'src/api/global/useClientMailerList '
 import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 
 // ** redux imports
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient, selectSelectedStartDate, selectSelectedEndDate } from 'src/store/apps/user/userSlice'
+import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import {
+  selectSelectedClient,
+  selectSelectedStartDate,
+  selectSelectedEndDate,
+  setFetchAutoStatusFlag,
+  setNotificationFlag,
+  selectNotificationFlag,
+  selectFetchAutoStatusFlag
+} from 'src/store/apps/user/userSlice'
 
 //* third party imports
 import toast from 'react-hot-toast'
@@ -31,6 +39,9 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
+  const notificationFlag = useSelector(selectNotificationFlag)
+  const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
+  const dispatch = useDispatch()
 
   // state
   const [emailType, setEmailType] = useState({})
@@ -64,9 +75,12 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
 
   const handleSendEmail = () => {
     setFetchEmailFlag(!fetchEmailFlag)
+    dispatch(setNotificationFlag(!notificationFlag))
     const recipients = emailType
     const searchCriteria = { fromDate: selectedFromDate, toDate: selectedEndDate, selectPageOrAll }
     sendMailRequest(clientId, recipients, searchCriteria)
+    dispatch(setNotificationFlag(!notificationFlag))
+    dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
     if (error) {
       toast.error('something wrong.')

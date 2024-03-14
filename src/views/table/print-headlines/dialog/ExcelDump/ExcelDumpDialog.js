@@ -19,7 +19,9 @@ import {
   setNotificationFlag,
   selectNotificationFlag,
   selectSelectedStartDate,
-  selectSelectedEndDate
+  selectSelectedEndDate,
+  setFetchAutoStatusFlag,
+  selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
@@ -39,8 +41,11 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
   const { responseData, loading, error, postData } = useExcelDump()
+
+  // redux states
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
+  const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
   const articleIds = dataForExcelDump.length > 0 && dataForExcelDump.flatMap(item => item.articleId)
 
   useEffect(() => {
@@ -115,11 +120,12 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
     })
 
     dispatch(setNotificationFlag(!notificationFlag))
+    dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     handleClose()
     setSelectedFields([])
     setSelectAll(false)
     if (error) return toast.error('something wrong.')
-    if (responseData.message) {
+    if (responseData?.message) {
       responseData.message && toast.success(responseData.message)
     }
   }

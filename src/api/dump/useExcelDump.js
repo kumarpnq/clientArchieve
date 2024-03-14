@@ -3,7 +3,7 @@ import { BASE_URL } from '../base'
 import { useState } from 'react'
 
 const useExcelDump = () => {
-  const [responseData, setResponseData] = useState(null)
+  const [responseData, setResponseData] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
