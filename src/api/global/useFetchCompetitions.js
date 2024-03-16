@@ -31,6 +31,7 @@ const useFetchCompetition = () => {
         setLoading(false)
       } catch (error) {
         console.log(error)
+        setCompetitions([])
         setError(error)
         setLoading(false)
       }

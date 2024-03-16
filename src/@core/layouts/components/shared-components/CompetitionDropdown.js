@@ -21,11 +21,18 @@ const Competition = props => {
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedClient = useSelector(selectSelectedClient)
   const priorityCompanyId = selectedClient?.priorityCompanyId
+  const userData = useSelector(selectUserData)
 
-  const [localeComps, setLocaleComps] = useState([])
+  const competitionSelection = userData.clientArchiveRoles
+    .filter(i => i.name === 'competition')
+    .map(i => i.option)
+    .join()
 
   const [anchorEl, setAnchorEl] = useState(null)
   const { competitions } = useFetchCompetition()
+  console.log(competitions)
+
+  const [localeComps, setLocaleComps] = useState([])
 
   const handleClientClick = selectedComp => {
     setLocaleComps(prevSelected => {
@@ -41,19 +48,24 @@ const Competition = props => {
     })
   }
   useEffect(() => {
-    dispatch(setSelectedCompetitions(priorityCompanyId))
-  }, [])
+    const allCompanyIds = competitions.map(company => company.companyId)
+    const defaultSelection = competitionSelection === 'All' ? allCompanyIds : [priorityCompanyId]
+    setLocaleComps(defaultSelection)
+
+    // dispatch(setSelectedCompetitions(defaultSelection))
+  }, [competitionSelection, competitions, dispatch, priorityCompanyId])
+
   useEffect(() => {
     dispatch(setSelectedCompetitions(localeComps))
-  }, [localeComps])
+  }, [localeComps, dispatch])
 
   const handleSelectAllCompetitions = () => {
     const allCompanyIds = competitions.map(company => company.companyId)
-    dispatch(setSelectedCompetitions(allCompanyIds))
+    setLocaleComps([...allCompanyIds])
   }
 
   const handleDeselectAllCompetitions = () => {
-    dispatch(setSelectedCompetitions([]))
+    setLocaleComps([])
   }
 
   const handleIconClick = event => {
