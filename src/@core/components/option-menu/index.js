@@ -54,6 +54,7 @@ const OptionsMenu = props => {
   const { direction } = settings
 
   const handleClick = event => {
+    event.stopPropagation()
     setAnchorEl(event.currentTarget)
   }
 

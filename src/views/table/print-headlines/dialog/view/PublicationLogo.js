@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Typography from '@mui/material/Typography'
 import axios from 'axios'
 import Card from '@mui/material/Card'
+import { BASE_URL } from 'src/api/base'
 
 const PublicationLogo = ({ articles }) => {
   const [logoInfo, setLogoInfo] = useState({
@@ -19,10 +20,9 @@ const PublicationLogo = ({ articles }) => {
         const storedToken = localStorage.getItem('accessToken')
 
         if (storedToken) {
-          const base_url = 'http://51.68.220.77:8001' // Replace with your base URL
           const { clientId, publicationId } = articles // Assuming articles contain clientId and publicationId
 
-          const response = await axios.get(`${base_url}/clientDisplayDetails/`, {
+          const response = await axios.get(`${BASE_URL}/clientDisplayDetails/`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },

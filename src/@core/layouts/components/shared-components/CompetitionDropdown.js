@@ -30,7 +30,6 @@ const Competition = props => {
 
   const [anchorEl, setAnchorEl] = useState(null)
   const { competitions } = useFetchCompetition()
-  console.log(competitions)
 
   const [localeComps, setLocaleComps] = useState([])
 

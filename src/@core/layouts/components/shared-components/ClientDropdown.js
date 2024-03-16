@@ -49,23 +49,19 @@ const ClientListDropdown = () => {
   }))
 
   return (
-    <>
-      <OptionsMenu
-        iconButtonProps={{ color: 'primary' }}
-        icon={
-          <Icon
-            fontSize='1.625rem'
-            icon='ant-design:user-switch-outlined'
-            onClick={handleIconClick}
-            style={{ cursor: 'pointer' }}
-          />
-        }
-        menuProps={{ sx: { '& .MuiMenu-paper': { mt: 4.25, minWidth: 200 } } }}
-        options={options}
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      />
-    </>
+    <OptionsMenu
+      iconButtonProps={{ color: 'primary' }}
+      icon={
+        <Icon
+          fontSize='1.625rem'
+          icon='ant-design:user-switch-outlined'
+          onClick={handleIconClick}
+          style={{ cursor: 'pointer' }}
+        />
+      }
+      menuProps={{ sx: { '& .MuiMenu-paper': { mt: 4.25, minWidth: 200 } } }}
+      options={options}
+    />
   )
 }
 
