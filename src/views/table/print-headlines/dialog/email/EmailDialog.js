@@ -19,7 +19,7 @@ import useClientMailerList from 'src/api/global/useClientMailerList '
 import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 
 // * redux call
-import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { useSelector, useDispatch } from 'react-redux'
 import {
   selectSelectedClient,
   selectSelectedStartDate,
@@ -32,6 +32,7 @@ import {
 
 //* third party imports
 import toast from 'react-hot-toast'
+import { formatDateTime } from 'src/utils/formatDateTime'
 
 const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   //redux state
@@ -54,6 +55,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
   const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join()
+  const articleIds = dataForMail.length && dataForMail.map(i => i.articleId).flat()
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -78,9 +80,12 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   const handleSendEmail = () => {
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
-    const recipients = emailType
-    const searchCriteria = { fromDate: selectedFromDate, toDate: selectedEndDate, selectPageOrAll }
-    sendMailRequest(clientId, recipients, searchCriteria)
+    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
+
+    const formattedFromDate = formatDateTime(selectedFromDate)
+    const formattedToDate = formatDateTime(selectedEndDate)
+    const searchCriteria = { fromDate: formattedFromDate, toDate: formattedToDate, selectPageOrAll }
+    sendMailRequest(clientId, articleIds, recipients, searchCriteria)
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()

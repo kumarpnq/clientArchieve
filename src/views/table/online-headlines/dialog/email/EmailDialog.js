@@ -19,7 +19,7 @@ import useClientMailerList from 'src/api/global/useClientMailerList '
 import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 
 // ** redux imports
-import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { useSelector, useDispatch } from 'react-redux'
 import {
   selectSelectedClient,
   selectSelectedStartDate,
@@ -32,6 +32,7 @@ import {
 
 //* third party imports
 import toast from 'react-hot-toast'
+import { formatDateTime } from 'src/utils/formatDateTime'
 
 const EmailDialog = ({ open, onClose, dataForMail }) => {
   //redux state
@@ -49,8 +50,12 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
   const [selectedEmails, setSelectedEmails] = useState([])
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
 
+  // customs
+  const articleIds = dataForMail.length && dataForMail.map(i => i.articleId).flat()
+
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
+
   const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join()
 
   const handleEmailTypeChange = (event, email) => {
@@ -76,9 +81,19 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
   const handleSendEmail = () => {
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
-    const recipients = emailType
-    const searchCriteria = { fromDate: selectedFromDate, toDate: selectedEndDate, selectPageOrAll }
-    sendMailRequest(clientId, recipients, searchCriteria)
+
+    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
+
+    const formattedFromDate = formatDateTime(selectedFromDate)
+    const formattedToDate = formatDateTime(selectedEndDate)
+
+    const searchCriteria = {
+      fromDate: formattedFromDate,
+      toDate: formattedToDate,
+      selectPageOrAll
+    }
+
+    sendMailRequest(clientId, articleIds, recipients, searchCriteria)
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
@@ -148,9 +163,9 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
               onChange={e => handleEmailTypeChange(e, email)}
               style={{ marginLeft: '10px' }}
             >
-              <FormControlLabel value='to' control={<Radio />} label='To' />
-              <FormControlLabel value='cc' control={<Radio />} label='Cc' />
-              <FormControlLabel value='bcc' control={<Radio />} label='Bcc' />
+              <FormControlLabel value='To' control={<Radio />} label='To' />
+              <FormControlLabel value='Cc' control={<Radio />} label='Cc' />
+              <FormControlLabel value='Bcc' control={<Radio />} label='Bcc' />
             </RadioGroup>
           </div>
         ))}

@@ -80,18 +80,6 @@ const renderSocialFeed = params => {
         </Typography>{' '}
         {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
       </ListItem>
-      <ListItem>
-        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-          Edition Type:
-        </Typography>{' '}
-        {row.editionTypeName}
-      </ListItem>
-      <ListItem>
-        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-          Page Number:
-        </Typography>{' '}
-        {row.pageNumber}
-      </ListItem>
     </List>
   )
 
@@ -199,6 +187,7 @@ const TableSelection = () => {
   const [selectedLanguage, setSelectedLanguage] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTags, setSelectedTags] = useState([])
+  const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(10)
   const [loading, setLoading] = useState(true)
@@ -218,7 +207,7 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.socialFeedId) },
-    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && 'P') || (allCheck && 'A') }
+    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A') }
 
     // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
@@ -234,61 +223,65 @@ const TableSelection = () => {
   }
 
   // Fetch social feeds based on the provided API
-  const fetchSocialFeeds = async () => {
-    try {
-      setLoading(true)
-      const storedToken = localStorage.getItem('accessToken')
-      if (storedToken) {
-        const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
-        const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-        const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
-
-        const request_params = {
-          clientIds: clientId,
-          companyIds: selectedCompetitions,
-          fromDate: formattedStartDate,
-          toDate: formattedEndDate,
-          page: currentPage,
-          recordsPerPage: recordsPerPage,
-
-          geography: selectedGeography,
-          media: selectedMedia,
-          tags: selectedTags,
-
-          // Advanced search
-          headline: searchParameters.searchHeadline,
-          body: searchParameters.searchBody,
-          wordCombo: searchParameters.combinationOfWords,
-          anyWord: searchParameters.anyOfWords,
-          ignoreWords: searchParameters.ignoreThis,
-          phrase: searchParameters.exactPhrase
-        }
-
-        const response = await axios.get(`${base_url}/clientWiseSocialFeeds/`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          params: request_params
-        })
-
-        const totalRecords = response.data.totalRecords || 0
-
-        setSocialFeeds(response.data.socialFeeds)
-
-        // Update totalRecords in the state
-        setPaginationModel(prevPagination => ({
-          ...prevPagination,
-          totalRecords
-        }))
-      }
-    } catch (error) {
-      console.error('Error fetching social feeds:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
   useEffect(() => {
+    const fetchSocialFeeds = async () => {
+      try {
+        setLoading(true)
+        const storedToken = localStorage.getItem('accessToken')
+        if (storedToken) {
+          const base_url = process.env.NEXT_PUBLIC_BASE_URL
+
+          const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
+          const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+
+          const request_params = {
+            clientIds: clientId,
+            companyIds: selectedCompetitions,
+            fromDate: formattedStartDate,
+            toDate: formattedEndDate,
+            page: currentPage,
+            recordsPerPage: recordsPerPage,
+
+            geography: selectedGeography,
+            media: selectedMedia,
+            tags: selectedTags,
+
+            // Advanced search
+            headline: searchParameters.searchHeadline,
+            body: searchParameters.searchBody,
+            wordCombo: searchParameters.combinationOfWords,
+            anyWord: searchParameters.anyOfWords,
+            ignoreWords: searchParameters.ignoreThis,
+            phrase: searchParameters.exactPhrase,
+
+            // sort by
+            sortby: selectedSortBy
+          }
+
+          const response = await axios.get(`${base_url}/clientWiseSocialFeeds/`, {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            },
+            params: request_params
+          })
+
+          const totalRecords = response.data.totalRecords || 0
+
+          setSocialFeeds(response.data.socialFeeds)
+
+          // Update totalRecords in the state
+          setPaginationModel(prevPagination => ({
+            ...prevPagination,
+            totalRecords
+          }))
+        }
+      } catch (error) {
+        console.error('Error fetching social feeds:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchSocialFeeds()
   }, [
     clientId,
@@ -301,7 +294,8 @@ const TableSelection = () => {
     selectedLanguage,
     selectedMedia,
     selectedTags,
-    searchParameters
+    searchParameters,
+    selectedSortBy
   ])
 
   // Filter articles based on the selected date range and search query
@@ -428,6 +422,7 @@ const TableSelection = () => {
       ignoreThis: ''
     })
     setCurrentPage(1)
+    setSelectedSortBy(null)
   }
 
   const handlePageCheckChange = event => {
@@ -495,6 +490,10 @@ const TableSelection = () => {
         tags={tags}
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
+        setSelectedSortBy={setSelectedSortBy}
+        selectedSortBy={selectedSortBy}
+        selectedStartDate={selectedFromDate}
+        selectedEndDate={selectedEndDate}
       />
       {/* multiple selection */}
       {socialFeeds.length > 0 && (

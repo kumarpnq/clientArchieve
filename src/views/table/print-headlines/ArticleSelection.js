@@ -218,7 +218,7 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && 'P') || (allCheck && 'A') }
+    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A') }
 
     // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
@@ -326,9 +326,7 @@ const TableSelection = () => {
     selectedTag,
     selectedCities,
     searchParameters,
-
     selectedEditionType,
-
     selectedPublicationType,
     selectedSortBy
   ])
@@ -416,7 +414,9 @@ const TableSelection = () => {
 
   const handleRowClick = params => {
     setSelectedArticle(params.row)
-    setPopupOpen(true)
+
+    // currently hiding the click summary
+    setPopupOpen(false)
   }
 
   const handleSelect = article => {

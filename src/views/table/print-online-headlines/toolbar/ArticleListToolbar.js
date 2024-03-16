@@ -40,6 +40,7 @@ import DossierDialog from '../dialog/download/DossierDownload'
 import RssFeedDialog from '../dialog/rss-feed/RssFeedDialog'
 import { useToolPermission } from 'src/hooks/showHideDownloadTools'
 import TaggingDialog from '../dialog/tagging/taggingDialogPOH'
+import ExcelDumpDialog from '../dialog/excelDump/ExcelDumpDialog'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -71,6 +72,18 @@ const AdvancedSearchIcon = () => (
       <path
         fill='currentColor'
         d='m15.5 14l5 5l-1.5 1.5l-5-5v-.79l-.27-.28A6.471 6.471 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.5 6.5 0 0 1 9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.57 4.23l.28.27zm-6 0C12 14 14 12 14 9.5S12 5 9.5 5S5 7 5 9.5S7 14 9.5 14m2.5-4h-2v2H9v-2H7V9h2V7h1v2h2z'
+      />
+    </svg>
+  </SvgIcon>
+)
+
+// Excel Dump Icon
+const ExcelDumpIcon = () => (
+  <SvgIcon>
+    <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>
+      <path
+        fill='currentColor'
+        d='m2.859 2.877l12.57-1.795a.5.5 0 0 1 .571.494v20.848a.5.5 0 0 1-.57.494L2.858 21.123a1 1 0 0 1-.859-.99V3.867a1 1 0 0 1 .859-.99M17 3h4a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1h-4zm-6.8 9L13 8h-2.4L9 10.286L7.4 8H5l2.8 4L5 16h2.4L9 13.714L10.6 16H13z'
       />
     </svg>
   </SvgIcon>
@@ -127,10 +140,9 @@ const ArticleListToolbar = ({
   dataForDump
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
-  console.log(tags)
 
   //tools visibility
-  const { isDossierVisible, isMailVisible } = useToolPermission()
+  const { isDossierVisible, isMailVisible, isExcelDumpVisible } = useToolPermission()
 
   // const [selectedFilter, setSelectedFilter] = useState('1D')
 
@@ -211,6 +223,16 @@ const ArticleListToolbar = ({
   const handleDossierDialogClose = () => {
     setDossierDialogOpen(false)
   }
+  const [excelDumpDialogOpen, setExcelDumpDialogOpen] = React.useState(false)
+
+  const handleExcelDumpDialogOpen = () => {
+    setExcelDumpDialogOpen(true)
+  }
+
+  const handleExcelDumpDialogClose = () => {
+    setExcelDumpDialogOpen(false)
+  }
+
   const [taggingDialogOpen, setTaggingDialogOpen] = useState(false)
 
   const handleTaggingDialogOpen = () => {
@@ -300,6 +322,22 @@ const ArticleListToolbar = ({
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             dataForDossierDownload={dataForDump}
+          />
+        </Fragment>
+      )}
+      {isExcelDumpVisible && (
+        <Fragment>
+          <CustomTooltip title='Excel Dump'>
+            <Button onClick={handleExcelDumpDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+              <ExcelDumpIcon />
+            </Button>
+          </CustomTooltip>
+
+          {/* Add the ExcelDumpDialog component */}
+          <ExcelDumpDialog
+            open={excelDumpDialogOpen}
+            handleClose={handleExcelDumpDialogClose}
+            dataForExcelDump={dataForDump}
           />
         </Fragment>
       )}

@@ -31,6 +31,7 @@ import {
 
 // ** third party imports
 import toast from 'react-hot-toast'
+import { formatDateTime } from 'src/utils/formatDateTime'
 
 const EmailDialog = ({ open, onClose, dataForMailDump }) => {
   const [emailType, setEmailType] = useState({})
@@ -50,6 +51,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
   const selectPageOrAll = dataForMailDump.length && dataForMailDump.map(i => i.selectPageorAll).join()
+  const articleIds = dataForMailDump.length && dataForMailDump.map(i => i.articleId).flat()
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -74,9 +76,12 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
   const handleSendEmail = () => {
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
-    const recipients = emailType
-    const searchCriteria = { fromDate: selectedFromDate, toDate: selectedEndDate, selectPageOrAll }
-    sendMailRequest(clientId, recipients, searchCriteria)
+    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
+
+    const formattedFromDate = formatDateTime(selectedFromDate)
+    const formattedToDate = formatDateTime(selectedEndDate)
+    const searchCriteria = { fromDate: formattedFromDate, toDate: formattedToDate, selectPageOrAll }
+    sendMailRequest(clientId, articleIds, recipients, searchCriteria)
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()

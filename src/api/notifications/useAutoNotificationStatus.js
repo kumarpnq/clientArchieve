@@ -29,7 +29,7 @@ const useAutoNotification = () => {
       })
 
       const jobData = res.data.job
-      const completeJobs = jobData.filter(item => item.jobStatus === 'Completed')
+      const completeJobs = jobData.length && jobData.filter(item => item.jobStatus === 'Completed')
       const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing')
       if (completeJobs.length) {
         completeJobs.map(item => toast.success(`Job: ${item.jobName}. Status: ${item.jobStatus}`, { duration: 6000 }))
@@ -57,7 +57,7 @@ const useAutoNotification = () => {
 
     const intervalId = setInterval(() => {
       fetchData()
-    }, 10000)
+    }, 25000)
 
     return () => {
       clearInterval(intervalId)

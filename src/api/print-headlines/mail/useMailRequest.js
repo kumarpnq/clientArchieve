@@ -6,8 +6,9 @@ const useMailRequest = () => {
   const [response, setResponse] = useState(null)
   const [error, setError] = useState(null)
 
-  const sendMailRequest = async (clientId, recipients, searchCriteria) => {
+  const sendMailRequest = async (clientId, articleIds, recipients, searchCriteria) => {
     const storedToken = localStorage.getItem('accessToken')
+
     try {
       const url = `${BASE_URL}/mailRequest/`
 
@@ -18,6 +19,7 @@ const useMailRequest = () => {
 
       const requestData = {
         clientId,
+        articleIds,
         recipients,
         searchCriteria
       }
@@ -26,7 +28,7 @@ const useMailRequest = () => {
         headers
       }
 
-      const axiosResponse = await axios.post(url, requestData, axiosConfig)
+      const axiosResponse = await axios.post(url, JSON.stringify(requestData), axiosConfig)
       setResponse(axiosResponse.data)
     } catch (axiosError) {
       setError(axiosError)
