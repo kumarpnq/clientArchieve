@@ -1,13 +1,17 @@
 import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
 
-const base_url = process.env.NEXT_PUBLIC_BASE_URL
-
-export const getArticleFieldList = async accessToken => {
+export const getArticleFieldList = async (accessToken, entityType) => {
   try {
-    const response = await axios.get(`${base_url}/articleDownloadFieldList/`, {
+    const requestData = {
+      entityType
+    }
+
+    const response = await axios.get(`${BASE_URL}/articleDownloadFieldList/`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
-      }
+      },
+      params: requestData
     })
 
     return response.data.fields

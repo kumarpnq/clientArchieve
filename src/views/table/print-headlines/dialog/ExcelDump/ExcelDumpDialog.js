@@ -52,9 +52,10 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
     const fetchFieldList = async () => {
       try {
         const storedToken = localStorage.getItem('accessToken')
+        const entityType = 'print'
 
         if (storedToken) {
-          const fields = await getArticleFieldList(storedToken)
+          const fields = await getArticleFieldList(storedToken, entityType)
           setFields(fields)
         }
       } catch (error) {

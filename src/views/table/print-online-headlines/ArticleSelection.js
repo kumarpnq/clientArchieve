@@ -1,5 +1,5 @@
 // ** React Import
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { BASE_URL } from 'src/api/base'
 import axios from 'axios'
 
@@ -8,7 +8,6 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import IconButton from '@mui/material/IconButton'
 import { DataGrid } from '@mui/x-data-grid'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
@@ -16,11 +15,11 @@ import { FormControlLabel, FormGroup } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
-import ViewDialog from './dialog/MoreDialog'
+
+// import ViewDialog from './dialog/MoreDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
 
 // ** MUI icons
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 // ** Article Database
 
@@ -47,6 +46,11 @@ import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { List, ListItem } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import OptionsMenu from 'src/@core/components/option-menu'
+import useFetchReadArticleFile from 'src/api/global/useFetchReadArticleFile'
+import FullScreenJPGDialog from './dialog/view/FullScreenJPGDialog'
+import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
+import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -64,6 +68,31 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 )
 
 const TableSelection = () => {
+  const [selectedArticle, setSelectedArticle] = useState(null)
+  const [jpgDialogOpen, setJpgDialogOpen] = useState(false)
+  const [imageSrc, setImageSrc] = useState('')
+  const [htmlDialogOpen, setHtmlDialogOpen] = useState(false)
+  const [fileContent, setFileContent] = useState('')
+  const [pdfDialogOpen, setPdfDialogOpen] = useState(false)
+  const [pdfSrc, setPdfSrc] = useState('')
+
+  const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
+
+  const handleJpgDialogClose = () => {
+    setJpgDialogOpen(false)
+    setImageSrc('')
+  }
+
+  const handleHtmlDialogClose = () => {
+    setHtmlDialogOpen(false)
+    setFileContent('')
+  }
+
+  const handlePdfDialogClose = () => {
+    setPdfDialogOpen(false)
+    setPdfSrc('')
+  }
+
   // ** Renders social feed column
   const renderArticle = params => {
     const { row } = params
@@ -149,14 +178,41 @@ const TableSelection = () => {
       field: 'more',
       headerName: 'More',
       renderCell: params => (
-        <IconButton
-          onClick={e => {
-            e.stopPropagation()
-            handleEdit(params.row)
-          }}
-        >
-          <MoreVertIcon />
-        </IconButton>
+        <OptionsMenu
+          iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+          options={[
+            {
+              text: 'View HTML',
+              menuItemProps: {
+                onClick: () => {
+                  fetchReadArticleFile('htm', params.row)
+                  setHtmlDialogOpen(true)
+                  setSelectedArticle(params.row)
+                }
+              }
+            },
+            {
+              text: 'View JPG',
+              menuItemProps: {
+                onClick: () => {
+                  fetchReadArticleFile('jpg', params.row)
+                  setJpgDialogOpen(true)
+                  setSelectedArticle(params.row)
+                }
+              }
+            },
+            {
+              text: 'View PDF',
+              menuItemProps: {
+                onClick: () => {
+                  fetchReadArticleFile('pdf', params.row)
+                  setPdfDialogOpen(true)
+                  setSelectedArticle(params.row)
+                }
+              }
+            }
+          ]}
+        />
       )
     }
   ]
@@ -184,7 +240,6 @@ const TableSelection = () => {
   const [selectedDuration, setSelectedDuration] = useState(null)
   const [isEditDialogOpen, setEditDialogOpen] = useState(false)
   const getRowId = row => row.articleId
-  const [selectedCompanyId, setSelectedCompanyId] = useState([])
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
@@ -215,10 +270,10 @@ const TableSelection = () => {
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
 
-  const handleEdit = row => {
-    setSelectedArticle(row)
-    setEditDialogOpen(true)
-  }
+  // const handleEdit = row => {
+  //   setSelectedArticle(row)
+  //   setEditDialogOpen(true)
+  // }
 
   const handleSaveChanges = editedArticle => {
     // Add logic to save changes to the article
@@ -248,52 +303,52 @@ const TableSelection = () => {
   ].filter(Boolean)
 
   // Fetch social feeds based on the provided API
-  const fetchArticles = async () => {
-    try {
-      setLoading(true)
-      const storedToken = localStorage.getItem('accessToken')
-
-      if (storedToken) {
-        const request_params = {
-          clientIds: clientId,
-          companyIds: selectedCompetitions,
-          fromDate: selectedFromDate?.toISOString(),
-          toDate: selectedEndDate?.toISOString(),
-          page: currentPage,
-          recordsPerPage: recordsPerPage,
-
-          geography: selectedGeography,
-          language: selectedLanguages,
-          media: selectedMedia,
-          tags: selectedTags
-        }
-
-        const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          params: request_params
-        })
-
-        const totalRecords = response.data.totalAllArticles
-
-        // Assuming the API response contains socialFeeds
-        setArticles(response.data.allArticles)
-
-        // Update totalRecords in the state
-        setPaginationModel(prevPagination => ({
-          ...prevPagination,
-          totalRecords
-        }))
-      }
-    } catch (error) {
-      console.error('Error fetching social feeds:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true)
+        const storedToken = localStorage.getItem('accessToken')
+
+        if (storedToken) {
+          const request_params = {
+            clientIds: clientId,
+            companyIds: selectedCompetitions,
+            fromDate: selectedFromDate?.toISOString(),
+            toDate: selectedEndDate?.toISOString(),
+            page: currentPage,
+            recordsPerPage: recordsPerPage,
+
+            geography: selectedGeography,
+            language: selectedLanguages,
+            media: selectedMedia,
+            tags: selectedTags
+          }
+
+          const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            },
+            params: request_params
+          })
+
+          const totalRecords = response.data.totalAllArticles
+
+          // Assuming the API response contains socialFeeds
+          setArticles(response.data.allArticles)
+
+          // Update totalRecords in the state
+          setPaginationModel(prevPagination => ({
+            ...prevPagination,
+            totalRecords
+          }))
+        }
+      } catch (error) {
+        console.error('Error fetching social feeds:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchArticles()
   }, [
     selectedEndDate,
@@ -379,10 +434,10 @@ const TableSelection = () => {
   }
 
   // Function to handle search action
-  const handleSearch = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
+  // const handleSearch = () => {
+  //   // Add your search logic here
+  //   console.log('Search action triggered')
+  // }
 
   const handleEmail = () => {
     // Add your search logic here
@@ -416,7 +471,6 @@ const TableSelection = () => {
     setSelectedDuration(30)
   }
 
-  const [selectedArticle, setSelectedArticle] = useState(null)
   const [isPopupOpen, setPopupOpen] = useState(false)
 
   const handleRowClick = params => {
@@ -505,8 +559,6 @@ const TableSelection = () => {
       />
       {/* Top Toolbar */}
       <ToolbarComponent
-        // selectedCompanyId={selectedCompanyId}
-        // setSelectedCompanyId={setSelectedCompanyId}
         selectedGeography={selectedGeography}
         setSelectedGeography={setSelectedGeography}
         selectedLanguages={selectedLanguages}
@@ -634,13 +686,34 @@ const TableSelection = () => {
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
       {/* Edit Dialog */}
-      <ViewDialog
+      {/* Render the FullScreenDialog component when open */}
+      <FullScreenJPGDialog
+        open={jpgDialogOpen}
+        handleClose={handleJpgDialogClose}
+        imageSrc={imageSrc}
+        articles={selectedArticle}
+      />
+      {/* Render the FullScreenHTMLDialog component when open */}
+      <FullScreenHTMLDialog
+        open={htmlDialogOpen}
+        handleClose={handleHtmlDialogClose}
+        fileContent={fileContent}
+        articles={selectedArticle}
+      />
+      {/* Render the FullScreenPDFDialog component when open */}
+      <FullScreenPDFDialog
+        open={pdfDialogOpen}
+        handleClose={handlePdfDialogClose}
+        pdfSrc={pdfSrc}
+        articles={selectedArticle}
+      />
+      {/* <ViewDialog
         open={isEditDialogOpen}
         handleClose={() => setEditDialogOpen(false)}
         socialFeed={selectedArticle}
         handleSave={handleSaveChanges}
         articles={selectedArticle}
-      />
+      /> */}
     </Card>
   )
 }

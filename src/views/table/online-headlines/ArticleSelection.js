@@ -1,5 +1,5 @@
 // ** React Import
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
 
 // ** MUI Imports
@@ -14,7 +14,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
-import { FormControlLabel, FormGroup, List, ListItem } from '@mui/material'
+import { FormControlLabel, FormGroup, List, ListItem, Menu, MenuItem } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import SocialFeedFullScreenDialog from './dialog/ArticleDialog'
@@ -22,7 +22,7 @@ import EditDialog from './dialog/EditDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
 
 // ** MUI icons
-import EditIcon from '@mui/icons-material/Edit'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 // ** Article Database
 // import { articles } from './Db-Articles'
@@ -43,6 +43,8 @@ import {
   selectSelectedEndDate
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
+import OptionsMenu from 'src/@core/components/option-menu'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -129,17 +131,23 @@ const TableSelection = () => {
       field: 'edit',
       headerName: 'Edit',
       renderCell: params => (
-        <IconButton
-          onClick={e => {
-            e.stopPropagation()
-            handleEdit(params.row)
-          }}
-        >
-          <EditIcon />
-        </IconButton>
+        <OptionsMenu
+          iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+          options={[
+            {
+              text: 'Edit SocialFeed',
+              menuItemProps: {
+                onClick: () => {
+                  handleEdit(params.row)
+                }
+              }
+            }
+          ]}
+        />
       )
     }
   ]
+
   const isNotResponsive = useMediaQuery('(min-width: 1100px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNarrowMobileView = useMediaQuery('(max-width: 405px)')

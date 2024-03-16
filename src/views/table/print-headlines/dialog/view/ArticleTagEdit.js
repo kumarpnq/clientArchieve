@@ -22,7 +22,7 @@ import toast from 'react-hot-toast'
 const ArticleTagEdit = ({ articles, handleClose, token }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-  const companyId = articles.companies.map(i => i.id).join()
+  const companyId = articles?.companies.map(i => i.id).join()
   const articleId = articles.articleId
   const [fetchFlag, setFetchFlag] = useState(false)
 

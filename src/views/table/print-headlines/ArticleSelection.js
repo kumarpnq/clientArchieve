@@ -43,6 +43,12 @@ import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { List, ListItem } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import useFetchReadArticleFile from 'src/api/global/useFetchReadArticleFile'
+import OptionsMenu from 'src/@core/components/option-menu'
+import FullScreenJPGDialog from './dialog/view/FullScreenJPGDialog'
+import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
+import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
+import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDialog'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -111,6 +117,37 @@ const getTooltipContent = row => (
 )
 
 const TableSelection = () => {
+  const [selectedArticle, setSelectedArticle] = useState({})
+  const [jpgDialogOpen, setJpgDialogOpen] = useState(false)
+  const [imageSrc, setImageSrc] = useState('')
+  const [htmlDialogOpen, setHtmlDialogOpen] = useState(false)
+  const [fileContent, setFileContent] = useState('')
+  const [pdfDialogOpen, setPdfDialogOpen] = useState(false)
+  const [pdfSrc, setPdfSrc] = useState('')
+  const [editDetailsDialogOpen, setEditDetailsDialogOpen] = useState(false)
+
+  const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
+
+  const handleJpgDialogClose = () => {
+    setJpgDialogOpen(false)
+    setImageSrc('')
+  }
+
+  const handleHtmlDialogClose = () => {
+    setHtmlDialogOpen(false)
+    setFileContent('')
+  }
+
+  const handlePdfDialogClose = () => {
+    setPdfDialogOpen(false)
+    setPdfSrc('')
+  }
+
+  const handleEditDetailsDialogClose = () => {
+    setEditDetailsDialogOpen(false)
+    setImageSrc('')
+  }
+
   const articleColumns = [
     {
       flex: 0.1,
@@ -141,14 +178,51 @@ const TableSelection = () => {
       field: 'more',
       headerName: 'More',
       renderCell: params => (
-        <IconButton
-          onClick={e => {
-            e.stopPropagation()
-            handleEdit(params.row)
-          }}
-        >
-          <MoreVertIcon />
-        </IconButton>
+        <OptionsMenu
+          iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+          options={[
+            {
+              text: 'View HTML',
+              menuItemProps: {
+                onClick: () => {
+                  fetchReadArticleFile('htm', params.row)
+                  setHtmlDialogOpen(true)
+                  setSelectedArticle(params.row)
+                }
+              }
+            },
+            {
+              text: 'View JPG',
+              menuItemProps: {
+                onClick: () => {
+                  fetchReadArticleFile('jpg', params.row)
+                  setJpgDialogOpen(true)
+                  setSelectedArticle(params.row)
+                }
+              }
+            },
+            {
+              text: 'View PDF',
+              menuItemProps: {
+                onClick: () => {
+                  fetchReadArticleFile('pdf', params.row)
+                  setPdfDialogOpen(true)
+                  setSelectedArticle(params.row)
+                }
+              }
+            },
+            {
+              text: 'Edit Detail',
+              menuItemProps: {
+                onClick: () => {
+                  fetchReadArticleFile('jpg', params.row)
+                  setEditDetailsDialogOpen(true)
+                  setSelectedArticle(params.row)
+                }
+              }
+            }
+          ]}
+        />
       )
     }
   ]
@@ -409,7 +483,6 @@ const TableSelection = () => {
     setSelectedDuration(30)
   }
 
-  const [selectedArticle, setSelectedArticle] = useState(null)
   const [isPopupOpen, setPopupOpen] = useState(false)
 
   const handleRowClick = params => {
@@ -652,13 +725,40 @@ const TableSelection = () => {
       </Box>
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
+      {/* Render the FullScreenDialog component when open */}
+      <FullScreenJPGDialog
+        open={jpgDialogOpen}
+        handleClose={handleJpgDialogClose}
+        imageSrc={imageSrc}
+        articles={selectedArticle}
+      />
+      {/* Render the FullScreenHTMLDialog component when open */}
+      <FullScreenHTMLDialog
+        open={htmlDialogOpen}
+        handleClose={handleHtmlDialogClose}
+        fileContent={fileContent}
+        articles={selectedArticle}
+      />
+      {/* Render the FullScreenPDFDialog component when open */}
+      <FullScreenPDFDialog
+        open={pdfDialogOpen}
+        handleClose={handlePdfDialogClose}
+        pdfSrc={pdfSrc}
+        articles={selectedArticle}
+      />
+      <FullScreenEditDetailsDialog
+        open={editDetailsDialogOpen}
+        handleClose={handleEditDetailsDialogClose}
+        articles={selectedArticle}
+        imageSrc={imageSrc}
+      />
       {/* Edit Dialog */}
-      <ViewDialog
+      {/* <ViewDialog
         open={isEditDialogOpen}
         handleClose={() => setEditDialogOpen(false)}
         articles={selectedArticle}
         handleSave={handleSaveChanges}
-      />
+      /> */}
     </Card>
   )
 }
