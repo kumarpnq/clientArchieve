@@ -2,9 +2,15 @@ import { useState, Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import BusinessIcon from '@mui/icons-material/Business'
 import { IconButton, Menu, ListItem, MenuItem, Button } from '@mui/material'
-import { styled } from '@mui/material/styles'
 import useFetchCompetition from 'src/api/global/useFetchCompetitions'
-import { setSelectedCompetitions, selectSelectedCompetitions } from 'src/store/apps/user/userSlice'
+
+// ** redux import
+import {
+  setSelectedCompetitions,
+  selectSelectedCompetitions,
+  selectUserData,
+  selectSelectedClient
+} from 'src/store/apps/user/userSlice'
 
 const Competition = props => {
   const { settings } = props
@@ -13,6 +19,9 @@ const Competition = props => {
   const { direction } = settings
   const dispatch = useDispatch()
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedClient = useSelector(selectSelectedClient)
+  const priorityCompanyId = selectedClient?.priorityCompanyId
+
   const [localeComps, setLocaleComps] = useState([])
 
   const [anchorEl, setAnchorEl] = useState(null)
@@ -31,6 +40,9 @@ const Competition = props => {
       }
     })
   }
+  useEffect(() => {
+    dispatch(setSelectedCompetitions(priorityCompanyId))
+  }, [])
   useEffect(() => {
     dispatch(setSelectedCompetitions(localeComps))
   }, [localeComps])

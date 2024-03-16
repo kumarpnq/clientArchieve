@@ -32,9 +32,8 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
   const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleOnlineArticles({
     clientId: clientId,
     article: article,
-    tag: tag
+    tag: tag || selectedTag
   })
-
   useEffect(() => {
     setFetchTagsFlag(!fetchTagsFlag)
   }, [])
@@ -52,10 +51,12 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
       await updateTagForMultipleArticles()
       setFetchTagsFlag(!fetchTagsFlag)
       setTag('')
+      setSelectedTag('')
       onClose()
     } catch (error) {
       console.error('Error updating tags:', error)
       setTag('')
+      setSelectedTag('')
     }
   }
 

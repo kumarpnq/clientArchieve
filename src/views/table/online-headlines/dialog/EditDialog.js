@@ -8,12 +8,17 @@ import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import Iframe from 'react-iframe'
 import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
+
+// ** third party imports
+import toast from 'react-hot-toast'
 
 const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
   const [editedSocialFeed, setEditedSocialFeed] = useState({
     headline: '',
     author: ''
   })
+  const { author } = editedSocialFeed
 
   useEffect(() => {
     if (socialFeed) {
@@ -36,43 +41,31 @@ const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
     setEditedSocialFeed(prev => ({ ...prev, [field]: value }))
   }
 
-  const handleSaveChanges = () => {
+  const handleSaveChanges = async () => {
     const { socialFeedId } = socialFeed
-    if (socialFeedId) {
-      const storedToken = localStorage.getItem('accessToken')
-
-      if (storedToken) {
-        // Assuming 'author' is a property in 'editedSocialFeed'
-        const { author } = editedSocialFeed
-        const base_url = 'http://51.68.220.77:8001'
-
-        if (author) {
-          axios
-            .post(
-              `${base_url}/updateSocialFeedAuthorName/`,
-              { socialFeedId, newAuthorName: author },
-              {
-                headers: {
-                  Authorization: `Bearer ${storedToken}`
-                }
+    try {
+      if (socialFeedId) {
+        const storedToken = localStorage.getItem('accessToken')
+        if (storedToken) {
+          const res = await axios.post(
+            `${BASE_URL}/updateSocialFeedAuthorName/`,
+            { socialFeedId, newAuthorName: author },
+            {
+              headers: {
+                Authorization: `Bearer ${storedToken}`
               }
-            )
-            .then(response => {
-              console.log(response.data)
-              handleSave(editedSocialFeed)
-              handleClose()
-            })
-            .catch(error => {
-              console.error('Error updating author name:', error)
-            })
+            }
+          )
+          handleSave(editedSocialFeed)
+          handleClose()
         } else {
-          console.error('Author name is required')
+          throw new Error('No access token in the local storage.')
         }
       } else {
-        console.error('No access token in the local storage.')
+        throw new Error('Invalid socialFeedId')
       }
-    } else {
-      console.error('Invalid socialFeedId')
+    } catch (error) {
+      toast.error('Error:', error.message)
     }
   }
 
@@ -109,7 +102,7 @@ const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
         <Button onClick={handleDiscard} color='primary'>
           Discard
         </Button>
-        <Button onClick={handleSaveChanges} color='primary'>
+        <Button onClick={handleSaveChanges} color='primary' disabled={!author}>
           Save
         </Button>
       </DialogActions>

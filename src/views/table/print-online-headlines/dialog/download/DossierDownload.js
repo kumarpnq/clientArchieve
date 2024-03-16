@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import { BASE_URL } from 'src/api/base'
+
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -24,9 +26,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
-import { BASE_URL } from 'src/api/base'
+import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import {
+  selectSelectedClient,
+  setNotificationFlag,
+  selectNotificationFlag,
+  setFetchAutoStatusFlag,
+  selectFetchAutoStatusFlag
+} from 'src/store/apps/user/userSlice'
 
 // ** third party imports
 import toast from 'react-hot-toast'
@@ -40,14 +47,20 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   const [subject, setSubject] = useState('')
   const [dossierType, setDossierType] = useState('word') // Default to Word Dossier
   const [selectedEmail, setSelectedEmail] = useState([]) // Selected email from dropdown
-  const selectedClient = useSelector(selectSelectedClient)
-  const clientName = selectedClient ? selectedClient.clientName : null
-  const clientId = selectedClient ? selectedClient.clientId : null
+
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const { response, error, sendDossierRequest } = useDossierRequest()
   const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
   const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join()
+
+  // redux states
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientName = selectedClient ? selectedClient.clientName : null
+  const clientId = selectedClient ? selectedClient.clientId : null
+  const dispatch = useDispatch()
+  const notificationFlag = useSelector(selectNotificationFlag)
+  const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
 
   const handleEmailChange = event => {
     setEmail(event.target.value)
@@ -70,9 +83,13 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   }
 
   const handleSubmit = () => {
+    dispatch(setNotificationFlag(!notificationFlag))
     const searchCriteria = { fromDate, toDate, selectPageOrAll }
     const recipients = { recipients: selectedEmail || email }
     sendDossierRequest(clientId, articleIds, dossierType, recipients, searchCriteria)
+
+    dispatch(setNotificationFlag(!notificationFlag))
+    dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
 
     // Close the dialog
     handleClose()

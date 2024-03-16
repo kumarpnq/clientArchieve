@@ -19,11 +19,20 @@ import useClientMailerList from 'src/api/global/useClientMailerList '
 import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 
 // * redux call
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient, selectSelectedStartDate, selectSelectedEndDate } from 'src/store/apps/user/userSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  selectSelectedClient,
+  selectSelectedStartDate,
+  selectSelectedEndDate,
+  setNotificationFlag,
+  selectNotificationFlag,
+  setFetchAutoStatusFlag,
+  selectFetchAutoStatusFlag
+} from 'src/store/apps/user/userSlice'
 
 //* third party imports
 import toast from 'react-hot-toast'
+import { formatDateTime } from 'src/utils/formatDateTime'
 
 const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   //redux state
@@ -31,6 +40,11 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
+
+  // redux states
+  const dispatch = useDispatch()
+  const notificationFlag = useSelector(selectNotificationFlag)
+  const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
 
   //states
   const [emailType, setEmailType] = useState({})
@@ -41,6 +55,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
   const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join()
+  const articleIds = dataForMail.length && dataForMail.map(i => i.articleId).flat()
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -64,9 +79,15 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
 
   const handleSendEmail = () => {
     setFetchEmailFlag(!fetchEmailFlag)
-    const recipients = emailType
-    const searchCriteria = { fromDate: selectedFromDate, toDate: selectedEndDate, selectPageOrAll }
-    sendMailRequest(clientId, recipients, searchCriteria)
+    dispatch(setNotificationFlag(!notificationFlag))
+    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
+
+    const formattedFromDate = formatDateTime(selectedFromDate)
+    const formattedToDate = formatDateTime(selectedEndDate)
+    const searchCriteria = { fromDate: formattedFromDate, toDate: formattedToDate, selectPageOrAll }
+    sendMailRequest(clientId, articleIds, recipients, searchCriteria)
+    dispatch(setNotificationFlag(!notificationFlag))
+    dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
     if (error) {
       toast.error('something wrong.')

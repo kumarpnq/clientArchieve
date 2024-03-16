@@ -10,6 +10,7 @@ import MenuItem from '@mui/material/MenuItem'
 // import SearchIcon from '@mui/icons-material/Search'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EmailIcon from '@mui/icons-material/Email'
+import DownloadIcon from '@mui/icons-material/Download'
 
 // import ImageIcon from '@mui/icons-material/Image'
 // import DownloadIcon from '@mui/icons-material/Download'
@@ -40,6 +41,7 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { styled } from '@mui/material/styles'
 import ExcelDumpDialog from '../dialog/Excel-dump/ExcelDump'
 import { useToolPermission } from 'src/hooks/showHideDownloadTools'
+import DossierDialog from '../dialog/dossier/DossierDialog'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -146,6 +148,8 @@ const ArticleListToolbar = ({
   handleDelete,
   handleEmail,
   handleImage,
+  selectedStartDate,
+  selectedEndDate,
 
   // handleDownload,
   handleRssFeed,
@@ -163,12 +167,14 @@ const ArticleListToolbar = ({
   tags,
   fetchTagsFlag,
   setFetchTagsFlag,
-  dataForDump
+  dataForDump,
+  setSelectedSortBy,
+  selectedSortBy
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
   // tools visibility
-  const { isMailVisible, isExcelDumpVisible } = useToolPermission()
+  const { isDossierVisible, isMailVisible, isExcelDumpVisible } = useToolPermission()
 
   // const [selectedFilter, setSelectedFilter] = useState('1D')
 
@@ -232,7 +238,15 @@ const ArticleListToolbar = ({
   const handleEmailDialogClose = () => {
     setIsEmailDialogOpen(false)
   }
+  const [dossierDialogOpen, setDossierDialogOpen] = useState(false)
 
+  const handleDossierDialogOpen = () => {
+    setDossierDialogOpen(true)
+  }
+
+  const handleDossierDialogClose = () => {
+    setDossierDialogOpen(false)
+  }
   const [isExcelDumpOpen, setIsExcelDumpOpen] = useState(false)
 
   const handleExcelDumpDialogOpen = () => {
@@ -273,18 +287,21 @@ const ArticleListToolbar = ({
     setSortByMenuOpen(null)
   }
 
-  const handleSortByArticleDate = () => {
+  const handleSortByArticleDate = val => {
     // Implement the logic to sort by latest
+    setSelectedSortBy(val)
     handleSortByClose()
   }
 
-  const handleSortByArticleReach = () => {
+  const handleSortByArticleReach = val => {
     // Implement the logic to sort by media
+    setSelectedSortBy(val)
     handleSortByClose()
   }
 
-  const handleSortByEngagement = () => {
+  const handleSortByEngagement = val => {
     // Implement the logic to sort by media
+    setSelectedSortBy()
     handleSortByClose()
   }
 
@@ -341,7 +358,25 @@ const ArticleListToolbar = ({
           <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} dataForMail={dataForDump} />{' '}
         </Fragment>
       )}
+      {/* dossier download */}
+      {isDossierVisible && (
+        <Fragment>
+          <CustomTooltip title='Dossier'>
+            <Button onClick={handleDossierDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
+              <DownloadIcon />
+            </Button>
+          </CustomTooltip>
 
+          {/* Add the DownloadDialog component */}
+          <DossierDialog
+            open={dossierDialogOpen}
+            handleClose={handleDossierDialogClose}
+            selectedStartDate={selectedStartDate}
+            selectedEndDate={selectedEndDate}
+            dataForDossierDownload={dataForDump}
+          />
+        </Fragment>
+      )}
       {/* excel dump  */}
       {isExcelDumpVisible && (
         <Fragment>
@@ -391,13 +426,22 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       <Menu anchorEl={isSortByMenuOpen} open={Boolean(isSortByMenuOpen)} onClose={handleSortByClose}>
-        <MenuItem onClick={handleSortByArticleDate}>Sort by Article Date</MenuItem>
-        <MenuItem onClick={handleSortByArticleReach}>Sort by Article Reach</MenuItem>
-        <MenuItem onClick={handleSortByEngagement}>Sort by Engagement</MenuItem>
+        <MenuItem onClick={() => handleSortByArticleDate('articleDate')} selected={selectedSortBy === 'articleDate'}>
+          Sort by Article Date
+        </MenuItem>
+        <MenuItem onClick={() => handleSortByArticleReach('articleReach')} selected={selectedSortBy === 'articleReach'}>
+          Sort by Article Reach
+        </MenuItem>
+        <MenuItem
+          onClick={() => handleSortByEngagement('articleEngagement')}
+          selected={selectedSortBy === 'articleEngagement'}
+        >
+          Sort by Engagement
+        </MenuItem>
       </Menu>
       {/* <CustomTooltip title='Date Range'>
         <Button onClick={openFilterPopover} sx={{ color: primaryColor, mr: 0 }}>
-          <DateRangeIcon />
+          <DateRangeIcon />s
         </Button>
       </CustomTooltip>
       <CustomTooltip title='1 Day'>

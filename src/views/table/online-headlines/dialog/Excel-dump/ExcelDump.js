@@ -20,7 +20,9 @@ import {
   setNotificationFlag,
   selectNotificationFlag,
   selectSelectedStartDate,
-  selectSelectedEndDate
+  selectSelectedEndDate,
+  setFetchAutoStatusFlag,
+  selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
 import { getArticleFieldList } from 'src/api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi'
 import { formatDateTime } from 'src/utils/formatDateTime'
@@ -33,6 +35,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
+  const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
   const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
   const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
 
@@ -116,13 +119,14 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
     })
 
     dispatch(setNotificationFlag(!notificationFlag))
+    dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     handleClose()
     setSelectedFields([])
     setSelectAll(false)
-    if (error) return toast.error('something wrong.')
-    if (responseData?.message) {
+    if (responseData.message) {
       responseData.message && toast.success(responseData.message)
     }
+    if (error) return toast.error('something wrong.')
   }
 
   return (

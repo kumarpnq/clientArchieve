@@ -179,10 +179,9 @@ const ArticleListToolbar = ({
   closeFilterPopover,
 
   selectedStartDate,
+  selectedEndDate,
 
   // setSelectedStartDate,
-
-  selectedEndDate,
 
   // setSelectedEndDate,
   primaryColor,

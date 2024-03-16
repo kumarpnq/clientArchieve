@@ -84,18 +84,23 @@ const TableSelection = () => {
           </Typography>{' '}
           {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
         </ListItem>
-        <ListItem>
-          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-            Edition Type:
-          </Typography>{' '}
-          {row.editionTypeName}
-        </ListItem>
-        <ListItem>
-          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-            Page Number:
-          </Typography>{' '}
-          {row.pageNumber}
-        </ListItem>
+        {row.articleType === 'print' && (
+          <>
+            {' '}
+            <ListItem>
+              <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+                Edition Type:
+              </Typography>{' '}
+              {row.editionTypeName}
+            </ListItem>
+            <ListItem>
+              <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+                Page Number:
+              </Typography>{' '}
+              {row.pageNumber}
+            </ListItem>
+          </>
+        )}
       </List>
     )
 
@@ -237,7 +242,7 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && 'P') || (allCheck && 'A') }
+    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A') }
 
     // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
@@ -416,7 +421,9 @@ const TableSelection = () => {
 
   const handleRowClick = params => {
     setSelectedArticle(params.row)
-    setPopupOpen(true)
+
+    // currently hiding the click summary
+    setPopupOpen(false)
   }
 
   const handleSelect = article => {

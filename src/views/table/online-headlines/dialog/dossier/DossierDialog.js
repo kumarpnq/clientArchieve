@@ -25,7 +25,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
 // ** Redux
-import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { useSelector, useDispatch } from 'react-redux'
 import {
   selectSelectedClient,
   setNotificationFlag,
