@@ -308,86 +308,77 @@ const TableSelection = () => {
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
 
-  const handleEdit = row => {
-    setSelectedArticle(row)
-    setEditDialogOpen(true)
-  }
-
-  const handleSaveChanges = editedArticle => {
-    // Add logic to save changes to the article
-    console.log('Saving changes:', editedArticle)
-  }
-
   const [loading, setLoading] = useState(true)
 
   // Fetch social feeds based on the provided API
-  const fetchArticlesApi = async () => {
-    try {
-      setLoading(true)
-      const storedToken = localStorage.getItem('accessToken')
-
-      if (storedToken) {
-        // Format start and end dates
-        const formatDateTime = (date, setTime, isEnd) => {
-          const isoString = date.toISOString().slice(0, 10)
-          const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
-          return `${isoString} ${timeString}`
-        }
-
-        const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-        const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
-        const selectedCompaniesString = selectedCompetitions.join(', ')
-        const selectedMediaString = selectedMedia.join(', ')
-        const selectedTagString = selectedTag.join(', ')
-        const selectedCitiesString = selectedCities.join(', ')
-        const selectedLanguagesString = selectedLanguages.join(', ')
-
-        const response = await fetchArticles({
-          clientIds: clientId,
-          companyIds: selectedCompaniesString,
-          fromDate: formattedStartDate,
-          toDate: formattedEndDate,
-          page: currentPage,
-          recordsPerPage: recordsPerPage,
-
-          media: selectedMediaString,
-          tags: selectedTagString,
-          geography: selectedCitiesString,
-          language: selectedLanguagesString,
-
-          // Advanced search
-          headline: searchParameters.searchHeadline,
-          body: searchParameters.searchBody,
-          journalist: searchParameters.journalist,
-          wordCombo: searchParameters.combinationOfWords,
-          anyWord: searchParameters.anyOfWords,
-          ignoreWords: searchParameters.ignoreThis,
-          phrase: searchParameters.exactPhrase,
-
-          editionType: selectedEditionType.editionTypeId,
-          sortby: selectedSortBy,
-
-          publicationCategory: selectedPublicationType.publicationTypeId
-        })
-
-        const totalRecords = response.totalRecords
-        setArticles(response.articles)
-
-        setPaginationModel(prevPagination => ({
-          ...prevPagination,
-          totalRecords
-        }))
-      }
-    } catch (error) {
-      console.error('Error fetching articles:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   useEffect(() => {
     setSelectedArticles([])
+
+    const fetchArticlesApi = async () => {
+      try {
+        setLoading(true)
+        const storedToken = localStorage.getItem('accessToken')
+
+        if (storedToken) {
+          // Format start and end dates
+          const formatDateTime = (date, setTime, isEnd) => {
+            const isoString = date.toISOString().slice(0, 10)
+            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+
+            return `${isoString} ${timeString}`
+          }
+
+          const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
+          const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+          const selectedCompaniesString = selectedCompetitions.join(', ')
+          const selectedMediaString = selectedMedia.join(', ')
+          const selectedTagString = selectedTag.join(', ')
+          const selectedCitiesString = selectedCities.join(', ')
+          const selectedLanguagesString = selectedLanguages.join(', ')
+
+          const response = await fetchArticles({
+            clientIds: clientId,
+            companyIds: selectedCompaniesString,
+            fromDate: formattedStartDate,
+            toDate: formattedEndDate,
+            page: currentPage,
+            recordsPerPage: recordsPerPage,
+
+            media: selectedMediaString,
+            tags: selectedTagString,
+            geography: selectedCitiesString,
+            language: selectedLanguagesString,
+
+            // Advanced search
+            headline: searchParameters.searchHeadline,
+            body: searchParameters.searchBody,
+            journalist: searchParameters.journalist,
+            wordCombo: searchParameters.combinationOfWords,
+            anyWord: searchParameters.anyOfWords,
+            ignoreWords: searchParameters.ignoreThis,
+            phrase: searchParameters.exactPhrase,
+
+            editionType: selectedEditionType.editionTypeId,
+            sortby: selectedSortBy,
+
+            publicationCategory: selectedPublicationType.publicationTypeId
+          })
+
+          const totalRecords = response.totalRecords
+          setArticles(response.articles)
+
+          setPaginationModel(prevPagination => ({
+            ...prevPagination,
+            totalRecords
+          }))
+        }
+      } catch (error) {
+        console.error('Error fetching articles:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
     fetchArticlesApi()
   }, [
     selectedEndDate,
@@ -395,6 +386,7 @@ const TableSelection = () => {
     currentPage,
     recordsPerPage,
     selectedCompetitions,
+    selectedLanguages,
     clientId,
     selectedMedia,
     selectedTag,
@@ -404,32 +396,6 @@ const TableSelection = () => {
     selectedPublicationType,
     selectedSortBy
   ])
-
-  // Filter articles based on the selected date range and search query
-  // const filteredArticles = useMemo(() => {
-  //   let result = articles
-
-  //   // Apply date range filter
-  //   if (selectedStartDate && selectedEndDate) {
-  //     result = result.filter(article => {
-  //       const articleDate = new Date(article.date)
-
-  //       return articleDate >= selectedStartDate && articleDate <= selectedEndDate
-  //     })
-  //   }
-
-  //   // Apply search query filter
-  //   if (searchQuery) {
-  //     result = result.filter(
-  //       article =>
-  //         article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         article.description.toLowerCase().includes(searchQuery.toLowerCase())
-  //     )
-  //   }
-
-  //   return result
-  // }, [searchQuery])
 
   // Divide social feeds into left and right columns
   const leftArticles = articles.filter((_, index) => index % 2 === 0)
@@ -453,12 +419,6 @@ const TableSelection = () => {
   const handleDelete = () => {
     // Add your delete logic here
     console.log('Delete action triggered')
-  }
-
-  // Function to handle search action
-  const handleSearch = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
   }
 
   const handleEmail = () => {
@@ -587,7 +547,6 @@ const TableSelection = () => {
           </Typography>
         }
       />{' '}
-      {/* Use priorityCompanyName in the title */}
       {/* Top Toolbar */}
       <ToolbarComponent
         selectedMedia={selectedMedia}
