@@ -49,7 +49,7 @@ const PublicationInfo = ({ articles }) => {
         {/* Grid for Header Information */}
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant='body2' color='primary' style={{ display: 'inline' }}>
-            Media Type:
+            Media Type :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
             {publicationInfo.mediaType}
@@ -58,7 +58,7 @@ const PublicationInfo = ({ articles }) => {
 
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant='body2' color='primary' style={{ display: 'inline' }}>
-            Publication Type:
+            Publication Type :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
             {publicationInfo.publicationType}
@@ -66,7 +66,7 @@ const PublicationInfo = ({ articles }) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant='body2' color='primary' style={{ display: 'inline' }}>
-            Publication:
+            Publication :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
             {publicationInfo.publication}
@@ -74,7 +74,7 @@ const PublicationInfo = ({ articles }) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant='body2' color='primary' style={{ display: 'inline' }}>
-            Language:
+            Language :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
             {publicationInfo.language}
@@ -82,7 +82,7 @@ const PublicationInfo = ({ articles }) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant='body2' color='primary' style={{ display: 'inline' }}>
-            Page Number:
+            Page Number :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
             {publicationInfo.pageNumber}
@@ -90,7 +90,7 @@ const PublicationInfo = ({ articles }) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant='body2' color='primary' style={{ display: 'inline' }}>
-            Size:
+            Size :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
             {publicationInfo.size}
@@ -98,7 +98,7 @@ const PublicationInfo = ({ articles }) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant='body2' color='primary' style={{ display: 'inline' }}>
-            Circulation:
+            Circulation :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
             {publicationInfo.circulation}
@@ -106,7 +106,7 @@ const PublicationInfo = ({ articles }) => {
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
           <Typography variant='body2' color='primary' style={{ display: 'inline' }}>
-            Edition:
+            Edition :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
             {publicationInfo.edition}

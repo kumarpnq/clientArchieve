@@ -91,27 +91,25 @@ const getTooltipContent = row => (
   <List>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Summary:
+        Summary : {row.summary}
       </Typography>
     </ListItem>
-    <ListItem>{row.summary}</ListItem>
+    <ListItem></ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Companies:
-      </Typography>{' '}
-      {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+        Companies :{' '}
+        {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+      </Typography>
     </ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Edition Type:
-      </Typography>{' '}
-      {row.editionTypeName}
+        Edition Type : {row.editionTypeName}
+      </Typography>
     </ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Page Number:
-      </Typography>{' '}
-      {row.pageNumber}
+        Page Number : {row.pageNumber}
+      </Typography>
     </ListItem>
   </List>
 )
@@ -537,7 +535,7 @@ const TableSelection = () => {
     setSelectedMedia([])
     setSelectedCities([])
 
-    setSelectedTags([])
+    setSelectedTag([])
     setSelectedLanguages([])
 
     //ArticleListToolbar
@@ -593,7 +591,7 @@ const TableSelection = () => {
         selectedMedia={selectedMedia}
         setSelectedMedia={setSelectedMedia}
         selectedTag={selectedTag}
-        setSelectedTags={setSelectedTag}
+        setSelectedTag={setSelectedTag}
         selectedCities={selectedCities}
         setSelectedCities={setSelectedCities}
         selectedLanguages={selectedLanguages}
@@ -751,6 +749,8 @@ const TableSelection = () => {
         handleClose={handleEditDetailsDialogClose}
         articles={selectedArticle}
         imageSrc={imageSrc}
+        fetchTagsFlag={fetchTagsFlag}
+        setFetchTagsFlag={setFetchTagsFlag}
       />
       {/* Edit Dialog */}
       {/* <ViewDialog
