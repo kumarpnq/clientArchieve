@@ -13,7 +13,7 @@ import { BASE_URL } from 'src/api/base'
 // ** third party imports
 import toast from 'react-hot-toast'
 
-const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
+const EditDialog = ({ open, handleClose, socialFeed }) => {
   const [editedSocialFeed, setEditedSocialFeed] = useState({
     headline: '',
     author: ''
@@ -43,27 +43,22 @@ const EditDialog = ({ open, handleClose, socialFeed, handleSave }) => {
 
   const handleSaveChanges = async () => {
     const { socialFeedId } = socialFeed
+
     try {
-      if (socialFeedId) {
-        const storedToken = localStorage.getItem('accessToken')
-        if (storedToken) {
-          const res = await axios.post(
-            `${BASE_URL}/updateSocialFeedAuthorName/`,
-            { socialFeedId, newAuthorName: author },
-            {
-              headers: {
-                Authorization: `Bearer ${storedToken}`
-              }
-            }
-          )
-          handleSave(editedSocialFeed)
-          handleClose()
-        } else {
-          throw new Error('No access token in the local storage.')
+      const storedToken = localStorage.getItem('accessToken')
+      await axios.post(
+        `${BASE_URL}/updateSocialFeedAuthorName/`,
+        {
+          socialFeedId: Number(socialFeedId),
+          newAuthorName: author
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          }
         }
-      } else {
-        throw new Error('Invalid socialFeedId')
-      }
+      )
+      handleClose()
     } catch (error) {
       toast.error('Error:', error.message)
     }
