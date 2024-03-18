@@ -594,12 +594,7 @@ const TableSelection = () => {
         formattedDate={dayjs(selectedArticle?.feedDate).format('DD-MM-YYYY')}
       />{' '}
       {/* Edit Dialog */}
-      <EditDialog
-        open={isEditDialogOpen}
-        handleClose={() => setIsEditDialogOpen(false)}
-        socialFeed={selectedArticle}
-        handleSave={handleSaveChanges}
-      />
+      <EditDialog open={isEditDialogOpen} handleClose={() => setIsEditDialogOpen(false)} socialFeed={selectedArticle} />
     </Card>
   )
 }
