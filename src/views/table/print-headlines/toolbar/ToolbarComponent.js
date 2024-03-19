@@ -11,13 +11,11 @@ import axios from 'axios'
 import ListItem from '@mui/material/ListItem'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
 
 const ToolbarComponent = ({
-  // selectedCompanyIds,
-  // setSelectedCompanyIds,
   selectedMedia,
   setSelectedMedia,
   selectedTag,
@@ -30,31 +28,19 @@ const ToolbarComponent = ({
   setTags,
   fetchTagsFlag
 }) => {
-  // const [competitionAnchor, setCompetitionAnchor] = useState(null)
   const [geographyAnchor, setGeographyAnchor] = useState(null)
   const [languageAnchor, setLanguageAnchor] = useState(null)
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
 
-  // const [companies, setCompanies] = useState([])
+  // data states for mapping
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
 
-  // const [selectAllCompetitions, setSelectAllCompetitions] = useState(false)
-
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-
-  // const handleSelectAllCompetitions = () => {
-  //   const allCompanyIds = companies.map(company => company.companyId)
-  //   setSelectedCompanyIds(allCompanyIds)
-  // }
-
-  // const handleDeselectAllCompetitions = () => {
-  //   setSelectedCompanyIds([])
-  // }
 
   const handleSelectAllMedia = () => {
     const allMediaIds = media.map(item => item.publicationGroupId)
@@ -132,13 +118,13 @@ const ToolbarComponent = ({
     })
   }
 
-  const [userData, setUserData] = useState({
-    email: '',
-    fullName: '',
-    clientId: '',
-    clientName: '',
-    role: ''
-  })
+  // const [userData, setUserData] = useState({
+  //   email: '',
+  //   fullName: '',
+  //   clientId: '',
+  //   clientName: '',
+  //   role: ''
+  // })
 
   const openDropdown = (event, anchorSetter) => {
     anchorSetter(event.currentTarget)
@@ -147,8 +133,6 @@ const ToolbarComponent = ({
   const closeDropdown = anchorSetter => {
     anchorSetter(null)
   }
-
-  const handleDropdownItemClick = () => {}
 
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
