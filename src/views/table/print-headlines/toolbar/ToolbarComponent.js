@@ -76,20 +76,6 @@ const ToolbarComponent = ({
     setSelectedLanguages(allLangs)
   }
 
-  // const handleCheckboxChange = companyId => {
-  //   setSelectedCompanyIds(prevSelected => {
-  //     const isAlreadySelected = prevSelected.includes(companyId)
-
-  //     if (isAlreadySelected) {
-  //       // If already selected, remove from the list
-  //       return prevSelected.filter(id => id !== companyId)
-  //     } else {
-  //       // If not selected, add to the list
-  //       return [...prevSelected, companyId]
-  //     }
-  //   })
-  // }
-
   const handleTagSelect = item => {
     setSelectedTags(prevSelected => {
       const isAlreadySelected = prevSelected.includes(item)
@@ -100,6 +86,20 @@ const ToolbarComponent = ({
       } else {
         // If not selected, add to the list
         return [...prevSelected, item]
+      }
+    })
+  }
+
+  const handleLanguageSelect = languageCode => {
+    setSelectedLanguages(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(languageCode)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== languageCode)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, languageCode]
       }
     })
   }
@@ -157,27 +157,6 @@ const ToolbarComponent = ({
       try {
         const storedToken = localStorage.getItem('accessToken')
 
-        // if (storedToken) {
-        //   // Fetch companies
-        //   const response = await axios.get('http://51.68.220.77:8001/companyListByClient/', {
-        //     headers: {
-        //       Authorization: `Bearer ${storedToken}`
-        //     },
-        //     params: {
-        //       clientId: clientId
-        //     }
-        //   })
-
-        //   const fetchedCompanies = response.data.companies
-        //   setCompanies(fetchedCompanies)
-
-        //   // Set default selectedCompanyIds based on priorityCompanyId
-        //   const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
-        //   if (priorityCompanyId && fetchedCompanies.some(company => company.companyId === priorityCompanyId)) {
-        //     setSelectedCompanyIds([priorityCompanyId])
-        //   }
-        // }
-
         // Fetch languages
         const languageResponse = await axios.get(`${BASE_URL}/languagelist/`, {
           headers: {
@@ -204,17 +183,6 @@ const ToolbarComponent = ({
           }
         })
         setMedia(mediaResponse.data.mediaList)
-
-        // // Fetch tags
-        // const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
-        //   headers: {
-        //     Authorization: `Bearer ${storedToken}`
-        //   },
-        //   params: {
-        //     clientId: clientId
-        //   }
-        // })
-        // setTags(tagsResponse.data.clientTags)
       } catch (error) {
         console.error('Error fetching user data and companies:', error)
       }
@@ -247,17 +215,6 @@ const ToolbarComponent = ({
       <Toolbar>
         {isMobile ? (
           <Grid container spacing={2}>
-            {/* <Grid item xs={6}>
-              <Button
-                endIcon={<ExpandMoreIcon />}
-                onClick={e => openDropdown(e, setCompetitionAnchor)}
-                color='inherit'
-                fullWidth
-              >
-                Competition
-              </Button>
-            </Grid> */}
-
             <Grid item xs={6}>
               <Button
                 endIcon={<ExpandMoreIcon />}
@@ -304,10 +261,6 @@ const ToolbarComponent = ({
           </Grid>
         ) : (
           <>
-            {/* <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
-              Competition
-            </Button> */}
-
             <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
               Geography
             </Button>
@@ -325,30 +278,6 @@ const ToolbarComponent = ({
             </Button>
           </>
         )}
-
-        {/* Competition Dropdown Menu */}
-        {/* <Menu
-          open={Boolean(competitionAnchor)}
-          anchorEl={competitionAnchor}
-          onClose={() => closeDropdown(setCompetitionAnchor)}
-        >
-          {companies.length > 0 && (
-            <ListItem sx={{ justifyContent: 'space-between' }}>
-              <Button onClick={handleSelectAllCompetitions}>Select All</Button>
-              <Button onClick={handleDeselectAllCompetitions}>Deselect All</Button>
-            </ListItem>
-          )}
-
-          {companies.map(company => (
-            <MenuItem
-              key={company.companyId}
-              onClick={() => handleCheckboxChange(company.companyId)}
-              selected={selectedCompanyIds.includes(company.companyId)}
-            >
-              {company.companyName}
-            </MenuItem>
-          ))}
-        </Menu> */}
 
         {/* Geography Dropdown Menu */}
         <Menu
@@ -384,7 +313,7 @@ const ToolbarComponent = ({
           {Object.entries(languages).map(([languageName, languageCode]) => (
             <MenuItem
               key={languageCode}
-              onClick={handleDropdownItemClick}
+              onClick={() => handleLanguageSelect(languageCode)}
               selected={selectedLanguages.includes(languageCode)}
             >
               {languageName}
