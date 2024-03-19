@@ -61,23 +61,19 @@ const Pagination = ({
           {startRecord}-{endRecord} of {paginationModel.totalRecords}
         </Typography>
         <Button
-          startIcon={<NavigateBeforeIcon />}
+          startIcon={<NavigateBeforeIcon fontSize='large' />}
           onClick={handleLeftPagination}
           disabled={currentPage === 1}
           sx={{ marginRight: { xs: 0, md: 1 } }} // Add margin for small screens
-        >
-          Previous Page
-        </Button>
+        />
         <Button
-          endIcon={<NavigateNextIcon />}
+          endIcon={<NavigateNextIcon fontSize='large' />}
           onClick={handleRightPagination}
           disabled={
             currentPage === Math.ceil(paginationModel.totalRecords / paginationModel.pageSize) ||
             endRecord === paginationModel.totalRecords
           }
-        >
-          Next Page
-        </Button>
+        />
       </Box>
     </Box>
   )

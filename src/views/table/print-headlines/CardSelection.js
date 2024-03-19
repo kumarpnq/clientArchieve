@@ -23,6 +23,7 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import { BASE_URL } from 'src/api/base'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -48,12 +49,12 @@ const CardSelection = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 
-  const fetchlatestArticlesForCompetition = async () => {
+  const fetchLatestArticlesForCompetition = async () => {
     try {
       setLoading(true)
       const storedToken = localStorage.getItem('accessToken')
       if (storedToken) {
-        const response = await axios.get('http://51.68.220.77:8001/latestArticlesForCompetition/', {
+        const response = await axios.get(`${BASE_URL}/latestArticlesAndSocialFeedForClientCompany/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -78,19 +79,17 @@ const CardSelection = () => {
       setLoadingArticleId(articleId)
       const storedToken = localStorage.getItem('accessToken')
       if (storedToken) {
-        const base_url = 'http://51.68.220.77:8001'
-
         const request_params = {
           articleId: articleId,
           fileType: fileType
         }
 
-        const response = await axios.get(`${base_url}/readArticleFile/`, {
+        const response = await axios.get(`${BASE_URL}/readArticleFile/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
           params: request_params,
-          responseType: 'json' // Set the responseType to 'json' since it's base64-encoded
+          responseType: 'json'
         })
 
         // Check if the response contains valid content
@@ -126,12 +125,12 @@ const CardSelection = () => {
   }
 
   const handleOpenContainer = () => {
-    fetchlatestArticlesForCompetition()
+    fetchLatestArticlesForCompetition()
     setContainerOpen(true)
   }
 
   useEffect(() => {
-    fetchlatestArticlesForCompetition()
+    fetchLatestArticlesForCompetition()
   }, [clientId])
 
   const handleCloseContainer = () => {
