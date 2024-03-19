@@ -64,7 +64,7 @@ const Pagination = ({
           startIcon={<NavigateBeforeIcon />}
           onClick={handleLeftPagination}
           disabled={currentPage === 1}
-          sx={{ marginRight: { xs: 0, md: 1 } }} // Add margin for small screens
+          sx={{ marginRight: { xs: 0, md: 1 } }}
         >
           Previous Page
         </Button>

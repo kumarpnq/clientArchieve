@@ -14,7 +14,7 @@ import ArticleSelection from 'src/views/table/print-online-headlines/ArticleSele
 import CardSelection from 'src/views/table/print-online-headlines/CardSelection'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 const LinkStyled = styled(Link)(({ theme }) => ({

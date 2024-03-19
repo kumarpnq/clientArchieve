@@ -238,8 +238,6 @@ const TableSelection = () => {
     totalRecords: 0 // New state for totalRecords
   })
 
-  // const [selectedStartDate, setSelectedStartDate] = useState(null)
-  // const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
@@ -369,52 +367,6 @@ const TableSelection = () => {
     clientId
   ])
 
-  // Filter articles based on the selected date range and search query
-  // const filteredArticles = useMemo(() => {
-  //   let result = articles
-
-  //   // Apply date range filter
-  //   if (selectedStartDate && selectedEndDate) {
-  //     result = result.filter(article => {
-  //       const articleDate = new Date(article.date)
-
-  //       return articleDate >= selectedStartDate && articleDate <= selectedEndDate
-  //     })
-  //   }
-
-  //   // Apply search query filter
-  //   if (searchQuery) {
-  //     result = result.filter(
-  //       article =>
-  //         article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         article.description.toLowerCase().includes(searchQuery.toLowerCase())
-  //     )
-  //   }
-
-  //   // Apply duration filter
-  //   if (selectedDuration) {
-  //     const currentDate = new Date()
-  //     const startDate = new Date(currentDate)
-
-  //     if (selectedDuration === 1) {
-  //       startDate.setDate(currentDate.getDate() - 1)
-  //     } else if (selectedDuration === 7) {
-  //       startDate.setDate(currentDate.getDate() - selectedDuration)
-  //     } else if (selectedDuration === 30) {
-  //       startDate.setMonth(currentDate.getMonth() - 1)
-  //     }
-
-  //     result = result.filter(article => {
-  //       const articleDate = new Date(article.date)
-
-  //       return articleDate >= startDate && articleDate <= currentDate
-  //     })
-  //   }
-
-  //   return result
-  // }, [selectedStartDate, selectedEndDate, searchQuery, selectedDuration])
-
   // Divide social feeds into left and right columns
   const leftArticles = articles.filter((_, index) => index % 2 === 0)
   const rightArticles = articles.filter((_, index) => index % 2 !== 0)
@@ -438,12 +390,6 @@ const TableSelection = () => {
     // Add your delete logic here
     console.log('Delete action triggered')
   }
-
-  // Function to handle search action
-  // const handleSearch = () => {
-  //   // Add your search logic here
-  //   console.log('Search action triggered')
-  // }
 
   const handleEmail = () => {
     // Add your search logic here
