@@ -139,7 +139,7 @@ const TableSelection = () => {
           iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
           options={[
             {
-              text: 'Edit SocialFeed',
+              text: 'Edit Detail',
               menuItemProps: {
                 onClick: () => {
                   handleEdit(params.row)
