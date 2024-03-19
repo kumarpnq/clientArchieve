@@ -42,7 +42,11 @@ const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fe
             <PublicationInfo articles={articles} />
           </Grid>
           <Grid item xs={12}>
+<<<<<<< HEAD
             <EditJournalist handleClose={handleClose} articles={articles} />
+=======
+            <EditJournalist  handleClose={handleClose} articles={articles} />
+>>>>>>> 55478af (done journalistu api intergrtion)
           </Grid>
           <Grid item xs={12}>
             <ArticleTagEdit

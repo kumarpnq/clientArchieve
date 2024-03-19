@@ -11,16 +11,24 @@ import Card from '@mui/material/Card'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
+<<<<<<< HEAD
 
 const EditJournalist = ({ articles, onCancel, handleClose }) => {
   console.log('datamain==>', articles)
 
+=======
+
+const EditJournalist = ({ articles, onCancel,handleClose  }) => {
+
+  console.log("datamain==>", articles)
+>>>>>>> 55478af (done journalistu api intergrtion)
   const [articleData, setArticleData] = useState({
     headline: articles.headline,
     journalist: articles.articleJournalist
   })
 
   const handleSaveChanges = async () => {
+<<<<<<< HEAD
     const { articleId } = articles
     console.log('articleId ==> ', articleId)
 
@@ -48,6 +56,35 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
       toast.error('Error:', error.message)
     }
   }
+=======
+    const { articleId } = articles;
+    console.log("articleId ==> ", articleId);
+
+    try {
+        const storedToken = localStorage.getItem('accessToken');
+        console.log("storedToken ==> ", storedToken);
+
+        const response = await axios.post(
+            `${BASE_URL}/updateArticleJournalist/`,
+            {
+                articleId: Number(articleId),
+                newJournalist: articleData.journalist,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${storedToken}`
+                }
+            }
+        );
+
+        console.log("Response from server ==> ", response.data);
+        handleClose()
+    } catch (error) {
+        console.error("Error:", error);
+        toast.error('Error:', error.message);
+    }
+}
+>>>>>>> 55478af (done journalistu api intergrtion)
 
   const handleInputChange = (field, value) => {
     setArticleData(prevData => ({ ...prevData, [field]: value }))
