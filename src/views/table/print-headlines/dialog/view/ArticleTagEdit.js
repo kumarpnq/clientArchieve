@@ -19,12 +19,13 @@ import useGetTagsForArticle from 'src/api/print-headlines/tags/useGetTagsForArti
 // * third party imports
 import toast from 'react-hot-toast'
 
-const ArticleTagEdit = ({ articles, handleClose, token }) => {
+const ArticleTagEdit = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsFlag }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const companyId = articles?.companies.map(i => i.id).join()
   const articleId = articles.articleId
   const [fetchFlag, setFetchFlag] = useState(false)
+  const [value, setValue] = useState(0)
 
   const {
     tagsData,
@@ -46,6 +47,10 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
     tag4: '',
     tag5: ''
   })
+
+  useEffect(() => {
+    setFetchTagsFlag(prev => !prev)
+  }, [fetchFlag, value])
 
   useEffect(() => {
     // Use the first company's data in tagsData or default to an empty object
@@ -82,6 +87,8 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
         articleId
       })
       setFetchFlag(!fetchFlag)
+      setFetchTagsFlag(prev => !prev)
+      setValue(value + 1)
       handleClose()
 
       toast.success('updated')
