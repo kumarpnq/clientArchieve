@@ -24,7 +24,6 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const DataGrid = () => {
   const selectedClient = useSelector(selectSelectedClient)
-  const clientId = selectedClient ? selectedClient.clientId : null
 
   // Access priorityCompanyName from selectedClient
   const clientName = selectedClient ? selectedClient.clientName : ''

@@ -9,7 +9,6 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import Grid from '@mui/material/Grid'
 import axios from 'axios'
 import Table from '@mui/material/Table'
-import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
@@ -23,6 +22,7 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import { BASE_URL } from 'src/api/base'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -48,12 +48,12 @@ const CardSelection = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 
-  const fetchlatestArticlesForCompetition = async () => {
+  const fetchLatestArticlesForCompetition = async () => {
     try {
       setLoading(true)
       const storedToken = localStorage.getItem('accessToken')
       if (storedToken) {
-        const response = await axios.get('http://51.68.220.77:8001/latestArticlesForCompetition/', {
+        const response = await axios.get(`${BASE_URL}/latestSocialFeedsForClientCompany/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -63,7 +63,7 @@ const CardSelection = () => {
         })
 
         // Sort the companies with articles first
-        const sortedCompanies = response.data.companies.sort((a, b) => b.articles.length - a.articles.length)
+        const sortedCompanies = response.data.companies.sort((a, b) => b.socialFeeds.length - a.socialFeeds.length)
         setCompanyData(sortedCompanies)
       }
     } catch (error) {
@@ -78,14 +78,12 @@ const CardSelection = () => {
       setLoadingArticleId(articleId)
       const storedToken = localStorage.getItem('accessToken')
       if (storedToken) {
-        const base_url = 'http://51.68.220.77:8001'
-
         const request_params = {
           articleId: articleId,
           fileType: fileType
         }
 
-        const response = await axios.get(`${base_url}/readArticleFile/`, {
+        const response = await axios.get(`${BASE_URL}/readArticleFile/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -126,12 +124,12 @@ const CardSelection = () => {
   }
 
   const handleOpenContainer = () => {
-    fetchlatestArticlesForCompetition()
+    fetchLatestArticlesForCompetition()
     setContainerOpen(true)
   }
 
   useEffect(() => {
-    fetchlatestArticlesForCompetition()
+    fetchLatestArticlesForCompetition()
   }, [clientId])
 
   const handleCloseContainer = () => {
@@ -172,10 +170,10 @@ const CardSelection = () => {
                 <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                   <Card sx={{ width: '100%', textAlign: 'center' }}>
                     <CardHeader title={<Typography color='primary'>{company.companyName}</Typography>} />{' '}
-                    {company.articles.length > 0 ? (
+                    {company.socialFeeds.length > 0 ? (
                       <Table>
                         <TableBody>
-                          {company.articles.map(article => (
+                          {company.socialFeeds.map(article => (
                             <TableRow key={article.articleId}>
                               <TableCell sx={{ whiteSpace: 'nowrap' }}>
                                 <CustomTooltip
