@@ -88,23 +88,34 @@ const getTooltipContent = row => (
   <List>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Summary : {row.summary}
+        Summary :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.summary}
+        </Typography>
       </Typography>
     </ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
         Companies :{' '}
-        {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+        </Typography>
       </Typography>
     </ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Edition Type : {row.editionTypeName}
+        Edition Type :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.editionTypeName}
+        </Typography>
       </Typography>
     </ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Page Number : {row.pageNumber}
+        Page Number :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.pageNumber}
+        </Typography>
       </Typography>
     </ListItem>
   </List>
