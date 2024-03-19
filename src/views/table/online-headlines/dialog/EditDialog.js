@@ -12,6 +12,8 @@ import { BASE_URL } from 'src/api/base'
 
 // ** third party imports
 import toast from 'react-hot-toast'
+import ArticleTagEdit from '../ArticleTagEdit'
+import { Box } from '@mui/material'
 
 const EditDialog = ({ open, handleClose, socialFeed }) => {
   const [editedSocialFeed, setEditedSocialFeed] = useState({
@@ -83,6 +85,10 @@ const EditDialog = ({ open, handleClose, socialFeed }) => {
           fullWidth
           margin='normal'
         />
+
+          <Box marginBottom={4}>
+          <ArticleTagEdit />
+        </Box>
         <Iframe
           url={socialFeed?.socialFeedlink || ''}
           width='100%'

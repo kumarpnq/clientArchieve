@@ -8,12 +8,46 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Card from '@mui/material/Card'
+import toast from 'react-hot-toast'
+import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
 
-const EditJournalist = ({ articles, onSave, onCancel }) => {
+const EditJournalist = ({ articles, onCancel,handleClose  }) => {
+
+  console.log("datamain==>", articles)
   const [articleData, setArticleData] = useState({
     headline: articles.headline,
     journalist: articles.articleJournalist
   })
+
+  const handleSaveChanges = async () => {
+    const { articleId } = articles;
+    console.log("articleId ==> ", articleId);
+
+    try {
+        const storedToken = localStorage.getItem('accessToken');
+        console.log("storedToken ==> ", storedToken);
+
+        const response = await axios.post(
+            `${BASE_URL}/updateArticleJournalist/`,
+            {
+                articleId: Number(articleId),
+                newJournalist: articleData.journalist,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${storedToken}`
+                }
+            }
+        );
+
+        console.log("Response from server ==> ", response.data);
+        handleClose()
+    } catch (error) {
+        console.error("Error:", error);
+        toast.error('Error:', error.message);
+    }
+}
 
   const handleInputChange = (field, value) => {
     setArticleData(prevData => ({ ...prevData, [field]: value }))
@@ -48,7 +82,7 @@ const EditJournalist = ({ articles, onSave, onCancel }) => {
 
       {/* Save and Cancel Buttons */}
       <Grid container justifyContent='flex-end' sx={{ marginTop: 2 }}>
-        <Button color='primary' onClick={() => onSave(articleData)}>
+        <Button color='primary' onClick={handleSaveChanges}>
           Save
         </Button>
         <Button color='primary' onClick={onCancel} sx={{ marginLeft: 2 }}>

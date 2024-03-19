@@ -41,7 +41,7 @@ const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fe
             <PublicationInfo articles={articles} />
           </Grid>
           <Grid item xs={12}>
-            <EditJournalist articles={articles} />
+            <EditJournalist  handleClose={handleClose} articles={articles} />
           </Grid>
           <Grid item xs={12}>
             <ArticleTagEdit
