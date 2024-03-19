@@ -103,33 +103,39 @@ const TableSelection = () => {
       <List>
         <ListItem>
           <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-            Summary:
+            Summary :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+              {row.summary}
+            </Typography>
           </Typography>
         </ListItem>
-        <ListItem>{row.summary}</ListItem>
+        <ListItem></ListItem>
         <ListItem>
           <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-            Companies:
-          </Typography>{' '}
-          {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+            Companies :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+              {row.companies.length > 1
+                ? row.companies.map(company => company.name).join(', ')
+                : row.companies[0]?.name}
+            </Typography>
+          </Typography>
         </ListItem>
-        {row.articleType === 'print' && (
-          <>
-            {' '}
-            <ListItem>
-              <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-                Edition Type:
-              </Typography>{' '}
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Edition Type :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
               {row.editionTypeName}
-            </ListItem>
-            <ListItem>
-              <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-                Page Number:
-              </Typography>{' '}
+            </Typography>
+          </Typography>
+        </ListItem>
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Page Number :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
               {row.pageNumber}
-            </ListItem>
-          </>
-        )}
+            </Typography>
+          </Typography>
+        </ListItem>
       </List>
     )
 
