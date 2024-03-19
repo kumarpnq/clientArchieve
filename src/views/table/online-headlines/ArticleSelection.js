@@ -44,7 +44,6 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 import OptionsMenu from 'src/@core/components/option-menu'
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -72,15 +71,20 @@ const renderSocialFeed = params => {
     <List>
       <ListItem>
         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-          Summary:
+          Summary :{' '}
+          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+            {row.summary}
+          </Typography>
         </Typography>
       </ListItem>
-      <ListItem>{row.summary}</ListItem>
+
       <ListItem>
         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-          Companies:
-        </Typography>{' '}
-        {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+          Companies :{' '}
+          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+            {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
+          </Typography>
+        </Typography>
       </ListItem>
     </List>
   )

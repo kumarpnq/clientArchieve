@@ -38,7 +38,7 @@ const RecordsPerPageSelector = ({ recordsPerPage, handleRecordsPerPageUpdate }) 
   return (
     <Box>
       <Button endIcon={<ExpandMoreIcon />} onClick={handleClick}>
-        Records per Page: {recordsPerPage}
+        Articles per Page: {recordsPerPage}
       </Button>
       <Popover
         anchorEl={anchorEl}

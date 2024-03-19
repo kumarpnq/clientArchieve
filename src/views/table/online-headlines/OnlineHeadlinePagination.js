@@ -65,16 +65,12 @@ const Pagination = ({
           onClick={handleLeftPagination}
           disabled={currentPage === 1}
           sx={{ marginRight: { xs: 0, md: 1 } }} // Add margin for small screens
-        >
-          Previous Page
-        </Button>
+        />
         <Button
           endIcon={<NavigateNextIcon />}
           onClick={handleRightPagination}
           disabled={currentPage === Math.ceil(paginationModel.totalRecords / paginationModel.pageSize)}
-        >
-          Next Page
-        </Button>
+        />
       </Box>
     </Box>
   )

@@ -1,31 +1,25 @@
 // ** React Import
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import IconButton from '@mui/material/IconButton'
 import { DataGrid } from '@mui/x-data-grid'
 import Checkbox from '@mui/material/Checkbox'
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
-import ViewDialog from './dialog/view/MoreDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
 import Button from '@mui/material/Button'
 import { FormControlLabel, FormGroup } from '@mui/material'
 
 // ** MUI icons
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
 
 //api call
 import { fetchArticles } from '../../../api/print-headlines/articleApi'
-
-//pagination
-import Pagination from '../online-headlines/Pagination'
 
 import CircularProgress from '@mui/material/CircularProgress'
 
@@ -43,12 +37,15 @@ import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { List, ListItem } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
+
+// * component imports
 import useFetchReadArticleFile from 'src/api/global/useFetchReadArticleFile'
 import OptionsMenu from 'src/@core/components/option-menu'
 import FullScreenJPGDialog from './dialog/view/FullScreenJPGDialog'
 import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
 import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDialog'
+import Pagination from './Pagination'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -97,7 +94,6 @@ const getTooltipContent = row => (
         </Typography>
       </Typography>
     </ListItem>
-    <ListItem></ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
         Companies :{' '}
@@ -678,7 +674,7 @@ const TableSelection = () => {
               />
             )}
 
-            {articles.length > 0 && ( // Only render pagination if there are articles
+            {articles.length > 0 && (
               <Pagination
                 paginationModel={paginationModel}
                 currentPage={currentPage}
