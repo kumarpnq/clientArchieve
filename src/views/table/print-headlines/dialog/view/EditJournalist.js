@@ -12,42 +12,42 @@ import toast from 'react-hot-toast'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 
-const EditJournalist = ({ articles, onCancel,handleClose  }) => {
+const EditJournalist = ({ articles, onCancel, handleClose }) => {
+  console.log('datamain==>', articles)
 
-  console.log("datamain==>", articles)
   const [articleData, setArticleData] = useState({
     headline: articles.headline,
     journalist: articles.articleJournalist
   })
 
   const handleSaveChanges = async () => {
-    const { articleId } = articles;
-    console.log("articleId ==> ", articleId);
+    const { articleId } = articles
+    console.log('articleId ==> ', articleId)
 
     try {
-        const storedToken = localStorage.getItem('accessToken');
-        console.log("storedToken ==> ", storedToken);
+      const storedToken = localStorage.getItem('accessToken')
+      console.log('storedToken ==> ', storedToken)
 
-        const response = await axios.post(
-            `${BASE_URL}/updateArticleJournalist/`,
-            {
-                articleId: Number(articleId),
-                newJournalist: articleData.journalist,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`
-                }
-            }
-        );
+      const response = await axios.post(
+        `${BASE_URL}/updateArticleJournalist/`,
+        {
+          articleId: Number(articleId),
+          newJournalist: articleData.journalist
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          }
+        }
+      )
 
-        console.log("Response from server ==> ", response.data);
-        handleClose()
+      console.log('Response from server ==> ', response.data)
+      handleClose()
     } catch (error) {
-        console.error("Error:", error);
-        toast.error('Error:', error.message);
+      console.error('Error:', error)
+      toast.error('Error:', error.message)
     }
-}
+  }
 
   const handleInputChange = (field, value) => {
     setArticleData(prevData => ({ ...prevData, [field]: value }))

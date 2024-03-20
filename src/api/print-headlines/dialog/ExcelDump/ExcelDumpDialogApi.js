@@ -7,14 +7,14 @@ export const getArticleFieldList = async (accessToken, entityType) => {
       entityType
     }
 
-    const response = await axios.get(`${BASE_URL}/articleDownloadFieldList/`, {
+    const response = await axios.get(`${BASE_URL}/downloadFieldList/`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       },
       params: requestData
     })
 
-    return response.data.fields
+    return response.data.fieldList
   } catch (error) {
     console.error('Error fetching field list:', error)
     throw error
