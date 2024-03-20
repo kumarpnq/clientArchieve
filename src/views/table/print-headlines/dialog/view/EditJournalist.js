@@ -14,6 +14,7 @@ import { BASE_URL } from 'src/api/base'
 
 const EditJournalist = ({ articles, onCancel, handleClose }) => {
   console.log('datamain==>', articles)
+
   const [articleData, setArticleData] = useState({
     headline: articles.headline,
     journalist: articles.articleJournalist
@@ -21,8 +22,12 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
 
   const handleSaveChanges = async () => {
     const { articleId } = articles
+    console.log('articleId ==> ', articleId)
+
     try {
       const storedToken = localStorage.getItem('accessToken')
+      console.log('storedToken ==> ', storedToken)
+
       const response = await axios.post(
         `${BASE_URL}/updateArticleJournalist/`,
         {
@@ -35,8 +40,11 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
           }
         }
       )
+
+      console.log('Response from server ==> ', response.data)
       handleClose()
     } catch (error) {
+      console.error('Error:', error)
       toast.error('Error:', error.message)
     }
   }

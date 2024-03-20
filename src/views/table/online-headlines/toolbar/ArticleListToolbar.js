@@ -345,7 +345,7 @@ const ArticleListToolbar = ({
           <DeleteIcon />
         </Button>
       </CustomTooltip>
-      <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} />
+      <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} selectedArticles={selectedArticles} />
       {/* email */}
       {isMailVisible && (
         <Fragment>
