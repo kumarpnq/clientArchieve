@@ -16,6 +16,7 @@ import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 
 const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fetchTagsFlag, setFetchTagsFlag }) => {
+  console.log('articles==>', articles)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

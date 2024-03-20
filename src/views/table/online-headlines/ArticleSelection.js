@@ -506,6 +506,7 @@ const TableSelection = () => {
         selectedSortBy={selectedSortBy}
         selectedStartDate={selectedFromDate}
         selectedEndDate={selectedEndDate}
+        setTags={setTags}
       />
       {/* multiple selection */}
       {socialFeeds.length > 0 && (
@@ -598,7 +599,13 @@ const TableSelection = () => {
         formattedDate={dayjs(selectedArticle?.feedDate).format('DD-MM-YYYY')}
       />{' '}
       {/* Edit Dialog */}
-      <EditDialog open={isEditDialogOpen} handleClose={() => setIsEditDialogOpen(false)} socialFeed={selectedArticle} />
+      <EditDialog
+        fetchTagsFlag={fetchTagsFlag}
+        setFetchTagsFlag={setFetchTagsFlag}
+        open={isEditDialogOpen}
+        handleClose={() => setIsEditDialogOpen(false)}
+        socialFeed={selectedArticle}
+      />
     </Card>
   )
 }
