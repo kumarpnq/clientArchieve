@@ -204,7 +204,7 @@ const ArticleListToolbar = ({
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
-  // tools visibility
+  // user permission redux tools visibility
   const { isDossierVisible, isMailVisible, isExcelDumpVisible } = useToolPermission()
 
   // Helper function to calculate date by subtracting days from the current date

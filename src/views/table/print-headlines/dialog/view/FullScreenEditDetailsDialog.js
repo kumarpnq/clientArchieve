@@ -16,6 +16,7 @@ import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 
 const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fetchTagsFlag, setFetchTagsFlag }) => {
+  console.log('articles==>', articles)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -41,7 +42,7 @@ const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fe
             <PublicationInfo articles={articles} />
           </Grid>
           <Grid item xs={12}>
-            <EditJournalist  handleClose={handleClose} articles={articles} />
+            <EditJournalist handleClose={handleClose} articles={articles} />
           </Grid>
           <Grid item xs={12}>
             <ArticleTagEdit

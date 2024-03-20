@@ -1,5 +1,5 @@
 // src/components/print-headlines/dialog/views/ArticleTagEdit.js
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
@@ -13,9 +13,13 @@ import TableRow from '@mui/material/TableRow'
 // import { updateClientTagsToCompany } from '../../../../../api/print-headlines/dialog/view/articleTagEditApi'
 import Card from '@mui/material/Card'
 import { updateClientTagsToCompany } from 'src/api/print-headlines/dialog/view/articleTagEditApi'
+import { BASE_URL } from 'src/api/base'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
-const ArticleTagEdit = ({ articles, handleClose, token }) => {
+const ArticleTagEdit = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsFlag }) => {
   const [tags, setTags] = useState(articles?.tags || [])
+  const [value, setValue] = useState(0)
 
   const handleAddTag = (companyIndex, tagIndex, tag) => {
     const newTags = [...tags]
@@ -23,10 +27,17 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
     setTags(newTags)
   }
 
+  console.log('tags==?', articles.socialFeedId)
+
+  useEffect(() => {
+    setFetchTagsFlag(prev => !prev)
+  }, [value])
+
   const handleSaveDetails = async () => {
     try {
       const storedToken = localStorage.getItem('accessToken')
       const clientId = articles?.clientId
+      const socialFeedId = articles?.socialFeedId
 
       const companiesWithTags = articles?.companies.filter((company, companyIndex) => {
         const clientTags = tags[companyIndex]
@@ -34,19 +45,37 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
         return clientTags && Object.values(clientTags).some(tag => tag.trim() !== '')
       })
 
-      const promises = companiesWithTags.map((company, companyIndex) => {
-        const companyId = company.id
-        const clientTags = tags[companyIndex] ? Object.values(tags[companyIndex]) : []
+      const requestData = {
+        clientId,
+        companyIdsAndTags: companiesWithTags.map((company, companyIndex) => {
+          const companyId = company.id
+          const clientTags = tags[companyIndex]
+            ? Object.values(tags[companyIndex]).filter(tag => tag.trim() !== '')
+            : []
+          return { companyId, tags: clientTags }
+        }),
+        socialFeedId
+      }
 
-        return updateClientTagsToCompany(clientId, companyId, clientTags, storedToken)
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${storedToken}`
+      }
+
+      const promises = companiesWithTags.map((company, companyIndex) => {
+        return axios.post(`${BASE_URL}/updateTagsForOnlineArticle`, requestData, { headers })
       })
 
       const responses = await Promise.all(promises)
       responses.forEach(response => {
         console.log(response)
       })
+      setFetchTagsFlag(prev => !prev)
+      handleClose()
+      toast.success('updated')
     } catch (error) {
       console.error('Error saving tags:', error)
+      toast.error('something wrong')
     }
   }
 
@@ -54,7 +83,7 @@ const ArticleTagEdit = ({ articles, handleClose, token }) => {
     <Card>
       <TableContainer component={Paper}>
         <Typography variant='h6' align='center' sx={{ marginTop: 3 }}>
-          Article Tag Edit
+          Social Tag Edit
         </Typography>
         <Table>
           <TableBody>

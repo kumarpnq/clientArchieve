@@ -15,7 +15,8 @@ import toast from 'react-hot-toast'
 import ArticleTagEdit from '../ArticleTagEdit'
 import { Box } from '@mui/material'
 
-const EditDialog = ({ open, handleClose, socialFeed }) => {
+const EditDialog = ({ open, handleClose, socialFeed, fetchTagsFlag, setFetchTagsFlag }) => {
+  console.log('articleheadline==>', socialFeed)
   const [editedSocialFeed, setEditedSocialFeed] = useState({
     headline: '',
     author: ''
@@ -69,6 +70,7 @@ const EditDialog = ({ open, handleClose, socialFeed }) => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
       {/* Set maxWidth and fullWidth props */}
+
       <DialogTitle color='primary'>Edit Social Feed</DialogTitle>
       <DialogContent>
         <TextField
@@ -85,9 +87,22 @@ const EditDialog = ({ open, handleClose, socialFeed }) => {
           fullWidth
           margin='normal'
         />
+        <DialogActions>
+          <Button onClick={handleSaveChanges} color='primary' disabled={!author}>
+            Save
+          </Button>
+          <Button onClick={handleDiscard} color='primary'>
+            Cancel
+          </Button>
+        </DialogActions>
 
-          <Box marginBottom={4}>
-          <ArticleTagEdit />
+        <Box marginBottom={4}>
+          <ArticleTagEdit
+            fetchTagsFlag={fetchTagsFlag}
+            setFetchTagsFlag={setFetchTagsFlag}
+            articles={socialFeed}
+            handleClose={handleClose}
+          />
         </Box>
         <Iframe
           url={socialFeed?.socialFeedlink || ''}
@@ -100,12 +115,12 @@ const EditDialog = ({ open, handleClose, socialFeed }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleDiscard} color='primary'>
+        {/* <Button onClick={handleDiscard} color='primary'>
           Discard
         </Button>
         <Button onClick={handleSaveChanges} color='primary' disabled={!author}>
           Save
-        </Button>
+        </Button> */}
       </DialogActions>
     </Dialog>
   )
