@@ -18,16 +18,22 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
 
 =======
 
+<<<<<<< HEAD
 const EditJournalist = ({ articles, onCancel,handleClose  }) => {
 
   console.log("datamain==>", articles)
 >>>>>>> 55478af (done journalistu api intergrtion)
+=======
+const EditJournalist = ({ articles, onCancel, handleClose }) => {
+  console.log('datamain==>', articles)
+>>>>>>> 37e50fb (reomved consoles)
   const [articleData, setArticleData] = useState({
     headline: articles.headline,
     journalist: articles.articleJournalist
   })
 
   const handleSaveChanges = async () => {
+<<<<<<< HEAD
 <<<<<<< HEAD
     const { articleId } = articles
     console.log('articleId ==> ', articleId)
@@ -60,31 +66,33 @@ const EditJournalist = ({ articles, onCancel,handleClose  }) => {
     const { articleId } = articles;
     console.log("articleId ==> ", articleId);
 
+=======
+    const { articleId } = articles
+>>>>>>> 37e50fb (reomved consoles)
     try {
-        const storedToken = localStorage.getItem('accessToken');
-        console.log("storedToken ==> ", storedToken);
-
-        const response = await axios.post(
-            `${BASE_URL}/updateArticleJournalist/`,
-            {
-                articleId: Number(articleId),
-                newJournalist: articleData.journalist,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${storedToken}`
-                }
-            }
-        );
-
-        console.log("Response from server ==> ", response.data);
-        handleClose()
+      const storedToken = localStorage.getItem('accessToken')
+      const response = await axios.post(
+        `${BASE_URL}/updateArticleJournalist/`,
+        {
+          articleId: Number(articleId),
+          newJournalist: articleData.journalist
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          }
+        }
+      )
+      handleClose()
     } catch (error) {
-        console.error("Error:", error);
-        toast.error('Error:', error.message);
+      toast.error('Error:', error.message)
     }
+<<<<<<< HEAD
 }
 >>>>>>> 55478af (done journalistu api intergrtion)
+=======
+  }
+>>>>>>> 37e50fb (reomved consoles)
 
   const handleInputChange = (field, value) => {
     setArticleData(prevData => ({ ...prevData, [field]: value }))
