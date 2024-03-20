@@ -9,16 +9,44 @@ import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 import Box from '@mui/material/Box'
 
+// ** third party imports
+import toast from 'react-hot-toast'
+import { useDelete } from 'src/api/print-headlines/delete/useDelete'
+
+// ** redux import
+import { useSelector } from 'react-redux'
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+
 const DeleteDialog = ({ open, onClose, selectedArticles }) => {
   const [password, setPassword] = useState('')
+  const { response, loading, error, deleteArticle } = useDelete()
 
-  const handleConfirm = () => {
-    // Perform delete operation or any other logic
-    // Make sure to compare the entered password for confirmation
-    // You might want to add additional validation as needed
+  //redux state
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
 
-    // Close the dialog
-    onClose()
+  const handleConfirm = async () => {
+    // Validate password input
+    if (!password.trim()) {
+      toast.error('Please enter your password for confirmation.')
+
+      return
+    }
+
+    const articleTypeAndIds =
+      selectedArticles.length > 0 &&
+      selectedArticles.map(item => ({
+        id: item.articleId,
+        type: 'article'
+      }))
+
+    try {
+      await deleteArticle({ clientId, password, articleTypeAndIds })
+      onClose()
+    } catch (error) {
+      console.error('Delete article error:', error)
+      toast.error('An error occurred while deleting articles.')
+    }
   }
 
   // Check if selectedArticles is null or empty

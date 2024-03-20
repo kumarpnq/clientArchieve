@@ -68,7 +68,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   useEffect(() => {
     if (selectAll) {
       // If "Select All" is checked, select all fields
-      setSelectedFields(Object.keys(fields))
+      setSelectedFields([...fields])
     } else {
       // If "Select All" is unchecked, clear selected fields
       setSelectedFields([])
@@ -138,16 +138,13 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
           label='Select All'
         />
         <Grid container spacing={1}>
-          {Object.entries(fields).map(([fieldName, fieldLabel]) => (
-            <Grid item xs={6} key={fieldName}>
+          {fields.map(item => (
+            <Grid item xs={6} key={item.id}>
               <FormControlLabel
                 control={
-                  <Checkbox
-                    checked={selectedFields.includes(fieldName)}
-                    onChange={() => handleCheckboxChange(fieldName)}
-                  />
+                  <Checkbox checked={selectedFields.includes(item.id)} onChange={() => handleCheckboxChange(item.id)} />
                 }
-                label={fieldLabel}
+                label={item.name}
               />
             </Grid>
           ))}
