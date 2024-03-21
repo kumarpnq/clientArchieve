@@ -8,11 +8,7 @@ import AppBar from '@mui/material/AppBar'
 import Grid from '@mui/material/Grid'
 import ListItem from '@mui/material/ListItem'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import TextField from '@mui/material/TextField'
-
-// third party imports
 import axios from 'axios'
-import { debounce } from 'lodash'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
@@ -41,7 +37,6 @@ const ToolbarComponent = ({
   const [tagsAnchor, setTagsAnchor] = useState(null)
 
   // const [companies, setCompanies] = useState([])
-  const [tagValue, setTagValue] = useState('')
 
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
@@ -108,18 +103,6 @@ const ToolbarComponent = ({
   const handleSelectAllTags = () => {
     const allTags = tags.map(item => item)
     setSelectedTags(allTags)
-  }
-
-  const debounceTagChange = debounce(value => {
-    if (value.length > 3) {
-      setSelectedTags(value)
-    }
-  }, 300)
-
-  const handleTagChange = e => {
-    const { value } = e.target
-    setTagValue(value)
-    debounceTagChange(value)
   }
 
   const handleSelectAllMedia = () => {
@@ -391,16 +374,7 @@ const ToolbarComponent = ({
         </Menu>
 
         <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
-          <TextField
-            id='outlined-basic'
-            type='text'
-            value={tagValue}
-            onChange={handleTagChange}
-            label='Enter tag'
-            variant='outlined'
-          />
-
-          {/* {tags.length > 0 && (
+          {tags.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>
               <Button onClick={() => setSelectedTags([])}>Deselect All</Button>
@@ -410,7 +384,7 @@ const ToolbarComponent = ({
             <MenuItem key={item} onClick={() => handleTagSelect(item)} selected={selectedTags.includes(item)}>
               {item}
             </MenuItem>
-          ))} */}
+          ))}
           {/* Add more items as needed */}
         </Menu>
 

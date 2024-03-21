@@ -7,16 +7,9 @@ export const useDelete = () => {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  const deleteArticle = async ({ clientId, password, articleIds }) => {
+  const deleteArticle = async ({ clientId, password, articleTypeAndIds }) => {
     const storedToken = localStorage.getItem('accessToken')
     const url = `${BASE_URL}/deleteArticleForClient/`
-
-    const req = {
-      clientId,
-      password,
-      articleIds
-    }
-    console.log(req)
 
     try {
       setLoading(true)
@@ -29,14 +22,13 @@ export const useDelete = () => {
       const requestData = {
         clientId,
         password,
-        articleIds
+        articleTypeAndIds
       }
 
       const axiosConfig = {
-        headers,
-        data: requestData
+        headers
       }
-      const res = await axios.delete(url, axiosConfig)
+      const res = await axios.delete(url, requestData, axiosConfig)
       setResponse(res.data)
       setLoading(false)
     } catch (error) {
