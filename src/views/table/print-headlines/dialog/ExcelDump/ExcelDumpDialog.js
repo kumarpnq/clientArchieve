@@ -24,11 +24,13 @@ import {
   selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
+import WarningIcon from '@mui/icons-material/Warning'
 
 // ** third party import
 import toast from 'react-hot-toast'
+import { Box, DialogContentText } from '@mui/material'
 
-const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
+const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles }) => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
@@ -68,32 +70,24 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
 
   useEffect(() => {
     if (selectAll) {
-      // If "Select All" is checked, select all fields
-      setSelectedFields([...fields])
+      setSelectedFields([...fields.map(field => field.name)])
     } else {
-      // If "Select All" is unchecked, clear selected fields
       setSelectedFields([])
     }
   }, [selectAll, fields])
 
   const handleCheckboxChange = fieldName => {
-    // Toggle individual checkbox
     setSelectedFields(prevSelectedFields =>
       prevSelectedFields.includes(fieldName)
         ? prevSelectedFields.filter(field => field !== fieldName)
         : [...prevSelectedFields, fieldName]
     )
 
-    // Uncheck "Select All" if any individual checkbox is unchecked
     setSelectAll(false)
   }
 
   const handleSelectAllChange = () => {
-    // Toggle "Select All" checkbox
     setSelectAll(prevSelectAll => !prevSelectAll)
-
-    // Clear selected fields when "Select All" is unchecked
-    setSelectedFields([])
   }
 
   const handleDownload = () => {
@@ -131,6 +125,27 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
     }
   }
 
+  if (!dataForExcelDump || dataForExcelDump.length === 0) {
+    return (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>
+          <WarningIcon style={{ marginRight: '8px' }} />
+          Please Select At Least One Article
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To perform the excel dump operation, you must select at least one article.
+          </DialogContentText>
+          <Box display='flex' justifyContent='center'>
+            <Button onClick={handleClose} color='primary'>
+              Close
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='xs'>
       <DialogTitle color='primary'>Excel Dump</DialogTitle>
@@ -144,9 +159,12 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
             <Grid item xs={6} key={item.id}>
               <FormControlLabel
                 control={
-                  <Checkbox checked={selectedFields.includes(item.id)} onChange={() => handleCheckboxChange(item.id)} />
+                  <Checkbox
+                    checked={selectedFields.includes(item.name)}
+                    onChange={() => handleCheckboxChange(item.name)}
+                  />
                 }
-                label={item.name}
+                label={item.description}
               />
             </Grid>
           ))}

@@ -16,6 +16,7 @@ import CardSelection from 'src/views/table/print-online-headlines/CardSelection'
 // ** Redux
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -25,6 +26,13 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const DataGrid = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientName = selectedClient ? selectedClient.clientName : ''
+
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['bothHeadlines']
+
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <Grid container spacing={6}>

@@ -282,6 +282,7 @@ const TableSelection = () => {
   })
   const [selectedArticles, setSelectedArticles] = useState([])
 
+  console.log('checkstsus==>', selectedArticles)
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
     selectedMedia.length && { media: selectedMedia },
@@ -299,9 +300,8 @@ const TableSelection = () => {
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
     selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A') }
-
-    // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
+
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
 
   //Redux call
@@ -539,7 +539,7 @@ const TableSelection = () => {
     if (pageCheck && event.target.checked) {
       setPageCheck(false)
       setAllCheck(true)
-      setSelectedArticles([])
+      setSelectedArticles([...articles])
     } else {
       setAllCheck(event.target.checked)
     }

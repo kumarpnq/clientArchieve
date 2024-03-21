@@ -32,6 +32,7 @@ import ChartjsBarChart from 'src/views/charts/print-charts/ChartjsBarChart'
 import ArticleCountDistribution from 'src/views/charts/print-charts/ArticleCountDistribution'
 import TopNewsToday from 'src/views/charts/print-charts/TopNewsToday'
 import TopNewsForCompetitors from 'src/views/charts/print-charts/TopNewsForCompetitors'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -96,6 +97,13 @@ const ChartJS = () => {
   const borderColor = theme.palette.divider
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
+
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['printDashboard']
+
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <DatePickerWrapper>

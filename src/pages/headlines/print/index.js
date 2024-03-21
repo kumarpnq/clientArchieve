@@ -16,6 +16,7 @@ import CardSelection from 'src/views/table/print-headlines/CardSelection'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -24,6 +25,13 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const DataGrid = () => {
   const selectedClient = useSelector(selectSelectedClient)
+
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['printHeadlines']
+
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   // Access priorityCompanyName from selectedClient
   const clientName = selectedClient ? selectedClient.clientName : ''
