@@ -205,6 +205,7 @@ const TableSelection = () => {
   const [loading, setLoading] = useState(true)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
+  const [dataFetchFlag, setDataFetchFlag] = useState(false)
 
   const dataForDump = [
     selectedGeography.length && { geography: selectedGeography },
@@ -307,7 +308,8 @@ const TableSelection = () => {
     selectedMedia,
     selectedTags,
     searchParameters,
-    selectedSortBy
+    selectedSortBy,
+    dataFetchFlag
   ])
 
   // Filter articles based on the selected date range and search query
@@ -505,6 +507,7 @@ const TableSelection = () => {
         selectedStartDate={selectedFromDate}
         selectedEndDate={selectedEndDate}
         setTags={setTags}
+        setDataFetchFlag={setDataFetchFlag}
       />
       {/* multiple selection */}
       {socialFeeds.length > 0 && (
