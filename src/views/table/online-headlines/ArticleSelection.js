@@ -159,7 +159,7 @@ const TableSelection = () => {
   // ** State
   const [selectedArticles, setSelectedArticles] = useState([])
   const [socialFeeds, setSocialFeeds] = useState([])
-  const [tags, setTags] = useState('')
+  const [tags, setTags] = useState([])
   const [fetchTagsFlag, setFetchTagsFlag] = useState([])
 
   const [paginationModel, setPaginationModel] = useState({
@@ -426,7 +426,7 @@ const TableSelection = () => {
     setSelectedGeography([])
     setSelectedLanguage([])
     setSelectedMedia([])
-    setSelectedTags('')
+    setSelectedTags([])
     setSearchParameters({
       searchHeadline: '',
       searchBody: '',
