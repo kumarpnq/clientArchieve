@@ -8,6 +8,7 @@ import TextField from '@mui/material/TextField'
 import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // ** third party imports
 import toast from 'react-hot-toast'
@@ -17,7 +18,7 @@ import { useDelete } from 'src/api/print-headlines/delete/useDelete'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
-const DeleteDialog = ({ open, onClose, selectedArticles }) => {
+const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag }) => {
   const [password, setPassword] = useState('')
   const { response, loading, error, deleteArticle } = useDelete()
 
@@ -33,16 +34,13 @@ const DeleteDialog = ({ open, onClose, selectedArticles }) => {
       return
     }
 
-    const articleTypeAndIds =
-      selectedArticles.length > 0 &&
-      selectedArticles.map(item => ({
-        id: item.articleId,
-        type: 'article'
-      }))
+    const articleIds = selectedArticles.length > 0 && selectedArticles.map(item => item.articleId).join(',')
 
     try {
-      await deleteArticle({ clientId, password, articleTypeAndIds })
+      await deleteArticle({ clientId, password, articleIds })
+      response ? toast.success(response?.status?.message) : toast.error(error && error)
       onClose()
+      response && setDataFetchFlag(true)
     } catch (error) {
       console.error('Delete article error:', error)
       toast.error('An error occurred while deleting articles.')
@@ -88,7 +86,7 @@ const DeleteDialog = ({ open, onClose, selectedArticles }) => {
           Cancel
         </Button>
         <Button onClick={handleConfirm} color='primary'>
-          Confirm
+          {loading ? <CircularProgress /> : 'Confirm'}
         </Button>
       </DialogActions>
     </Dialog>
