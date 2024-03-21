@@ -269,6 +269,7 @@ const TableSelection = () => {
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
+  const [dataFetchFlag, setDataFetchFlag] = useState(false)
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -399,7 +400,8 @@ const TableSelection = () => {
     searchParameters,
     selectedEditionType,
     selectedPublicationType,
-    selectedSortBy
+    selectedSortBy,
+    dataFetchFlag
   ])
 
   // Divide social feeds into left and right columns
@@ -598,6 +600,7 @@ const TableSelection = () => {
         tags={tags}
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
+        setDataFetchFlag={setDataFetchFlag}
       />
       {/* multiple selection */}
       {articles.length > 0 && (
