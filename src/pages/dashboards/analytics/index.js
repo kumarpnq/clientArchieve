@@ -21,11 +21,18 @@ import AnalyticsWordCloud from 'src/views/dashboards/analytics/AnalyticsWordClou
 // ** redux import
 import { useSelector } from 'react-redux'
 import { selectUserData } from 'src/store/apps/user/userSlice'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const AnalyticsDashboard = () => {
   const userDetails = useSelector(selectUserData)
   const wordCloudPermission = userDetails?.clientArchiveRoles?.find(i => i.name === 'wordCloud')?.permission
 
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['analytics']
+
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
   return (
     <ApexChartWrapper>
       <KeenSliderWrapper>

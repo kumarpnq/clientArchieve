@@ -1,4 +1,8 @@
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
+
 const navigation = () => {
+  const screenPermissions = useScreenPermissions()
+
   return [
     {
       title: 'Dashboards',
@@ -7,17 +11,20 @@ const navigation = () => {
       // badgeContent: 'new',
       badgeColor: 'error',
       children: [
-        {
+        screenPermissions.analytics && {
           title: 'Analytics',
-          path: '/dashboards/analytics'
+          path: '/dashboards/analytics',
+          hidden: !screenPermissions.analytics
         },
-        {
+        screenPermissions.printDashboard && {
           title: 'Print',
-          path: '/dashboards/print'
+          path: '/dashboards/print',
+          hidden: !screenPermissions.printDashboard
         },
-        {
+        screenPermissions.onlineDashboard && {
           title: 'Online',
-          path: '/dashboards/online'
+          path: '/dashboards/online',
+          hidden: !screenPermissions.onlineDashboard
         }
       ]
     },
@@ -550,20 +557,23 @@ const navigation = () => {
     //   icon: 'tabler:layout-grid',
     //   path: '/tables/data-grid'
     // },
-    {
+    screenPermissions.onlineHeadlines && {
       title: 'Online Headlines',
       icon: 'fluent-mdl2:news-search',
-      path: '/headlines/online'
+      path: '/headlines/online',
+      hidden: !screenPermissions.onlineHeadlines
     },
-    {
+    screenPermissions.onlineHeadlines && {
       title: 'Print Headlines',
       icon: 'emojione-monotone:newspaper',
-      path: '/headlines/print'
+      path: '/headlines/print',
+      hidden: !screenPermissions.printHeadlines
     },
-    {
+    screenPermissions.bothHeadlines && {
       title: 'Print & Online Headlines',
       icon: 'material-symbols:article-shortcut-outline-rounded',
-      path: '/headlines/print-online'
+      path: '/headlines/print-online',
+      hidden: !screenPermissions.bothHeadlines
     },
 
     // {

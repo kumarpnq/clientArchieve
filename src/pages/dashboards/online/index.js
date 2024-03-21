@@ -35,6 +35,7 @@ import ArticleCountDistribution from 'src/views/charts/online-charts/ArticleCoun
 import TopNewsToday from 'src/views/charts/online-charts/TopNewsToday'
 import TopNewsForCompetitors from 'src/views/charts/online-charts/TopNewsForCompetitors'
 import useArticlesStatsForCompetition from 'src/api/dashboard-online/useArticlesStatsForCompetition'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -70,6 +71,13 @@ const ChartJS = () => {
   const borderColor = theme.palette.divider
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
+
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['onlineDashboard']
+
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <DatePickerWrapper>

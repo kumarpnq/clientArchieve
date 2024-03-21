@@ -1,34 +1,19 @@
-// ** Next Import
-import Link from 'next/link'
-
-// ** MUI Imports
+// DataGrid.js
+import React from 'react'
 import Grid from '@mui/material/Grid'
-import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-
-// ** Custom Components Imports
 import PageHeader from 'src/@core/components/page-header'
-
-// ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
-
-// ** Demo Components Imports
 import ArticleSelection from 'src/views/table/online-headlines/ArticleSelection'
 import CardSelection from 'src/views/table/online-headlines/CardSelection'
-
-const LinkStyled = styled(Link)(({ theme }) => ({
-  textDecoration: 'none',
-  color: theme.palette.primary.main
-}))
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const DataGrid = () => {
-  const selectedClient = useSelector(selectSelectedClient)
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['onlineHeadlines']
 
-  // const clientId = selectedClient ? selectedClient.clientId : null
-
-  // Access priorityCompanyName from selectedClient
-  const clientName = selectedClient ? selectedClient.clientName : ''
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <Grid container spacing={6}>
@@ -42,7 +27,7 @@ const DataGrid = () => {
             </Grid>
             <Grid item>
               <Typography variant='subtitle1' sx={{ color: 'primary.main' }}>
-                {clientName}
+                {/* Display client name here */}
               </Typography>
             </Grid>
           </Grid>
