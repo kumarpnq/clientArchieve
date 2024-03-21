@@ -45,6 +45,7 @@ const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag }) => 
       console.error('Delete article error:', error)
       toast.error('An error occurred while deleting articles.')
     }
+    setDataFetchFlag(false)
   }
 
   // Check if selectedArticles is null or empty
