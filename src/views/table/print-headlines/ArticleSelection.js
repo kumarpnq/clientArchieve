@@ -88,50 +88,34 @@ const getTooltipContent = row => (
   <List>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-<<<<<<< HEAD
-        Summary : {row.summary}
-=======
         Summary :{' '}
         <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
           {row.summary}
         </Typography>
->>>>>>> 2bdec61 (same chnagess into the print & headline also)
       </Typography>
     </ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
         Companies :{' '}
-<<<<<<< HEAD
-        {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
-=======
         <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
           {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
         </Typography>
->>>>>>> 2bdec61 (same chnagess into the print & headline also)
       </Typography>
     </ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-<<<<<<< HEAD
-        Edition Type : {row.editionTypeName}
-=======
         Edition Type :{' '}
         <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
           {row.editionTypeName}
         </Typography>
->>>>>>> 2bdec61 (same chnagess into the print & headline also)
       </Typography>
     </ListItem>
     <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-<<<<<<< HEAD
-        Page Number : {row.pageNumber}
-=======
         Page Number :{' '}
         <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
           {row.pageNumber}
         </Typography>
->>>>>>> 2bdec61 (same chnagess into the print & headline also)
       </Typography>
     </ListItem>
   </List>
