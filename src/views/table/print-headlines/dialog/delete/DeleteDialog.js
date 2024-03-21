@@ -33,15 +33,11 @@ const DeleteDialog = ({ open, onClose, selectedArticles }) => {
       return
     }
 
-    const articleTypeAndIds =
-      selectedArticles.length > 0 &&
-      selectedArticles.map(item => ({
-        id: item.articleId,
-        type: 'article'
-      }))
+    const articleIds = selectedArticles.length > 0 && selectedArticles.map(item => item.articleId).join(',')
 
     try {
-      await deleteArticle({ clientId, password, articleTypeAndIds })
+      await deleteArticle({ clientId, password, articleIds })
+      toast.success(' Article Deleted.')
       onClose()
     } catch (error) {
       console.error('Delete article error:', error)
