@@ -8,12 +8,16 @@ import AppBar from '@mui/material/AppBar'
 import Grid from '@mui/material/Grid'
 import ListItem from '@mui/material/ListItem'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import TextField from '@mui/material/TextField'
 import axios from 'axios'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
+
+//**lodash
+import { debounce } from 'lodash'
 
 const ToolbarComponent = ({
   // selectedCompanyId,
@@ -38,6 +42,7 @@ const ToolbarComponent = ({
 
   // const [companies, setCompanies] = useState([])
 
+  const [tagValue, setTagValue] = useState('')
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
@@ -86,23 +91,35 @@ const ToolbarComponent = ({
     setSelectedLanguage(allLangs)
   }
 
-  const handleTagSelect = item => {
-    setSelectedTags(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(item)
+  // const handleTagSelect = item => {
+  //   setSelectedTags(prevSelected => {
+  //     const isAlreadySelected = prevSelected.includes(item)
 
-      if (isAlreadySelected) {
-        // If already selected, remove from the list
-        return prevSelected.filter(id => id !== item)
-      } else {
-        // If not selected, add to the list
-        return [...prevSelected, item]
-      }
-    })
-  }
+  //     if (isAlreadySelected) {
+  //       // If already selected, remove from the list
+  //       return prevSelected.filter(id => id !== item)
+  //     } else {
+  //       // If not selected, add to the list
+  //       return [...prevSelected, item]
+  //     }
+  //   })
+  // }
 
-  const handleSelectAllTags = () => {
-    const allTags = tags.map(item => item)
-    setSelectedTags(allTags)
+  // const handleSelectAllTags = () => {
+  //   const allTags = tags.map(item => item)
+  //   setSelectedTags(allTags)
+  // }
+
+  const debounceTagChange = debounce(value => {
+    if (value.length > 3) {
+      setSelectedTags(value)
+    }
+  }, 300)
+
+  const handleTagChange = e => {
+    const { value } = e.target
+    setTagValue(value)
+    debounceTagChange(value)
   }
 
   const handleSelectAllMedia = () => {
@@ -374,18 +391,26 @@ const ToolbarComponent = ({
         </Menu>
 
         <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
-          {tags.length > 0 && (
+          {/* {tags.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>
               <Button onClick={() => setSelectedTags([])}>Deselect All</Button>
             </ListItem>
-          )}
-          {tags?.map(item => (
+          )} */}
+          {/* {tags?.map(item => (
             <MenuItem key={item} onClick={() => handleTagSelect(item)} selected={selectedTags.includes(item)}>
               {item}
             </MenuItem>
-          ))}
+          ))} */}
           {/* Add more items as needed */}
+          <TextField
+            id='outlined-basic'
+            type='text'
+            value={tagValue}
+            onChange={handleTagChange}
+            label='Enter tag'
+            variant='outlined'
+          />
         </Menu>
 
         {/* Repeat similar patterns for other dropdown menus */}
