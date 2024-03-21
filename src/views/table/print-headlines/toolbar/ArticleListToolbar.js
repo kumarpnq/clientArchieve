@@ -200,7 +200,8 @@ const ArticleListToolbar = ({
   dataForExcelDump,
   tags,
   fetchTagsFlag,
-  setFetchTagsFlag
+  setFetchTagsFlag,
+  setDataFetchFlag
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -476,7 +477,12 @@ const ArticleListToolbar = ({
           <DeleteIcon />
         </Button>
       </CustomTooltip>
-      <DeleteDialog open={isDeleteDialogOpen} onClose={handleDeleteDialogClose} selectedArticles={selectedArticles} />
+      <DeleteDialog
+        open={isDeleteDialogOpen}
+        onClose={handleDeleteDialogClose}
+        selectedArticles={selectedArticles}
+        setDataFetchFlag={setDataFetchFlag}
+      />
       {isMailVisible && (
         <Fragment>
           {' '}
