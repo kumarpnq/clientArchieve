@@ -201,7 +201,8 @@ const ArticleListToolbar = ({
   tags,
   fetchTagsFlag,
   setFetchTagsFlag,
-  setDataFetchFlag
+  setDataFetchFlag,
+  dataFetchFlag
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -482,6 +483,7 @@ const ArticleListToolbar = ({
         onClose={handleDeleteDialogClose}
         selectedArticles={selectedArticles}
         setDataFetchFlag={setDataFetchFlag}
+        dataFetchFlag={dataFetchFlag}
       />
       {isMailVisible && (
         <Fragment>

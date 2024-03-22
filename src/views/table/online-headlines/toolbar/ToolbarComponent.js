@@ -17,16 +17,13 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
 
 // //**lodash
-// import { debounce } from 'lodash'
+import { debounce } from 'lodash'
 
 const ToolbarComponent = ({
-  // selectedCompanyId,
-  // setSelectedCompanyId,
   selectedGeography,
   setSelectedGeography,
   selectedLanguage,
   setSelectedLanguage,
-  selectedMedia,
   setSelectedMedia,
   selectedTags,
   setSelectedTags,
@@ -34,25 +31,17 @@ const ToolbarComponent = ({
   setTags,
   fetchTagsFlag
 }) => {
-  // const [competitionAnchor, setCompetitionAnchor] = useState(null)
   const [geographyAnchor, setGeographyAnchor] = useState(null)
   const [languageAnchor, setLanguageAnchor] = useState(null)
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
 
-  // const [companies, setCompanies] = useState([])
-
-  // const [tagValue, setTagValue] = useState('')
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
-  const [media, setMedia] = useState([])
-
-  // const [tags, setTags] = useState([])
+  const [media, setMedia] = useState('')
 
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-
-  // const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
 
   const openDropdown = (event, anchorSetter) => {
     anchorSetter(event.currentTarget)
@@ -75,11 +64,6 @@ const ToolbarComponent = ({
       }
     })
   }
-
-  // const handleSelectAllCompetitions = () => {
-  //   const allCompanyIds = companies.map(company => company.companyId)
-  //   setSelectedCompanyId(allCompanyIds)
-  // }
 
   const handleSelectAllCities = () => {
     const allGeography = cities.map(city => city.cityId)
@@ -110,54 +94,24 @@ const ToolbarComponent = ({
     setSelectedTags(allTags)
   }
 
-  // const debounceTagChange = debounce(value => {
-  //   if (value.length > 3) {
-  //     setSelectedTags(value)
-  //   }
-  // }, 300)
+  const debounceMediaChange = debounce(value => {
+    if (value.length > 3) {
+      setSelectedMedia(value)
+    }
+  }, 300)
 
-  // const handleTagChange = e => {
-  //   const { value } = e.target
-  //   setTagValue(value)
-  //   debounceTagChange(value)
-  // }
-
-  const handleSelectAllMedia = () => {
-    const allMediaIds = media.map(item => item.publicationGroupId)
-    setSelectedMedia(allMediaIds)
+  const handleMediaChange = e => {
+    const { value } = e.target
+    setMedia(value)
+    debounceMediaChange(value)
   }
 
-  const handleMediaSelect = publicationGroupId => {
-    setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationGroupId)
-
-      if (isAlreadySelected) {
-        // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationGroupId)
-      } else {
-        // If not selected, add to the list
-        return [...prevSelected, publicationGroupId]
-      }
-    })
-  }
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
   useEffect(() => {
     const fetchUserDataAndCompanies = async () => {
       try {
         const storedToken = localStorage.getItem('accessToken')
-
-        // if (storedToken) {
-        //   const response = await axios.get('http://51.68.220.77:8001/companyListByClient/', {
-        //     headers: {
-        //       Authorization: `Bearer ${storedToken}`
-        //     },
-        //     params: {
-        //       clientId: clientId
-        //     }
-        //   })
-        //   setCompanies(response.data.companies)
-        // }
 
         // Fetch languages
         const languageResponse = await axios.get('http://51.68.220.77:8001/languagelist/', {
@@ -174,28 +128,6 @@ const ToolbarComponent = ({
           }
         })
         setCities(citiesResponse.data.cities)
-
-        // fetch media
-        const mediaResponse = await axios.get('http://51.68.220.77:8001/printMediaList', {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          params: {
-            clientId: clientId
-          }
-        })
-        setMedia(mediaResponse.data.mediaList)
-
-        // // fetch tags
-        // const tagsResponse = await axios.get('http://51.68.220.77:8001/getTagsForOnlineArticle', {
-        //   headers: {
-        //     Authorization: `Bearer ${storedToken}`
-        //   },
-        //   params: {
-        //     clientId: clientId
-        //   }
-        // })
-        // setTags(tagsResponse?.data?.clientTags)
       } catch (error) {
         console.error('Error fetching user data and companies:', error)
       }
@@ -373,13 +305,23 @@ const ToolbarComponent = ({
         </Menu>
         {/* Media Dropdown Menu */}
         <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
-          {media.length > 0 && (
+          {/* {media.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          )}
-          {media.map(item => (
+          )} */}
+          <MenuItem>
+            <TextField
+              id='outlined-basic'
+              type='text'
+              value={media}
+              onChange={handleMediaChange}
+              label='Media'
+              variant='outlined'
+            />
+          </MenuItem>
+          {/* {media.map(item => (
             <MenuItem
               key={item.publicationGroupId}
               onClick={() => handleMediaSelect(item.publicationGroupId)}
@@ -387,7 +329,7 @@ const ToolbarComponent = ({
             >
               {item.publicationName}
             </MenuItem>
-          ))}
+          ))} */}
         </Menu>
 
         <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>

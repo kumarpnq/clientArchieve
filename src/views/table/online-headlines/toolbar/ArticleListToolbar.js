@@ -170,7 +170,8 @@ const ArticleListToolbar = ({
   dataForDump,
   setSelectedSortBy,
   selectedSortBy,
-  setDataFetchFlag
+  setDataFetchFlag,
+  dataFetchFlag
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -351,6 +352,7 @@ const ArticleListToolbar = ({
         onClose={handleDeleteDialogClose}
         selectedArticles={selectedArticles}
         setDataFetchFlag={setDataFetchFlag}
+        dataFetchFlag={dataFetchFlag}
       />
       {/* email */}
       {isMailVisible && (

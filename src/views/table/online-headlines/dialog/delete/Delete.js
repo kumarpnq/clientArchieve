@@ -18,7 +18,7 @@ import toast from 'react-hot-toast'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
-const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag }) => {
+const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag, dataFetchFlag }) => {
   const [password, setPassword] = useState('')
   const { response, loading, error, deleteSocialFeeds } = useDelete()
 
@@ -38,14 +38,16 @@ const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag }) => 
 
     try {
       await deleteSocialFeeds({ clientId, password, socialFeedIds })
-      response ? toast.success(response?.status?.message) : toast.error(error && error)
+      response.status.message ? toast.success('Record Deleted') : toast.error(error)
       onClose()
-      response && setDataFetchFlag(true)
+      response && setDataFetchFlag(!dataFetchFlag)
     } catch (error) {
       console.error('Delete article error:', error)
       toast.error('An error occurred while deleting articles.')
+    } finally {
+      setDataFetchFlag(!dataFetchFlag)
+      setPassword('')
     }
-    setDataFetchFlag(false)
   }
 
   if (!selectedArticles || selectedArticles.length === 0) {

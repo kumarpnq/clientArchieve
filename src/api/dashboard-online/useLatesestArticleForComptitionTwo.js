@@ -12,16 +12,20 @@ const useLatestArticlesForCompetition = (clientId, selectedCompetitor, limit) =>
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
         if (storedToken) {
-          const response = await axios.get(`${BASE_URL}/latestArticlesForCompetition/`, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            params: {
-              clientId: clientId,
-              companyId: selectedCompetitor,
-              limit
+          const response = await axios.get(
+            `${BASE_URL}/latestSocialFeedsForClientCompany/
+`,
+            {
+              headers: {
+                Authorization: `Bearer ${storedToken}`
+              },
+              params: {
+                clientId: clientId,
+                companyId: selectedCompetitor,
+                limit
+              }
             }
-          })
+          )
 
           const companies = response?.data?.companies
           if (companies) {
