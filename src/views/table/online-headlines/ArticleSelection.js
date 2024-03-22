@@ -197,7 +197,7 @@ const TableSelection = () => {
   // const [selectedCompanyId, setSelectedCompanyId] = useState([])
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState([])
-  const [selectedMedia, setSelectedMedia] = useState([])
+  const [selectedMedia, setSelectedMedia] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -229,13 +229,6 @@ const TableSelection = () => {
     setSelectedArticle(row)
     setIsEditDialogOpen(true)
   }
-
-  const handleSaveChanges = editedArticle => {
-    // Add logic to save changes to the article
-    console.log('Saving changes:', editedArticle)
-  }
-
-  // Fetch social feeds based on the provided API
 
   useEffect(() => {
     const fetchSocialFeeds = async () => {
@@ -312,23 +305,6 @@ const TableSelection = () => {
     dataFetchFlag
   ])
 
-  // Filter articles based on the selected date range and search query
-  // const filteredArticles = useMemo(() => {
-  //   let result = articles
-
-  //   // Apply search query filter
-  //   if (searchQuery) {
-  //     result = result.filter(
-  //       article =>
-  //         article.article.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         article.shortHeading.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         article.description.toLowerCase().includes(searchQuery.toLowerCase())
-  //     )
-  //   }
-
-  //   return result
-  // }, [searchQuery])
-
   // Divide social feeds into left and right columns
   const leftSocialFeeds = socialFeeds.filter((_, index) => index % 2 === 0)
   const rightSocialFeeds = socialFeeds.filter((_, index) => index % 2 !== 0)
@@ -351,12 +327,6 @@ const TableSelection = () => {
   const handleDelete = () => {
     // Add your delete logic here
     console.log('Delete action triggered')
-  }
-
-  // Function to handle search action
-  const handleSearch = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
   }
 
   const handleEmail = () => {
@@ -425,7 +395,7 @@ const TableSelection = () => {
     // setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguage([])
-    setSelectedMedia([])
+    setSelectedMedia('')
     setSelectedTags([])
     setSearchParameters({
       searchHeadline: '',
@@ -475,7 +445,6 @@ const TableSelection = () => {
         setSelectedGeography={setSelectedGeography}
         selectedLanguage={selectedLanguage}
         setSelectedLanguage={setSelectedLanguage}
-        selectedMedia={selectedMedia}
         setSelectedMedia={setSelectedMedia}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}

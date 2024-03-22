@@ -17,7 +17,7 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
 
 // //**lodash
-// import { debounce } from 'lodash'
+import { debounce } from 'lodash'
 
 const ToolbarComponent = ({
   // selectedCompanyId,
@@ -26,7 +26,6 @@ const ToolbarComponent = ({
   setSelectedGeography,
   selectedLanguage,
   setSelectedLanguage,
-  selectedMedia,
   setSelectedMedia,
   selectedTags,
   setSelectedTags,
@@ -45,7 +44,7 @@ const ToolbarComponent = ({
   // const [tagValue, setTagValue] = useState('')
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
-  const [media, setMedia] = useState([])
+  const [media, setMedia] = useState('')
 
   // const [tags, setTags] = useState([])
 
@@ -110,36 +109,36 @@ const ToolbarComponent = ({
     setSelectedTags(allTags)
   }
 
-  // const debounceTagChange = debounce(value => {
-  //   if (value.length > 3) {
-  //     setSelectedTags(value)
-  //   }
-  // }, 300)
+  const debounceMediaChange = debounce(value => {
+    if (value.length > 3) {
+      setSelectedMedia(value)
+    }
+  }, 300)
 
-  // const handleTagChange = e => {
-  //   const { value } = e.target
-  //   setTagValue(value)
-  //   debounceTagChange(value)
+  const handleMediaChange = e => {
+    const { value } = e.target
+    setMedia(value)
+    debounceMediaChange(value)
+  }
+
+  // const handleSelectAllMedia = () => {
+  //   const allMediaIds = media.map(item => item.publicationGroupId)
+  //   setSelectedMedia(allMediaIds)
   // }
 
-  const handleSelectAllMedia = () => {
-    const allMediaIds = media.map(item => item.publicationGroupId)
-    setSelectedMedia(allMediaIds)
-  }
+  // const handleMediaSelect = publicationGroupId => {
+  //   setSelectedMedia(prevSelected => {
+  //     const isAlreadySelected = prevSelected.includes(publicationGroupId)
 
-  const handleMediaSelect = publicationGroupId => {
-    setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationGroupId)
-
-      if (isAlreadySelected) {
-        // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationGroupId)
-      } else {
-        // If not selected, add to the list
-        return [...prevSelected, publicationGroupId]
-      }
-    })
-  }
+  //     if (isAlreadySelected) {
+  //       // If already selected, remove from the list
+  //       return prevSelected.filter(id => id !== publicationGroupId)
+  //     } else {
+  //       // If not selected, add to the list
+  //       return [...prevSelected, publicationGroupId]
+  //     }
+  //   })
+  // }
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
   useEffect(() => {
@@ -175,16 +174,16 @@ const ToolbarComponent = ({
         })
         setCities(citiesResponse.data.cities)
 
-        // fetch media
-        const mediaResponse = await axios.get('http://51.68.220.77:8001/printMediaList', {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          params: {
-            clientId: clientId
-          }
-        })
-        setMedia(mediaResponse.data.mediaList)
+        // // fetch media
+        // const mediaResponse = await axios.get('http://51.68.220.77:8001/printMediaList', {
+        //   headers: {
+        //     Authorization: `Bearer ${storedToken}`
+        //   },
+        //   params: {
+        //     clientId: clientId
+        //   }
+        // })
+        // setMedia(mediaResponse.data.mediaList)
 
         // // fetch tags
         // const tagsResponse = await axios.get('http://51.68.220.77:8001/getTagsForOnlineArticle', {
@@ -373,13 +372,26 @@ const ToolbarComponent = ({
         </Menu>
         {/* Media Dropdown Menu */}
         <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
-          {media.length > 0 && (
+          {/* {media.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          )}
-          {media.map(item => (
+          )} */}
+          <MenuItem>
+            <ListItem sx={{ justifyContent: 'space-between' }}>
+              <TextField
+                id='outlined-basic'
+                type='text'
+                value={media}
+                onChange={handleMediaChange}
+                label='Media'
+                variant='outlined'
+              />
+                   
+            </ListItem>
+          </MenuItem>
+          {/* {media.map(item => (
             <MenuItem
               key={item.publicationGroupId}
               onClick={() => handleMediaSelect(item.publicationGroupId)}
@@ -387,7 +399,7 @@ const ToolbarComponent = ({
             >
               {item.publicationName}
             </MenuItem>
-          ))}
+          ))} */}
         </Menu>
 
         <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
