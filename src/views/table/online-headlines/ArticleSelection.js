@@ -508,6 +508,7 @@ const TableSelection = () => {
         selectedEndDate={selectedEndDate}
         setTags={setTags}
         setDataFetchFlag={setDataFetchFlag}
+        dataFetchFlag={dataFetchFlag}
       />
       {/* multiple selection */}
       {socialFeeds.length > 0 && (
