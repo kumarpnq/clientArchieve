@@ -246,7 +246,7 @@ const TableSelection = () => {
   const getRowId = row => row.articleId
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
-  const [selectedMedia, setSelectedMedia] = useState([])
+  const [selectedMedia, setSelectedMedia] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
@@ -476,7 +476,7 @@ const TableSelection = () => {
     // setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguages([])
-    setSelectedMedia([])
+    setSelectedMedia('')
     setSelectedTags([])
   }
 
