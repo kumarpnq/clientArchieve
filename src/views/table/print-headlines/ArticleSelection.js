@@ -259,6 +259,8 @@ const TableSelection = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(10)
 
+  console.log('perpage', recordsPerPage)
+
   // const [selectedCompanyIds, setSelectedCompanyIds] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTag, setSelectedTag] = useState([])
@@ -299,7 +301,12 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A') }
+    selectedArticles.length === recordsPerPage && {
+      selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
+    },
+    selectedArticles.length === recordsPerPage && {
+      pageLimit: allCheck && recordsPerPage
+    }
   ].filter(Boolean)
 
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
@@ -454,6 +461,7 @@ const TableSelection = () => {
 
   const handleRowClick = params => {
     setSelectedArticle(params.row)
+    console.log('sdad', params)
 
     // currently hiding the click summary
     setPopupOpen(false)
@@ -465,13 +473,26 @@ const TableSelection = () => {
 
     // Update selectedArticles based on whether the article is already selected or not
     setSelectedArticles(prevSelectedArticles => {
+      let updatedSelectedArticles = []
       if (isSelected) {
         // If article is already selected, remove it from the selection
-        return prevSelectedArticles.filter(selectedArticle => selectedArticle.articleId !== article.articleId)
+        updatedSelectedArticles = prevSelectedArticles.filter(
+          selectedArticle => selectedArticle.articleId !== article.articleId
+        )
       } else {
         // If article is not selected, add it to the selection
-        return [...prevSelectedArticles, article]
+        updatedSelectedArticles = [...prevSelectedArticles, article]
       }
+
+      // Check if all articles on the page are selected or not
+      const isPageFullySelected = articles.every(article =>
+        updatedSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
+      )
+
+      // Update the page check state based on the page selection status
+      setPageCheck(isPageFullySelected)
+
+      return updatedSelectedArticles
     })
   }
 
@@ -542,6 +563,7 @@ const TableSelection = () => {
       setSelectedArticles([...articles])
     } else {
       setAllCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
     }
   }
 

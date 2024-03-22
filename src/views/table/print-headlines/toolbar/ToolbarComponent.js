@@ -19,7 +19,7 @@ const ToolbarComponent = ({
   selectedMedia,
   setSelectedMedia,
   selectedTag,
-  setSelectedTags,
+  setSelectedTag,
   selectedCities,
   setSelectedCities,
   selectedLanguages,
@@ -49,7 +49,7 @@ const ToolbarComponent = ({
 
   const handleSelectAllTags = () => {
     const allTags = tags.map(item => item)
-    setSelectedTags(allTags)
+    setSelectedTag(allTags)
   }
 
   const handleSelectAllCities = () => {
@@ -63,7 +63,7 @@ const ToolbarComponent = ({
   }
 
   const handleTagSelect = item => {
-    setSelectedTags(prevSelected => {
+    setSelectedTag(prevSelected => {
       const isAlreadySelected = prevSelected.includes(item)
 
       if (isAlreadySelected) {
@@ -329,7 +329,7 @@ const ToolbarComponent = ({
           {tags.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>
-              <Button onClick={() => setSelectedTags([])}>Deselect All</Button>
+              <Button onClick={() => setSelectedTag([])}>Deselect All</Button>
             </ListItem>
           )}
           {tags?.map((item, index) => (
