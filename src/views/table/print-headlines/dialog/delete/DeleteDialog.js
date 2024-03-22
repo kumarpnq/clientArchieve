@@ -18,7 +18,7 @@ import { useDelete } from 'src/api/print-headlines/delete/useDelete'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
-const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag }) => {
+const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag, dataFetchFlag }) => {
   const [password, setPassword] = useState('')
   const { response, loading, error, deleteArticle } = useDelete()
 
@@ -38,14 +38,15 @@ const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag }) => 
 
     try {
       await deleteArticle({ clientId, password, articleIds })
-      response ? toast.success(response?.status?.message) : toast.error(error && error)
+      response.status.message ? toast.success(response.status.message) : toast.error(error)
       onClose()
-      response && setDataFetchFlag(true)
+      response && setDataFetchFlag(!dataFetchFlag)
     } catch (error) {
-      console.error('Delete article error:', error)
       toast.error('An error occurred while deleting articles.')
+    } finally {
+      setDataFetchFlag(!dataFetchFlag)
+      setPassword('')
     }
-    setDataFetchFlag(false)
   }
 
   // Check if selectedArticles is null or empty
