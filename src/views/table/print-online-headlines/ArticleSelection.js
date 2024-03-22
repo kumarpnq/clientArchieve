@@ -253,6 +253,7 @@ const TableSelection = () => {
   const [recordsPerPage, setRecordsPerPage] = useState(10)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
+  const [dataFetchFlag, setDataFetchFlag] = useState(false)
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -364,7 +365,8 @@ const TableSelection = () => {
     selectedLanguages,
     selectedMedia,
     selectedTags,
-    clientId
+    clientId,
+    dataFetchFlag
   ])
 
   // Divide social feeds into left and right columns
@@ -547,6 +549,8 @@ const TableSelection = () => {
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
         dataForDump={dataForDump}
+        dataFetchFlag={dataFetchFlag}
+        setDataFetchFlag={setDataFetchFlag}
       />
       {/* multiple selection */}
       {articles.length > 0 && (
