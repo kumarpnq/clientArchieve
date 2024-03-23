@@ -59,7 +59,8 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   const [toDate, setToDate] = useState('')
   const { response, error, sendDossierRequest } = useDossierRequest()
   const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
-  const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join()
+  const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join('')
+  const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
 
   // redux states
   const dispatch = useDispatch()
@@ -90,7 +91,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
-    const searchCriteria = { fromDate, toDate, selectPageOrAll }
+    const searchCriteria = { fromDate, toDate, selectPageOrAll, pageLimit }
     const recipients = { recipients: selectedEmail || email }
     sendDossierRequest(clientId, articleIds, dossierType, recipients, searchCriteria)
 

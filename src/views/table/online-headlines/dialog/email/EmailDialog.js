@@ -52,11 +52,11 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
 
   // customs
   const articleIds = dataForMail.length && dataForMail.map(i => i.articleId).flat()
-
+  const pageLimit = dataForMail.length && dataForMail.map(i => i.pageLimit).join('')
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
 
-  const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join()
+  const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -90,7 +90,8 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
     const searchCriteria = {
       fromDate: formattedFromDate,
       toDate: formattedToDate,
-      selectPageOrAll
+      selectPageOrAll,
+      pageLimit
     }
 
     sendMailRequest(clientId, articleIds, recipients, searchCriteria)
