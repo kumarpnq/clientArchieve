@@ -8,27 +8,29 @@ const useExcelDump = () => {
   const [error, setError] = useState(null)
 
   const postData = async ({ clientId, articleIds, selectedFields, searchCriteria }) => {
+    console.log('article==>', articleIds, !articleIds === undefined)
     setLoading(true)
     try {
       const storedToken = localStorage.getItem('accessToken')
 
-      const response = await axios.post(
-        `${BASE_URL}/excelDumpRequest`,
-        {
-          clientId,
-          articleIds: articleIds.length > 0 ? articleIds : [],
-          selectedFields,
-          searchCriteria
-        },
-        {
-          headers: { Authorization: `Bearer ${storedToken}` }
-        }
-      )
+      const requestData = {
+        clientId,
+        selectedFields,
+        searchCriteria
+      }
+
+      if (Array.isArray(articleIds) && articleIds.length > 0 && articleIds !== undefined) {
+        requestData.articleIds = articleIds
+      }
+
+      const response = await axios.post(`${BASE_URL}/excelDumpRequest`, requestData, {
+        headers: { Authorization: `Bearer ${storedToken}` }
+      })
       setResponseData(response.data)
-      setLoading(false)
     } catch (error) {
       console.error(error)
-      setError(error.message || error)
+      setError(error.message || 'An error occurred')
+    } finally {
       setLoading(false)
     }
   }

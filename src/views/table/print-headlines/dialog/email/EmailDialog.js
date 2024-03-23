@@ -54,8 +54,11 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
 
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
-  const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join()
+  const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')
   const articleIds = dataForMail.length && dataForMail.map(i => i.articleId).flat()
+  const pageLimit = dataForMail.length && dataForMail.map(i => i.pageLimit).join('')
+
+  console.log('pageslec==>', dataForMail.length && dataForMail.map(i => i.selectPageorAll))
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -84,7 +87,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
 
     const formattedFromDate = formatDateTime(selectedFromDate)
     const formattedToDate = formatDateTime(selectedEndDate)
-    const searchCriteria = { fromDate: formattedFromDate, toDate: formattedToDate, selectPageOrAll }
+    const searchCriteria = { fromDate: formattedFromDate, toDate: formattedToDate, selectPageOrAll, pageLimit }
     sendMailRequest(clientId, articleIds, recipients, searchCriteria)
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
