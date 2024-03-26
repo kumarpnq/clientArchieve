@@ -467,6 +467,12 @@ const TableSelection = () => {
     setPopupOpen(false)
   }
 
+  useEffect(() => {
+    if (pageCheck || allCheck) {
+      setSelectedArticles([...articles])
+    }
+  }, [pageCheck, articles, allCheck])
+
   const handleSelect = article => {
     // Check if the article is already selected
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)

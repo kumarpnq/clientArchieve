@@ -390,6 +390,12 @@ const TableSelection = () => {
     setPopupOpen(true)
   }
 
+  useEffect(() => {
+    if (pageCheck || allCheck) {
+      setSelectedArticles([...socialFeeds])
+    }
+  }, [pageCheck, socialFeeds, allCheck])
+
   const handleSelect = article => {
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
 

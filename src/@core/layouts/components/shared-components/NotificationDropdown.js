@@ -128,6 +128,7 @@ const NotificationDropdown = props => {
   //  ** notifications
   const { notificationList, loading } = useFetchNotifications()
 
+  console.log()
   //  ** notification status
   const { loading: updateLoading, error, data, updateReadClientNotification } = useUpdateClientNotification()
 
@@ -211,43 +212,7 @@ const NotificationDropdown = props => {
             <CustomChip skin='light' size='small' color='primary' label={`${notificationList.length} New`} />
           </Box>
         </MenuItem>
-        <ScrollWrapper hidden={hidden}>
-          {notificationList.map((notification, index) => (
-            <Button
-              key={index}
-              fullWidth
-              onClick={() => handleNotificationDetails(notification.jobId)}
-              sx={{
-                padding: '15px',
 
-                backgroundColor: !notification.readJobStatus ? theme => theme.palette.action.hover : ''
-              }}
-            >
-              <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                {/* <RenderAvatar notification={notification} /> */}
-                <Box sx={{ mr: 4, ml: 2.5, flex: '1 1', display: 'flex', overflow: 'hidden', flexDirection: 'column' }}>
-                  <MenuItemTitle>{notification.jobName}</MenuItemTitle>
-                  <MenuItemSubtitle variant='body2'>
-                    <Link
-                      href={'https://www.google.com'}
-                      target='_blank'
-                      style={{
-                        color:
-                          (notification.jobStatus === 'Processing' && 'orange') ||
-                          (notification.jobStatus === 'completed' && 'green')
-                      }}
-                    >
-                      {notification.downloadLink}
-                    </Link>
-                  </MenuItemSubtitle>
-                </Box>
-                <Typography variant='body2' sx={{ color: 'text.primary' }}>
-                  {notification.jobStatus}
-                </Typography>
-              </Box>
-            </Button>
-          ))}
-        </ScrollWrapper>
         <MenuItem
           disableRipple
           disableTouchRipple
