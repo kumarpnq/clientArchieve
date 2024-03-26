@@ -20,8 +20,8 @@ import { BASE_URL } from 'src/api/base'
 import { debounce } from 'lodash'
 
 const ToolbarComponent = ({
-  // selectedCompanyId,
-  // setSelectedCompanyId,
+  selectedCompanyId,
+  setSelectedCompanyId,
   selectedGeography,
   setSelectedGeography,
   selectedLanguage,

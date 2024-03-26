@@ -305,7 +305,13 @@ const TableSelection = () => {
       selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
     },
     selectedArticles.length === recordsPerPage && {
+      page: pageCheck && currentPage
+    },
+    selectedArticles.length === recordsPerPage && {
       pageLimit: allCheck && recordsPerPage
+    },
+    selectedArticles.length === recordsPerPage && {
+      recordsPerPage: recordsPerPage
     }
   ].filter(Boolean)
 
