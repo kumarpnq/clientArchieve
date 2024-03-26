@@ -68,7 +68,7 @@ const TopNewsForCompetitors = () => {
             <Box>
               <CircularProgress />
             </Box>
-          ) : topNews?.length > 0 ? (
+          ) : topNews.length > 0 ? (
             topNews.map(news => (
               <div key={news.articleId}>
                 <Typography

@@ -246,13 +246,14 @@ const TableSelection = () => {
   const getRowId = row => row.articleId
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
-  const [selectedMedia, setSelectedMedia] = useState([])
+  const [selectedMedia, setSelectedMedia] = useState('')
   const [selectedTags, setSelectedTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(10)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
+  const [dataFetchFlag, setDataFetchFlag] = useState(false)
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -364,7 +365,8 @@ const TableSelection = () => {
     selectedLanguages,
     selectedMedia,
     selectedTags,
-    clientId
+    clientId,
+    dataFetchFlag
   ])
 
   // Divide social feeds into left and right columns
@@ -493,7 +495,7 @@ const TableSelection = () => {
     // setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguages([])
-    setSelectedMedia([])
+    setSelectedMedia('')
     setSelectedTags([])
   }
 
@@ -567,6 +569,8 @@ const TableSelection = () => {
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
         dataForDump={dataForDump}
+        dataFetchFlag={dataFetchFlag}
+        setDataFetchFlag={setDataFetchFlag}
       />
       {/* multiple selection */}
       {articles.length > 0 && (

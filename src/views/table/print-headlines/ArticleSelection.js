@@ -285,6 +285,7 @@ const TableSelection = () => {
   const [selectedArticles, setSelectedArticles] = useState([])
 
   console.log('checkstsus==>', selectedArticles)
+
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
     selectedMedia.length && { media: selectedMedia },
@@ -635,6 +636,7 @@ const TableSelection = () => {
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
         setDataFetchFlag={setDataFetchFlag}
+        dataFetchFlag={dataFetchFlag}
       />
       {/* multiple selection */}
       {articles.length > 0 && (

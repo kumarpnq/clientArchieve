@@ -8,13 +8,19 @@ import AppBar from '@mui/material/AppBar'
 import Grid from '@mui/material/Grid'
 import ListItem from '@mui/material/ListItem'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import TextField from '@mui/material/TextField'
+
+//**  data hooks import
 import useUserDataAndCompanies from 'src/api/print-online-headlines/useToolbarComponentData'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
+
+// ** third party imports
 import axios from 'axios'
+import { debounce } from 'lodash'
 
 const ToolbarComponent = ({
   // selectedCompanyId,
@@ -27,7 +33,6 @@ const ToolbarComponent = ({
   setSelectedMedia,
   selectedTags,
   setSelectedTags,
-
   tags,
   setTags,
   fetchTagsFlag
@@ -38,10 +43,13 @@ const ToolbarComponent = ({
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
 
-  const { companies, languages, cities, media } = useUserDataAndCompanies()
+  // states
+  const [media, setMedia] = useState('')
 
+  const { languages, cities } = useUserDataAndCompanies()
   const selectedClient = useSelector(selectSelectedClient)
-  const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
+
+  // const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
   const clientId = selectedClient ? selectedClient.clientId : null
 
   const openDropdown = (event, anchorSetter) => {
@@ -51,25 +59,6 @@ const ToolbarComponent = ({
   const closeDropdown = anchorSetter => {
     anchorSetter(null)
   }
-
-  // const handleCheckboxChange = companyId => {
-  //   setSelectedCompanyId(prevSelected => {
-  //     const isAlreadySelected = prevSelected.includes(companyId)
-
-  //     if (isAlreadySelected) {
-  //       // If already selected, remove from the list
-  //       return prevSelected.filter(id => id !== companyId)
-  //     } else {
-  //       // If not selected, add to the list
-  //       return [...prevSelected, companyId]
-  //     }
-  //   })
-  // }
-
-  // const handleSelectAllCompetitions = () => {
-  //   const allCompanyIds = companies.map(company => company.companyId)
-  //   setSelectedCompanyId(allCompanyIds)
-  // }
 
   const handleCityClick = cityId => {
     setSelectedGeography(prevSelected => {
@@ -145,6 +134,18 @@ const ToolbarComponent = ({
   const handleSelectAllTags = () => {
     const allTags = tags.map(item => item)
     setSelectedTags(allTags)
+  }
+
+  const debounceMediaChange = debounce(value => {
+    if (value.length > 3) {
+      setSelectedMedia(value)
+    }
+  }, 300)
+
+  const handleMediaChange = e => {
+    const { value } = e.target
+    setMedia(value)
+    debounceMediaChange(value)
   }
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -314,13 +315,13 @@ const ToolbarComponent = ({
         </Menu>
         {/* Media Dropdown Menu */}
         <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
-          {media.length > 0 && (
+          {/* {media.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          )}
-          {media.map(item => (
+          )} */}
+          {/* {media.map(item => (
             <MenuItem
               key={item.publicationGroupId}
               onClick={() => handleMediaSelect(item.publicationGroupId)}
@@ -328,7 +329,17 @@ const ToolbarComponent = ({
             >
               {item.publicationName}
             </MenuItem>
-          ))}
+          ))} */}
+          <MenuItem>
+            <TextField
+              id='outlined-basic'
+              type='text'
+              value={media}
+              onChange={handleMediaChange}
+              label='Media'
+              variant='outlined'
+            />
+          </MenuItem>
           {/* Add more items as needed */}
         </Menu>
 
