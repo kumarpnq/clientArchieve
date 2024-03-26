@@ -434,19 +434,38 @@ const TableSelection = () => {
     setPopupOpen(false)
   }
 
+  useEffect(() => {
+    if (pageCheck || allCheck) {
+      setSelectedArticles([...articles])
+    }
+  }, [pageCheck, articles, allCheck])
+
   const handleSelect = article => {
     // Check if the article is already selected
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
 
     // Update selectedArticles based on whether the article is already selected or not
     setSelectedArticles(prevSelectedArticles => {
+      let updatedSelectedArticles = []
       if (isSelected) {
         // If article is already selected, remove it from the selection
-        return prevSelectedArticles.filter(selectedArticle => selectedArticle.articleId !== article.articleId)
+        updatedSelectedArticles = prevSelectedArticles.filter(
+          selectedArticle => selectedArticle.articleId !== article.articleId
+        )
       } else {
         // If article is not selected, add it to the selection
-        return [...prevSelectedArticles, article]
+        updatedSelectedArticles = [...prevSelectedArticles, article]
       }
+
+      // Check if all articles on the page are selected or not
+      const isPageFullySelected = articles.every(article =>
+        updatedSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
+      )
+
+      // Update the page check state based on the page selection status
+      setPageCheck(isPageFullySelected)
+
+      return updatedSelectedArticles
     })
   }
 
@@ -495,9 +514,10 @@ const TableSelection = () => {
     if (pageCheck && event.target.checked) {
       setPageCheck(false)
       setAllCheck(true)
-      setSelectedArticles([])
+      setSelectedArticles([...articles])
     } else {
       setAllCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
     }
   }
 

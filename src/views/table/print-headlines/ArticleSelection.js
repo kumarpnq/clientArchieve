@@ -306,7 +306,13 @@ const TableSelection = () => {
       selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
     },
     selectedArticles.length === recordsPerPage && {
+      page: pageCheck && currentPage
+    },
+    selectedArticles.length === recordsPerPage && {
       pageLimit: allCheck && recordsPerPage
+    },
+    selectedArticles.length === recordsPerPage && {
+      recordsPerPage: recordsPerPage
     }
   ].filter(Boolean)
 
@@ -467,6 +473,12 @@ const TableSelection = () => {
     // currently hiding the click summary
     setPopupOpen(false)
   }
+
+  useEffect(() => {
+    if (pageCheck || allCheck) {
+      setSelectedArticles([...articles])
+    }
+  }, [pageCheck, articles, allCheck])
 
   const handleSelect = article => {
     // Check if the article is already selected

@@ -220,7 +220,12 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.socialFeedId) },
-    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A') }
+    selectedArticles.length === recordsPerPage && {
+      selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
+    },
+    selectedArticles.length === recordsPerPage && {
+      pageLimit: allCheck && recordsPerPage
+    }
 
     // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)
@@ -357,15 +362,36 @@ const TableSelection = () => {
     setPopupOpen(true)
   }
 
+  useEffect(() => {
+    if (pageCheck || allCheck) {
+      setSelectedArticles([...socialFeeds])
+    }
+  }, [pageCheck, socialFeeds, allCheck])
+
   const handleSelect = article => {
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
 
     setSelectedArticles(prevSelectedArticles => {
+      let updatedSelectedArticles
       if (isSelected) {
-        return prevSelectedArticles.filter(selectedArticle => selectedArticle.socialFeedId !== article.socialFeedId)
+        // Deselect the clicked article
+        updatedSelectedArticles = prevSelectedArticles.filter(
+          selectedArticle => selectedArticle.socialFeedId !== article.socialFeedId
+        )
       } else {
-        return [...prevSelectedArticles, article]
+        // Select the clicked article
+        updatedSelectedArticles = [...prevSelectedArticles, article]
       }
+
+      // Check if all articles are selected, then select the "All Articles" checkbox
+      console.log('socialfeeds==>', socialFeeds)
+      const isPageFullySelected = socialFeeds.every(article =>
+        updatedSelectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.articleId)
+      )
+
+      setPageCheck(isPageFullySelected)
+
+      return updatedSelectedArticles
     })
   }
 
@@ -424,9 +450,10 @@ const TableSelection = () => {
     if (pageCheck && event.target.checked) {
       setPageCheck(false)
       setAllCheck(true)
-      setSelectedArticles([])
+      setSelectedArticles([...socialFeeds])
     } else {
       setAllCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...socialFeeds] : [])
     }
   }
 

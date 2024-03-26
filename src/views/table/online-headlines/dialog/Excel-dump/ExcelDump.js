@@ -8,6 +8,7 @@ import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
+import WarningIcon from '@mui/icons-material/Warning'
 
 // ** third party imports
 import toast from 'react-hot-toast'
@@ -27,6 +28,7 @@ import {
 import { getArticleFieldList } from 'src/api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi'
 import { formatDateTime } from 'src/utils/formatDateTime'
 import useExcelDump from 'src/api/dump/useExcelDump'
+import { Box, DialogContentText } from '@mui/material'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   //Redux call
@@ -65,12 +67,11 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
 
     fetchFieldList()
   }, [])
+
   useEffect(() => {
     if (selectAll) {
-      // If "Select All" is checked, select all fields
-      setSelectedFields([...fields])
+      setSelectedFields([...fields.map(field => field.id)])
     } else {
-      // If "Select All" is unchecked, clear selected fields
       setSelectedFields([])
     }
   }, [selectAll, fields])
@@ -87,11 +88,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   }
 
   const handleSelectAllChange = () => {
-    // Toggle "Select All" checkbox
     setSelectAll(prevSelectAll => !prevSelectAll)
-
-    // Clear selected fields when "Select All" is unchecked
-    setSelectedFields([])
   }
 
   const handleDownload = () => {
@@ -127,6 +124,27 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       responseData.message && toast.success(responseData.message)
     }
     if (error) return toast.error('something wrong.')
+  }
+
+  if (!dataForExcelDump || dataForExcelDump.length === 0) {
+    return (
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>
+          <WarningIcon style={{ marginRight: '8px' }} />
+          Please Select At Least One Article
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To perform the excel dump operation, you must select at least one article.
+          </DialogContentText>
+          <Box display='flex' justifyContent='center'>
+            <Button onClick={handleClose} color='primary'>
+              Close
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    )
   }
 
   return (

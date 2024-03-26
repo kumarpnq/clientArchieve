@@ -93,18 +93,34 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
   const handleDownload = () => {
     dispatch(setNotificationFlag(!notificationFlag))
 
-    const searchCriteria = {}
-    dataForExcelDump.forEach(item => {
-      const [key] = Object.keys(item)
-      const value = item[key]
-      searchCriteria[key] = value
-    })
+    function convertPageOrAll(value) {
+      if (typeof value === 'number') {
+        return value === 0 ? 'A' : 'P'
+      }
+      return value
+    }
+
+    const selectPageOrAll =
+      dataForExcelDump.length && dataForExcelDump.map(i => convertPageOrAll(i.selectPageorAll)).join('')
+    const requestEntity = 'print'
+    const page = dataForExcelDump.length && dataForExcelDump.map(i => i.page).join('')
+
+    const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
+    const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
+
+    const searchCriteria = { selectPageOrAll, requestEntity, page, recordsPerPage }
+    // dataForExcelDump.forEach(item => {
+    //   const [key] = Object.keys(item)
+    //   const value = item[key]
+    //   searchCriteria[key] = value
+    // })
+
     searchCriteria.fromDate = formattedStartDate
     searchCriteria.toDate = formattedEndDate
-    searchCriteria.selectedCompanyIds = selectedCompanyIds
+    // searchCriteria.selectedCompanyIds = selectedCompanyIds
 
-    // Remove articleIds from searchCriteria
-    delete searchCriteria.articleId
+    // // Remove articleIds from searchCriteria
+    // delete searchCriteria.articleId
 
     postData({
       clientId,
