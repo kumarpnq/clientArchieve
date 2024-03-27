@@ -107,8 +107,55 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
 
     const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
     const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
+    const media =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.media)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const geography =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.geography)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const language =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const tags =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.tags)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
 
     const searchCriteria = { selectPageOrAll, requestEntity, page, recordsPerPage }
+
+    if (media !== '') {
+      searchCriteria.media = media
+    }
+
+    if (geography !== '') {
+      searchCriteria.geography = geography
+    }
+
+    if (language != '') {
+      searchCriteria.language = language
+    }
+
+    if (tags != '') {
+      searchCriteria.tags = tags
+    }
     // dataForExcelDump.forEach(item => {
     //   const [key] = Object.keys(item)
     //   const value = item[key]
@@ -121,14 +168,21 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
 
     // // Remove articleIds from searchCriteria
     // delete searchCriteria.articleId
+    console.log('articleid==>', articleIds)
 
-    postData({
+    const postDataParams = {
       clientId,
-      articleIds,
       selectedFields,
-      searchCriteria,
       notificationFlag
-    })
+    }
+
+    if (articleIds.length && articleIds.some(id => id !== undefined)) {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    } else {
+      postDataParams.searchCriteria = searchCriteria
+    }
+
+    postData(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))

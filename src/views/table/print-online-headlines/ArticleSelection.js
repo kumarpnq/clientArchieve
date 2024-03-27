@@ -289,6 +289,7 @@ const TableSelection = () => {
     selectedGeography.length && { geography: selectedGeography },
     selectedMedia.length && { media: selectedMedia },
     selectedTags.length && { tags: selectedTags },
+    selectedLanguages.length && { language: selectedLanguages },
 
     //  selectedEditionType && { editionType: selectedEditionType },
     //  selectedPublicationType && { publicationCategory: selectedPublicationType },
@@ -302,7 +303,18 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && { selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A') }
+    selectedArticles.length === recordsPerPage && {
+      selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
+    },
+    selectedArticles.length === recordsPerPage && {
+      page: pageCheck && currentPage
+    },
+    selectedArticles.length === recordsPerPage && {
+      pageLimit: allCheck && recordsPerPage
+    },
+    selectedArticles.length === recordsPerPage && {
+      recordsPerPage: recordsPerPage
+    }
 
     // allCheck && { totalRecords: +allCheck }
   ].filter(Boolean)

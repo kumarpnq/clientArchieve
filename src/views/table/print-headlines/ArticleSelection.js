@@ -1,4 +1,4 @@
-// ** React Import
+// ** React Importu
 import { useState, useEffect } from 'react'
 
 // ** MUI Imports
@@ -289,6 +289,8 @@ const TableSelection = () => {
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
     selectedMedia.length && { media: selectedMedia },
+    selectedLanguages.length && { language: selectedLanguages },
+
     selectedTag.length && { tags: selectedTag },
     selectedEditionType && { editionType: selectedEditionType },
     selectedPublicationType && { publicationCategory: selectedPublicationType },
@@ -327,6 +329,7 @@ const TableSelection = () => {
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
+  console.log('priorityCompanyName==>', priorityCompanyName)
 
   const [loading, setLoading] = useState(true)
 

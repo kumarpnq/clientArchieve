@@ -211,6 +211,8 @@ const TableSelection = () => {
     selectedGeography.length && { geography: selectedGeography },
     selectedMedia.length && { media: selectedMedia },
     selectedTags.length && { tags: selectedTags },
+    setSelectedLanguage.length && { language: setSelectedLanguage },
+
     searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
     searchParameters.searchBody && { body: searchParameters.searchBody },
     searchParameters.journalist && { journalist: searchParameters.journalist },
@@ -219,12 +221,18 @@ const TableSelection = () => {
     searchParameters.ignoreThis && { ignoreWords: searchParameters.ignoreThis },
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
-      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.socialFeedId) },
+      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
     selectedArticles.length === recordsPerPage && {
       selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
     },
     selectedArticles.length === recordsPerPage && {
+      page: pageCheck && currentPage
+    },
+    selectedArticles.length === recordsPerPage && {
       pageLimit: allCheck && recordsPerPage
+    },
+    selectedArticles.length === recordsPerPage && {
+      recordsPerPage: recordsPerPage
     }
 
     // allCheck && { totalRecords: +allCheck }
