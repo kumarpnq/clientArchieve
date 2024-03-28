@@ -31,6 +31,7 @@ import toast from 'react-hot-toast'
 import { Box, DialogContentText } from '@mui/material'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles }) => {
+  console.log('printheadline==>', dataForExcelDump)
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)

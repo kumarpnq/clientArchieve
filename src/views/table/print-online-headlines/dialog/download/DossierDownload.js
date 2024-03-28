@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BASE_URL } from 'src/api/base'
-
+import axios from 'axios'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -14,19 +13,15 @@ import Radio from '@mui/material/Radio'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Grid from '@mui/material/Grid'
+import InputLabel from '@mui/material/InputLabel'
+import Select from '@mui/material/Select'
 import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
-
-// ** Date picker
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-
-// ** Redux
-import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { useSelector, useDispatch } from 'react-redux'
 import {
   selectSelectedClient,
   setNotificationFlag,
@@ -34,36 +29,38 @@ import {
   setFetchAutoStatusFlag,
   selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
-
-// ** third party imports
-import toast from 'react-hot-toast'
-import axios from 'axios'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
+import { BASE_URL } from 'src/api/base'
+import toast from 'react-hot-toast'
+import { formatDateTime } from 'src/utils/formatDateTime'
 
-const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, dataForDossierDownload }) => {
-  const [mailList, setMailList] = useState([])
+const DossierDownload = ({ open, handleClose, selectedStartDate, selectedEndDate, dataForDossierDownload }) => {
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+  const clientName = selectedClient ? selectedClient.clientName : null
+
   const [email, setEmail] = useState('')
   const [companyName, setCompanyName] = useState('')
   const [subject, setSubject] = useState('')
-  const [dossierType, setDossierType] = useState('word') // Default to Word Dossier
-  const [selectedEmail, setSelectedEmail] = useState([]) // Selected email from dropdown
-
+  console.log('subject==>', subject)
+  const [dossierType, setDossierType] = useState('word')
+  const [selectedEmail, setSelectedEmail] = useState([])
+  const [mailList, setMailList] = useState([])
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const { response, error, sendDossierRequest } = useDossierRequest()
   const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
-  const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join()
+  const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join('')
+  const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
 
-  // redux states
-  const selectedClient = useSelector(selectSelectedClient)
-  const clientName = selectedClient ? selectedClient.clientName : null
-  const clientId = selectedClient ? selectedClient.clientId : null
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
 
   const handleEmailChange = event => {
-    setEmail(event.target.value)
+    const { value } = event.target
+    setEmail(value)
+    setSelectedEmail(prev => [...prev, value])
   }
 
   const handleCompanyNameChange = event => {
@@ -84,14 +81,102 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
-    const searchCriteria = { fromDate, toDate, selectPageOrAll }
-    const recipients = { recipients: selectedEmail || email }
-    sendDossierRequest(clientId, articleIds, dossierType, recipients, searchCriteria)
+    // const searchCriteria = { fromDate, toDate, selectPageOrAll, pageLimit }
+    const recipients = selectedEmail.map(emailId => ({ id: emailId, recipientType: 'to' }))
+    function convertPageOrAll(value) {
+      if (typeof value === 'number') {
+        return value === 0 ? 'A' : 'P'
+      }
+      return value
+    }
+
+    const selectPageOrAll =
+      dataForDossierDownload.length && dataForDossierDownload.map(i => convertPageOrAll(i.selectPageorAll)).join('')
+    const requestEntity = 'both'
+    const page = dataForDossierDownload.length && dataForDossierDownload.map(i => i.page).join('')
+
+    const articleIds =
+      dataForDossierDownload.length &&
+      dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'both' })))
+    const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
+    const media =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.media)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const geography =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.geography)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const language =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const tags =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.tags)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const formattedFromDate = formatDateTime(selectedStartDate)
+    const formattedToDate = formatDateTime(selectedEndDate)
+
+    const searchCriteria = {
+      fromDate: formattedFromDate,
+      toDate: formattedToDate,
+      selectPageOrAll,
+      page,
+      requestEntity,
+      recordsPerPage
+    }
+
+    if (media !== '') {
+      searchCriteria.media = media
+    }
+
+    if (geography !== '') {
+      searchCriteria.geography = geography
+    }
+
+    if (language != '') {
+      searchCriteria.language = language
+    }
+
+    if (tags != '') {
+      searchCriteria.tags = tags
+    }
+
+    const postDataParams = {
+      notificationFlag,
+      recipients,
+      subject,
+      clientId,
+      clientName
+      // notificationFlag
+    }
+
+    if (articleIds.length && articleIds.some(id => id !== undefined)) {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    } else {
+      postDataParams.searchCriteria = searchCriteria
+    }
+    sendDossierRequest(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
-
-    // Close the dialog
     handleClose()
     setEmail('')
     setSelectedEmail([])
@@ -107,31 +192,21 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       const storedToken = localStorage.getItem('accessToken')
       try {
         const url = `${BASE_URL}/clientMailerList/`
-
         const headers = {
           Authorization: `Bearer ${storedToken}`
         }
-
-        const requestData = {
-          clientId
-        }
-
-        const axiosConfig = {
-          headers,
-          params: requestData
-        }
-
+        const requestData = { clientId }
+        const axiosConfig = { headers, params: requestData }
         const axiosResponse = await axios.get(url, axiosConfig)
         setMailList(axiosResponse.data.emails)
       } catch (axiosError) {
         console.log(axiosError)
       }
     }
-
     getClientMailerList()
   }, [clientId])
 
-  if (!dataForDossierDownload.length) {
+  if (!dataForDossierDownload || dataForDossierDownload.length === 0) {
     return (
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
@@ -156,7 +231,6 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle color='primary'>Dossier</DialogTitle>
       <DialogContent>
-        {/* Dossier Type Radio Buttons */}
         <FormControl component='fieldset' fullWidth>
           <FormLabel component='legend'>Select Dossier Type</FormLabel>
           <RadioGroup
@@ -170,10 +244,8 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
             <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' />
           </RadioGroup>
         </FormControl>
-        {/* Email ID Dropdown and Text Field in the same line */}
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            {/* Email Dropdown */}
             <FormControl fullWidth margin='normal'>
               <InputLabel id='demo-simple-select-label'>Emails</InputLabel>
               <Select
@@ -193,11 +265,9 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            {/* Email Text Field */}
             <TextField fullWidth label='Enter Email' value={email} onChange={handleEmailChange} margin='normal' />
           </Grid>
         </Grid>
-        {/* Other Text Fields */}
         <TextField
           fullWidth
           label='Enter Client/Company Name'
@@ -233,7 +303,6 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
             </Grid>
           </Grid>
         </LocalizationProvider>
-        {/* Message for the user */}
         <p style={{ margin: '16px 0', color: '#757575' }}>
           After submitting the request, the system will send a Dossier link to the selected E-Mail IDs.
         </p>
@@ -250,4 +319,4 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   )
 }
 
-export default DossierDialog
+export default DossierDownload
