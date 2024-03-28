@@ -54,11 +54,11 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
 
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
-  const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')
-  const articleIds = dataForMail.length && dataForMail.map(i => i.articleId).flat()
-  const pageLimit = dataForMail.length && dataForMail.map(i => i.pageLimit).join('')
+  // const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')
+  // const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
+  // const pageLimit = dataForMail.length && dataForMail.map(i => i.pageLimit).join('')
 
-  console.log('pageslec==>', dataForMail.length && dataForMail.map(i => i.selectPageorAll))
+  // console.log('pageslec==>', dataForMail.length && dataForMail.map(i => i.selectPageorAll))
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -83,13 +83,97 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
   const handleSendEmail = () => {
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
-    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
+    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'to' }))
+
+    function convertPageOrAll(value) {
+      if (typeof value === 'number') {
+        return value === 0 ? 'A' : 'P'
+      }
+      return value
+    }
+
+    const selectPageOrAll = dataForMail.length && dataForMail.map(i => convertPageOrAll(i.selectPageorAll)).join('')
+    const requestEntity = 'print'
+    const page = dataForMail.length && dataForMail.map(i => i.page).join('')
+
+    const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
+    const recordsPerPage = dataForMail.length && dataForMail.map(i => i.recordsPerPage).join('')
+    const media =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.media)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const geography =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.geography)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const language =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const tags =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.tags)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
 
     const formattedFromDate = formatDateTime(selectedFromDate)
     const formattedToDate = formatDateTime(selectedEndDate)
-    const searchCriteria = { fromDate: formattedFromDate, toDate: formattedToDate, selectPageOrAll, pageLimit }
-    sendMailRequest(clientId, articleIds, recipients, searchCriteria)
-    dispatch(setNotificationFlag(!notificationFlag))
+
+    const searchCriteria = {
+      fromDate: formattedFromDate,
+      toDate: formattedToDate,
+      selectPageOrAll,
+      page,
+      requestEntity,
+      recordsPerPage
+    }
+
+    if (media !== '') {
+      searchCriteria.media = media
+    }
+
+    if (geography !== '') {
+      searchCriteria.geography = geography
+    }
+
+    if (language != '') {
+      searchCriteria.language = language
+    }
+
+    if (tags != '') {
+      searchCriteria.tags = tags
+    }
+
+    const postDataParams = {
+      recipients,
+      clientId,
+      notificationFlag
+      // notificationFlag
+    }
+
+    if (articleIds.length && articleIds.some(id => id !== undefined)) {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    } else {
+      postDataParams.searchCriteria = searchCriteria
+    }
+
+    sendMailRequest(postDataParams)
+
+    dispatch(setNotificationFlag(!notificationFlag, searchCriteria))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
     if (error) {

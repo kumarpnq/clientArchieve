@@ -84,6 +84,52 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
 
     const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
 
+    function convertPageOrAll(value) {
+      if (typeof value === 'number') {
+        return value === 0 ? 'A' : 'P'
+      }
+      return value
+    }
+
+    const selectPageOrAll = dataForMail.length && dataForMail.map(i => convertPageOrAll(i.selectPageorAll)).join('')
+    const requestEntity = 'online'
+    const page = dataForMail.length && dataForMail.map(i => i.page).join('')
+
+    const articleIds =
+      dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'online' })))
+    const recordsPerPage = dataForMail.length && dataForMail.map(i => i.recordsPerPage).join('')
+    const media =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.media)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const geography =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.geography)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const language =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const tags =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.tags)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
     const formattedFromDate = formatDateTime(selectedFromDate)
     const formattedToDate = formatDateTime(selectedEndDate)
 
@@ -91,10 +137,42 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       fromDate: formattedFromDate,
       toDate: formattedToDate,
       selectPageOrAll,
-      pageLimit
+      page,
+      requestEntity,
+      recordsPerPage
     }
 
-    sendMailRequest(clientId, articleIds, recipients, searchCriteria)
+    if (media !== '') {
+      searchCriteria.media = media
+    }
+
+    if (geography !== '') {
+      searchCriteria.geography = geography
+    }
+
+    if (language != '') {
+      searchCriteria.language = language
+    }
+
+    if (tags != '') {
+      searchCriteria.tags = tags
+    }
+
+    const postDataParams = {
+      recipients,
+      clientId,
+      notificationFlag
+      // notificationFlag
+    }
+
+    if (articleIds.length && articleIds.some(id => id !== undefined)) {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    } else {
+      postDataParams.searchCriteria = searchCriteria
+    }
+
+    sendMailRequest(postDataParams)
+
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()

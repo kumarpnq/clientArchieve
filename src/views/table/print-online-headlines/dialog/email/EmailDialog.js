@@ -50,8 +50,8 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
 
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
-  const selectPageOrAll = dataForMailDump.length && dataForMailDump.map(i => i.selectPageorAll).join()
-  const articleIds = dataForMailDump.length && dataForMailDump.map(i => i.articleId).flat()
+  // const selectPageOrAll = dataForMailDump.length && dataForMailDump.map(i => i.selectPageorAll).join()
+  // const articleIds = dataForMailDump.length && dataForMailDump.map(i => i.articleId).flat()
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -78,10 +78,96 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
     dispatch(setNotificationFlag(!notificationFlag))
     const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
 
+    function convertPageOrAll(value) {
+      if (typeof value === 'number') {
+        return value === 0 ? 'A' : 'P'
+      }
+      return value
+    }
+
+    const selectPageOrAll =
+      dataForMailDump.length && dataForMailDump.map(i => convertPageOrAll(i.selectPageorAll)).join('')
+    const requestEntity = 'both'
+    const page = dataForMailDump.length && dataForMailDump.map(i => i.page).join('')
+
+    const articleIds =
+      dataForMailDump.length && dataForMailDump?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'online' })))
+    const recordsPerPage = dataForMailDump.length && dataForMailDump.map(i => i.recordsPerPage).join('')
+    const media =
+      dataForMailDump.length &&
+      dataForMailDump
+        .map(i => i.media)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const geography =
+      dataForMailDump.length &&
+      dataForMailDump
+        .map(i => i.geography)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const language =
+      dataForMailDump.length &&
+      dataForMailDump
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const tags =
+      dataForMailDump.length &&
+      dataForMailDump
+        .map(i => i.tags)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
     const formattedFromDate = formatDateTime(selectedFromDate)
     const formattedToDate = formatDateTime(selectedEndDate)
-    const searchCriteria = { fromDate: formattedFromDate, toDate: formattedToDate, selectPageOrAll }
-    sendMailRequest(clientId, articleIds, recipients, searchCriteria)
+
+    const searchCriteria = {
+      fromDate: formattedFromDate,
+      toDate: formattedToDate,
+      selectPageOrAll,
+      page,
+      requestEntity,
+      recordsPerPage
+    }
+
+    if (media !== '') {
+      searchCriteria.media = media
+    }
+
+    if (geography !== '') {
+      searchCriteria.geography = geography
+    }
+
+    if (language != '') {
+      searchCriteria.language = language
+    }
+
+    if (tags != '') {
+      searchCriteria.tags = tags
+    }
+
+    const postDataParams = {
+      recipients,
+      clientId,
+      notificationFlag
+      // notificationFlag
+    }
+
+    if (articleIds.length && articleIds.some(id => id !== undefined)) {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    } else {
+      postDataParams.searchCriteria = searchCriteria
+    }
+
+    sendMailRequest(postDataParams)
+
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
