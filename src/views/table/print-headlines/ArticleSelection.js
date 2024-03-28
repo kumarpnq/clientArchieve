@@ -304,16 +304,18 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && {
-      selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
+    {
+      // selectPageorAll: (pageCheck && currentPage) || 'P'
+      selectPageorAll:
+        (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : 'P'
     },
-    selectedArticles.length === recordsPerPage && {
-      page: pageCheck && currentPage
+    {
+      page: currentPage
     },
-    selectedArticles.length === recordsPerPage && {
+    {
       pageLimit: allCheck && recordsPerPage
     },
-    selectedArticles.length === recordsPerPage && {
+    {
       recordsPerPage: recordsPerPage
     }
   ].filter(Boolean)

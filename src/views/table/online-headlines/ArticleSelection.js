@@ -207,6 +207,8 @@ const TableSelection = () => {
   const [allCheck, setAllCheck] = useState(false)
   const [dataFetchFlag, setDataFetchFlag] = useState(false)
 
+  console.log('parms==>', filterPopoverAnchor)
+
   const dataForDump = [
     selectedGeography.length && { geography: selectedGeography },
     selectedMedia.length && { media: selectedMedia },
@@ -284,6 +286,8 @@ const TableSelection = () => {
             },
             params: request_params
           })
+
+          console.log('API Response:', response.data) // Log the API response data
 
           const totalRecords = response.data.totalRecords || 0
 

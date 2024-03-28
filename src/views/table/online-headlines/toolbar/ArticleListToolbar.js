@@ -175,6 +175,8 @@ const ArticleListToolbar = ({
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
+  console.log('articleheadline==?', dataForDump)
+
   // tools visibility
   const { isDossierVisible, isMailVisible, isExcelDumpVisible } = useToolPermission()
 

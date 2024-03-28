@@ -6,7 +6,7 @@ const useDossierRequest = () => {
   const [response, setResponse] = useState(null)
   const [error, setError] = useState(null)
 
-  const sendDossierRequest = async (clientId, articleIds, dossierType, recipients, searchCriteria) => {
+  const sendDossierRequest = async ({ clientId, articleIds, subject, recipients, searchCriteria, clientName }) => {
     const storedToken = localStorage.getItem('accessToken')
     try {
       const url = `${BASE_URL}/dossierRequest/`
@@ -19,9 +19,10 @@ const useDossierRequest = () => {
       const requestData = {
         clientId,
         articleIds,
-        dossierType,
+        subject,
         recipients,
-        searchCriteria
+        searchCriteria,
+        clientName
       }
 
       const axiosConfig = {
