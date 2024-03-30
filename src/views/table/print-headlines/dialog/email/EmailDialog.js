@@ -165,7 +165,14 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
       // notificationFlag
     }
 
-    if (articleIds.length && articleIds.some(id => id !== undefined)) {
+    if (
+      media === '' &&
+      geography === '' &&
+      language === '' &&
+      tags === '' &&
+      articleIds.length &&
+      articleIds.some(id => id !== undefined)
+    ) {
       postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
