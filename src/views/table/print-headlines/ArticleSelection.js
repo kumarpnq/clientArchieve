@@ -307,7 +307,7 @@ const TableSelection = () => {
     {
       // selectPageorAll: (pageCheck && currentPage) || 'P'
       selectPageorAll:
-        (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : 'P'
+        (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : 'A'
     },
     {
       page: currentPage
