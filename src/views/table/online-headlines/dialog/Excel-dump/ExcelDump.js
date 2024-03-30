@@ -139,7 +139,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         .join(',')
         .replace(/,+$/, '')
 
-    const searchCriteria = { selectPageOrAll, requestEntity, page, recordsPerPage }
+    const searchCriteria = { selectPageOrAll, requestEntity, page, recordsPerPage, clientIds: clientId }
 
     if (media !== '') {
       searchCriteria.media = media

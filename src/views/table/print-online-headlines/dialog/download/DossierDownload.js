@@ -140,7 +140,8 @@ const DossierDownload = ({ open, handleClose, selectedStartDate, selectedEndDate
       selectPageOrAll,
       page,
       requestEntity,
-      recordsPerPage
+      recordsPerPage,
+      clientIds: clientId
     }
 
     if (media !== '') {

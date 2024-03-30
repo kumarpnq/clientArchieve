@@ -139,7 +139,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
       selectPageOrAll,
       page,
       requestEntity,
-      recordsPerPage
+      recordsPerPage,
+      clientIds: clientId
     }
 
     if (media !== '') {
