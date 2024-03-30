@@ -134,7 +134,8 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       selectPageOrAll,
       page,
       requestEntity,
-      recordsPerPage
+      recordsPerPage,
+      clientIds: clientId
     }
 
     if (media !== '') {
