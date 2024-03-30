@@ -23,12 +23,12 @@ export const fetchArticles = async ({
   editionType,
   publicationCategory,
   sortby,
-
-  publicationId
+  language
 }) => {
   try {
     const storedToken = localStorage.getItem('accessToken')
 
+    console.log("consoleprint==>",companyIds)
     const request_params = {
       clientIds,
       companyIds,
@@ -48,7 +48,8 @@ export const fetchArticles = async ({
       phrase,
       editionType,
       publicationCategory,
-      sortby
+      sortby,
+      language
     }
 
     const response = await axios.get(`${base_url}/clientWisePrintArticles/`, {

@@ -137,9 +137,9 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
       fromDate: formattedFromDate,
       toDate: formattedToDate,
       selectPageOrAll,
-      page,
+      ...(selectPageOrAll !== 'A' && { page }),
+      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       requestEntity,
-      recordsPerPage,
       clientIds: clientId
     }
 

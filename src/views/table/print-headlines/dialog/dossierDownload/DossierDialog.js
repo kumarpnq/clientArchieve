@@ -138,9 +138,9 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       fromDate: formattedFromDate,
       toDate: formattedToDate,
       selectPageOrAll,
-      page,
+      ...(selectPageOrAll !== 'A' && { page }),
+      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       requestEntity,
-      recordsPerPage,
       clientIds: clientId
     }
 
@@ -165,18 +165,19 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       recipients,
       subject,
       clientId,
-      clientName
+      clientName,
+      dossierType
 
       // notificationFlag
     }
 
     if (
-      media === '' &&
-      geography === '' &&
-      language === '' &&
-      tags === '' &&
-      articleIds.length &&
-      articleIds.some(id => id !== undefined)
+      (media === '' &&
+        geography === '' &&
+        language === '' &&
+        tags === '' &&
+        [media, geography, language, tags].some(field => field.includes('articleId'))) ||
+      (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
       postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
