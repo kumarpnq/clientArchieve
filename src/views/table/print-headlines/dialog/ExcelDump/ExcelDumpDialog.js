@@ -107,6 +107,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     const page = dataForExcelDump.length && dataForExcelDump.map(i => i.page).join('')
 
     const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
+    console.log('articleIds==>', articleIds)
     const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
     const media =
       dataForExcelDump.length &&
@@ -140,7 +141,13 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
         .join(',')
         .replace(/,+$/, '')
 
-    const searchCriteria = { selectPageOrAll, requestEntity, page, recordsPerPage, clientIds: clientId }
+    const searchCriteria = {
+      selectPageOrAll,
+      requestEntity,
+      ...(selectPageOrAll !== 'A' && { page }),
+      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
+      clientIds: clientId
+    }
 
     if (media !== '') {
       searchCriteria.media = media
@@ -178,12 +185,12 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     }
 
     if (
-      media === '' &&
-      geography === '' &&
-      language === '' &&
-      tags === '' &&
-      articleIds.length &&
-      articleIds.some(id => id !== undefined)
+      (media === '' &&
+        geography === '' &&
+        language === '' &&
+        tags === '' &&
+        [media, geography, language, tags].some(field => field.includes('articleId'))) ||
+      (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
       postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {

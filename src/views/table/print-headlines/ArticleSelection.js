@@ -361,6 +361,7 @@ const TableSelection = () => {
           const selectedTagString = selectedTag.join(', ')
           const selectedCitiesString = selectedCities.join(', ')
           const selectedLanguagesString = selectedLanguages.join(', ')
+          console.log('')
 
           const response = await fetchArticles({
             clientIds: clientId,
@@ -389,6 +390,8 @@ const TableSelection = () => {
 
             publicationCategory: selectedPublicationType.publicationTypeId
           })
+
+          console.log('selectedCompetitions==>', response)
 
           const totalRecords = response.totalRecords
           setArticles(response.articles)

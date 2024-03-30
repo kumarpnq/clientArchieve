@@ -43,7 +43,8 @@ const ToolbarComponent = ({
   const clientId = selectedClient ? selectedClient.clientId : null
 
   const handleSelectAllMedia = () => {
-    const allMediaIds = media.map(item => item.publicationGroupId)
+    const allMediaIds = media.map((item, index) => item.publicationGroupId + index)
+    console.log('allMediaIds++>', allMediaIds)
     setSelectedMedia(allMediaIds)
   }
 
@@ -78,6 +79,8 @@ const ToolbarComponent = ({
 
   const handleLanguageSelect = languageCode => {
     setSelectedLanguages(prevSelected => {
+      console.log('publicationGroupId==>', prevSelected)
+
       const isAlreadySelected = prevSelected.includes(languageCode)
 
       if (isAlreadySelected) {
@@ -90,16 +93,18 @@ const ToolbarComponent = ({
     })
   }
 
-  const handleMediaSelect = publicationGroupId => {
+  let index = 0 // This should be outside the component
+
+  const handleMediaSelect = (publicationGroupId, itemIndex) => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationGroupId)
+      const isAlreadySelected = prevSelected.includes(publicationGroupId + itemIndex)
 
       if (isAlreadySelected) {
         // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationGroupId)
+        return prevSelected.filter(id => id !== publicationGroupId + itemIndex)
       } else {
         // If not selected, add to the list
-        return [...prevSelected, publicationGroupId]
+        return [...prevSelected, publicationGroupId + itemIndex]
       }
     })
   }
@@ -315,9 +320,10 @@ const ToolbarComponent = ({
           {media.map((item, index) => (
             <MenuItem
               key={`${item.publicationGroupId}-${index}`}
-              onClick={() => handleMediaSelect(item.publicationGroupId)}
-              selected={selectedMedia.includes(item.publicationGroupId)}
+              onClick={() => handleMediaSelect(item.publicationGroupId, index)}
+              selected={selectedMedia.includes(item.publicationGroupId + index)}
             >
+              {console.log('indexmain==>', item)}
               {item.publicationName}
             </MenuItem>
           ))}

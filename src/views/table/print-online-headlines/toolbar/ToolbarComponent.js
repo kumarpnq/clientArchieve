@@ -44,9 +44,9 @@ const ToolbarComponent = ({
   const [tagsAnchor, setTagsAnchor] = useState(null)
 
   // states
-  const [media, setMedia] = useState('')
+  // const [media, setMedia] = useState('')
 
-  const { languages, cities } = useUserDataAndCompanies()
+  const { languages, cities, media } = useUserDataAndCompanies()
   const selectedClient = useSelector(selectSelectedClient)
 
   // const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
