@@ -28,6 +28,7 @@ export const fetchArticles = async ({
   try {
     const storedToken = localStorage.getItem('accessToken')
 
+    console.log("consoleprint==>",companyIds)
     const request_params = {
       clientIds,
       companyIds,

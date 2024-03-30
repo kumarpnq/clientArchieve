@@ -339,30 +339,30 @@ const TableSelection = () => {
 
   useEffect(() => {
     setSelectedArticles([])
-
+  
     const fetchArticlesApi = async () => {
       try {
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
-
+  
         if (storedToken) {
           // Format start and end dates
           const formatDateTime = (date, setTime, isEnd) => {
             const isoString = date.toISOString().slice(0, 10)
             const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
+  
             return `${isoString} ${timeString}`
           }
-
+  
           const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
           const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+  
           const selectedCompaniesString = selectedCompetitions.join(', ')
           const selectedMediaString = selectedMedia.join(', ')
           const selectedTagString = selectedTag.join(', ')
           const selectedCitiesString = selectedCities.join(', ')
           const selectedLanguagesString = selectedLanguages.join(', ')
-          console.log('')
-
+  
           const response = await fetchArticles({
             clientIds: clientId,
             companyIds: selectedCompaniesString,
@@ -370,12 +370,12 @@ const TableSelection = () => {
             toDate: formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
-
+  
             media: selectedMediaString,
             tags: selectedTagString,
             geography: selectedCitiesString,
             language: selectedLanguagesString,
-
+  
             // Advanced search
             headline: searchParameters.searchHeadline,
             body: searchParameters.searchBody,
@@ -384,18 +384,16 @@ const TableSelection = () => {
             anyWord: searchParameters.anyOfWords,
             ignoreWords: searchParameters.ignoreThis,
             phrase: searchParameters.exactPhrase,
-
+  
             editionType: selectedEditionType.editionTypeId,
             sortby: selectedSortBy,
-
+  
             publicationCategory: selectedPublicationType.publicationTypeId
           })
-
-          console.log('selectedCompetitions==>', response)
-
+  
           const totalRecords = response.totalRecords
           setArticles(response.articles)
-
+  
           setPaginationModel(prevPagination => ({
             ...prevPagination,
             totalRecords
@@ -425,6 +423,7 @@ const TableSelection = () => {
     selectedSortBy,
     dataFetchFlag
   ])
+  
 
   // Divide social feeds into left and right columns
   const leftArticles = articles.filter((_, index) => index % 2 === 0)

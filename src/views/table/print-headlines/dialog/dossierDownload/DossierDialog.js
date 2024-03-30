@@ -165,7 +165,8 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       recipients,
       subject,
       clientId,
-      clientName
+      clientName,
+      dossierType
 
       // notificationFlag
     }
