@@ -46,7 +46,6 @@ import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
 import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDialog'
 import Pagination from './Pagination'
-import axios from 'axios'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -285,7 +284,7 @@ const TableSelection = () => {
   })
   const [selectedArticles, setSelectedArticles] = useState([])
 
-  console.log('checkstsus==>', selectedLanguages)
+  console.log('checkstsus==>', selectedArticles)
 
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
@@ -340,36 +339,34 @@ const TableSelection = () => {
 
   useEffect(() => {
     setSelectedArticles([])
-  
+
     const fetchArticlesApi = async () => {
       try {
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
-  
-        if (storedToken) {
-          const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
+        if (storedToken) {
           // Format start and end dates
-          const formatDateTime = (date, setTime, isEnd) => {
+          const formatDateTimes = (date, setTime, isEnd) => {
             let formattedDate = date
             if (isEnd) {
               formattedDate = date.add(1, 'day')
             }
             const isoString = formattedDate.toISOString().slice(0, 10)
             const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-  
+
             return `${isoString} ${timeString}`
           }
-  
-          const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-          const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
-  
+
+          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
           const selectedCompaniesString = selectedCompetitions.join(', ')
           const selectedMediaString = selectedMedia.join(', ')
           const selectedTagString = selectedTag.join(', ')
           const selectedCitiesString = selectedCities.join(', ')
           const selectedLanguagesString = selectedLanguages.join(', ')
-  
+          console.log('')
+
           const response = await fetchArticles({
             clientIds: clientId,
             companyIds: selectedCompaniesString,
@@ -377,12 +374,12 @@ const TableSelection = () => {
             toDate: formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
-  
+
             media: selectedMediaString,
             tags: selectedTagString,
             geography: selectedCitiesString,
             language: selectedLanguagesString,
-  
+
             // Advanced search
             headline: searchParameters.searchHeadline,
             body: searchParameters.searchBody,
@@ -391,23 +388,18 @@ const TableSelection = () => {
             anyWord: searchParameters.anyOfWords,
             ignoreWords: searchParameters.ignoreThis,
             phrase: searchParameters.exactPhrase,
-  
+
             editionType: selectedEditionType.editionTypeId,
             sortby: selectedSortBy,
-  
-            publicationCategory: selectedPublicationType.publicationTypeId
-          }
 
-          const response = await axios.get(`${base_url}/clientWisePrintArticles/`, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            params: request_params
+            publicationCategory: selectedPublicationType.publicationTypeId
           })
-  
+
+          console.log('selectedCompetitions==>', response)
+
           const totalRecords = response.totalRecords
           setArticles(response.articles)
-  
+
           setPaginationModel(prevPagination => ({
             ...prevPagination,
             totalRecords
@@ -437,7 +429,6 @@ const TableSelection = () => {
     selectedSortBy,
     dataFetchFlag
   ])
-  
 
   // Divide social feeds into left and right columns
   const leftArticles = articles.filter((_, index) => index % 2 === 0)
