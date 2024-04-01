@@ -141,12 +141,134 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
         .join(',')
         .replace(/,+$/, '')
 
+    const headline =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.headline)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const body =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.headline)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const journalist =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.journalist)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const wordCombo =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.wordCombo)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const anyWord =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.anyWord)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const ignoreWords =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.ignoreWords)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const phrase =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.phrase)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const sortby =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.sortby)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const publicationCategory =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.publicationCategory)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const editionType =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.editionType?.editionTypeId)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
     const searchCriteria = {
       selectPageOrAll,
       requestEntity,
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       clientIds: clientId
+    }
+
+    console.log('clientwise==>', editionType)
+
+    if (editionType !== '') {
+      searchCriteria.editionType = editionType
+    }
+
+    if (publicationCategory !== '') {
+      searchCriteria.publicationCategory = publicationCategory
+    }
+
+    if (sortby !== '') {
+      searchCriteria.sortby = sortby
+    }
+
+    if (body !== '') {
+      searchCriteria.body = body
+    }
+
+    if (journalist !== '') {
+      searchCriteria.journalist = journalist
+    }
+
+    if (wordCombo !== '') {
+      searchCriteria.wordCombo = wordCombo
+    }
+
+    if (anyWord !== '') {
+      searchCriteria.anyWord = anyWord
+    }
+
+    if (ignoreWords !== '') {
+      searchCriteria.ignoreWords = ignoreWords
+    }
+
+    if (phrase !== '') {
+      searchCriteria.phrase = phrase
+    }
+
+    if (headline !== '') {
+      searchCriteria.headline = headline
     }
 
     if (media !== '') {
@@ -164,18 +286,10 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     if (tags != '') {
       searchCriteria.tags = tags
     }
-    // dataForExcelDump.forEach(item => {
-    //   const [key] = Object.keys(item)
-    //   const value = item[key]
-    //   searchCriteria[key] = value
-    // })
 
     searchCriteria.fromDate = formattedStartDate
     searchCriteria.toDate = formattedEndDate
-    // searchCriteria.selectedCompanyIds = selectedCompanyIds
 
-    // // Remove articleIds from searchCriteria
-    // delete searchCriteria.articleId
     console.log('articleid==>', articleIds)
 
     const postDataParams = {

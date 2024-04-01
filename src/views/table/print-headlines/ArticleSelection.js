@@ -46,6 +46,7 @@ import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
 import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDialog'
 import Pagination from './Pagination'
+import axios from 'axios'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -284,7 +285,7 @@ const TableSelection = () => {
   })
   const [selectedArticles, setSelectedArticles] = useState([])
 
-  console.log('checkstsus==>', selectedArticles)
+  console.log('checkstsus==>', selectedLanguages)
 
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
@@ -346,9 +347,15 @@ const TableSelection = () => {
         const storedToken = localStorage.getItem('accessToken')
   
         if (storedToken) {
+          const base_url = process.env.NEXT_PUBLIC_BASE_URL
+
           // Format start and end dates
           const formatDateTime = (date, setTime, isEnd) => {
-            const isoString = date.toISOString().slice(0, 10)
+            let formattedDate = date
+            if (isEnd) {
+              formattedDate = date.add(1, 'day')
+            }
+            const isoString = formattedDate.toISOString().slice(0, 10)
             const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
   
             return `${isoString} ${timeString}`
@@ -389,6 +396,13 @@ const TableSelection = () => {
             sortby: selectedSortBy,
   
             publicationCategory: selectedPublicationType.publicationTypeId
+          }
+
+          const response = await axios.get(`${base_url}/clientWisePrintArticles/`, {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            },
+            params: request_params
           })
   
           const totalRecords = response.totalRecords

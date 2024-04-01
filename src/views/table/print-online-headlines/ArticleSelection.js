@@ -328,11 +328,24 @@ const TableSelection = () => {
         const storedToken = localStorage.getItem('accessToken')
 
         if (storedToken) {
+          const formatDateTimes = (date, setTime, isEnd) => {
+            let formattedDate = date
+            if (isEnd) {
+              formattedDate = date.add(1, 'day')
+            }
+            const isoString = formattedDate.toISOString().slice(0, 10)
+            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+
+            return `${isoString} ${timeString}`
+          }
+
+          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
           const request_params = {
             clientIds: clientId,
             companyIds: selectedCompetitions,
-            fromDate: selectedFromDate?.toISOString(),
-            toDate: selectedEndDate?.toISOString(),
+            fromDate: formattedStartDate,
+            toDate: formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
 

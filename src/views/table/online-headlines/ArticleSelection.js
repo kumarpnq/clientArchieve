@@ -253,8 +253,20 @@ const TableSelection = () => {
         if (storedToken) {
           const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
-          const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-          const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+          const formatDateTimes = (date, setTime, isEnd) => {
+            let formattedDate = date
+            if (isEnd) {
+              formattedDate = date.add(1, 'day')
+            }
+            const isoString = formattedDate.toISOString().slice(0, 10)
+            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+
+            return `${isoString} ${timeString}`
+          }
+          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+
+          console.log('selectedCompetitions-->', selectedCompetitions)
 
           const request_params = {
             clientIds: clientId,
