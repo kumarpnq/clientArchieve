@@ -247,6 +247,8 @@ const TableSelection = () => {
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
   const [selectedMedia, setSelectedMedia] = useState('')
+
+  console.log("selectedMedia",selectedMedia)
   const [selectedTags, setSelectedTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
@@ -350,9 +352,9 @@ const TableSelection = () => {
             recordsPerPage: recordsPerPage,
 
             geography: selectedGeography,
-            language: selectedLanguages,
+            language: selectedLanguages.map((i)=>{return i?.id}).join(','),
             media: selectedMedia,
-            tags: selectedTags
+            tags: selectedTags.join(','),
           }
 
           const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {

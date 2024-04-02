@@ -78,7 +78,7 @@ const AuthProvider = ({ children }) => {
 
         // Store data in localStorage
         params.rememberMe ? window.localStorage.setItem(authConfig.storageTokenKeyName, accessToken) : null
-        window.localStorage.setItem('userData', JSON.stringify(userData))
+        // window.localStorage.setItem('userData', JSON.stringify(userData))
 
         // Set user data in Redux
         dispatch(setUserData(userData))
@@ -100,8 +100,8 @@ const AuthProvider = ({ children }) => {
     dispatch(clearUserData())
 
     // Clear data in localStorage
-    window.localStorage.removeItem('userData')
-    window.localStorage.removeItem(authConfig.storageTokenKeyName)
+    // window.localStorage.removeItem('userData')
+    // window.localStorage.removeItem(authConfig.storageTokenKeyName)
 
     // Navigate to the login page
     router.push('/login')

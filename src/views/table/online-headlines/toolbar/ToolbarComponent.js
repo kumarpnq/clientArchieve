@@ -298,10 +298,10 @@ const ToolbarComponent = ({
           {Object.entries(languages).map(([languageName, languageCode]) => (
             <MenuItem
               key={languageCode}
-              onClick={handleDropdownItemClick}
+              onClick={()=>handleDropdownItemClick(languageCode)}
               selected={selectedLanguage.includes(languageCode)}
             >
-              {languageName}
+               {languageCode.name}
             </MenuItem>
           ))}
         </Menu>
