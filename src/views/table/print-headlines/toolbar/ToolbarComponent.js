@@ -305,7 +305,7 @@ const ToolbarComponent = ({
               onClick={() => handleLanguageSelect(languageCode)}
               selected={selectedLanguages.includes(languageCode)}
             >
-              {languageName}
+              {languageCode.name}
             </MenuItem>
           ))}
         </Menu>
