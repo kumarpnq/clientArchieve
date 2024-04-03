@@ -44,9 +44,10 @@ const ToolbarComponent = ({
   const [tagsAnchor, setTagsAnchor] = useState(null)
 
   // states
-  // const [media, setMedia] = useState('')
+  const [media, setMedia] = useState('')
 
-  const { languages, cities, media } = useUserDataAndCompanies()
+  const { languages, cities } = useUserDataAndCompanies()
+  console.log('media', media)
   const selectedClient = useSelector(selectSelectedClient)
 
   // const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
@@ -309,7 +310,7 @@ const ToolbarComponent = ({
               onClick={() => handleLanguageClick(languageCode)}
               selected={selectedLanguages.includes(languageCode)}
             >
-            {languageCode.name}
+              {languageCode.name}
             </MenuItem>
           ))}
         </Menu>

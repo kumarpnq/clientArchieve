@@ -263,6 +263,8 @@ const TableSelection = () => {
 
   // const [selectedCompanyIds, setSelectedCompanyIds] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
+
+  console.log('mediaselect==>', selectedMedia)
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
@@ -291,7 +293,11 @@ const TableSelection = () => {
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
     selectedMedia.length && { media: selectedMedia },
-    selectedLanguages.length && { language: selectedLanguages.map((i)=>{return i.id}) },
+    selectedLanguages.length && {
+      language: selectedLanguages.map(i => {
+        return i.id
+      })
+    },
 
     selectedTag.length && { tags: selectedTag },
     selectedEditionType && { editionType: selectedEditionType },
@@ -366,7 +372,11 @@ const TableSelection = () => {
           const selectedMediaString = selectedMedia.join(', ')
           const selectedTagString = selectedTag.join(', ')
           const selectedCitiesString = selectedCities.join(', ')
-          const selectedLanguagesString = selectedLanguages.map((i)=>{return i.id}).join(', ')
+          const selectedLanguagesString = selectedLanguages
+            .map(i => {
+              return i.id
+            })
+            .join(', ')
           console.log('')
 
           const response = await fetchArticles({
