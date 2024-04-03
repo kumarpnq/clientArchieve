@@ -104,7 +104,7 @@ const ToolbarComponent = ({
         return prevSelected.filter(id => id !== publicationGroupId + itemIndex)
       } else {
         // If not selected, add to the list
-        return [...prevSelected, publicationGroupId + itemIndex]
+        return [...prevSelected, publicationGroupId]
       }
     })
   }
