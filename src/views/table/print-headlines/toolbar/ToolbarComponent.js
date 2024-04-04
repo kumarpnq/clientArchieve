@@ -95,22 +95,17 @@ const ToolbarComponent = ({
 
   let index = 0 // This should be outside the component
 
-  const handleMediaSelect = publicationGroupId => {
+  const handleMediaSelect = (publicationGroupId, itemIndex) => {
     setSelectedMedia(prevSelected => {
-      const isSelected = prevSelected.includes(publicationGroupId)
-      const newSelectedMedia = isSelected
-        ? prevSelected.filter(id => id !== publicationGroupId)
-        : [...prevSelected, publicationGroupId]
+      const isAlreadySelected = prevSelected.includes(publicationGroupId + itemIndex)
 
-      // Highlight selected item
-      const mediaItems = document.querySelectorAll('.media-item')
-      mediaItems.forEach(item => {
-        if (item.dataset.id === publicationGroupId) {
-          item.classList.toggle('selected', !isSelected)
-        }
-      })
-
-      return newSelectedMedia
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== publicationGroupId + itemIndex)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, publicationGroupId + itemIndex]
+      }
     })
   }
 
@@ -324,11 +319,11 @@ const ToolbarComponent = ({
           )}
           {media.map((item, index) => (
             <MenuItem
-              key={item.publicationGroupId}
-              onClick={() => handleMediaSelect(item.publicationGroupId)}
-              selected={selectedMedia.includes(item.publicationGroupId)}
-              className={`media-item ${selectedMedia.includes(item.publicationGroupId) ? 'selected' : ''}`}
+              key={`${item.publicationGroupId}-${index}`}
+              onClick={() => handleMediaSelect(item.publicationGroupId, index)}
+              selected={selectedMedia.includes(item.publicationGroupId + index)}
             >
+              {console.log('indexmain==>', item)}
               {item.publicationName}
             </MenuItem>
           ))}
