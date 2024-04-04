@@ -257,7 +257,7 @@ const TableSelection = () => {
   const [isEditDialogOpen, setEditDialogOpen] = useState(false)
   const getRowId = row => row.articleId
   const [currentPage, setCurrentPage] = useState(1)
-  const [recordsPerPage, setRecordsPerPage] = useState(10)
+  const [recordsPerPage, setRecordsPerPage] = useState(100)
 
   console.log('perpage', recordsPerPage)
 
