@@ -53,16 +53,30 @@ const ToolbarComponent = ({
     anchorSetter(null)
   }
 
-  const handleDropdownItemClick = companyId => {
-    setSelectedCompanyId(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(companyId)
+  const handleCityClick = cityId => {
+    setSelectedGeography(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(cityId)
 
       if (isAlreadySelected) {
         // If already selected, remove from the list
-        return prevSelected.filter(id => id !== companyId)
+        return prevSelected.filter(id => id !== cityId)
       } else {
         // If not selected, add to the list
-        return [...prevSelected, companyId]
+        return [...prevSelected, cityId]
+      }
+    })
+  }
+
+  const handleDropdownItemClick = languageCode => {
+    setSelectedLanguage(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(languageCode)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return Object.entries(languages).filter(([_, languageCode]) => languageCode !== languageCode)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, languageCode]
       }
     })
   }
@@ -279,7 +293,7 @@ const ToolbarComponent = ({
           {cities.map(city => (
             <MenuItem
               key={city.cityId}
-              onClick={handleDropdownItemClick}
+              onClick={() => handleCityClick(city.cityId)}
               selected={selectedGeography.includes(city.cityId)}
             >
               {city.cityName}
@@ -298,10 +312,10 @@ const ToolbarComponent = ({
           {Object.entries(languages).map(([languageName, languageCode]) => (
             <MenuItem
               key={languageCode}
-              onClick={()=>handleDropdownItemClick(languageCode)}
+              onClick={() => handleDropdownItemClick(languageCode)}
               selected={selectedLanguage.includes(languageCode)}
             >
-               {languageCode.name}
+              {languageCode.name}
             </MenuItem>
           ))}
         </Menu>

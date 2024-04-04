@@ -115,13 +115,10 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .join(',')
         .replace(/,+$/, '')
 
-    const language =
-      dataForDossierDownload.length &&
-      dataForDossierDownload
-        .map(i => i.language)
-        .flat()
-        .join(',')
-        .replace(/,+$/, '')
+    const language = dataForDossierDownload
+      .find(item => item.language)
+      ?.language.map(lang => lang.id)
+      .join(',')
 
     const tags =
       dataForDossierDownload.length &&
@@ -131,17 +128,132 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .join(',')
         .replace(/,+$/, '')
 
-    const formattedFromDate = formatDateTime(selectedStartDate)
-    const formattedToDate = formatDateTime(selectedEndDate)
+    const headline =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.headline)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const body =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.headline)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const journalist =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.journalist)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const wordCombo =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.wordCombo)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const anyWord =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.anyWord)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const ignoreWords =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.ignoreWords)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const phrase =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.phrase)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const sortby =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.sortby)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const publicationCategory =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.publicationCategory)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const editionType =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.editionType?.editionTypeId)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
 
     const searchCriteria = {
-      fromDate: formattedFromDate,
-      toDate: formattedToDate,
       selectPageOrAll,
-      page,
       requestEntity,
-      recordsPerPage,
+      ...(selectPageOrAll !== 'A' && { page }),
+      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       clientIds: clientId
+    }
+
+    if (editionType !== '') {
+      searchCriteria.editionType = editionType
+    }
+
+    if (publicationCategory !== '') {
+      searchCriteria.publicationCategory = publicationCategory
+    }
+
+    if (sortby !== '') {
+      searchCriteria.sortby = sortby
+    }
+
+    if (body !== '') {
+      searchCriteria.body = body
+    }
+
+    if (journalist !== '') {
+      searchCriteria.journalist = journalist
+    }
+
+    if (wordCombo !== '') {
+      searchCriteria.wordCombo = wordCombo
+    }
+
+    if (anyWord !== '') {
+      searchCriteria.anyWord = anyWord
+    }
+
+    if (ignoreWords !== '') {
+      searchCriteria.ignoreWords = ignoreWords
+    }
+
+    if (phrase !== '') {
+      searchCriteria.phrase = phrase
+    }
+
+    if (headline !== '') {
+      searchCriteria.headline = headline
     }
 
     if (media !== '') {
@@ -159,29 +271,47 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
     if (tags != '') {
       searchCriteria.tags = tags
     }
+    // const searchCriteria = {}
+    // dataForExcelDump.forEach(item => {
+    //   const [key] = Object.keys(item)
+    //   const value = item[key]
+    //   searchCriteria[key] = value
+    // })
+    // const formattedFromDate = formatDateTime(selectedFromDate)
+    // const formattedToDate = formatDateTime(selectedEndDate)
+
+    const formattedFromDate = formatDateTime(selectedStartDate)
+    const formattedToDate = formatDateTime(selectedEndDate)
+
+    searchCriteria.fromDate = formattedFromDate
+    searchCriteria.toDate = formattedToDate
+    // searchCriteria.selectedCompanyIds = selectedCompanyIds
+
+    // Remove articleIds from searchCriteria
+    // delete searchCriteria.articleId
 
     const postDataParams = {
       notificationFlag,
       recipients,
       subject,
       clientId,
-      clientName
+      clientName,
+      dossierType
       // notificationFlag
     }
 
     if (
-      media === '' &&
-      geography === '' &&
-      language === '' &&
-      tags === '' &&
-      articleIds.length &&
-      articleIds.some(id => id !== undefined)
+      (media === '' &&
+        geography === '' &&
+        language === '' &&
+        tags === '' &&
+        [media, geography, language, tags].some(field => field.includes('articleId'))) ||
+      (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
       postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
-
     sendDossierRequest(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))

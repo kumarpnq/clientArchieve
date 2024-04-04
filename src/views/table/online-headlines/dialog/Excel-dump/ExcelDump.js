@@ -123,13 +123,17 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         .join(',')
         .replace(/,+$/, '')
 
-    const language =
-      dataForExcelDump.length &&
-      dataForExcelDump
-        .map(i => i.language)
-        .flat()
-        .join(',')
-        .replace(/,+$/, '')
+    const language = dataForExcelDump
+      .find(item => item.language)
+      ?.language.map(lang => lang.id)
+      .join(',')
+
+    console.log('elemnt==>', dataForExcelDump)
+    // const languageIds = dataForExcelDump
+    //   .find(item => item.language)
+    //   ?.language.map(lang => lang.id)
+    //   .join(',')
+    // console.log('languageIds:', languageIds)
 
     const tags =
       dataForExcelDump.length &&
@@ -139,7 +143,133 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         .join(',')
         .replace(/,+$/, '')
 
-    const searchCriteria = { selectPageOrAll, requestEntity, page, recordsPerPage, clientIds: clientId }
+    const headline =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.headline)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const body =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.headline)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const journalist =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.journalist)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const wordCombo =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.wordCombo)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const anyWord =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.anyWord)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const ignoreWords =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.ignoreWords)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const phrase =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.phrase)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const sortby =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.sortby)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const publicationCategory =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.publicationCategory)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const editionType =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.editionType?.editionTypeId)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const searchCriteria = {
+      selectPageOrAll,
+      requestEntity,
+      ...(selectPageOrAll !== 'A' && { page }),
+      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
+      clientIds: clientId
+    }
+
+    if (editionType !== '') {
+      searchCriteria.editionType = editionType
+    }
+
+    if (publicationCategory !== '') {
+      searchCriteria.publicationCategory = publicationCategory
+    }
+
+    if (sortby !== '') {
+      searchCriteria.sortby = sortby
+    }
+
+    if (body !== '') {
+      searchCriteria.body = body
+    }
+
+    if (journalist !== '') {
+      searchCriteria.journalist = journalist
+    }
+
+    if (wordCombo !== '') {
+      searchCriteria.wordCombo = wordCombo
+    }
+
+    if (anyWord !== '') {
+      searchCriteria.anyWord = anyWord
+    }
+
+    if (ignoreWords !== '') {
+      searchCriteria.ignoreWords = ignoreWords
+    }
+
+    if (phrase !== '') {
+      searchCriteria.phrase = phrase
+    }
+
+    if (headline !== '') {
+      searchCriteria.headline = headline
+    }
 
     if (media !== '') {
       searchCriteria.media = media
@@ -156,7 +286,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
     if (tags != '') {
       searchCriteria.tags = tags
     }
-
     // const searchCriteria = {}
     // dataForExcelDump.forEach(item => {
     //   const [key] = Object.keys(item)
@@ -177,17 +306,18 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
     }
 
     if (
-      media === '' &&
-      geography === '' &&
-      language === '' &&
-      tags === '' &&
-      articleIds.length &&
-      articleIds.some(id => id !== undefined)
+      (media === '' &&
+        geography === '' &&
+        language === '' &&
+        tags === '' &&
+        [media, geography, language, tags].some(field => field.includes('articleId'))) ||
+      (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
       postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
+
     postData(postDataParams)
 
     // const searchCriteria = {}

@@ -207,13 +207,13 @@ const TableSelection = () => {
   const [allCheck, setAllCheck] = useState(false)
   const [dataFetchFlag, setDataFetchFlag] = useState(false)
 
-  console.log('parms==>', filterPopoverAnchor)
+  console.log('parms==>', selectedGeography)
 
   const dataForDump = [
     selectedGeography.length && { geography: selectedGeography },
     selectedMedia.length && { media: selectedMedia },
     selectedTags.length && { tags: selectedTags },
-    setSelectedLanguage.length && { language: setSelectedLanguage },
+    selectedLanguage.length && { language: selectedLanguage },
 
     searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
     searchParameters.searchBody && { body: searchParameters.searchBody },
@@ -224,16 +224,18 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && {
-      selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
+    {
+      // selectPageorAll: (pageCheck && currentPage) || 'P'
+      selectPageorAll:
+        (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : 'A'
     },
-    selectedArticles.length === recordsPerPage && {
-      page: pageCheck && currentPage
+    {
+      page: currentPage
     },
-    selectedArticles.length === recordsPerPage && {
+    {
       pageLimit: allCheck && recordsPerPage
     },
-    selectedArticles.length === recordsPerPage && {
+    {
       recordsPerPage: recordsPerPage
     }
 
@@ -279,6 +281,11 @@ const TableSelection = () => {
             geography: selectedGeography,
             media: selectedMedia,
             tags: selectedTags,
+            language: selectedLanguage
+              .map(i => {
+                return i?.id
+              })
+              .join(','),
 
             // Advanced search
             headline: searchParameters.searchHeadline,

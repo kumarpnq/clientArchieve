@@ -248,7 +248,7 @@ const TableSelection = () => {
   const [selectedLanguages, setSelectedLanguages] = useState([])
   const [selectedMedia, setSelectedMedia] = useState('')
 
-  console.log("selectedMedia",selectedMedia)
+  console.log('selectedMedia', selectedMedia)
   const [selectedTags, setSelectedTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
@@ -305,16 +305,18 @@ const TableSelection = () => {
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
-    selectedArticles.length === recordsPerPage && {
-      selectPageorAll: (pageCheck && currentPage) || (allCheck && 'A')
+    {
+      // selectPageorAll: (pageCheck && currentPage) || 'P'
+      selectPageorAll:
+        (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : 'A'
     },
-    selectedArticles.length === recordsPerPage && {
-      page: pageCheck && currentPage
+    {
+      page: currentPage
     },
-    selectedArticles.length === recordsPerPage && {
+    {
       pageLimit: allCheck && recordsPerPage
     },
-    selectedArticles.length === recordsPerPage && {
+    {
       recordsPerPage: recordsPerPage
     }
 
@@ -352,9 +354,13 @@ const TableSelection = () => {
             recordsPerPage: recordsPerPage,
 
             geography: selectedGeography,
-            language: selectedLanguages.map((i)=>{return i?.id}).join(','),
+            language: selectedLanguages
+              .map(i => {
+                return i?.id
+              })
+              .join(','),
             media: selectedMedia,
-            tags: selectedTags.join(','),
+            tags: selectedTags.join(',')
           }
 
           const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
