@@ -168,6 +168,7 @@ const CardSelection = () => {
             </Box>
           ) : (
             <Grid container spacing={2} justifyContent='center' p={4}>
+              {console.log('carddata==>', companyData)}
               {companyData.map(company => (
                 <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                   <Card sx={{ width: '100%', textAlign: 'center' }}>

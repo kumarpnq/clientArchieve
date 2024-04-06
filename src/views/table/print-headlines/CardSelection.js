@@ -168,6 +168,7 @@ const CardSelection = () => {
             </Box>
           ) : (
             <Grid container spacing={2} justifyContent='center' p={4}>
+              {console.log('carddata==>', companyData)}
               {companyData.map(company => (
                 <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                   <Card sx={{ width: '100%', textAlign: 'center' }}>
@@ -184,12 +185,18 @@ const CardSelection = () => {
                                   arrowPlacement='bottom'
                                   placement='bottom-start' // Adjust the placement as needed
                                 >
-                                  <span
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
+                                  <a
+                                    href={article?.link}
+                                    target='_blank'
+                                    style={{ textDecoration: 'none', color: '#86838b' }}
                                   >
-                                    {article.headline}
-                                  </span>
+                                    <span
+                                      style={{ cursor: 'pointer' }}
+                                      onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
+                                    >
+                                      {article.headline}
+                                    </span>
+                                  </a>
                                 </CustomTooltip>
                                 <br />
                                 {`${article.publication} -  (${formatDate(article.date)})`}
