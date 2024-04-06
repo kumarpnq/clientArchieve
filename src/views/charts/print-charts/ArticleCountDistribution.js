@@ -43,7 +43,7 @@ const ArticleCountDistribution = () => {
       const queryString = Object.keys(params)
         .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
         .join('&')
-      const URL = `${BASE_URL}/printArticleCountDistribution?${queryString}`
+      const URL = `${BASE_URL}/printDashboardArticleDistribution?${queryString}`
 
       axios
         .get(URL, { headers })
