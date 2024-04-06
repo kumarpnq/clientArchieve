@@ -206,6 +206,8 @@ const TableSelection = () => {
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
   const [dataFetchFlag, setDataFetchFlag] = useState(false)
+  const [selectedEditionType, setSelectedEditionType] = useState('')
+  const [selectedPublicationType, setSelectedPublicationType] = useState('')
 
   console.log('parms==>', selectedGeography)
 
@@ -214,6 +216,8 @@ const TableSelection = () => {
     selectedMedia.length && { media: selectedMedia },
     selectedTags.length && { tags: selectedTags },
     selectedLanguage.length && { language: selectedLanguage },
+    selectedEditionType && { editionType: selectedEditionType },
+    selectedPublicationType && { publicationCategory: selectedPublicationType },
 
     searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
     searchParameters.searchBody && { body: searchParameters.searchBody },
@@ -296,7 +300,9 @@ const TableSelection = () => {
             phrase: searchParameters.exactPhrase,
 
             // sort by
-            sortby: selectedSortBy
+            sortby: selectedSortBy,
+            editionType: selectedEditionType.editionTypeId,
+            publicationCategory: selectedPublicationType.publicationTypeId
           }
 
           const response = await axios.get(`${base_url}/clientWiseSocialFeeds/`, {
@@ -338,7 +344,9 @@ const TableSelection = () => {
     selectedTags,
     searchParameters,
     selectedSortBy,
-    dataFetchFlag
+    dataFetchFlag,
+    selectedEditionType,
+    selectedPublicationType
   ])
 
   // Divide social feeds into left and right columns
@@ -518,6 +526,8 @@ const TableSelection = () => {
         handleDelete={handleDelete}
         handleEmail={handleEmail}
         handleImage={handleImage}
+        setSelectedEditionType={setSelectedEditionType}
+        selectedPublicationType={selectedPublicationType}
         handleDownload={handleDownload}
         handleRssFeed={handleRssFeed}
         openFilterPopover={openFilterPopover}
@@ -536,6 +546,7 @@ const TableSelection = () => {
         setTags={setTags}
         setDataFetchFlag={setDataFetchFlag}
         dataFetchFlag={dataFetchFlag}
+        setSelectedPublicationType={setSelectedPublicationType}
       />
       {/* multiple selection */}
       {socialFeeds.length > 0 && (

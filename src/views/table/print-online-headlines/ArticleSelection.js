@@ -75,6 +75,7 @@ const TableSelection = () => {
   const [fileContent, setFileContent] = useState('')
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false)
   const [pdfSrc, setPdfSrc] = useState('')
+  const [selectedSortBy, setSelectedSortBy] = useState(null)
 
   const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
 
@@ -256,6 +257,8 @@ const TableSelection = () => {
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
   const [dataFetchFlag, setDataFetchFlag] = useState(false)
+  const [selectedEditionType, setSelectedEditionType] = useState('')
+  const [selectedPublicationType, setSelectedPublicationType] = useState('')
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -292,6 +295,8 @@ const TableSelection = () => {
     selectedMedia.length && { media: selectedMedia },
     selectedTags.length && { tags: selectedTags },
     selectedLanguages.length && { language: selectedLanguages },
+    selectedEditionType && { editionType: selectedEditionType },
+    selectedPublicationType && { publicationCategory: selectedPublicationType },
 
     //  selectedEditionType && { editionType: selectedEditionType },
     //  selectedPublicationType && { publicationCategory: selectedPublicationType },
@@ -352,6 +357,9 @@ const TableSelection = () => {
             toDate: formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
+            sortby: selectedSortBy,
+            editionType: selectedEditionType.editionTypeId,
+            publicationCategory: selectedPublicationType.publicationTypeId,
 
             geography: selectedGeography,
             language: selectedLanguages
@@ -399,7 +407,10 @@ const TableSelection = () => {
     selectedMedia,
     selectedTags,
     clientId,
-    dataFetchFlag
+    dataFetchFlag,
+    selectedSortBy,
+    selectedEditionType,
+    selectedPublicationType
   ])
 
   // Divide social feeds into left and right columns
@@ -530,6 +541,7 @@ const TableSelection = () => {
     setSelectedLanguages([])
     setSelectedMedia('')
     setSelectedTags([])
+    setSelectedSortBy(null)
   }
 
   const handlePageCheckChange = event => {
@@ -580,8 +592,12 @@ const TableSelection = () => {
       />
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
+        setSelectedEditionType={setSelectedEditionType}
+        selectedPublicationType={selectedPublicationType}
         setSearchQuery={setSearchQuery}
         isSearchBarVisible={isSearchBarVisible}
+        setSelectedSortBy={setSelectedSortBy}
+        selectedSortBy={selectedSortBy}
         toggleSearchBarVisibility={toggleSearchBarVisibility}
         handleDelete={handleDelete}
         handleEmail={handleEmail}
@@ -604,6 +620,7 @@ const TableSelection = () => {
         dataForDump={dataForDump}
         dataFetchFlag={dataFetchFlag}
         setDataFetchFlag={setDataFetchFlag}
+        setSelectedPublicationType={setSelectedPublicationType}
       />
       {/* multiple selection */}
       {articles.length > 0 && (

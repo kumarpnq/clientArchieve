@@ -14,6 +14,8 @@ import ListItem from '@mui/material/ListItem'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
+import { TextField } from '@mui/material'
+import useDebounce from 'src/hooks/useDebounce'
 
 const ToolbarComponent = ({
   selectedMedia,
@@ -37,6 +39,9 @@ const ToolbarComponent = ({
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+  const debouncedSearchTerm = useDebounce(searchTerm, 300)
+  // const [searchterm, setSearchterm] = useState()
 
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
@@ -61,6 +66,11 @@ const ToolbarComponent = ({
   const handleSelectAllLanguage = () => {
     const allLangs = Object.entries(languages).map(([_, languageCode]) => languageCode)
     setSelectedLanguages(allLangs)
+  }
+
+  const handleSearchChange = event => {
+    console.log('event==>', event.target.value)
+    setSearchTerm(event.target.value)
   }
 
   const handleTagSelect = item => {
@@ -168,7 +178,8 @@ const ToolbarComponent = ({
             Authorization: `Bearer ${storedToken}`
           },
           params: {
-            clientId: clientId
+            clientId: clientId,
+            searchTerm: debouncedSearchTerm
           }
         })
         setMedia(mediaResponse.data.mediaList)
@@ -178,7 +189,7 @@ const ToolbarComponent = ({
     }
 
     fetchUserDataAndCompanies()
-  }, [clientId, selectedClient])
+  }, [clientId, selectedClient, debouncedSearchTerm])
   useEffect(() => {
     const fetchData = async () => {
       const storedToken = localStorage.getItem('accessToken')
@@ -311,21 +322,27 @@ const ToolbarComponent = ({
         </Menu>
         {/* Media Dropdown Menu */}
         <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
-          {media.length > 0 && (
+          {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          )}
+          }
+
+          {
+            <ListItem>
+              <TextField placeholder='Search Media' value={searchTerm} onChange={handleSearchChange} />
+            </ListItem>
+          }
           {media.map((item, index) => (
-            <MenuItem
-              key={`${item.publicationGroupId}-${index}`}
-              onClick={() => handleMediaSelect(item.publicationGroupId, index)}
-              selected={selectedMedia.includes(item.publicationGroupId + index)}
-            >
-              {console.log('indexmain==>', item)}
-              {item.publicationName}
-            </MenuItem>
+            <div key={`${item.publicationGroupId}-${index}`}>
+              <MenuItem
+                onClick={() => handleMediaSelect(item.publicationGroupId, index)}
+                selected={selectedMedia.includes(item.publicationGroupId + index)}
+              >
+                {item.publicationName}
+              </MenuItem>
+            </div>
           ))}
           {/* Add more items as needed */}
         </Menu>

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
@@ -42,6 +42,7 @@ import { styled } from '@mui/material/styles'
 import ExcelDumpDialog from '../dialog/Excel-dump/ExcelDump'
 import { useToolPermission } from 'src/hooks/showHideDownloadTools'
 import DossierDialog from '../dialog/dossier/DossierDialog'
+import { BASE_URL } from 'src/api/base'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -52,6 +53,32 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
       fontSize: 12
     }
   })
+)
+
+// Publication Type Icon
+const PublicationTypeIcon = () => (
+  <SvgIcon>
+    <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'>
+      <path
+        fill='currentColor'
+        fill-rule='evenodd'
+        d='M5 2a1 1 0 0 0-1 1v16a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-.293-.707l-5-5A1 1 0 0 0 14 2zm9 2.414L17.586 8H14zM8 10.5A1.5 1.5 0 0 1 9.5 9h.01a1.5 1.5 0 0 1 1.5 1.5v.01a1.5 1.5 0 0 1-1.5 1.5H9.5a1.5 1.5 0 0 1-1.5-1.5zm4.707 2.793a1 1 0 0 0-1.414 0l-4 4a1 1 0 1 0 1.414 1.414L12 15.414l3.293 3.293a1 1 0 0 0 1.414-1.414z'
+        clip-rule='evenodd'
+      />
+    </svg>
+  </SvgIcon>
+)
+
+// Edition Type Icon
+const EditionTypeIcon = () => (
+  <SvgIcon>
+    <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' viewBox='0 0 24 24'>
+      <path
+        fill='currentColor'
+        d='m15.66 14.694l-2.084-2.046l-.129-.117a2.25 2.25 0 0 0-2.888-.006l-.136.123l-6.233 6.124A.7.7 0 0 1 3 18.273V6.25A3.25 3.25 0 0 1 6.25 3h11.5A3.25 3.25 0 0 1 21 6.25v4.762a3.278 3.278 0 0 0-2.608.95zM13.5 8.252a2.252 2.252 0 1 0 4.504 0a2.252 2.252 0 0 0-4.505 0m2.252-.752a.752.752 0 1 1 0 1.504a.752.752 0 0 1 0-1.504m-4.278 6.218l.084-.071a.75.75 0 0 1 .873-.007l.094.078l2.075 2.037l-2.11 2.11a3.686 3.686 0 0 0-.931 1.57c-.345-.536-.87-.915-1.412-1.133c-.691-.278-1.386-.16-1.936.035l-.112.04c-.48.168-.864-.408-.53-.791l.21-.241zm7.625-1.049l-5.902 5.903a2.684 2.684 0 0 0-.706 1.247l-.428 1.712c-.355.17-.71.202-1.133.105c-.126-.03-.18-.175-.127-.293c.43-.962-.19-1.776-1.03-2.113c-.955-.385-2.226.515-3.292 1.268c-.592.42-1.12.793-1.496.876c-.525.117-1.162-.123-1.631-.38c-.209-.113-.487.072-.388.288c.242.529.731 1.133 1.71 1.255c.98.121 1.766-.347 2.55-.815c.583-.348 1.165-.696 1.826-.799c.086-.013.144.088.105.166c-.242.484-.356 1.37.218 1.818c.848.662 3.237.292 3.828.088a.982.982 0 0 0 .148-.027l1.83-.457a2.684 2.684 0 0 0 1.248-.707l5.903-5.902a2.286 2.286 0 0 0-3.233-3.232'
+      />
+    </svg>
+  </SvgIcon>
 )
 
 // Advanced Search Icon
@@ -150,6 +177,10 @@ const ArticleListToolbar = ({
   handleImage,
   selectedStartDate,
   selectedEndDate,
+  selectedPublicationType,
+  selectedEditionType,
+  setSelectedEditionType,
+  setSelectedPublicationType,
 
   // handleDownload,
   handleRssFeed,
@@ -309,6 +340,99 @@ const ArticleListToolbar = ({
     handleSortByClose()
   }
 
+  // Publication Type state and logic
+  const [publicationTypes, setPublicationTypes] = useState([])
+  const [isPublicationTypeMenuOpen, setPublicationTypeMenuOpen] = useState(null)
+
+  useEffect(() => {
+    const fetchPublicationTypes = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const response = await fetch('http://51.68.220.77:8001/publicationCategoryList/', {
+          headers: { Authorization: `Bearer ${storedToken}` }
+        })
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        const data = await response.json()
+        setPublicationTypes(data.publicationsTypeList)
+      } catch (error) {
+        console.error('Error fetching publication types:', error)
+
+        // Handle error appropriately, e.g., display an error message to the user
+      }
+    }
+
+    fetchPublicationTypes()
+  }, []) // Fetch publication types only once on component mount
+
+  const [editionTypes, setEditionTypes] = useState([])
+  const [isEditionTypeMenuOpen, setEditionTypeMenuOpen] = useState(null)
+
+  useEffect(() => {
+    const fetchEditionTypes = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
+        const response = await fetch(`${BASE_URL}/editionTypesList/`, {
+          headers: { Authorization: `Bearer ${storedToken}` }
+        })
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        const data = await response.json()
+        setEditionTypes(data.editionTypesList)
+      } catch (error) {
+        console.error('Error fetching edition types:', error)
+
+        // Handle error appropriately, e.g., display an error message to the user
+      }
+    }
+
+    fetchEditionTypes()
+  }, []) // Fetch edition types only once on component mount
+
+  const handleEditionTypeClick = event => {
+    setEditionTypeMenuOpen(event.currentTarget)
+  }
+
+  const handleEditionTypeClose = () => {
+    setEditionTypeMenuOpen(null)
+  }
+
+  const handlePublicationTypeClick = event => {
+    setPublicationTypeMenuOpen(event.currentTarget)
+  }
+
+  const handlePublicationTypeClose = () => {
+    setPublicationTypeMenuOpen(null)
+  }
+
+  const handlePublicationTypeSelection = publicationType => {
+    if (selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId) {
+      // If the clicked publication type is already selected, deselect it
+      setSelectedPublicationType('')
+    } else {
+      // If not selected, set it as the selected publication type
+      setSelectedPublicationType(publicationType)
+    }
+    handlePublicationTypeClose()
+  }
+
+  const handleEditionTypeSelection = editionType => {
+    if (selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId) {
+      // If the clicked edition type is already selected, deselect it
+      setSelectedEditionType(' ')
+    } else {
+      // If not selected, set it as the selected edition type
+      setSelectedEditionType(editionType)
+    }
+    handleEditionTypeClose()
+  }
+
   return (
     <Toolbar
       sx={{
@@ -449,6 +573,48 @@ const ArticleListToolbar = ({
           Sort by Engagement
         </MenuItem>
       </Menu>
+
+      <CustomTooltip title='Publication'>
+        <Button onClick={handlePublicationTypeClick} sx={{ color: primaryColor, mr: 0 }}>
+          <PublicationTypeIcon />
+        </Button>
+      </CustomTooltip>
+
+      <Menu
+        anchorEl={isPublicationTypeMenuOpen}
+        open={Boolean(isPublicationTypeMenuOpen)}
+        onClose={handlePublicationTypeClose}
+      >
+        {publicationTypes.map(publicationType => (
+          <MenuItem
+            key={publicationType.publicationTypeId}
+            onClick={() => handlePublicationTypeSelection(publicationType)}
+            selected={
+              selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId
+            }
+          >
+            {publicationType.publicationTypeName}
+          </MenuItem>
+        ))}
+      </Menu>
+
+      <CustomTooltip title='Edition'>
+        <Button onClick={handleEditionTypeClick} sx={{ color: primaryColor, mr: 0 }}>
+          <EditionTypeIcon />
+        </Button>
+      </CustomTooltip>
+      <Menu anchorEl={isEditionTypeMenuOpen} open={Boolean(isEditionTypeMenuOpen)} onClose={handleEditionTypeClose}>
+        {editionTypes.map(editionType => (
+          <MenuItem
+            key={editionType.editionTypeId}
+            onClick={() => handleEditionTypeSelection(editionType)}
+            selected={selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId}
+          >
+            {editionType.editionTypeName}
+          </MenuItem>
+        ))}
+      </Menu>
+
       {/* <CustomTooltip title='Date Range'>
         <Button onClick={openFilterPopover} sx={{ color: primaryColor, mr: 0 }}>
           <DateRangeIcon />s

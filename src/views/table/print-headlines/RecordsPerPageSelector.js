@@ -25,7 +25,7 @@ const RecordsPerPageSelector = ({ recordsPerPage, handleRecordsPerPageUpdate }) 
 
   const handleCustomUpdate = () => {
     if (customValue && !isNaN(customValue)) {
-      handleRecordsPerPageUpdate(parseInt(customValue, 100))
+      handleRecordsPerPageUpdate(parseInt(customValue, 10))
       setAnchorEl(null)
     }
   }
@@ -57,18 +57,24 @@ const RecordsPerPageSelector = ({ recordsPerPage, handleRecordsPerPageUpdate }) 
         <MenuItem onClick={() => handlePredefinedUpdate(100)}>100</MenuItem>
         <MenuItem onClick={() => handlePredefinedUpdate(200)}>200</MenuItem>
         <MenuItem onClick={() => handlePredefinedUpdate(500)}>500</MenuItem>
-        {/* <MenuItem>
+        <MenuItem>
           <TextField
             label='Custom'
             type='number'
             value={customValue}
             onChange={handleCustomInputChange}
-            size='small' // Adjust the size of the input field
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                handleCustomUpdate()
+              }
+            }}
+            size='small'
           />
-          <Button size='small' onClick={handleCustomUpdate}>
+          {/* <Button size='small' onClick={handleCustomUpdate}>
             Update
-          </Button>
-        </MenuItem> */}
+          </Button> */}
+        </MenuItem>
       </Popover>
     </Box>
   )
