@@ -720,13 +720,10 @@ const TableSelection = () => {
                 rows={articles}
                 columns={articleColumns.filter(column => {
                   // Check if it's mobile view and exclude only the "Select" and "Edit" columns
-                  if (isMobileView) {
-                    return (
-                      column.field !== 'select' &&
-                      column.field !== 'edit' &&
-                      !(column.field === 'date' && isNarrowMobileView)
-                    )
-                  }
+
+                  column.field !== 'select' &&
+                    column.field !== 'edit' &&
+                    !(column.field === 'date' && isNarrowMobileView)
 
                   return true
                 })}
@@ -788,6 +785,11 @@ const TableSelection = () => {
         articles={selectedArticle}
         handleSave={handleSaveChanges}
       /> */}
+      <style css>{`
+        .css-1p6gmy3-MuiDataGrid-root .MuiDataGrid-cell:not(.MuiDataGrid-cellCheckbox):first-of-type {
+          padding-left: 0.8rem;
+        }
+      `}</style>
     </Card>
   )
 }

@@ -35,6 +35,8 @@ mock.onPost('/jwt/login').reply(async request => {
       role: 'admin'
     }
 
+    // window.location.href = '/headlines/print/'
+
     return [200, { accessToken, userData: user }]
   } catch (error) {
     return [400, { error: { email: ['Invalid credentials'] } }]
