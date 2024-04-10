@@ -54,7 +54,7 @@ const CardSelection = () => {
       setLoading(true)
       const storedToken = localStorage.getItem('accessToken')
       if (storedToken) {
-        const response = await axios.get(`${BASE_URL}/latestSocialFeedsAndArticlesForClientCompany/`, {
+        const response = await axios.get(`${BASE_URL}/latestArticlesForClientCompany/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },

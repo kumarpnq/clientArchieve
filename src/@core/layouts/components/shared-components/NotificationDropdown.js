@@ -1,42 +1,25 @@
-// ** React Imports
-import { useState, Fragment } from 'react'
-import Link from 'next/link'
-
-// ** MUI Imports
-import Box from '@mui/material/Box'
-import Badge from '@mui/material/Badge'
-import Button from '@mui/material/Button'
-import IconButton from '@mui/material/IconButton'
+import React, { useState, Fragment, useEffect } from 'react'
+import { IconButton, Badge, Typography, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+import { useDispatch, useSelector } from 'react-redux'
+import Icon from 'src/@core/components/icon'
 import { styled } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiMenu from '@mui/material/Menu'
 import MuiMenuItem from '@mui/material/MenuItem'
-import Typography from '@mui/material/Typography'
-
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
-
-// ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 import toast from 'react-hot-toast'
-
-// ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
 import CustomAvatar from 'src/@core/components/mui/avatar'
-
-// ** Util Import
 import { getInitials } from 'src/@core/utils/get-initials'
 import useFetchNotifications from 'src/api/notifications/useFetchNotifications'
 import useUpdateClientNotification from 'src/api/notifications/useUpdateReadClientNotification'
-
-// ** Redux
-import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
-import { setNotificationFlag, selectNotificationFlag } from 'src/store/apps/user/userSlice'
-
-// auto notification status import
+import { selectNotificationFlag, selectSelectedClient, setNotificationFlag } from 'src/store/apps/user/userSlice'
 import useAutoNotification from 'src/api/notifications/useAutoNotificationStatus'
+import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
+import { Box } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
-// ** Styled Menu component
 const Menu = styled(MuiMenu)(({ theme }) => ({
   '& .MuiMenu-paper': {
     width: 380,
@@ -59,7 +42,6 @@ const Menu = styled(MuiMenu)(({ theme }) => ({
   }
 }))
 
-// ** Styled MenuItem component
 const MenuItem = styled(MuiMenuItem)(({ theme }) => ({
   paddingTop: theme.spacing(3),
   paddingBottom: theme.spacing(3),
@@ -68,19 +50,16 @@ const MenuItem = styled(MuiMenuItem)(({ theme }) => ({
   }
 }))
 
-// ** Styled PerfectScrollbar component
 const PerfectScrollbar = styled(PerfectScrollbarComponent)({
   maxHeight: 349
 })
 
-// ** Styled Avatar component
 const Avatar = styled(CustomAvatar)({
   width: 38,
   height: 38,
   fontSize: '1.125rem'
 })
 
-// ** Styled component for the title in MenuItems
 const MenuItemTitle = styled(Typography)({
   fontWeight: 500,
   flex: '1 1 100%',
@@ -89,7 +68,6 @@ const MenuItemTitle = styled(Typography)({
   textOverflow: 'ellipsis'
 })
 
-// ** Styled component for the subtitle in MenuItems
 const MenuItemSubtitle = styled(Typography)({
   flex: '1 1 100%',
   overflow: 'hidden',
@@ -97,40 +75,43 @@ const MenuItemSubtitle = styled(Typography)({
   textOverflow: 'ellipsis'
 })
 
-const ScrollWrapper = ({ children, hidden }) => {
-  if (hidden) {
-    return <Box sx={{ maxHeight: 349, overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>
-  } else {
-    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>
-  }
-}
-
-const NotificationDropdown = props => {
-  // ** auto notification
+const NotificationDropdown = () => {
   useAutoNotification()
 
-  // ** Props
-  const { settings, notifications } = props
-
-  // ** States
   const [anchorEl, setAnchorEl] = useState(null)
-
-  // ** Hook
   const hidden = useMediaQuery(theme => theme.breakpoints.down('lg'))
-
-  // ** Vars
-  const { direction } = settings
-
-  //  ** redux
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
-
-  //  ** notifications
   const { notificationList, loading } = useFetchNotifications()
-
-  console.log()
-  //  ** notification status
   const { loading: updateLoading, error, data, updateReadClientNotification } = useUpdateClientNotification()
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+  const [clientData, setClientData] = useState(null)
+  console.log('coinet==>', clientData)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedToken = localStorage.getItem('accessToken')
+        const response = await axios.get(`${BASE_URL}/clientArchiveNotificationList/`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            clientId: clientId
+          }
+        })
+        setClientData(response.data.jobList)
+        console.log('response==>', response.data.jobList)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    if (clientId) {
+      fetchData()
+    }
+  }, [clientId])
 
   const handleNotificationDetails = jobId => {
     updateReadClientNotification(jobId)
@@ -197,8 +178,8 @@ const NotificationDropdown = props => {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleDropdownClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: direction === 'ltr' ? 'right' : 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: direction === 'ltr' ? 'right' : 'left' }}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
         <MenuItem
           disableRipple
@@ -209,10 +190,122 @@ const NotificationDropdown = props => {
             <Typography variant='h5' sx={{ cursor: 'text' }}>
               Notifications
             </Typography>
-            <CustomChip skin='light' size='small' color='primary' label={`${notificationList.length} New`} />
+            <CustomChip
+              skin='light'
+              size='small'
+              color='primary'
+              label={`${
+                (clientData?.excelDump?.length || 0) +
+                (clientData?.email?.length || 0) +
+                (clientData?.dossier?.length || 0)
+              } New`}
+            />
           </Box>
         </MenuItem>
 
+        <MenuItem
+          disableRipple
+          disableTouchRipple
+          sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
+        >
+          <div>
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant='h5'>ExcelDump</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {clientData &&
+                  clientData.excelDump.map((job, index) => (
+                    <MenuItem
+                      key={index}
+                      disableRipple
+                      disableTouchRipple
+                      sx={{
+                        cursor: 'default',
+                        userSelect: 'auto',
+                        backgroundColor: 'transparent !important'
+                      }}
+                    >
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography variant='h5'>Details</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography key={job.jobId}>{job.jobName}</Typography>
+                          <Typography>Status: {job.jobStatus}</Typography>
+                          <Typography>Download Link: {job.downloadLink}</Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </MenuItem>
+                  ))}
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant='h5'>Dossier</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {clientData &&
+                  clientData.dossier.map((job, index) => (
+                    <MenuItem
+                      key={index}
+                      disableRipple
+                      disableTouchRipple
+                      sx={{
+                        cursor: 'default',
+                        userSelect: 'auto',
+                        backgroundColor: 'transparent !important'
+                      }}
+                    >
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography variant='h5'>Details</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography key={job.jobId}>{job.jobName}</Typography>
+                          <Typography>Status: {job.jobStatus}</Typography>
+                          <Typography>Download Link: {job.downloadLink}</Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </MenuItem>
+                  ))}
+              </AccordionDetails>
+            </Accordion>
+
+            <Accordion>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant='h5'>Mail</Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {clientData &&
+                  clientData.mail.map((job, index) => (
+                    <MenuItem
+                      key={index}
+                      disableRipple
+                      disableTouchRipple
+                      sx={{
+                        cursor: 'default',
+                        userSelect: 'auto',
+                        backgroundColor: 'transparent !important'
+                      }}
+                    >
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography variant='h5'>Details</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography key={job.jobId}>{job.jobName}</Typography>
+                          <Typography>Status: {job.jobStatus}</Typography>
+                          <Typography>Download Link: {job.downloadLink}</Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </MenuItem>
+                  ))}
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        </MenuItem>
         <MenuItem
           disableRipple
           disableTouchRipple

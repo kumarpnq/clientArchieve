@@ -298,19 +298,11 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       notificationFlag
     }
 
-    if (
-      (media === '' &&
-        geography === '' &&
-        language === '' &&
-        tags === '' &&
-        [media, geography, language, tags].some(field => field.includes('articleId'))) ||
-      (articleIds.length && articleIds.some(id => id !== undefined))
-    ) {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
-    } else {
+    if (selectPageOrAll === 'A' || selectPageOrAll === 'P') {
       postDataParams.searchCriteria = searchCriteria
+    } else {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     }
-
     postData(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))

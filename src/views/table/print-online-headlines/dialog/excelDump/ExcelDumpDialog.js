@@ -29,6 +29,7 @@ import { formatDateTime } from 'src/utils/formatDateTime'
 import toast from 'react-hot-toast'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
+  console.log('checkdata=>', dataForExcelDump)
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
@@ -113,6 +114,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
 
     const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
     const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
+
     const media =
       dataForExcelDump.length &&
       dataForExcelDump
@@ -133,12 +135,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       .find(item => item.language)
       ?.language.map(lang => lang.id)
       .join(',')
-
-    // const languageIds = dataForExcelDump
-    //   .find(item => item.language)
-    //   ?.language.map(lang => lang.id)
-    //   .join(',')
-    // console.log('languageIds:', languageIds)
 
     const tags =
       dataForExcelDump.length &&

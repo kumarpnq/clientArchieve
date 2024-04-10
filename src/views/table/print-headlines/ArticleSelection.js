@@ -290,9 +290,19 @@ const TableSelection = () => {
 
   console.log('checkstsus==>', selectedArticles)
 
+  const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+    const lastChar = item.slice(-1)
+    if (!isNaN(parseInt(lastChar))) {
+      return item.slice(0, -1)
+    }
+    return item
+  })
+  const result = selectedMediaWithoutLastDigit.join(', ')
+  console.log(result)
+
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
-    selectedMedia.length && { media: selectedMedia },
+    selectedMedia.length && { media: result },
     selectedLanguages.length && {
       language: selectedLanguages.map(i => {
         return i.id
@@ -369,7 +379,17 @@ const TableSelection = () => {
           const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
           const selectedCompaniesString = selectedCompetitions.join(', ')
-          const selectedMediaString = selectedMedia.join(', ')
+          // const selectedMediaString = selectedMedia.join(', ')
+          const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+            const lastChar = item.slice(-1)
+            if (!isNaN(parseInt(lastChar))) {
+              return item.slice(0, -1)
+            }
+            return item
+          })
+          const result = selectedMediaWithoutLastDigit.join(', ')
+          console.log(result)
+
           const selectedTagString = selectedTag.join(', ')
           const selectedCitiesString = selectedCities.join(', ')
           const selectedLanguagesString = selectedLanguages
@@ -387,7 +407,7 @@ const TableSelection = () => {
             page: currentPage,
             recordsPerPage: recordsPerPage,
 
-            media: selectedMediaString,
+            media: result,
             tags: selectedTagString,
             geography: selectedCitiesString,
             language: selectedLanguagesString,
