@@ -41,27 +41,29 @@ const AuthProvider = ({ children }) => {
     const initAuth = async () => {
       const storedToken = window.localStorage.getItem(authConfig.storageTokenKeyName)
       if (storedToken) {
-        setLoading(true)
-        await axios
-          .get(authConfig.meEndpoint, {
-            headers: {
-              Authorization: storedToken
-            }
-          })
-          .then(async response => {
-            setLoading(false)
-            dispatch(setUserData(response.data.userData)) // Set user data in Redux
-          })
-          .catch(() => {
-            localStorage.removeItem('userData')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('accessToken')
-            setUser(null)
-            setLoading(false)
-            if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
-              router.replace('/login')
-            }
-          })
+        dispatch(setUserData(JSON.parse(localStorage.getItem('userData', userData))))
+        setLoading(false)
+
+        // await axios
+        //   .get('http://51.68.220.77:8001' + authConfig.meEndpoint, {
+        //     headers: {
+        //       Authorization: storedToken
+        //     }
+        //   })
+        //   .then(async response => {
+        //     setLoading(false)
+        //     dispatch(setUserData(response.data.userData)) // Set user data in Redux
+        //   })
+        //   .catch(() => {
+        //     localStorage.removeItem('userData')
+        //     localStorage.removeItem('refreshToken')
+        //     localStorage.removeItem('accessToken')
+        //     setUser(null)
+        //     setLoading(false)
+        //     if (authConfig.onTokenExpiration === 'logout' && !router.pathname.includes('login')) {
+        //       router.replace('/login')
+        //     }
+        //   })
       } else {
         setLoading(false)
       }
@@ -76,16 +78,17 @@ const AuthProvider = ({ children }) => {
       .then(async response => {
         const { accessToken, userData } = response.data
 
+        console.log('repsomse==>', response)
         // Store data in localStorage
         params.rememberMe ? window.localStorage.setItem(authConfig.storageTokenKeyName, accessToken) : null
-        // window.localStorage.setItem('userData', JSON.stringify(userData))
+        window.localStorage.setItem('userData', JSON.stringify(userData))
 
         // Set user data in Redux
         dispatch(setUserData(userData))
 
         const returnUrl = router.query.returnUrl
         const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-        router.replace(redirectURL)
+        router.replace('/headlines/print/')
       })
       .catch(err => {
         if (errorCallback) errorCallback(err)
@@ -100,8 +103,8 @@ const AuthProvider = ({ children }) => {
     dispatch(clearUserData())
 
     // Clear data in localStorage
-    // window.localStorage.removeItem('userData')
-    // window.localStorage.removeItem(authConfig.storageTokenKeyName)
+    window.localStorage.removeItem('userData')
+    window.localStorage.removeItem(authConfig.storageTokenKeyName)
 
     // Navigate to the login page
     router.push('/login')
