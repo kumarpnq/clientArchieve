@@ -202,7 +202,9 @@ const ArticleListToolbar = ({
   fetchTagsFlag,
   setFetchTagsFlag,
   setDataFetchFlag,
-  dataFetchFlag
+  dataFetchFlag,
+  pageCheck,
+  allCheck
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -542,6 +544,8 @@ const ArticleListToolbar = ({
             open={excelDumpDialogOpen}
             handleClose={handleExcelDumpDialogClose}
             dataForExcelDump={dataForExcelDump}
+            pageCheck={pageCheck}
+            allCheck={allCheck}
           />
         </Fragment>
       )}

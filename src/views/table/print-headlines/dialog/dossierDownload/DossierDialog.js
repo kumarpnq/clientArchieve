@@ -131,6 +131,86 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .join(',')
         .replace(/,+$/, '')
 
+    const headline =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.headline)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const body =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.body)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const journalist =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.journalist)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const wordCombo =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.wordCombo)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const anyWord =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.anyWord)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const ignoreWords =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.ignoreWords)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const phrase =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.phrase)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const sortby =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.sortby)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const publicationCategory =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.publicationCategory)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
+    const editionType =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.editionType?.editionTypeId)
+        .flat()
+        .join(',')
+        .replace(/,+$/, '')
+
     const formattedFromDate = formatDateTime(selectedStartDate)
     const formattedToDate = formatDateTime(selectedEndDate)
 
@@ -142,6 +222,46 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       requestEntity,
       clientIds: clientId
+    }
+
+    if (editionType !== '') {
+      searchCriteria.editionType = editionType
+    }
+
+    if (publicationCategory !== '') {
+      searchCriteria.publicationCategory = publicationCategory
+    }
+
+    if (sortby !== '') {
+      searchCriteria.sortby = sortby
+    }
+
+    if (body !== '') {
+      searchCriteria.body = body
+    }
+
+    if (journalist !== '') {
+      searchCriteria.journalist = journalist
+    }
+
+    if (wordCombo !== '') {
+      searchCriteria.wordCombo = wordCombo
+    }
+
+    if (anyWord !== '') {
+      searchCriteria.anyWord = anyWord
+    }
+
+    if (ignoreWords !== '') {
+      searchCriteria.ignoreWords = ignoreWords
+    }
+
+    if (phrase !== '') {
+      searchCriteria.phrase = phrase
+    }
+
+    if (headline !== '') {
+      searchCriteria.headline = headline
     }
 
     if (media !== '') {

@@ -76,9 +76,9 @@ const AuthProvider = ({ children }) => {
     axios
       .post(authConfig.loginEndpoint, params)
       .then(async response => {
-        const { accessToken, userData } = response.data
+        const { accessToken, userData, defaultScreen } = response.data
 
-        console.log('repsomse==>', response)
+        console.log('repsomse==>', defaultScreen)
         // Store data in localStorage
         params.rememberMe ? window.localStorage.setItem(authConfig.storageTokenKeyName, accessToken) : null
         window.localStorage.setItem('userData', JSON.stringify(userData))
@@ -87,8 +87,16 @@ const AuthProvider = ({ children }) => {
         dispatch(setUserData(userData))
 
         const returnUrl = router.query.returnUrl
-        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-        router.replace('/headlines/print/')
+        // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+        if (defaultScreen.option === 'printHeadlines') {
+          router.replace('/headlines/print/')
+        } else if (defaultScreen.option === 'onlineHeadlines') {
+          router.replace('/headlines/online/')
+        } else if (defaultScreen.option === 'bothHeadlines') {
+          router.replace('/headlines/print-online/')
+        } else {
+          router.replace('/dashboards/analytics/')
+        }
       })
       .catch(err => {
         if (errorCallback) errorCallback(err)

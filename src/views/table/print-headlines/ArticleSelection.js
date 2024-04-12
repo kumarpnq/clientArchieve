@@ -323,7 +323,12 @@ const TableSelection = () => {
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
     {
-      // selectPageorAll: (pageCheck && currentPage) || 'P'
+      pageCheck: pageCheck
+    },
+    {
+      allCheck: allCheck
+    },
+    {
       selectPageorAll:
         (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : 'A'
     },
@@ -681,6 +686,8 @@ const TableSelection = () => {
         setFetchTagsFlag={setFetchTagsFlag}
         setDataFetchFlag={setDataFetchFlag}
         dataFetchFlag={dataFetchFlag}
+        pageCheck={pageCheck}
+        allCheck={allCheck}
       />
       {/* multiple selection */}
       {articles.length > 0 && (
