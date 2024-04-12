@@ -11,13 +11,13 @@ mock.onPost('/jwt/login').reply(async request => {
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 
   try {
-    const response = await axios.post(`${BASE_URL}/authenticatePnQ`, {
+    const response = await axios.post(`${BASE_URL}/authenticatePnQFrontend`, {
       loginName,
       password,
       timeZone
     })
 
-    const { accessToken } = response.data
+    const { accessToken, defaultScreen } = response.data
 
     const res = await axios.get(`${BASE_URL}/getUserDetails`, {
       headers: {
@@ -37,7 +37,7 @@ mock.onPost('/jwt/login').reply(async request => {
 
     // window.location.href = '/headlines/print/'
 
-    return [200, { accessToken, userData: user }]
+    return [200, { accessToken, userData: user, defaultScreen }]
   } catch (error) {
     return [400, { error: { email: ['Invalid credentials'] } }]
   }

@@ -30,8 +30,15 @@ import WarningIcon from '@mui/icons-material/Warning'
 import toast from 'react-hot-toast'
 import { Box, DialogContentText } from '@mui/material'
 
-const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles }) => {
-  console.log('printheadline==>', dataForExcelDump)
+const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles, pageCheck, allCheck }) => {
+  console.log(
+    'printheadline==>',
+    dataForExcelDump
+      .map(i => i.body)
+      .flat()
+      .join('')
+      .replace(/,+$/, '')
+  )
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
@@ -146,15 +153,15 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       dataForExcelDump
         .map(i => i.headline)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const body =
       dataForExcelDump.length &&
       dataForExcelDump
-        .map(i => i.headline)
+        .map(i => i.body)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const journalist =
@@ -162,7 +169,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       dataForExcelDump
         .map(i => i.journalist)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const wordCombo =
@@ -170,7 +177,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       dataForExcelDump
         .map(i => i.wordCombo)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const anyWord =
@@ -178,7 +185,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       dataForExcelDump
         .map(i => i.anyWord)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const ignoreWords =
@@ -186,7 +193,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       dataForExcelDump
         .map(i => i.ignoreWords)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const phrase =
@@ -194,7 +201,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       dataForExcelDump
         .map(i => i.phrase)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const sortby =
@@ -202,7 +209,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       dataForExcelDump
         .map(i => i.sortby)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const publicationCategory =
@@ -298,11 +305,38 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       notificationFlag
     }
 
-    if (selectPageOrAll === 'A' || selectPageOrAll === 'P') {
+    if (pageCheck === true || allCheck === true) {
       postDataParams.searchCriteria = searchCriteria
     } else {
       postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     }
+
+    if (
+      (media === '' &&
+        geography === '' &&
+        language === '' &&
+        tags === '' &&
+        [media, geography, language, tags].some(field => field.includes('articleId'))) ||
+      (articleIds.length && articleIds.some(id => id !== undefined))
+    ) {
+    } else {
+      postDataParams.searchCriteria = searchCriteria
+    }
+    // if (
+    //   pageCheck === false ||
+    //   allCheck === false ||
+    //   (media === '' &&
+    //     geography === '' &&
+    //     language === '' &&
+    //     tags === '' &&
+    //     [media, geography, language, tags].some(field => field.includes('articleId'))) ||
+    //   (articleIds.length && articleIds.some(id => id !== undefined))
+    // ) {
+    //   postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    // } else {
+    //   postDataParams.searchCriteria = searchCriteria
+    // }
+
     postData(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))
