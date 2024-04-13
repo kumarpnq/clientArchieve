@@ -50,7 +50,7 @@ const ToolbarComponent = ({
   const clientId = selectedClient ? selectedClient.clientId : null
 
   const handleSelectAllMedia = () => {
-    const allMediaIds = media.map((item, index) => item.publicationGroupId + index)
+    const allMediaIds = media.map((item, index) => item.publicationId + index)
     console.log('allMediaIds++>', allMediaIds)
     setSelectedMedia(allMediaIds)
   }
@@ -112,16 +112,16 @@ const ToolbarComponent = ({
 
   let index = 0 // This should be outside the component
 
-  const handleMediaSelect = (publicationGroupId, itemIndex) => {
+  const handleMediaSelect = (publicationId, itemIndex) => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationGroupId + itemIndex)
+      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
 
       if (isAlreadySelected) {
         // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationGroupId + itemIndex)
+        return prevSelected.filter(id => id !== publicationId + itemIndex)
       } else {
         // If not selected, add to the list
-        return [...prevSelected, publicationGroupId + itemIndex]
+        return [...prevSelected, publicationId + itemIndex]
       }
     })
   }
@@ -343,10 +343,10 @@ const ToolbarComponent = ({
             </ListItem>
           }
           {media.map((item, index) => (
-            <div key={`${item.publicationGroupId}-${index}`}>
+            <div key={`${item.publicationId}-${index}`}>
               <MenuItem
-                onClick={() => handleMediaSelect(item.publicationGroupId, index)}
-                selected={selectedMedia.includes(item.publicationGroupId + index)}
+                onClick={() => handleMediaSelect(item.publicationId, index)}
+                selected={selectedMedia.includes(item.publicationId + index)}
               >
                 {item.publicationName}
               </MenuItem>

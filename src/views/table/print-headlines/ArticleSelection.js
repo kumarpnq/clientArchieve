@@ -270,8 +270,14 @@ const TableSelection = () => {
   const [selectedLanguages, setSelectedLanguages] = useState([])
 
   console.log('selectedLanguages==>', selectedLanguages)
-  const [selectedEditionType, setSelectedEditionType] = useState('')
-  const [selectedPublicationType, setSelectedPublicationType] = useState('')
+  const [selectedEditionType, setSelectedEditionType] = useState([])
+  const [selectedPublicationType, setSelectedPublicationType] = useState([])
+  console.log(
+    'itmecheck-->',
+    selectedPublicationType.map(i => {
+      return i.publicationTypeId
+    })
+  )
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
@@ -311,7 +317,11 @@ const TableSelection = () => {
 
     selectedTag.length && { tags: selectedTag },
     selectedEditionType && { editionType: selectedEditionType },
-    selectedPublicationType && { publicationCategory: selectedPublicationType },
+    selectedPublicationType && {
+      publicationCategory: selectedPublicationType.map(i => {
+        return i.publicationTypeId
+      })
+    },
     selectedSortBy && { sortby: selectedSortBy },
     searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
     searchParameters.searchBody && { body: searchParameters.searchBody },
@@ -397,6 +407,18 @@ const TableSelection = () => {
 
           const selectedTagString = selectedTag.join(', ')
           const selectedCitiesString = selectedCities.join(', ')
+          const edition = selectedEditionType
+            .map(i => {
+              return i.editionTypeId
+            })
+            .join(', ')
+
+          const publicationtype = selectedPublicationType
+            .map(i => {
+              return i.publicationTypeId
+            })
+            .join(', ')
+
           const selectedLanguagesString = selectedLanguages
             .map(i => {
               return i.id
@@ -426,10 +448,10 @@ const TableSelection = () => {
             ignoreWords: searchParameters.ignoreThis,
             phrase: searchParameters.exactPhrase,
 
-            editionType: selectedEditionType.editionTypeId,
+            editionType: edition,
             sortby: selectedSortBy,
 
-            publicationCategory: selectedPublicationType.publicationTypeId
+            publicationCategory: publicationtype
           })
 
           console.log('selectedCompetitions==>', response)

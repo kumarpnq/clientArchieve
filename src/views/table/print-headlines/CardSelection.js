@@ -44,6 +44,7 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 const CardSelection = () => {
   const [isContainerOpen, setContainerOpen] = useState(false)
   const [companyData, setCompanyData] = useState([])
+  console.log('companydata==>', companyData)
   const [loading, setLoading] = useState(true)
   const [loadingArticleId, setLoadingArticleId] = useState(null)
   const selectedClient = useSelector(selectSelectedClient)
@@ -62,11 +63,13 @@ const CardSelection = () => {
             clientId: clientId
           }
         })
+        setCompanyData(response.data.articles) // Set to response.data
 
         // Sort the companies with articles first
-        const result = response.data.articles || []
-        const sortedCompanies = result.sort((a, b) => b.articlesAndSocialFeeds.length - a.articlesAndSocialFeeds.length)
-        setCompanyData(sortedCompanies)
+        const sortedCompanies = [...response.data].sort(
+          (a, b) => b.articlesAndSocialFeeds.length - a.articlesAndSocialFeeds.length
+        )
+        setCompanyData(sortedCompanies) // Set the sorted array
       }
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -173,10 +176,10 @@ const CardSelection = () => {
                 <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                   <Card sx={{ width: '100%', textAlign: 'center' }}>
                     <CardHeader title={<Typography color='primary'>{company.companyName}</Typography>} />{' '}
-                    {company.articlesAndSocialFeeds.length > 0 ? (
+                    {company.articles.length > 0 ? (
                       <Table>
                         <TableBody>
-                          {company.articlesAndSocialFeeds.map(article => (
+                          {company.articles.map(article => (
                             <TableRow key={article.articleId}>
                               <TableCell sx={{ whiteSpace: 'nowrap' }}>
                                 <CustomTooltip
