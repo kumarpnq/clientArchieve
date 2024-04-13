@@ -14,6 +14,7 @@ import authConfig from 'src/configs/auth'
 import { useDispatch, useSelector } from 'react-redux'
 import { setUserData, selectUserData } from 'src/store/apps/user/userSlice'
 import { clearUserData } from 'src/store/apps/user/userSlice'
+import { BASE_URL } from 'src/api/base'
 
 // ** Defaults
 const defaultProvider = {
@@ -103,19 +104,35 @@ const AuthProvider = ({ children }) => {
       })
   }
 
-  const handleLogout = () => {
-    // Set local state to null
-    setUser(null)
+  const handleLogout = async () => {
+    const storedToken = localStorage.getItem('accessToken')
+    if (storedToken) {
+      try {
+        setUser(null)
 
-    // Dispatch the action to clear user data in Redux
-    dispatch(clearUserData())
+        dispatch(clearUserData())
 
-    // Clear data in localStorage
-    window.localStorage.removeItem('userData')
-    window.localStorage.removeItem(authConfig.storageTokenKeyName)
+        const response = await axios.post(`${BASE_URL}/logout`, null, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${storedToken}`
+          }
+        })
 
-    // Navigate to the login page
-    router.push('/login')
+        // Check if the request was successful
+        if (response.status === 200) {
+          window.localStorage.removeItem('userData')
+          window.localStorage.removeItem(authConfig.storageTokenKeyName)
+          // Navigate to the login page
+          router.push('/login')
+        } else {
+          // Handle the error
+          console.error('Failed to logout:', response.status, response.statusText)
+        }
+      } catch (error) {
+        console.error('Error during logout:', error)
+      }
+    }
   }
 
   const values = {

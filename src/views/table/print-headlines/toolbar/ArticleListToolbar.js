@@ -244,6 +244,7 @@ const ArticleListToolbar = ({
   // }, []) // Empty dependency array to run the effect only once
 
   const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false)
+  // const [selectedPublicationTypes, setSelectedPublicationType] = useState([])
 
   const handleAdvancedSearchOpen = () => {
     setAdvancedSearchOpen(true)
@@ -381,16 +382,77 @@ const ArticleListToolbar = ({
     setPublicationTypeMenuOpen(null)
   }
 
-  const handlePublicationTypeSelection = publicationType => {
-    if (selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId) {
-      // If the clicked publication type is already selected, deselect it
-      setSelectedPublicationType('')
-    } else {
-      // If not selected, set it as the selected publication type
-      setSelectedPublicationType(publicationType)
-    }
-    handlePublicationTypeClose()
+  const handleMediaSelect = (publicationId, itemIndex) => {
+    setSelectedMedia(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== publicationId + itemIndex)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, publicationId + itemIndex]
+      }
+    })
   }
+
+  const handlePublicationTypeSelection = publicationType => {
+    setSelectedPublicationType(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(publicationType)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== publicationType)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, publicationType]
+      }
+    })
+
+    // const index = selectedPublicationTypes?.findIndex(
+    //   selectedType => selectedType.publicationTypeId === publicationType.publicationTypeId
+    // )
+
+    // if (index === -1) {
+    //   setSelectedPublicationType([...selectedPublicationTypes, publicationType])
+    // } else {
+    //   const updatedSelectedTypes = [...selectedPublicationTypes]
+    //   updatedSelectedTypes.splice(index, 1)
+    //   setSelectedPublicationType(updatedSelectedTypes)
+    // }
+  }
+
+  const handleEditionTypeSelection = editionType => {
+    setSelectedEditionType(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(editionType)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== editionType)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, editionType]
+      }
+    })
+    // const index = selectedEditionType.indexOf(editionType)
+
+    // if (index > -1) {
+    //   // If the edition type is already selected, deselect it
+    //   setSelectedEditionType(prevState =>
+    //     prevState.filter(selected => selected.editionTypeId !== editionType.editionTypeId)
+    //   )
+    // } else {
+    //   // If not selected, add it to the selected edition types
+    //   setSelectedEditionType(prevState => [...prevState, editionType])
+    // }
+    // handleEditionTypeClose()
+  }
+
+  // const isPublicationTypeSelected = publicationType => {
+  //   return selectedPublicationTypes?.some(
+  //     selectedType => selectedType.publicationTypeId === publicationType.publicationTypeId
+  //   )
+  // }
 
   // Edition Type state and logic
   const [editionTypes, setEditionTypes] = useState([])
@@ -428,20 +490,6 @@ const ArticleListToolbar = ({
     setEditionTypeMenuOpen(null)
   }
 
-  const handleEditionTypeSelection = editionType => {
-    const index = selectedEditionType.indexOf(editionType)
-
-    if (index > -1) {
-      // If the edition type is already selected, deselect it
-      setSelectedEditionType(prevState =>
-        prevState.filter(selected => selected.editionTypeId !== editionType.editionTypeId)
-      )
-    } else {
-      // If not selected, add it to the selected edition types
-      setSelectedEditionType(prevState => [...prevState, editionType])
-    }
-    handleEditionTypeClose()
-  }
   return (
     <Toolbar
       sx={{
@@ -609,9 +657,7 @@ const ArticleListToolbar = ({
           <MenuItem
             key={publicationType.publicationTypeId}
             onClick={() => handlePublicationTypeSelection(publicationType)}
-            selected={
-              selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId
-            }
+            selected={selectedPublicationType?.includes(publicationType)}
           >
             {publicationType.publicationTypeName}
           </MenuItem>
@@ -628,7 +674,7 @@ const ArticleListToolbar = ({
           <MenuItem
             key={editionType.editionTypeId}
             onClick={() => handleEditionTypeSelection(editionType)}
-            selected={selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId}
+            selected={selectedEditionType?.includes(editionType)}
           >
             {editionType.editionTypeName}
           </MenuItem>
