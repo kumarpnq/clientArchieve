@@ -60,7 +60,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   const handleEmailChange = event => {
     const { value } = event.target
     setEmail(value)
-    setSelectedEmail(prev => [...prev, value])
+    // setSelectedEmail(prev => [...prev, value])
   }
 
   const handleCompanyNameChange = event => {
@@ -82,7 +82,16 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
     // const searchCriteria = { fromDate, toDate, selectPageOrAll, pageLimit }
-    const recipients = selectedEmail.map(emailId => ({ id: emailId, recipientType: 'to' }))
+    let recipients = []
+
+    const recipientsFromDropdown = selectedEmail.map(emailId => ({ id: emailId, recipientType: 'to' }))
+    if (email.trim() !== '') {
+      const recipientsFromManualInput = email.split(',').map(emailId => ({ id: emailId.trim(), recipientType: 'to' }))
+      recipients = [...recipientsFromDropdown, ...recipientsFromManualInput]
+    } else {
+      recipients = [...recipientsFromDropdown]
+    }
+
     function convertPageOrAll(value) {
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
@@ -198,9 +207,9 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
     const publicationCategory =
       dataForDossierDownload.length &&
       dataForDossierDownload
-        .map(i => i.publicationCategory)
+        .map(i => i.publicationCategory?.publicationTypeName)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const editionType =
@@ -208,7 +217,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload
         .map(i => i.editionType?.editionTypeId)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const formattedFromDate = formatDateTime(selectedStartDate)

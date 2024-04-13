@@ -40,6 +40,8 @@ const ToolbarComponent = ({
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
+  const [searchTermtags, setSearchTermtags] = useState('')
+
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
   // const [searchterm, setSearchterm] = useState()
 
@@ -71,6 +73,11 @@ const ToolbarComponent = ({
   const handleSearchChange = event => {
     console.log('event==>', event.target.value)
     setSearchTerm(event.target.value)
+  }
+
+  const handleSearchChangeTags = event => {
+    console.log('event==>', event.target.value)
+    setSearchTermtags(event.target.value)
   }
 
   const handleTagSelect = item => {
@@ -199,7 +206,8 @@ const ToolbarComponent = ({
             Authorization: `Bearer ${storedToken}`
           },
           params: {
-            clientId: clientId
+            clientId: clientId,
+            searchTerm: searchTermtags
           }
         })
         setTags(tagsResponse.data.clientTags)
@@ -208,7 +216,7 @@ const ToolbarComponent = ({
       }
     }
     fetchData()
-  }, [clientId, selectedClient, setTags, fetchTagsFlag])
+  }, [clientId, selectedClient, setTags, fetchTagsFlag, searchTermtags])
 
   return (
     <AppBar sx={{ position: 'static' }}>
@@ -349,20 +357,28 @@ const ToolbarComponent = ({
         {/* Tags Dropdown Menu */}
 
         <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
-          {tags.length > 0 && (
+          {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>
               <Button onClick={() => setSelectedTag([])}>Deselect All</Button>
             </ListItem>
-          )}
+          }
+
+          {
+            <ListItem>
+              <TextField placeholder='Search Tags' value={searchTermtags} onChange={handleSearchChangeTags} />
+            </ListItem>
+          }
           {tags?.map((item, index) => (
-            <MenuItem
-              key={`${item}-${index}`}
-              onClick={() => handleTagSelect(item)}
-              selected={selectedTag.includes(item)}
-            >
-              {item}
-            </MenuItem>
+            <div key={`${index}`}>
+              <MenuItem
+                // key={`${item}-${index}`}
+                onClick={() => handleTagSelect(item)}
+                selected={selectedTag.includes(item)}
+              >
+                {item}
+              </MenuItem>
+            </div>
           ))}
           {/* Add more items as needed */}
         </Menu>

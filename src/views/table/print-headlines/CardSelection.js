@@ -64,7 +64,7 @@ const CardSelection = () => {
         })
 
         // Sort the companies with articles first
-        const result = response.data.companies || []
+        const result = response.data.articles || []
         const sortedCompanies = result.sort((a, b) => b.articlesAndSocialFeeds.length - a.articlesAndSocialFeeds.length)
         setCompanyData(sortedCompanies)
       }
