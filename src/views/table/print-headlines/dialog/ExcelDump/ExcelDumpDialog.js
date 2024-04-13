@@ -31,14 +31,7 @@ import toast from 'react-hot-toast'
 import { Box, DialogContentText } from '@mui/material'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles, pageCheck, allCheck }) => {
-  console.log(
-    'printheadline==>',
-    dataForExcelDump
-      .map(i => i.body)
-      .flat()
-      .join('')
-      .replace(/,+$/, '')
-  )
+  console.log('printheadline==>', dataForExcelDump)
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
@@ -215,9 +208,9 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     const publicationCategory =
       dataForExcelDump.length &&
       dataForExcelDump
-        .map(i => i.publicationCategory)
+        .map(i => i.publicationCategory?.publicationTypeName)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const editionType =
@@ -225,7 +218,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       dataForExcelDump
         .map(i => i.editionType?.editionTypeId)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const searchCriteria = {

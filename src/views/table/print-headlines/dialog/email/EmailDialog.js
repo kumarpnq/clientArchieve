@@ -130,6 +130,86 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
         .join(',')
         .replace(/,+$/, '')
 
+    const headline =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.headline)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const body =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.body)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const journalist =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.journalist)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const wordCombo =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.wordCombo)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const anyWord =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.anyWord)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const ignoreWords =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.ignoreWords)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const phrase =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.phrase)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const sortby =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.sortby)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const publicationCategory =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.publicationCategory?.publicationTypeName)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
+    const editionType =
+      dataForMail.length &&
+      dataForMail
+        .map(i => i.editionType?.editionTypeId)
+        .flat()
+        .join('')
+        .replace(/,+$/, '')
+
     const formattedFromDate = formatDateTime(selectedFromDate)
     const formattedToDate = formatDateTime(selectedEndDate)
 
@@ -157,6 +237,46 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
 
     if (tags != '') {
       searchCriteria.tags = tags
+    }
+
+    if (editionType !== '') {
+      searchCriteria.editionType = editionType
+    }
+
+    if (publicationCategory !== '') {
+      searchCriteria.publicationCategory = publicationCategory
+    }
+
+    if (sortby !== '') {
+      searchCriteria.sortby = sortby
+    }
+
+    if (body !== '') {
+      searchCriteria.body = body
+    }
+
+    if (journalist !== '') {
+      searchCriteria.journalist = journalist
+    }
+
+    if (wordCombo !== '') {
+      searchCriteria.wordCombo = wordCombo
+    }
+
+    if (anyWord !== '') {
+      searchCriteria.anyWord = anyWord
+    }
+
+    if (ignoreWords !== '') {
+      searchCriteria.ignoreWords = ignoreWords
+    }
+
+    if (phrase !== '') {
+      searchCriteria.phrase = phrase
+    }
+
+    if (headline !== '') {
+      searchCriteria.headline = headline
     }
 
     const postDataParams = {

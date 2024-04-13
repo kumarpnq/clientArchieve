@@ -226,9 +226,18 @@ const NotificationDropdown = () => {
                         backgroundColor: 'transparent !important'
                       }}
                     >
-                      <Accordion>
+                      <Accordion style={{ width: '100%' }}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <Typography variant='h5'>Details</Typography>
+                          <Box
+                            component='span'
+                            bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                            color='text.primary'
+                            borderRadius='20%'
+                            px={2}
+                            ml={1}
+                          >
+                            {job.jobName}
+                          </Box>
                         </AccordionSummary>
                         <AccordionDetails>
                           <Typography key={job.jobId}>{job.jobName}</Typography>
@@ -258,9 +267,18 @@ const NotificationDropdown = () => {
                         backgroundColor: 'transparent !important'
                       }}
                     >
-                      <Accordion>
+                      <Accordion style={{ width: '100%' }}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <Typography variant='h5'>Details</Typography>
+                          <Box
+                            component='span'
+                            bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                            color='text.primary'
+                            borderRadius='20%'
+                            px={2}
+                            ml={1}
+                          >
+                            {job.jobName}
+                          </Box>
                         </AccordionSummary>
                         <AccordionDetails>
                           <Typography key={job.jobId}>{job.jobName}</Typography>
@@ -290,9 +308,21 @@ const NotificationDropdown = () => {
                         backgroundColor: 'transparent !important'
                       }}
                     >
-                      <Accordion>
+                      <Accordion style={{ width: '100%' }}>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <Typography variant='h5'>Details</Typography>
+                          {/* <Typography variant='h5' style={{ color: 'yellow' }}>
+                            {job.jobName}
+                          </Typography> */}
+                          <Box
+                            component='span'
+                            bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                            color='text.primary'
+                            borderRadius='20%'
+                            px={2}
+                            ml={1}
+                          >
+                            {job.jobName}
+                          </Box>
                         </AccordionSummary>
                         <AccordionDetails>
                           <Typography key={job.jobId}>{job.jobName}</Typography>
