@@ -34,7 +34,15 @@ import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, dataForDossierDownload }) => {
+const DossierDialog = ({
+  open,
+  handleClose,
+  selectedStartDate,
+  selectedEndDate,
+  dataForDossierDownload,
+  pageCheck,
+  allCheck
+}) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const clientName = selectedClient ? selectedClient.clientName : null
@@ -300,6 +308,12 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       // notificationFlag
     }
 
+    if (pageCheck === true || allCheck === true) {
+      postDataParams.searchCriteria = searchCriteria
+    } else {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    }
+
     if (
       (media === '' &&
         geography === '' &&
@@ -308,10 +322,10 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         [media, geography, language, tags].some(field => field.includes('articleId'))) ||
       (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
+
     sendDossierRequest(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))

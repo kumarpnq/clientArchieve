@@ -107,7 +107,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     const page = dataForExcelDump.length && dataForExcelDump.map(i => i.page).join('')
 
     const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
-    console.log('articleIds==>', articleIds)
     const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
     const media =
       dataForExcelDump.length &&
@@ -115,6 +114,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
         .map(i => i.media)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const geography =
@@ -131,8 +132,11 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
         .map(i => i.language)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
+    console.log('articleIds==>', language)
     const tags =
       dataForExcelDump.length &&
       dataForExcelDump
