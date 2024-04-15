@@ -1,6 +1,5 @@
 // src/api/articleApi.js
 import axios from 'axios'
-
 const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
 export const fetchArticles = async ({
@@ -28,7 +27,7 @@ export const fetchArticles = async ({
   try {
     const storedToken = localStorage.getItem('accessToken')
 
-    console.log("consoleprint==>",companyIds)
+    console.log('consoleprint==>', companyIds)
     const request_params = {
       clientIds,
       companyIds,
@@ -61,7 +60,13 @@ export const fetchArticles = async ({
 
     return response.data
   } catch (error) {
-    console.error('Error fetching articles:', error)
+    if (error.response.status === 401) {
+      // Unauthorized error, navigate to the login page
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('userData')
+      window.location.href = '/login'
+    }
+    // console.error('Error fetching articles:', error.response.status)
     throw error // Re-throw the error for the caller to handle if needed
   }
 }

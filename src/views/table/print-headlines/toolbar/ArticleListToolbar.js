@@ -551,6 +551,8 @@ const ArticleListToolbar = ({
             onClose={handleEmailDialogClose}
             handleClose={handleEmailDialogClose}
             dataForMail={dataForExcelDump}
+            pageCheck={pageCheck}
+            allCheck={allCheck}
           />
         </Fragment>
       )}
@@ -578,6 +580,8 @@ const ArticleListToolbar = ({
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             dataForDossierDownload={dataForExcelDump}
+            pageCheck={pageCheck}
+            allCheck={allCheck}
           />
         </Fragment>
       )}

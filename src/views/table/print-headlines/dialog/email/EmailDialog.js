@@ -34,7 +34,7 @@ import {
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
+const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCheck }) => {
   //redux state
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -284,6 +284,12 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail }) => {
       clientId,
       notificationFlag
       // notificationFlag
+    }
+
+    if (pageCheck === true || allCheck === true) {
+      postDataParams.searchCriteria = searchCriteria
+    } else {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     }
 
     if (
