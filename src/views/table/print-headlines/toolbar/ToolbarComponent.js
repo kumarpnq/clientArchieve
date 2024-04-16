@@ -12,7 +12,7 @@ import ListItem from '@mui/material/ListItem'
 
 // ** Redux
 import { useSelector } from 'react-redux'
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { selectSelectedClient, selectShortCut } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
 import { TextField } from '@mui/material'
 import useDebounce from 'src/hooks/useDebounce'
@@ -48,10 +48,11 @@ const ToolbarComponent = ({
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const shortCutData = useSelector(selectShortCut)
+  console.log('allMediaIds++>', shortCutData?.searchCriteria?.media)
 
   const handleSelectAllMedia = () => {
     const allMediaIds = media.map((item, index) => item.publicationId + index)
-    console.log('allMediaIds++>', allMediaIds)
     setSelectedMedia(allMediaIds)
   }
 
@@ -190,13 +191,20 @@ const ToolbarComponent = ({
           }
         })
         setMedia(mediaResponse.data.mediaList)
+
+        // Pre-select media based on shortCutData
+        const selectedMediaIds = mediaResponse.data.mediaList
+          .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
+          .map((item, index) => item.publicationId + index)
+        setSelectedMedia(selectedMediaIds)
       } catch (error) {
         console.error('Error fetching user data and companies:', error)
       }
     }
 
     fetchUserDataAndCompanies()
-  }, [clientId, selectedClient, debouncedSearchTerm])
+  }, [clientId, selectedClient, debouncedSearchTerm, shortCutData?.searchCriteria?.media])
+
   useEffect(() => {
     const fetchData = async () => {
       const storedToken = localStorage.getItem('accessToken')
