@@ -212,17 +212,26 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     const publicationCategory =
       dataForExcelDump.length &&
       dataForExcelDump
-        .map(i => i.publicationCategory?.publicationTypeName)
+        .map(i => i.publicationCategory)
         .flat()
-        .join('')
+        .join(',')
         .replace(/,+$/, '')
+
+    // console.log(
+    //   'buttoncheck==>',
+    //   dataForExcelDump
+    //     .map(i => i?.editionType)
+    //     .flat()
+    //     .join('')
+    //     .replace(/,+$/, '')
+    // )
 
     const editionType =
       dataForExcelDump.length &&
       dataForExcelDump
-        .map(i => i.editionType?.editionTypeId)
+        .map(i => i.editionType)
         .flat()
-        .join('')
+        .join(',')
         .replace(/,+$/, '')
 
     const searchCriteria = {
@@ -233,7 +242,10 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       clientIds: clientId
     }
 
-    console.log('clientwise==>', editionType)
+    console.log(
+      'clientwise==>',
+      dataForExcelDump.map(i => i.editionType?.editionTypeId)
+    )
 
     if (editionType !== '') {
       searchCriteria.editionType = editionType
@@ -319,20 +331,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
-    // if (
-    //   pageCheck === false ||
-    //   allCheck === false ||
-    //   (media === '' &&
-    //     geography === '' &&
-    //     language === '' &&
-    //     tags === '' &&
-    //     [media, geography, language, tags].some(field => field.includes('articleId'))) ||
-    //   (articleIds.length && articleIds.some(id => id !== undefined))
-    // ) {
-    //   postDataParams.articleIds = articleIds.filter(id => id !== undefined)
-    // } else {
-    //   postDataParams.searchCriteria = searchCriteria
-    // }
 
     postData(postDataParams)
 
