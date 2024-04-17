@@ -29,7 +29,10 @@ import {
   selectSelectedClient,
   selectSelectedCompetitions,
   selectSelectedStartDate,
-  selectSelectedEndDate
+  selectSelectedEndDate,
+  selectShortCutFlag,
+  selectShortCut,
+  setShotCutPrint
 } from 'src/store/apps/user/userSlice'
 
 // ** Tooltip
@@ -46,6 +49,8 @@ import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
 import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDialog'
 import Pagination from './Pagination'
+import { BASE_URL } from 'src/api/base'
+import axios from 'axios'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -259,25 +264,20 @@ const TableSelection = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(100)
 
-  console.log('perpage', recordsPerPage)
+  const shortCutData = useSelector(selectShortCut)
 
   // const [selectedCompanyIds, setSelectedCompanyIds] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
 
-  console.log('mediaselect==>', selectedMedia)
+  // setSelectedMedia([shortCutData?.searchCriteria?.media])
+
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
 
-  console.log('selectedLanguages==>', selectedLanguages)
   const [selectedEditionType, setSelectedEditionType] = useState([])
   const [selectedPublicationType, setSelectedPublicationType] = useState([])
-  console.log(
-    'itmecheck-->',
-    selectedPublicationType.map(i => {
-      return i.publicationTypeId
-    })
-  )
+
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
@@ -294,8 +294,6 @@ const TableSelection = () => {
   })
   const [selectedArticles, setSelectedArticles] = useState([])
 
-  console.log('checkstsus==>', selectedArticles)
-
   const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
     const lastChar = item.slice(-1)
     if (!isNaN(parseInt(lastChar))) {
@@ -304,7 +302,6 @@ const TableSelection = () => {
     return item
   })
   const result = selectedMediaWithoutLastDigit.join(', ')
-  console.log(result)
 
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
@@ -357,6 +354,10 @@ const TableSelection = () => {
 
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
+  const shortCutFlags = useSelector(setShotCutPrint)
+
+  // setSelectedMedia([shortCutData?.media])
+
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedFromDate = useSelector(selectSelectedStartDate)
@@ -364,11 +365,165 @@ const TableSelection = () => {
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
-  console.log('priorityCompanyName==>', priorityCompanyName)
 
   const [loading, setLoading] = useState(true)
 
   // Fetch social feeds based on the provided API
+
+  //user shortcut
+  useEffect(() => {
+    setSelectedArticles([])
+
+    const fetchArticlesApi = async () => {
+      try {
+        setLoading(true)
+        const storedToken = localStorage.getItem('accessToken')
+
+        if (storedToken) {
+          // Format start and end dates
+          const formatDateTimes = (date, setTime, isEnd) => {
+            let formattedDate = date
+            if (isEnd) {
+              formattedDate = date.add(1, 'day')
+            }
+            const isoString = formattedDate.toISOString().slice(0, 10)
+            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+
+            return `${isoString} ${timeString}`
+          }
+
+          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+          const selectedCompaniesString = selectedCompetitions.join(', ')
+          // const selectedMediaString = selectedMedia.join(', ')
+          const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+            const lastChar = item.slice(-1)
+            if (!isNaN(parseInt(lastChar))) {
+              return item.slice(0, -1)
+            }
+            return item
+          })
+          const result = selectedMediaWithoutLastDigit.join(', ')
+
+          const selectedTagString = selectedTag.join(', ')
+          const selectedCitiesString = selectedCities.join(', ')
+          const edition = selectedEditionType
+            .map(i => {
+              return i.editionTypeId
+            })
+            .join(', ')
+
+          const publicationtype = selectedPublicationType
+            .map(i => {
+              return i.publicationTypeId
+            })
+            .join(', ')
+
+          const selectedLanguagesString = selectedLanguages
+            .map(i => {
+              return i.id
+            })
+            .join(', ')
+
+          const headers = {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${storedToken}`
+          }
+
+          const requestData = {
+            clientId: clientId,
+            screenName: 'printHeadlines',
+            searchCriteria: {
+              requestEntity: 'print',
+              clientIds: clientId,
+              companyIds: selectedCompaniesString,
+              fromDate: formattedStartDate,
+              toDate: formattedEndDate,
+              page: currentPage,
+              recordsPerPage: recordsPerPage,
+
+              media: result,
+              tags: selectedTagString,
+              geography: selectedCitiesString,
+              language: selectedLanguagesString,
+
+              // Advanced search
+              headline: searchParameters.searchHeadline,
+              body: searchParameters.searchBody,
+              journalist: searchParameters.journalist,
+              wordCombo: searchParameters.combinationOfWords,
+              anyWord: searchParameters.anyOfWords,
+              ignoreWords: searchParameters.ignoreThis,
+              phrase: searchParameters.exactPhrase,
+
+              editionType: edition,
+              sortby: selectedSortBy,
+
+              publicationCategory: publicationtype
+            }
+          }
+
+          const res = await axios.post(`${BASE_URL}/userConfigRequest`, requestData, { headers })
+          // const response = await fetchArticles({
+          //   clientIds: clientId,
+          //   companyIds: selectedCompaniesString,
+          //   fromDate: formattedStartDate,
+          //   toDate: formattedEndDate,
+          //   page: currentPage,
+          //   recordsPerPage: recordsPerPage,
+
+          //   media: result,
+          //   tags: selectedTagString,
+          //   geography: selectedCitiesString,
+          //   language: selectedLanguagesString,
+
+          //   // Advanced search
+          //   headline: searchParameters.searchHeadline,
+          //   body: searchParameters.searchBody,
+          //   journalist: searchParameters.journalist,
+          //   wordCombo: searchParameters.combinationOfWords,
+          //   anyWord: searchParameters.anyOfWords,
+          //   ignoreWords: searchParameters.ignoreThis,
+          //   phrase: searchParameters.exactPhrase,
+
+          //   editionType: edition,
+          //   sortby: selectedSortBy,
+
+          //   publicationCategory: publicationtype
+          // })
+
+          // const totalRecords = response.totalRecords
+          // setArticles(response.articles)
+
+          // setPaginationModel(prevPagination => ({
+          //   ...prevPagination,
+          //   totalRecords
+          // }))
+        }
+      } catch (error) {
+        console.error('Error fetching articles:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchArticlesApi()
+  }, [
+    selectedEndDate,
+    selectedFromDate,
+    currentPage,
+    recordsPerPage,
+    selectedCompetitions,
+    selectedLanguages,
+    clientId,
+    selectedMedia,
+    selectedTag,
+    selectedCities,
+    searchParameters,
+    selectedEditionType,
+    selectedPublicationType,
+    selectedSortBy,
+    dataFetchFlag
+  ])
 
   useEffect(() => {
     setSelectedArticles([])
@@ -426,6 +581,7 @@ const TableSelection = () => {
             .join(', ')
           console.log('')
 
+          // if(shortCutData)
           const response = await fetchArticles({
             clientIds: clientId,
             companyIds: selectedCompaniesString,

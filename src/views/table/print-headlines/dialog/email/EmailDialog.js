@@ -283,7 +283,6 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
       recipients,
       clientId,
       notificationFlag
-      // notificationFlag
     }
 
     if (pageCheck === true || allCheck === true) {
