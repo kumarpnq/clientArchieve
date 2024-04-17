@@ -278,6 +278,8 @@ const TableSelection = () => {
   const [selectedEditionType, setSelectedEditionType] = useState([])
   const [selectedPublicationType, setSelectedPublicationType] = useState([])
 
+  console.log('valuecheck==>', selectedEditionType, selectedPublicationType)
+
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
@@ -303,6 +305,16 @@ const TableSelection = () => {
   })
   const result = selectedMediaWithoutLastDigit.join(', ')
 
+  const edition = selectedEditionType.map(i => {
+    return i.editionTypeId
+  })
+
+  const publicationtype = selectedPublicationType.map(i => {
+    return i.publicationTypeId
+  })
+
+  console.log('checkbutton==>', edition, publicationtype)
+
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
     selectedMedia.length && { media: result },
@@ -313,11 +325,9 @@ const TableSelection = () => {
     },
 
     selectedTag.length && { tags: selectedTag },
-    selectedEditionType && { editionType: selectedEditionType },
+    selectedEditionType && { editionType: edition },
     selectedPublicationType && {
-      publicationCategory: selectedPublicationType.map(i => {
-        return i.publicationTypeId
-      })
+      publicationCategory: publicationtype
     },
     selectedSortBy && { sortby: selectedSortBy },
     searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
@@ -354,8 +364,9 @@ const TableSelection = () => {
 
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
-  const shortCutFlags = useSelector(setShotCutPrint)
+  const shortCutFlags = useSelector(selectShortCutFlag)
 
+  console.log('toogledata==>', shortCutFlags)
   // setSelectedMedia([shortCutData?.media])
 
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -507,23 +518,7 @@ const TableSelection = () => {
       }
     }
     fetchArticlesApi()
-  }, [
-    selectedEndDate,
-    selectedFromDate,
-    currentPage,
-    recordsPerPage,
-    selectedCompetitions,
-    selectedLanguages,
-    clientId,
-    selectedMedia,
-    selectedTag,
-    selectedCities,
-    searchParameters,
-    selectedEditionType,
-    selectedPublicationType,
-    selectedSortBy,
-    dataFetchFlag
-  ])
+  }, [shortCutFlags])
 
   useEffect(() => {
     setSelectedArticles([])
