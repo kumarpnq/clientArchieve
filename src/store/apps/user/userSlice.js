@@ -10,7 +10,9 @@ const userSlice = createSlice({
     selectedEndDate: null,
     notificationFlag: false,
     fetchAutoStatusFlag: false,
-    selectedMedia: 'print'
+    selectedMedia: 'print',
+    shotCutPrint: [],
+    shortCutFlag: false
   },
   reducers: {
     setUserData: (state, action) => {
@@ -52,7 +54,11 @@ export const {
   setNotificationFlag,
   setFetchAutoStatusFlag,
   clearUserData,
-  setSelectedMedia
+  setSelectedMedia,
+  shotCutPrint,
+  setShotCutPrint,
+  shortCutFlag,
+  setShortCutFlag
 } = userSlice.actions
 
 export const selectUserData = state => state.user.data
