@@ -17,7 +17,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiMenu from '@mui/material/Menu'
 import MuiMenuItem from '@mui/material/MenuItem'
 import { useSelector, useDispatch } from 'react-redux'
-
+import { useRouter } from 'next/router'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -64,6 +64,7 @@ const ScrollWrapper = ({ children, hidden }) => {
 
 const ShortcutsDropdown = props => {
   const dispatch = useDispatch()
+  const router = useRouter()
 
   // ** Props
   const { shortcuts, settings } = props
@@ -87,6 +88,7 @@ const ShortcutsDropdown = props => {
   const handleDropdownClose = shortcut => {
     setAnchorEl(null)
     dispatch(setShotCutPrint(shortcut))
+    router.push('/headlines/print/')
   }
 
   return (

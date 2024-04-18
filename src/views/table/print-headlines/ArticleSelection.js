@@ -305,7 +305,7 @@ const TableSelection = () => {
   })
   const result = selectedMediaWithoutLastDigit.join(', ')
 
-  const edition = selectedEditionType.map(i => {
+  const edition = selectedEditionType?.map(i => {
     return i.editionTypeId
   })
 
@@ -407,6 +407,7 @@ const TableSelection = () => {
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
           const selectedCompaniesString = selectedCompetitions.join(', ')
           // const selectedMediaString = selectedMedia.join(', ')
+          console.log('componay==>', selectedCompaniesString)
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
             const lastChar = item.slice(-1)
             if (!isNaN(parseInt(lastChar))) {
@@ -764,8 +765,8 @@ const TableSelection = () => {
     setSelectedLanguages([])
 
     //ArticleListToolbar
-    setSelectedEditionType('')
-    setSelectedPublicationType('')
+    setSelectedEditionType([])
+    setSelectedPublicationType([])
     setSelectedSortBy(null)
     setClearAdvancedSearchField(true)
 

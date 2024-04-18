@@ -215,16 +215,9 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
         .map(i => i.publicationCategory)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
-
-    // console.log(
-    //   'buttoncheck==>',
-    //   dataForExcelDump
-    //     .map(i => i?.editionType)
-    //     .flat()
-    //     .join('')
-    //     .replace(/,+$/, '')
-    // )
 
     const editionType =
       dataForExcelDump.length &&
@@ -232,6 +225,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
         .map(i => i.editionType)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const searchCriteria = {
