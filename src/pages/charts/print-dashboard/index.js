@@ -16,8 +16,8 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 
 // ** Demo Components Imports
 
-import ChartjsPolarAreaChart from 'src/views/charts/online-charts/ChartjsPolarAreaChart'
-import ChartjsTable from 'src/views/charts/online-charts/ChartjsTable'
+// import ChartjsPolarAreaChart from 'src/views/charts/online-charts/ChartjsPolarAreaChart'
+// import ChartjsTable from 'src/views/charts/online-charts/ChartjsTable'
 import ChartsAppBar from 'src/views/charts/print-charts/ChartsAppBar'
 import ChartjsLineChart from 'src/views/charts/print-charts/ChartjsLineChart'
 
@@ -35,6 +35,8 @@ import ChartjsBarChart from 'src/views/charts/online-charts/ChartjsBarChart'
 import ArticleCountDistribution from 'src/views/charts/print-charts/ArticleCountDistribution'
 import TopNewsToday from 'src/views/charts/online-charts/TopNewsToday'
 import TopNewsForCompetitors from 'src/views/charts/online-charts/TopNewsForCompetitors'
+import ChartjsPolarAreaChart from 'src/views/charts/print-charts/ChartjsPolarAreaChart'
+import ChartjsTable from 'src/views/charts/print-charts/ChartjsTable'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',

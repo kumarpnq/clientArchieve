@@ -8,17 +8,19 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import CircularProgress from '@mui/material/CircularProgress'
+import IconButton from '@mui/material/IconButton'
 
 // ** Third Party Imports
-import { PolarArea } from 'react-chartjs-2'
+import { PolarArea, Line, Bar, Radar, Doughnut, Bubble, Scatter, Pie } from 'react-chartjs-2'
 
 // ** third party imports
 import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 
 // ** Custom Components Imports
-import OptionsMenu from 'src/@core/components/option-menu'
 import { useState } from 'react'
+import IconifyIcon from 'src/@core/components/icon'
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 const ChartjsPolarAreaChart = props => {
   const [downloadAnchor, setDownloadAnchor] = useState(null)
@@ -57,6 +59,7 @@ const ChartjsPolarAreaChart = props => {
           usePointStyle: true
         }
       },
+
       tooltip: {
         callbacks: {
           label: tooltipItem => {
@@ -78,6 +81,7 @@ const ChartjsPolarAreaChart = props => {
     datasets: [
       {
         borderWidth: 0,
+
         label: 'Share of Voice',
         data: shareOfVoiceData.map(entry => entry.articlesPercent),
         backgroundColor: backgroundColors.slice(0, shareOfVoiceData.length)
@@ -149,18 +153,63 @@ const ChartjsPolarAreaChart = props => {
     }
   }
 
+  // ** State
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [activeChart, setActiveChart] = useState('polar')
+
+  const handleClick = item => {
+    setActiveChart(item)
+    setAnchorEl(null)
+  }
+
+  const handleIconClick = event => {
+    event.stopPropagation()
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
   return (
     <Card sx={{ position: 'relative' }}>
       <CardHeader
         title='Share of Voice'
         action={
-          <OptionsMenu
-            iconProps={{ fontSize: 20 }}
-            options={['Refresh', 'Edit', 'Share']}
-            iconButtonProps={{ size: 'small', className: 'card-more-options', sx: { color: 'text.secondary' } }}
-          />
+          <Box>
+            <IconButton aria-haspopup='true' onClick={handleIconClick}>
+              <IconifyIcon icon='tabler:dots-vertical' />
+            </IconButton>
+            <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+              <MenuItem onClick={() => handleClick('polar')} selected={activeChart === 'polar'}>
+                Polar
+              </MenuItem>
+              <MenuItem onClick={() => handleClick('bar')} selected={activeChart === 'bar'}>
+                Bar
+              </MenuItem>
+              <MenuItem onClick={() => handleClick('line')} selected={activeChart === 'line'}>
+                Line
+              </MenuItem>
+              <MenuItem onClick={() => handleClick('radar')} selected={activeChart === 'radar'}>
+                Radar
+              </MenuItem>
+              {/* <MenuItem onClick={() => handleClick('doughnut')} selected={activeChart === 'Doughnut'}>
+                Doughnut
+              </MenuItem>
+              <MenuItem onClick={() => handleClick('bubble')} selected={activeChart === 'Bubble'}>
+                Bubble
+              </MenuItem>
+              <MenuItem onClick={() => handleClick('pie')} selected={activeChart === 'pie'}>
+                Pie
+              </MenuItem>
+              <MenuItem onClick={() => handleClick('scatter')} selected={activeChart === 'scatter'}>
+                Scatter
+              </MenuItem> */}
+            </Menu>
+          </Box>
         }
       />
+
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'end', mr: 3 }}>
         <Button endIcon={<DownloadIcon />} onClick={e => openDropdown(e, setDownloadAnchor)} color='inherit' />
       </Box>
@@ -177,7 +226,17 @@ const ChartjsPolarAreaChart = props => {
         </MenuItem>
       </Menu>
       <CardContent id='chart-polar-container'>
-        <PolarArea data={data} height={350} options={options} />
+        {
+          (activeChart === 'polar' && <PolarArea data={data} height={350} options={options} />) ||
+            (activeChart === 'bar' && <Bar data={data} height={350} options={options} />) ||
+            (activeChart === 'line' && <Line data={data} height={350} options={options} />) ||
+            (activeChart === 'radar' && <Radar data={data} height={350} options={options} />)
+
+          // (activeChart === 'doughnut' && <Doughnut data={data} height={350} options={options} />) ||
+          // (activeChart === 'bubble' && <Bubble data={data} height={350} options={options} />) ||
+          // (activeChart === 'pie' && <Pie data={data} height={350} options={options} />) ||
+          // (activeChart === 'scatter' && <Scatter data={data} height={350} options={options} />)}
+        }
       </CardContent>
     </Card>
   )

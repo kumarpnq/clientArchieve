@@ -156,7 +156,7 @@ const ChartjsPolarAreaChart = props => {
         action={
           <OptionsMenu
             iconProps={{ fontSize: 20 }}
-            options={['Refresh', 'Edit', 'Share']}
+            options={['Refresh', 'Edit', 'Share', 'View']}
             iconButtonProps={{ size: 'small', className: 'card-more-options', sx: { color: 'text.secondary' } }}
           />
         }
