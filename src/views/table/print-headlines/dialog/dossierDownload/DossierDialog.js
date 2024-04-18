@@ -116,12 +116,15 @@ const DossierDialog = ({
       dataForDossierDownload.length &&
       dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
+
     const media =
       dataForDossierDownload.length &&
       dataForDossierDownload
         .map(i => i.media)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const geography =
@@ -138,6 +141,8 @@ const DossierDialog = ({
         .map(i => i.language)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const tags =
@@ -215,17 +220,21 @@ const DossierDialog = ({
     const publicationCategory =
       dataForDossierDownload.length &&
       dataForDossierDownload
-        .map(i => i.publicationCategory?.publicationTypeName)
+        .map(i => i.publicationCategory)
         .flat()
-        .join('')
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const editionType =
       dataForDossierDownload.length &&
       dataForDossierDownload
-        .map(i => i.editionType?.editionTypeId)
+        .map(i => i.editionType)
         .flat()
-        .join('')
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const formattedFromDate = formatDateTime(selectedStartDate)
