@@ -10,7 +10,7 @@ const userSlice = createSlice({
     selectedEndDate: null,
     notificationFlag: false,
     fetchAutoStatusFlag: false,
-    selectedMedia: 'print'
+    selectedMedia: 'print',
     shotCutPrint: [],
     shortCutFlag: false
   },
@@ -58,9 +58,7 @@ export const {
   setSelectedCompetitions,
   setSelectedDateRange,
   setNotificationFlag,
-  setFetchAutoStatusFlag,
-  clearUserData,
-  setSelectedMedia
+  setSelectedMedia,
   setFetchAutoStatusFlag, // Export the new action
   clearUserData,
   shotCutPrint,
