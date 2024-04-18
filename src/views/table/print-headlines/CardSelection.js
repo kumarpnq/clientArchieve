@@ -204,7 +204,7 @@ const CardSelection = () => {
                                       </a>
                                     </CustomTooltip>
                                     <br />
-                                    {`${article.publication} -  (${formatDate(article.date)})`}
+                                    {`${article.publication} -  (${formatDate(article.articleDate)})`}
                                     {loadingArticleId === article.articleId && <CircularProgress size={17} />}
                                   </TableCell>
                                 </TableRow>

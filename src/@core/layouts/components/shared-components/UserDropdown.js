@@ -21,8 +21,8 @@ import Icon from 'src/@core/components/icon'
 import { useAuth } from 'src/hooks/useAuth'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectUserData } from 'src/store/apps/user/userSlice'
+import { useDispatch, useSelector } from 'react-redux' // Import useSelector from react-redux
+import { selectUserData, setShortCutFlag, shortCutFlag } from 'src/store/apps/user/userSlice'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -42,6 +42,7 @@ const MenuItemStyled = styled(MenuItem)(({ theme }) => ({
 const UserDropdown = props => {
   const UserData = useSelector(selectUserData)
   const UserName = UserData ? UserData.fullName : null
+  const dispatch = useDispatch()
 
   // ** Props
   const { settings } = props
@@ -83,8 +84,11 @@ const UserDropdown = props => {
   }
 
   const handleLogout = () => {
-    logout()
-    handleDropdownClose()
+    dispatch(setShortCutFlag(true))
+    setTimeout(() => {
+      logout()
+      handleDropdownClose()
+    }, 3000)
   }
 
   return (

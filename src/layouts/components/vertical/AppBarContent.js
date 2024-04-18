@@ -25,6 +25,11 @@ import Competition from 'src/@core/layouts/components/shared-components/Competit
 import DateBar from 'src/@core/layouts/components/shared-components/DatePicker'
 import DaysJumper from 'src/@core/layouts/components/shared-components/DaysJumper'
 import Media from 'src/@core/layouts/components/shared-components/MediaDropDown'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
+import { useSelector, useDispatch } from 'react-redux'
+import { setShotCutPrint, selectShortCut } from 'src/store/apps/user/userSlice'
 
 const notifications = [
   {
@@ -124,6 +129,9 @@ const shortcuts = [
 
 const AppBarContent = props => {
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
+  // const fetchAutoStatusFlag = useSelector(selectShortCut)
+
+  const [dataShort, setDataShort] = useState([])
 
   // ** Hook
   const auth = useAuth()
@@ -131,6 +139,29 @@ const AppBarContent = props => {
   const currentRoute = router.pathname
 
   const isOnAnalyticsPage = currentRoute === '/dashboards/analytics'
+
+  useEffect(() => {
+    console.log('maindata==>')
+    const storedToken = localStorage.getItem('accessToken')
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/getUserConfigDetails`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          }
+        })
+
+        setDataShort(response?.data?.configData)
+        // dispatch(setShotCutPrint(response?.data?.configData))
+        console.log('userconfig', response?.data?.configData)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -149,7 +180,7 @@ const AppBarContent = props => {
           <ModeToggler settings={settings} saveSettings={saveSettings} />
           {auth.user && (
             <>
-              <ShortcutsDropdown settings={settings} shortcuts={shortcuts} />
+              <ShortcutsDropdown settings={settings} shortcuts={dataShort} />
               <NotificationDropdown settings={settings} notifications={notifications} />
               <ClientDropdown />
               <UserDropdown settings={settings} />

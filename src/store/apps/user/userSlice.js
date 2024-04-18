@@ -11,8 +11,16 @@ const userSlice = createSlice({
     notificationFlag: false,
     fetchAutoStatusFlag: false,
     selectedMedia: 'print'
+    shotCutPrint: [],
+    shortCutFlag: false
   },
   reducers: {
+    setShotCutPrint: (state, action) => {
+      state.shotCutPrint = action.payload
+    },
+    setShortCutFlag: (state, action) => {
+      state.shortCutFlag = action.payload
+    },
     setUserData: (state, action) => {
       state.data = action.payload
     },
@@ -53,9 +61,19 @@ export const {
   setFetchAutoStatusFlag,
   clearUserData,
   setSelectedMedia
+  setFetchAutoStatusFlag, // Export the new action
+  clearUserData,
+  shotCutPrint,
+  setShotCutPrint,
+  shortCutFlag,
+  setShortCutFlag
 } = userSlice.actions
 
 export const selectUserData = state => state.user.data
+
+export const selectShortCut = state => state.user.shotCutPrint
+
+export const selectShortCutFlag = state => state.user.shortCutFlag
 
 export const selectSelectedClient = state => state.user.selectedClient
 

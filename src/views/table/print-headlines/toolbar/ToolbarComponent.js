@@ -12,7 +12,7 @@ import ListItem from '@mui/material/ListItem'
 
 // ** Redux
 import { useSelector } from 'react-redux'
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { selectSelectedClient, selectShortCut } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
 import { TextField } from '@mui/material'
 import useDebounce from 'src/hooks/useDebounce'
@@ -48,10 +48,11 @@ const ToolbarComponent = ({
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const shortCutData = useSelector(selectShortCut)
+  console.log('allMediaIds++>', shortCutData?.searchCriteria?.geography)
 
   const handleSelectAllMedia = () => {
     const allMediaIds = media.map((item, index) => item.publicationId + index)
-    console.log('allMediaIds++>', allMediaIds)
     setSelectedMedia(allMediaIds)
   }
 
@@ -171,6 +172,17 @@ const ToolbarComponent = ({
         })
         setLanguages(languageResponse.data.languages)
 
+        const selectedLanguageCodes = languageResponse.data.languages
+          .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
+          .map(languageCode => languageCode.id)
+        setSelectedLanguages(selectedLanguageCodes)
+
+        // const selectedLanguageCodes = Object.entries(languageResponse.data.languages)
+        //   .filter(([_, languageCode]) => shortCutData?.searchCriteria?.language?.includes(languageCode))
+        //   .map(([languageName, languageCode]) => languageCode)
+        // setSelectedLanguages(selectedLanguageCodes)
+        console.log('selectedCityIds==?', selectedLanguageCodes)
+
         // Fetch cities
         const citiesResponse = await axios.get(`${BASE_URL}/citieslist/`, {
           headers: {
@@ -178,6 +190,11 @@ const ToolbarComponent = ({
           }
         })
         setCities(citiesResponse.data.cities)
+        // Pre-select media based on shortCutData
+        const selectedCityIds = citiesResponse.data.cities
+          .filter(city => shortCutData?.searchCriteria?.geography?.includes(city.cityId))
+          .map(city => city.cityId)
+        setSelectedCities(selectedCityIds)
 
         // Fetch media
         const mediaResponse = await axios.get(`${BASE_URL}/printMediaList`, {
@@ -190,13 +207,20 @@ const ToolbarComponent = ({
           }
         })
         setMedia(mediaResponse.data.mediaList)
+
+        // Pre-select media based on shortCutData
+        const selectedMediaIds = mediaResponse.data.mediaList
+          .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
+          .map((item, index) => item.publicationId + index)
+        setSelectedMedia(selectedMediaIds)
       } catch (error) {
         console.error('Error fetching user data and companies:', error)
       }
     }
 
     fetchUserDataAndCompanies()
-  }, [clientId, selectedClient, debouncedSearchTerm])
+  }, [clientId, selectedClient, debouncedSearchTerm, shortCutData?.searchCriteria?.media])
+
   useEffect(() => {
     const fetchData = async () => {
       const storedToken = localStorage.getItem('accessToken')
@@ -211,6 +235,8 @@ const ToolbarComponent = ({
           }
         })
         setTags(tagsResponse.data.clientTags)
+        setSelectedTag([shortCutData?.searchCriteria?.tags] || [])
+        console.log('valuecheck==>', shortCutData?.searchCriteria?.tags)
       } catch (error) {
         console.log(error)
       }
@@ -303,7 +329,9 @@ const ToolbarComponent = ({
             <MenuItem
               key={`${city.cityId}-${index}`}
               onClick={() => handleCitySelect(city.cityId)}
-              selected={selectedCities.includes(city.cityId)}
+              selected={
+                selectedCities.includes(city.cityId) || shortCutData?.searchCriteria?.geography?.includes(city.cityId)
+              }
             >
               {city.cityName}
             </MenuItem>
@@ -322,7 +350,10 @@ const ToolbarComponent = ({
             <MenuItem
               key={languageCode}
               onClick={() => handleLanguageSelect(languageCode)}
-              selected={selectedLanguages.includes(languageCode)}
+              selected={
+                selectedLanguages.includes(languageCode) ||
+                shortCutData?.searchCriteria?.language?.includes(languageCode)
+              }
             >
               {languageCode.name}
             </MenuItem>
@@ -346,7 +377,10 @@ const ToolbarComponent = ({
             <div key={`${item.publicationId}-${index}`}>
               <MenuItem
                 onClick={() => handleMediaSelect(item.publicationId, index)}
-                selected={selectedMedia.includes(item.publicationId + index)}
+                selected={
+                  selectedMedia.includes(item.publicationId + index) ||
+                  shortCutData?.searchCriteria?.media?.includes(item.publicationId)
+                }
               >
                 {item.publicationName}
               </MenuItem>
@@ -374,7 +408,7 @@ const ToolbarComponent = ({
               <MenuItem
                 // key={`${item}-${index}`}
                 onClick={() => handleTagSelect(item)}
-                selected={selectedTag.includes(item)}
+                selected={selectedTag.includes(item) || shortCutData?.searchCriteria?.tags?.includes(item)}
               >
                 {item}
               </MenuItem>
