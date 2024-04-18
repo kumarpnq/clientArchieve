@@ -9,7 +9,8 @@ const userSlice = createSlice({
     selectedStartDate: null,
     selectedEndDate: null,
     notificationFlag: false,
-    fetchAutoStatusFlag: false
+    fetchAutoStatusFlag: false,
+    selectedMedia: 'print'
   },
   reducers: {
     setUserData: (state, action) => {
@@ -35,7 +36,10 @@ const userSlice = createSlice({
       state.data = null
       state.selectedClient = null
       state.notificationFlag = false
-      state.fetchAutoStatusFlag = false // Clear the flag when clearing user data
+      state.fetchAutoStatusFlag = false
+    },
+    setSelectedMedia: (state, action) => {
+      state.selectedMedia = action.payload
     }
   }
 })
@@ -46,8 +50,9 @@ export const {
   setSelectedCompetitions,
   setSelectedDateRange,
   setNotificationFlag,
-  setFetchAutoStatusFlag, // Export the new action
-  clearUserData
+  setFetchAutoStatusFlag,
+  clearUserData,
+  setSelectedMedia
 } = userSlice.actions
 
 export const selectUserData = state => state.user.data
@@ -62,6 +67,8 @@ export const selectSelectedEndDate = state => state.user.selectedEndDate
 
 export const selectNotificationFlag = state => state.user.notificationFlag
 
-export const selectFetchAutoStatusFlag = state => state.user.fetchAutoStatusFlag // Export the new selector
+export const selectFetchAutoStatusFlag = state => state.user.fetchAutoStatusFlag
+
+export const selectSelectedMedia = state => state.user.selectedMedia
 
 export default userSlice.reducer

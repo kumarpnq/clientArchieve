@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
@@ -22,6 +24,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import Competition from 'src/@core/layouts/components/shared-components/CompetitionDropdown'
 import DateBar from 'src/@core/layouts/components/shared-components/DatePicker'
 import DaysJumper from 'src/@core/layouts/components/shared-components/DaysJumper'
+import Media from 'src/@core/layouts/components/shared-components/MediaDropDown'
 
 const notifications = [
   {
@@ -124,6 +127,10 @@ const AppBarContent = props => {
 
   // ** Hook
   const auth = useAuth()
+  const router = useRouter()
+  const currentRoute = router.pathname
+
+  const isOnAnalyticsPage = currentRoute === '/dashboards/analytics'
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -154,7 +161,10 @@ const AppBarContent = props => {
         <>
           <Divider sx={{ mt: 1 }} />
           <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-            <Competition settings={settings} />
+            <Box>
+              <Competition settings={settings} />
+              {isOnAnalyticsPage && <Media settings={settings} />}
+            </Box>
             <Box>
               <DateBar />
               <DaysJumper settings={settings} />
