@@ -114,7 +114,7 @@ const DossierDialog = ({
 
     const articleIds =
       dataForDossierDownload.length &&
-      dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
+      dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'p' })))
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
 
     const media =
