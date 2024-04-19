@@ -34,7 +34,8 @@ import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, dataForDossierDownload }) => {
+const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, dataForDossierDownload,pageCheck,
+  allCheck}) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const clientName = selectedClient ? selectedClient.clientName : null
@@ -60,7 +61,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   const handleEmailChange = event => {
     const { value } = event.target
     setEmail(value)
-    setSelectedEmail(prev => [...prev, value])
+    // setSelectedEmail(prev => [...prev, value])
   }
 
   const handleCompanyNameChange = event => {
@@ -82,7 +83,15 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
     // const searchCriteria = { fromDate, toDate, selectPageOrAll, pageLimit }
-    const recipients = selectedEmail.map(emailId => ({ id: emailId, recipientType: 'to' }))
+    let recipients = []
+
+    const recipientsFromDropdown = selectedEmail.map(emailId => ({ id: emailId, recipientType: 'to' }))
+    if (email.trim() !== '') {
+      const recipientsFromManualInput = email.split(',').map(emailId => ({ id: emailId.trim(), recipientType: 'to' }))
+      recipients = [...recipientsFromDropdown, ...recipientsFromManualInput]
+    } else {
+      recipients = [...recipientsFromDropdown]
+    }
     function convertPageOrAll(value) {
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
@@ -97,7 +106,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
 
     const articleIds =
       dataForDossierDownload.length &&
-      dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'online' })))
+      dataForDossierDownload?.flatMap(i => i?.socialFeedId?.map(id => ({ id, type: 'online' })))
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
     const media =
       dataForDossierDownload.length &&
@@ -105,6 +114,8 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .map(i => i.media)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const geography =
@@ -115,10 +126,15 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .join(',')
         .replace(/,+$/, '')
 
-    const language = dataForDossierDownload
-      .find(item => item.language)
-      ?.language.map(lang => lang.id)
-      .join(',')
+        const language =
+        dataForDossierDownload.length &&
+        dataForDossierDownload
+          .map(i => i.language)
+          .flat()
+          .join(',')
+          .replace(/^,+/g, '')
+          .replace(/,+/g, ',')
+          .replace(/,+$/, '')
 
     const tags =
       dataForDossierDownload.length &&
@@ -126,6 +142,8 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .map(i => i.tags)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const headline =
@@ -133,7 +151,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload
         .map(i => i.headline)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const body =
@@ -141,7 +159,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload
         .map(i => i.headline)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const journalist =
@@ -149,7 +167,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload
         .map(i => i.journalist)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const wordCombo =
@@ -157,7 +175,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload
         .map(i => i.wordCombo)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const anyWord =
@@ -165,7 +183,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload
         .map(i => i.anyWord)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const ignoreWords =
@@ -173,7 +191,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload
         .map(i => i.ignoreWords)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const phrase =
@@ -181,7 +199,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload
         .map(i => i.phrase)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const sortby =
@@ -192,21 +210,26 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .join(',')
         .replace(/,+$/, '')
 
-    const publicationCategory =
-      dataForDossierDownload.length &&
-      dataForDossierDownload
-        .map(i => i.publicationCategory)
-        .flat()
-        .join(',')
-        .replace(/,+$/, '')
-
-    const editionType =
-      dataForDossierDownload.length &&
-      dataForDossierDownload
-        .map(i => i.editionType?.editionTypeId)
-        .flat()
-        .join(',')
-        .replace(/,+$/, '')
+   
+        const publicationCategory =
+        dataForDossierDownload.length &&
+        dataForDossierDownload
+          .map(i => i.publicationCategory)
+          .flat()
+          .join(',')
+          .replace(/^,+/g, '')
+          .replace(/,+/g, ',')
+          .replace(/,+$/, '')
+  
+      const editionType =
+        dataForDossierDownload.length &&
+        dataForDossierDownload
+          .map(i => i.editionType)
+          .flat()
+          .join(',')
+          .replace(/^,+/g, '')
+          .replace(/,+/g, ',')
+          .replace(/,+$/, '')
 
     const searchCriteria = {
       selectPageOrAll,
@@ -271,24 +294,14 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
     if (tags != '') {
       searchCriteria.tags = tags
     }
-    // const searchCriteria = {}
-    // dataForExcelDump.forEach(item => {
-    //   const [key] = Object.keys(item)
-    //   const value = item[key]
-    //   searchCriteria[key] = value
-    // })
-    // const formattedFromDate = formatDateTime(selectedFromDate)
-    // const formattedToDate = formatDateTime(selectedEndDate)
+    
 
     const formattedFromDate = formatDateTime(selectedStartDate)
     const formattedToDate = formatDateTime(selectedEndDate)
 
     searchCriteria.fromDate = formattedFromDate
     searchCriteria.toDate = formattedToDate
-    // searchCriteria.selectedCompanyIds = selectedCompanyIds
-
-    // Remove articleIds from searchCriteria
-    // delete searchCriteria.articleId
+   
 
     const postDataParams = {
       notificationFlag,
@@ -300,6 +313,12 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       // notificationFlag
     }
 
+    if (pageCheck === true || allCheck === true) {
+      postDataParams.searchCriteria = searchCriteria
+    } else {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    }
+
     if (
       (media === '' &&
         geography === '' &&
@@ -308,10 +327,11 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         [media, geography, language, tags].some(field => field.includes('articleId'))) ||
       (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
+
+
     sendDossierRequest(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))

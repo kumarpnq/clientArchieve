@@ -34,7 +34,7 @@ import {
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const EmailDialog = ({ open, onClose, dataForMail }) => {
+const EmailDialog = ({ open, onClose, dataForMail,pageCheck, allCheck }) => {
   //redux state
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -82,7 +82,7 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
 
-    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
+    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'to' }))
 
     function convertPageOrAll(value) {
       if (typeof value === 'number') {
@@ -96,7 +96,8 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
     const page = dataForMail.length && dataForMail.map(i => i.page).join('')
 
     const articleIds =
-      dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'online' })))
+      dataForMail.length && dataForMail?.flatMap(i => i?.socialFeedId
+        ?.map(id => ({ id, type: 'online' })))
     const recordsPerPage = dataForMail.length && dataForMail.map(i => i.recordsPerPage).join('')
     const media =
       dataForMail.length &&
@@ -104,6 +105,8 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
         .map(i => i.media)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const geography =
@@ -118,6 +121,8 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       .find(item => item.language)
       ?.language.map(lang => lang.id)
       .join(',')
+      .replace(/^,+/g, '')
+      .replace(/,+/g, ',')
       .replace(/,+$/, '')
 
     // const language =
@@ -134,6 +139,8 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
         .map(i => i.tags)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const headline =
@@ -141,7 +148,7 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       dataForMail
         .map(i => i.headline)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const body =
@@ -149,7 +156,7 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       dataForMail
         .map(i => i.headline)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const journalist =
@@ -157,7 +164,7 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       dataForMail
         .map(i => i.journalist)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const wordCombo =
@@ -165,7 +172,7 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       dataForMail
         .map(i => i.wordCombo)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const anyWord =
@@ -173,7 +180,7 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       dataForMail
         .map(i => i.anyWord)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const ignoreWords =
@@ -181,7 +188,7 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       dataForMail
         .map(i => i.ignoreWords)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const phrase =
@@ -189,7 +196,7 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       dataForMail
         .map(i => i.phrase)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const sortby =
@@ -206,23 +213,31 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
         .map(i => i.publicationCategory)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const editionType =
       dataForMail.length &&
       dataForMail
-        .map(i => i.editionType?.editionTypeId)
+        .map(i => i.editionType)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
-    const searchCriteria = {
-      selectPageOrAll,
-      requestEntity,
-      ...(selectPageOrAll !== 'A' && { page }),
-      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
-      clientIds: clientId
-    }
+        const formattedFromDate = formatDateTime(selectedFromDate)
+    const formattedToDate = formatDateTime(selectedEndDate)
+        const searchCriteria = {
+          fromDate: formattedFromDate,
+          toDate: formattedToDate,
+          selectPageOrAll,
+          ...(selectPageOrAll !== 'A' && { page }),
+          ...(selectPageOrAll !== 'A' && { recordsPerPage }),
+          requestEntity,
+          clientIds: clientId
+        }
 
     if (editionType !== '') {
       searchCriteria.editionType = editionType
@@ -279,14 +294,8 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
     if (tags != '') {
       searchCriteria.tags = tags
     }
-    // const searchCriteria = {}
-    // dataForExcelDump.forEach(item => {
-    //   const [key] = Object.keys(item)
-    //   const value = item[key]
-    //   searchCriteria[key] = value
-    // })
-    const formattedFromDate = formatDateTime(selectedFromDate)
-    const formattedToDate = formatDateTime(selectedEndDate)
+  
+    
 
     searchCriteria.fromDate = formattedFromDate
     searchCriteria.toDate = formattedToDate
@@ -301,6 +310,12 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
       // notificationFlag
     }
 
+    if (pageCheck === true || allCheck === true) {
+      postDataParams.searchCriteria = searchCriteria
+    } else {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    }
+
     if (
       (media === '' &&
         geography === '' &&
@@ -309,10 +324,10 @@ const EmailDialog = ({ open, onClose, dataForMail }) => {
         [media, geography, language, tags].some(field => field.includes('articleId'))) ||
       (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
+
 
     sendMailRequest(postDataParams)
     // sendMailRequest(postDataParams)

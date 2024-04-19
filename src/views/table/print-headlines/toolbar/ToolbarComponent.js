@@ -234,9 +234,11 @@ const ToolbarComponent = ({
             searchTerm: searchTermtags
           }
         })
-        setTags(tagsResponse.data.clientTags)
-        setSelectedTag([shortCutData?.searchCriteria?.tags] || [])
-        console.log('valuecheck==>', shortCutData?.searchCriteria?.tags)
+        const clientTags = tagsResponse.data.clientTags;
+        setTags(clientTags)
+        const selectedTags = clientTags.filter(tag => shortCutData?.searchCriteria?.tags?.includes(tag));
+        setSelectedTag(selectedTags);
+        console.log('valuecheck==>', clientTags.filter(tag => shortCutData?.searchCriteria?.tags))
       } catch (error) {
         console.log(error)
       }

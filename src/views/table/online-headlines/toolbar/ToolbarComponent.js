@@ -13,7 +13,7 @@ import axios from 'axios'
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { selectSelectedClient, selectShortCut } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
 
 // //**lodash
@@ -41,8 +41,12 @@ const ToolbarComponent = ({
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState('')
+  const [searchTermtags, setSearchTermtags] = useState('')
+
 
   const selectedClient = useSelector(selectSelectedClient)
+  const shortCutData = useSelector(selectShortCut)
+
   const clientId = selectedClient ? selectedClient.clientId : null
 
   const openDropdown = (event, anchorSetter) => {
@@ -122,6 +126,12 @@ const ToolbarComponent = ({
     debounceMediaChange(value)
   }
 
+
+  const handleSearchChangeTags = event => {
+    console.log('event==>', event.target.value)
+    setSearchTermtags(event.target.value)
+  }
+
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
   useEffect(() => {
@@ -161,7 +171,8 @@ const ToolbarComponent = ({
             Authorization: `Bearer ${storedToken}`
           },
           params: {
-            clientId: clientId
+            clientId: clientId,
+            searchTerm: searchTermtags
           }
         })
         setTags(tagsResponse.data.clientTags)
@@ -170,7 +181,7 @@ const ToolbarComponent = ({
       }
     }
     fetchTags()
-  }, [clientId, fetchTagsFlag, setTags])
+  }, [clientId, fetchTagsFlag, setTags,searchTermtags])
 
   return (
     <AppBar sx={{ position: 'static' }}>
@@ -349,28 +360,30 @@ const ToolbarComponent = ({
         </Menu>
 
         <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
-          {tags.length > 0 && (
+          {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>
               <Button onClick={() => setSelectedTags([])}>Deselect All</Button>
             </ListItem>
-          )}
+          }
 
-          {tags.map(item => (
-            <MenuItem key={item} onClick={() => handleTagSelect(item)} selected={selectedTags.includes(item)}>
-              {item}
-            </MenuItem>
+          {
+            <ListItem>
+              <TextField placeholder='Search Tags' value={searchTermtags} onChange={handleSearchChangeTags} />
+            </ListItem>
+          }
+          {tags?.map((item, index) => (
+            <div key={`${index}`}>
+              <MenuItem
+                // key={`${item}-${index}`}
+                onClick={() => handleTagSelect(item)}
+                selected={selectedTags.includes(item) || shortCutData?.searchCriteria?.tags?.includes(item)}
+              >
+                {item}
+              </MenuItem>
+            </div>
           ))}
-
           {/* Add more items as needed */}
-          {/* <TextField
-            id='outlined-basic'
-            type='text'
-            value={tagValue}
-            onChange={handleTagChange}
-            label='Enter tag'
-            variant='outlined'
-          /> */}
         </Menu>
 
         {/* Repeat similar patterns for other dropdown menus */}

@@ -202,7 +202,9 @@ const ArticleListToolbar = ({
   setSelectedSortBy,
   selectedSortBy,
   setDataFetchFlag,
-  dataFetchFlag
+  dataFetchFlag,
+  pageCheck,
+  allCheck
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -412,26 +414,32 @@ const ArticleListToolbar = ({
   }
 
   const handlePublicationTypeSelection = publicationType => {
-    if (selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId) {
-      // If the clicked publication type is already selected, deselect it
-      setSelectedPublicationType('')
-    } else {
-      // If not selected, set it as the selected publication type
-      setSelectedPublicationType(publicationType)
-    }
-    handlePublicationTypeClose()
-  }
+    setSelectedPublicationType(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(publicationType)
 
-  const handleEditionTypeSelection = editionType => {
-    if (selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId) {
-      // If the clicked edition type is already selected, deselect it
-      setSelectedEditionType(' ')
-    } else {
-      // If not selected, set it as the selected edition type
-      setSelectedEditionType(editionType)
-    }
-    handleEditionTypeClose()
-  }
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== publicationType)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, publicationType]
+      }
+    })}
+
+
+    const handleEditionTypeSelection = editionType => {
+      setSelectedEditionType(prevSelected => {
+        const isAlreadySelected = prevSelected.includes(editionType)
+  
+        if (isAlreadySelected) {
+          // If already selected, remove from the list
+          return prevSelected.filter(id => id !== editionType)
+        } else {
+          // If not selected, add to the list
+          return [...prevSelected, editionType]
+        }
+      })}
+      
 
   return (
     <Toolbar
@@ -489,7 +497,12 @@ const ArticleListToolbar = ({
               <EmailIcon />
             </Button>
           </CustomTooltip>
-          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} dataForMail={dataForDump} />{' '}
+          <EmailDialog 
+          pageCheck={pageCheck}
+          allCheck={allCheck}
+          open={isEmailDialogOpen}
+           onClose={handleEmailDialogClose} 
+           dataForMail={dataForDump} />{' '}
         </Fragment>
       )}
       {/* dossier download */}
@@ -508,6 +521,8 @@ const ArticleListToolbar = ({
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             dataForDossierDownload={dataForDump}
+            pageCheck={pageCheck}
+            allCheck={allCheck}
           />
         </Fragment>
       )}
@@ -524,6 +539,8 @@ const ArticleListToolbar = ({
             open={isExcelDumpOpen}
             handleClose={handleExcelDumpDialogClose}
             dataForExcelDump={dataForDump}
+            pageCheck={pageCheck}
+            allCheck={allCheck}
           />
         </Fragment>
       )}
@@ -589,9 +606,7 @@ const ArticleListToolbar = ({
           <MenuItem
             key={publicationType.publicationTypeId}
             onClick={() => handlePublicationTypeSelection(publicationType)}
-            selected={
-              selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId
-            }
+            selected={selectedPublicationType?.includes(publicationType)}
           >
             {publicationType.publicationTypeName}
           </MenuItem>
@@ -608,7 +623,7 @@ const ArticleListToolbar = ({
           <MenuItem
             key={editionType.editionTypeId}
             onClick={() => handleEditionTypeSelection(editionType)}
-            selected={selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId}
+            selected={selectedEditionType?.includes(editionType)}
           >
             {editionType.editionTypeName}
           </MenuItem>

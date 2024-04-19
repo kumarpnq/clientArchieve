@@ -143,6 +143,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
         .map(i => i.tags)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const headline =
@@ -237,10 +239,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
       clientIds: clientId
     }
 
-    console.log(
-      'clientwise==>',
-      dataForExcelDump.map(i => i.editionType?.editionTypeId)
-    )
+  
 
     if (editionType !== '') {
       searchCriteria.editionType = editionType
