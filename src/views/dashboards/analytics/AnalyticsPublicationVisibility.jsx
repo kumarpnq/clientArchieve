@@ -3,9 +3,11 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
-
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
+import Dialog from '@mui/material/Dialog'
+import CloseIcon from '@mui/icons-material/Close'
+
 import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
@@ -33,7 +35,7 @@ const PublicationVisibility = props => {
     scales: {
       x: {
         grid: {
-          display: false
+          display: true
         }
       },
       y: {
@@ -45,7 +47,7 @@ const PublicationVisibility = props => {
     },
     plugins: {
       legend: {
-        display: false
+        display: true
       }
     }
   }
@@ -77,47 +79,76 @@ const PublicationVisibility = props => {
     ]
   }
 
+  // modal
+  const [isChartClicked, setIsChartClicked] = useState(false)
+
+  const handleChartClick = () => {
+    setIsChartClicked(true)
+  }
+
+  const handleModalClose = () => {
+    setIsChartClicked(false)
+  }
+
   return (
-    <Card>
-      <CardHeader
-        title='Publication
+    <>
+      <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
+        <Card>
+          <CardHeader
+            title='Publication Visibility'
+            action={
+              <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <CardContent>
+            {activeChart === 'Bar' && <Bar data={data} height={500} options={options} />}
+            {activeChart === 'Line' && <Line data={data} height={500} options={options} />}
+          </CardContent>
+        </Card>
+      </Dialog>
+      <Card>
+        <CardHeader
+          title='Publication
          Visibility'
-        action={
-          <Box>
-            <IconButton
-              onClick={() => setActiveChart('Bar')}
-              sx={{
-                backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
-                color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
-              }}
-            >
-              <IconifyIcon icon='et:bargraph' />
-            </IconButton>
-            <IconButton
-              onClick={() => setActiveChart('Line')}
-              sx={{
-                backgroundColor: activeChart === 'Line' ? 'primary.main' : '',
-                color: activeChart === 'Line' ? 'inherit' : 'primary.main'
-              }}
-            >
-              <IconifyIcon icon='et:linegraph' />
-            </IconButton>
-          </Box>
-        }
-      />
-      <CardContent>
-        {loading ? (
-          <Box>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
-            {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
-          </>
-        )}
-      </CardContent>
-    </Card>
+          action={
+            <Box>
+              <IconButton
+                onClick={() => setActiveChart('Bar')}
+                sx={{
+                  backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                  color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
+                }}
+              >
+                <IconifyIcon icon='et:bargraph' />
+              </IconButton>
+              <IconButton
+                onClick={() => setActiveChart('Line')}
+                sx={{
+                  backgroundColor: activeChart === 'Line' ? 'primary.main' : '',
+                  color: activeChart === 'Line' ? 'inherit' : 'primary.main'
+                }}
+              >
+                <IconifyIcon icon='et:linegraph' />
+              </IconButton>
+            </Box>
+          }
+        />
+        <CardContent onClick={handleChartClick}>
+          {loading ? (
+            <Box>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
+              {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
+              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </>
   )
 }
 
