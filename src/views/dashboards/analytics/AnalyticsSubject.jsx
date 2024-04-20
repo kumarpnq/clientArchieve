@@ -3,65 +3,31 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import CloseIcon from '@mui/icons-material/Close'
-
 import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
 
 Chart.register(...registerables)
 
-const VisibilityRanking = props => {
-  const [anchorEl, setAnchorEl] = useState(null)
+const AnalyticsSubject = props => {
   const [activeChart, setActiveChart] = useState('Line')
+  const [anchorEl, setAnchorEl] = useState(null)
   const [activeMenu, setActiveMenu] = useState('main')
   const [chartLoaded, setChartLoaded] = useState(false)
+  const [selectedCount, setSelectedCount] = useState(10)
+  const [selectedFilter, setSelectedFilter] = useState('Top')
 
-  const { chartData, loading, error, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
+  const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
 
-  useEffect(() => {
-    setActiveChart('Line')
-    setChartLoaded(true)
-  }, [])
-
-  const handleIconClick = event => {
-    event.stopPropagation()
-    setAnchorEl(event.currentTarget)
-    setActiveMenu('main')
-  }
-
-  const handleClose = () => {
-    setAnchorEl(null)
-    setActiveMenu('main')
-  }
-
-  const handleClick = (item, menu) => {
-    setActiveChart(item)
-    setActiveMenu(menu)
-    setAnchorEl(null)
-    if (menu === 'media') {
-      setMedia({
-        ...media,
-        visibilityRanking: item.toLowerCase()
-      })
-    }
-  }
-
-  const renderMenuItems = (items, menuType) => {
-    return items.map(item => (
-      <MenuItem key={item} onClick={() => handleClick(item, menuType)} selected={activeChart === item}>
-        {item}
-      </MenuItem>
-    ))
-  }
-
-  const mediaItems = ['Print', 'Online', 'Online&Headline']
-  const chartItems = ['Bar', 'Line']
+  const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
+  const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
+  const dataForCharts = topData || bottomData
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
 
@@ -97,16 +63,63 @@ const VisibilityRanking = props => {
   }
 
   const data = {
-    labels: chartData.map(data => data.companyName.substring(0, 15)),
+    labels: dataForCharts.map(data => data.reportingSubject.substring(0, 15)),
     datasets: [
       {
         label: 'vScore',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.vScore)
+        data: dataForCharts.map(data => data.vScore)
+      },
+      {
+        label: 'iScore',
+        backgroundColor: getRandomColor(),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: dataForCharts.map(data => data.iScore)
+      },
+      {
+        label: 'QE',
+        backgroundColor: getRandomColor(),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: dataForCharts.map(data => data.QE)
       }
     ]
+  }
+
+  useEffect(() => {
+    setChartLoaded(true)
+  }, [])
+
+  const handleIconClick = event => {
+    event.stopPropagation()
+    setAnchorEl(event.currentTarget)
+    setActiveMenu('main')
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+    setActiveMenu('main')
+  }
+
+  const handleClick = (item, menu) => {
+    if (menu === 'count') {
+      setSelectedCount(item)
+    } else if (menu === 'filter') {
+      setSelectedFilter(item)
+    }
+    setActiveMenu(menu)
+    setAnchorEl(null)
+  }
+
+  const renderMenuItems = (items, menuType) => {
+    return items.map(item => (
+      <MenuItem key={item} onClick={() => handleClick(item, menuType)} selected={activeChart === item}>
+        {item}
+      </MenuItem>
+    ))
   }
 
   // modal
@@ -125,7 +138,7 @@ const VisibilityRanking = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title='Publication Visibility'
+            title='Subject Visibility'
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -140,38 +153,57 @@ const VisibilityRanking = props => {
       </Dialog>
       <Card>
         <CardHeader
-          title='Visibility Ranking'
+          title='Subject Visibility'
           action={
             <Box>
+              <IconButton
+                onClick={() => setActiveChart('Bar')}
+                sx={{
+                  backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                  color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
+                }}
+              >
+                <IconifyIcon icon='et:bargraph' />
+              </IconButton>
+              <IconButton
+                onClick={() => setActiveChart('Line')}
+                sx={{
+                  backgroundColor: activeChart === 'Line' ? 'primary.main' : '',
+                  color: activeChart === 'Line' ? 'inherit' : 'primary.main'
+                }}
+              >
+                <IconifyIcon icon='et:linegraph' />
+              </IconButton>
               <IconButton aria-haspopup='true' onClick={handleIconClick}>
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem>
-                <MenuItem onClick={() => setActiveMenu('chart')}>Chart</MenuItem>
+                <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
+                <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
               </Menu>
             </Box>
           }
         />
+        <Box>
+          <Menu
+            keepMounted
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            open={Boolean(anchorEl) && activeMenu === 'count'}
+          >
+            {renderMenuItems([10, 20, 30], 'count')}
+          </Menu>
+
+          <Menu
+            keepMounted
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            open={Boolean(anchorEl) && activeMenu === 'filter'}
+          >
+            {renderMenuItems(['Top', 'Bottom'], 'filter')}
+          </Menu>
+        </Box>
         <CardContent onClick={handleChartClick}>
-          <Menu
-            keepMounted
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            open={Boolean(anchorEl) && activeMenu === 'media'}
-          >
-            {renderMenuItems(mediaItems, 'media')}
-          </Menu>
-
-          <Menu
-            keepMounted
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            open={Boolean(anchorEl) && activeMenu === 'chart'}
-          >
-            {renderMenuItems(chartItems, 'chart')}
-          </Menu>
-
           {loading ? (
             <Box>
               <CircularProgress />
@@ -179,7 +211,7 @@ const VisibilityRanking = props => {
           ) : (
             <>
               {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
-              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}{' '}
+              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
             </>
           )}
         </CardContent>
@@ -188,4 +220,4 @@ const VisibilityRanking = props => {
   )
 }
 
-export default VisibilityRanking
+export default AnalyticsSubject

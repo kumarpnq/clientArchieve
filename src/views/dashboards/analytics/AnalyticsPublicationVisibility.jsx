@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -6,8 +6,9 @@ import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import CloseIcon from '@mui/icons-material/Close'
-
 import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
@@ -16,8 +17,17 @@ Chart.register(...registerables)
 
 const PublicationVisibility = props => {
   const [activeChart, setActiveChart] = useState('Line')
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [activeMenu, setActiveMenu] = useState('main')
+  const [chartLoaded, setChartLoaded] = useState(false)
+  const [selectedCount, setSelectedCount] = useState(10)
+  const [selectedFilter, setSelectedFilter] = useState('Top')
 
   const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+
+  const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
+  const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
+  const dataForCharts = topData || bottomData
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
 
@@ -53,30 +63,63 @@ const PublicationVisibility = props => {
   }
 
   const data = {
-    labels: chartData.map(data => data.publicationGroupName.substring(0, 15)),
+    labels: dataForCharts.map(data => data.publicationGroupName.substring(0, 15)),
     datasets: [
       {
         label: 'vScore',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.vScore)
+        data: dataForCharts.map(data => data.vScore)
       },
       {
         label: 'iScore',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.iScore)
+        data: dataForCharts.map(data => data.iScore)
       },
       {
         label: 'QE',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.QE)
+        data: dataForCharts.map(data => data.QE)
       }
     ]
+  }
+
+  useEffect(() => {
+    setChartLoaded(true)
+  }, [])
+
+  const handleIconClick = event => {
+    event.stopPropagation()
+    setAnchorEl(event.currentTarget)
+    setActiveMenu('main')
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+    setActiveMenu('main')
+  }
+
+  const handleClick = (item, menu) => {
+    if (menu === 'count') {
+      setSelectedCount(item)
+    } else if (menu === 'filter') {
+      setSelectedFilter(item)
+    }
+    setActiveMenu(menu)
+    setAnchorEl(null)
+  }
+
+  const renderMenuItems = (items, menuType) => {
+    return items.map(item => (
+      <MenuItem key={item} onClick={() => handleClick(item, menuType)} selected={activeChart === item}>
+        {item}
+      </MenuItem>
+    ))
   }
 
   // modal
@@ -110,8 +153,7 @@ const PublicationVisibility = props => {
       </Dialog>
       <Card>
         <CardHeader
-          title='Publication
-         Visibility'
+          title='Publication Visibility'
           action={
             <Box>
               <IconButton
@@ -132,9 +174,35 @@ const PublicationVisibility = props => {
               >
                 <IconifyIcon icon='et:linegraph' />
               </IconButton>
+              <IconButton aria-haspopup='true' onClick={handleIconClick}>
+                <IconifyIcon icon='tabler:dots-vertical' />
+              </IconButton>
+              <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+                <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
+                <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
+              </Menu>
             </Box>
           }
         />
+        <Box>
+          <Menu
+            keepMounted
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            open={Boolean(anchorEl) && activeMenu === 'count'}
+          >
+            {renderMenuItems([10, 20, 30], 'count')}
+          </Menu>
+
+          <Menu
+            keepMounted
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            open={Boolean(anchorEl) && activeMenu === 'filter'}
+          >
+            {renderMenuItems(['Top', 'Bottom'], 'filter')}
+          </Menu>
+        </Box>
         <CardContent onClick={handleChartClick}>
           {loading ? (
             <Box>

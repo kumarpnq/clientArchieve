@@ -35,6 +35,9 @@ import useVisibilityRanking from 'src/api/dashboard-analytics/useVisibilityRanki
 import PublicationVisibility from 'src/views/dashboards/analytics/AnalyticsPublicationVisibility'
 import usePublicationVisibility from 'src/api/dashboard-analytics/usePublicationVisibility'
 import useSubjectVisibility from 'src/api/dashboard-analytics/useSubjectVisibility'
+import useReportingSubjectVisibility from 'src/api/dashboard-analytics/useSubjectClientVisiblity'
+import AnalyticsSubject from 'src/views/dashboards/analytics/AnalyticsSubject'
+import AnalyticsSubjectClient from 'src/views/dashboards/analytics/AnalyticsSubjectClient'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -98,7 +101,14 @@ const AnalyticsDashboard = () => {
     chartData: subjectVisibility,
     loading: subjectLoading,
     error: subjectError
-  } = useSubjectVisibility({ media: selectedMedia, endpoint: '/reportingSubjectClientVisibility/' })
+  } = useSubjectVisibility({ media: selectedMedia, endpoint: '/reportingSubjectVisibility/' })
+
+  const {
+    chartData: subjectClientVisibility,
+    loading: subjectClientLoading,
+    error: subjectClientError
+  } = useReportingSubjectVisibility({ media: selectedMedia, endpoint: '/reportingSubjectClientVisibility/' })
+
   if (!hasAccess) {
     return <div>You don't have access to this page.</div>
   }
@@ -161,10 +171,24 @@ const AnalyticsDashboard = () => {
             />
           </Grid>
           <Grid item xs={12} lg={6}>
-            <PublicationVisibility
-              chartData={publicationVisibility}
-              loading={visibilityLoading}
-              error={visibilityError}
+            <AnalyticsSubject
+              chartData={subjectVisibility}
+              loading={subjectLoading}
+              error={subjectError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <AnalyticsSubjectClient
+              chartData={subjectClientVisibility}
+              loading={subjectClientLoading}
+              error={subjectClientError}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
