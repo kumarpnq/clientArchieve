@@ -34,7 +34,7 @@ import {
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const EmailDialog = ({ open, onClose, dataForMail,pageCheck, allCheck }) => {
+const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   //redux state
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -88,6 +88,7 @@ const EmailDialog = ({ open, onClose, dataForMail,pageCheck, allCheck }) => {
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
       }
+
       return value
     }
 
@@ -96,9 +97,9 @@ const EmailDialog = ({ open, onClose, dataForMail,pageCheck, allCheck }) => {
     const page = dataForMail.length && dataForMail.map(i => i.page).join('')
 
     const articleIds =
-      dataForMail.length && dataForMail?.flatMap(i => i?.socialFeedId
-        ?.map(id => ({ id, type: 'online' })))
+      dataForMail.length && dataForMail?.flatMap(i => i?.socialFeedId?.map(id => ({ id, type: 'online' })))
     const recordsPerPage = dataForMail.length && dataForMail.map(i => i.recordsPerPage).join('')
+
     const media =
       dataForMail.length &&
       dataForMail
@@ -227,17 +228,18 @@ const EmailDialog = ({ open, onClose, dataForMail,pageCheck, allCheck }) => {
         .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
-        const formattedFromDate = formatDateTime(selectedFromDate)
+    const formattedFromDate = formatDateTime(selectedFromDate)
     const formattedToDate = formatDateTime(selectedEndDate)
-        const searchCriteria = {
-          fromDate: formattedFromDate,
-          toDate: formattedToDate,
-          selectPageOrAll,
-          ...(selectPageOrAll !== 'A' && { page }),
-          ...(selectPageOrAll !== 'A' && { recordsPerPage }),
-          requestEntity,
-          clientIds: clientId
-        }
+
+    const searchCriteria = {
+      fromDate: formattedFromDate,
+      toDate: formattedToDate,
+      selectPageOrAll,
+      ...(selectPageOrAll !== 'A' && { page }),
+      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
+      requestEntity,
+      clientIds: clientId
+    }
 
     if (editionType !== '') {
       searchCriteria.editionType = editionType
@@ -294,20 +296,14 @@ const EmailDialog = ({ open, onClose, dataForMail,pageCheck, allCheck }) => {
     if (tags != '') {
       searchCriteria.tags = tags
     }
-  
-    
 
     searchCriteria.fromDate = formattedFromDate
     searchCriteria.toDate = formattedToDate
-    // searchCriteria.selectedCompanyIds = selectedCompanyIds
 
-    // Remove articleIds from searchCriteria
-    // delete searchCriteria.articleId
     const postDataParams = {
       recipients,
       clientId,
       notificationFlag
-      // notificationFlag
     }
 
     if (pageCheck === true || allCheck === true) {
@@ -328,11 +324,10 @@ const EmailDialog = ({ open, onClose, dataForMail,pageCheck, allCheck }) => {
       postDataParams.searchCriteria = searchCriteria
     }
 
-
     sendMailRequest(postDataParams)
-    // sendMailRequest(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))
+
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
     if (error) {

@@ -17,8 +17,7 @@ import Box from '@mui/material/Box'
 import useClientMailerList from 'src/api/global/useClientMailerList '
 import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 
-// * redux call
-import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { useSelector, useDispatch } from 'react-redux'
 import {
   selectSelectedClient,
   selectSelectedStartDate,
@@ -29,7 +28,6 @@ import {
   selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
 
-// ** third party imports
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
@@ -39,7 +37,6 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
   const [selectedEmails, setSelectedEmails] = useState([])
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
 
-  //redux state
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
@@ -50,8 +47,6 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
 
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
-  // const selectPageOrAll = dataForMailDump.length && dataForMailDump.map(i => i.selectPageorAll).join()
-  // const articleIds = dataForMailDump.length && dataForMailDump.map(i => i.articleId).flat()
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -82,6 +77,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
       }
+
       return value
     }
 
@@ -92,7 +88,9 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
 
     const articleIds =
       dataForMailDump.length && dataForMailDump?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'online' })))
+
     const recordsPerPage = dataForMailDump.length && dataForMailDump.map(i => i.recordsPerPage).join('')
+
     const media =
       dataForMailDump.length &&
       dataForMailDump
@@ -266,26 +264,18 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
     if (tags != '') {
       searchCriteria.tags = tags
     }
-    // const searchCriteria = {}
-    // dataForExcelDump.forEach(item => {
-    //   const [key] = Object.keys(item)
-    //   const value = item[key]
-    //   searchCriteria[key] = value
-    // })
+
     const formattedFromDate = formatDateTime(selectedFromDate)
     const formattedToDate = formatDateTime(selectedEndDate)
 
     searchCriteria.fromDate = formattedFromDate
-    searchCriteria.toDate = formattedToDate
-    // searchCriteria.selectedCompanyIds = selectedCompanyIds
 
-    // Remove articleIds from searchCriteria
-    // delete searchCriteria.articleId
+    searchCriteria.toDate = formattedToDate
+
     const postDataParams = {
       recipients,
       clientId,
       notificationFlag
-      // notificationFlag
     }
 
     if (

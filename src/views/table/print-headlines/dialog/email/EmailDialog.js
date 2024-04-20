@@ -54,11 +54,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
 
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
-  // const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')
-  const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
-  // const pageLimit = dataForMail.length && dataForMail.map(i => i.pageLimit).join('')
 
-  // console.log('pageslec==>', dataForMail.length && dataForMail.map(i => i.selectPageorAll))
+  const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -89,6 +86,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
       }
+
       return value
     }
 
@@ -96,9 +94,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
     const requestEntity = 'print'
     const page = dataForMail.length && dataForMail.map(i => i.page).join('')
 
-    // const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
-    // console.log('artcileid==>', articleIds)
     const recordsPerPage = dataForMail.length && dataForMail.map(i => i.recordsPerPage).join('')
+
     const media =
       dataForMail.length &&
       dataForMail

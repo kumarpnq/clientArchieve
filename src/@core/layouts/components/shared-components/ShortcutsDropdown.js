@@ -18,6 +18,7 @@ import MuiMenu from '@mui/material/Menu'
 import MuiMenuItem from '@mui/material/MenuItem'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
+
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
@@ -152,8 +153,6 @@ const ShortcutsDropdown = props => {
                 sx={{ cursor: 'pointer', '&:hover': { backgroundColor: 'action.hover' } }}
               >
                 <Box
-                  // component={Link}
-                  // href={shortcut.url}
                   sx={{
                     p: 6,
                     display: 'flex',
