@@ -63,8 +63,38 @@ const DaysJumper = ({ settings }) => {
           key={label}
           onClick={() => handleFilterChange(days, label)}
           sx={{
-            backgroundColor: selectedDayFilter === label ? 'primary.main' : '',
-            color: selectedDayFilter === label ? 'inherit' : 'primary.main'
+            backgroundColor:
+              selectedDayFilter === label ||
+              (label === '1D' &&
+                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss')) ||
+              (label === '7D' &&
+                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss')) ||
+              (label === '1M' &&
+                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(1, 'month').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss')) ||
+              (label === '3M' &&
+                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(3, 'month').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss'))
+                ? 'primary.main'
+                : '',
+            color:
+              selectedDayFilter === label ||
+              (label === '1D' &&
+                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss')) ||
+              (label === '7D' &&
+                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss')) ||
+              (label === '1M' &&
+                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(1, 'month').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss')) ||
+              (label === '3M' &&
+                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(3, 'month').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss'))
+                ? 'inherit'
+                : 'primary.main'
           }}
         >
           <IconComponent label={label} component={GenericIcon} />
