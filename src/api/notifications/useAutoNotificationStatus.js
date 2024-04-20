@@ -29,10 +29,12 @@ const useAutoNotification = () => {
       })
 
       const jobData = res.data.job
+
       const completeJobs = jobData.length && jobData.filter(item => item.jobStatus === 'Completed')
       const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing')
+      console.log('testcode==>', completeJobs)
       if (completeJobs.length) {
-        completeJobs.map(item => toast.success(`Job: ${item.jobName}. Status: ${item.jobStatus}`, { duration: 6000 }))
+        completeJobs.map(item => toast.success(`Job: ${item.jobName}. Status: ${item.jobStatus}`, { duration: 10000 }))
 
         // Check if all jobs have a status of 'Completed'
         if (jobData.length && keepFetching) {
@@ -48,7 +50,7 @@ const useAutoNotification = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (storedToken && clientId && fetchAutoStatusFlag) {
+      if (storedToken && clientId) {
         await fetchAutoNotificationStatus()
       }
     }
@@ -57,12 +59,12 @@ const useAutoNotification = () => {
 
     const intervalId = setInterval(() => {
       fetchData()
-    }, 25000)
+    }, 40000)
 
     return () => {
       clearInterval(intervalId)
     }
-  }, [clientId, storedToken, fetchAutoStatusFlag])
+  }, [clientId, storedToken])
 }
 
 export default useAutoNotification

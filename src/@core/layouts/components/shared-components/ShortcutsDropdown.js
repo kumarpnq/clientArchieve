@@ -16,12 +16,14 @@ import { styled } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiMenu from '@mui/material/Menu'
 import MuiMenuItem from '@mui/material/MenuItem'
-
+import { useSelector, useDispatch } from 'react-redux'
+import { useRouter } from 'next/router'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 // ** Third Party Components
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+import { setShotCutPrint } from 'src/store/apps/user/userSlice'
 
 // ** Styled Menu component
 const Menu = styled(MuiMenu)(({ theme }) => ({
@@ -61,8 +63,12 @@ const ScrollWrapper = ({ children, hidden }) => {
 }
 
 const ShortcutsDropdown = props => {
+  const dispatch = useDispatch()
+  const router = useRouter()
+
   // ** Props
   const { shortcuts, settings } = props
+  console.log('props==>', shortcuts)
 
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
@@ -77,8 +83,12 @@ const ShortcutsDropdown = props => {
     setAnchorEl(event.currentTarget)
   }
 
-  const handleDropdownClose = () => {
+  // dispatch(setShotCutPrint())
+
+  const handleDropdownClose = shortcut => {
     setAnchorEl(null)
+    dispatch(setShotCutPrint(shortcut))
+    router.push('/headlines/print/')
   }
 
   return (
@@ -137,13 +147,13 @@ const ShortcutsDropdown = props => {
               <Grid
                 item
                 xs={6}
-                key={shortcut.title}
-                onClick={handleDropdownClose}
+                key={shortcut.order}
+                onClick={() => handleDropdownClose(shortcut)}
                 sx={{ cursor: 'pointer', '&:hover': { backgroundColor: 'action.hover' } }}
               >
                 <Box
-                  component={Link}
-                  href={shortcut.url}
+                  // component={Link}
+                  // href={shortcut.url}
                   sx={{
                     p: 6,
                     display: 'flex',
@@ -154,12 +164,12 @@ const ShortcutsDropdown = props => {
                     justifyContent: 'center'
                   }}
                 >
-                  <Avatar sx={{ mb: 2, width: 48, height: 48 }}>
+                  {/* <Avatar sx={{ mb: 2, width: 48, height: 48 }}>
                     <Icon fontSize='1.5rem' icon={shortcut.icon} />
-                  </Avatar>
-                  <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>{shortcut.title}</Typography>
+                  </Avatar> */}
+                  <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>{shortcut.clientId}</Typography>
                   <Typography variant='body2' sx={{ color: 'text.disabled' }}>
-                    {shortcut.subtitle}
+                    {shortcut.screenName}
                   </Typography>
                 </Box>
               </Grid>

@@ -130,7 +130,12 @@ const AuthProvider = ({ children }) => {
           console.error('Failed to logout:', response.status, response.statusText)
         }
       } catch (error) {
-        console.error('Error during logout:', error)
+        if (error.response.status === 500) {
+          // Unauthorized error, navigate to the login page
+          localStorage.removeItem('accessToken')
+          localStorage.removeItem('userData')
+          window.location.href = '/login'
+        }
       }
     }
   }

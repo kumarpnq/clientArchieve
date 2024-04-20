@@ -16,6 +16,9 @@ import DaysJumper from 'src/@core/layouts/components/shared-components/DaysJumpe
 
 // ** Hook Import
 import { useAuth } from 'src/hooks/useAuth'
+import { useEffect } from 'react'
+import { BASE_URL } from 'src/api/base'
+import axios from 'axios'
 
 const notifications = [
   {
@@ -119,6 +122,26 @@ const AppBarContent = props => {
 
   // ** Hook
   const auth = useAuth()
+
+  useEffect(() => {
+    console.log('maindata==>')
+    const storedToken = localStorage.getItem('accessToken')
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/getUserConfig`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          }
+        })
+        console.log('userconfig', response.data) // yahan aap response ka use kar sakte hain
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      }
+    }
+
+    fetchData()
+  }, [])
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>

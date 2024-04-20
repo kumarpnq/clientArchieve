@@ -9,7 +9,8 @@ import {
   setSelectedCompetitions,
   selectSelectedCompetitions,
   selectUserData,
-  selectSelectedClient
+  selectSelectedClient,
+  selectShortCut
 } from 'src/store/apps/user/userSlice'
 
 const Competition = props => {
@@ -22,6 +23,9 @@ const Competition = props => {
   const selectedClient = useSelector(selectSelectedClient)
   const priorityCompanyId = selectedClient?.priorityCompanyId
   const userData = useSelector(selectUserData)
+  const shortCutData = useSelector(selectShortCut)
+
+  console.log('shortcutdata==>', shortCutData)
 
   const competitionSelection = userData.clientArchiveRoles
     .filter(i => i.name === 'competition')
@@ -49,10 +53,17 @@ const Competition = props => {
   useEffect(() => {
     const allCompanyIds = competitions.map(company => company.companyId)
     const defaultSelection = competitionSelection === 'All' ? allCompanyIds : [priorityCompanyId]
-    setLocaleComps(defaultSelection)
 
-    // dispatch(setSelectedCompetitions(defaultSelection))
-  }, [competitionSelection, competitions, dispatch, priorityCompanyId])
+    // Check if the company ID is present in the search criteria
+    const companyIdsInSearchCriteria = shortCutData?.searchCriteria?.companyIds?.split(',').map(id => id.trim())
+
+    // If the company ID is present in the search criteria, prefill it
+    if (companyIdsInSearchCriteria && companyIdsInSearchCriteria.includes(priorityCompanyId)) {
+      setLocaleComps([priorityCompanyId])
+    } else {
+      setLocaleComps(defaultSelection)
+    }
+  }, [competitionSelection, competitions, dispatch, priorityCompanyId, shortCutData])
 
   useEffect(() => {
     dispatch(setSelectedCompetitions(localeComps))
@@ -99,7 +110,7 @@ const Competition = props => {
           <MenuItem
             key={company.companyId}
             onClick={() => handleClientClick(company.companyId)}
-            selected={selectedCompetitions.includes(company.companyId)}
+            selected={selectedCompetitions.includes(company.companyId) || shortCutData?.searchCriteria?.companyIds}
           >
             {company.companyName}
           </MenuItem>

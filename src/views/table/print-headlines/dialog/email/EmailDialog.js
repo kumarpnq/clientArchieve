@@ -55,7 +55,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
   // const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')
-  // const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
+  const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
   // const pageLimit = dataForMail.length && dataForMail.map(i => i.pageLimit).join('')
 
   // console.log('pageslec==>', dataForMail.length && dataForMail.map(i => i.selectPageorAll))
@@ -96,7 +96,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
     const requestEntity = 'print'
     const page = dataForMail.length && dataForMail.map(i => i.page).join('')
 
-    const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
+    // const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
+    // console.log('artcileid==>', articleIds)
     const recordsPerPage = dataForMail.length && dataForMail.map(i => i.recordsPerPage).join('')
     const media =
       dataForMail.length &&
@@ -104,6 +105,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
         .map(i => i.media)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const geography =
@@ -120,6 +123,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
         .map(i => i.language)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const tags =
@@ -197,17 +202,21 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
     const publicationCategory =
       dataForMail.length &&
       dataForMail
-        .map(i => i.publicationCategory?.publicationTypeName)
+        .map(i => i.publicationCategory)
         .flat()
-        .join('')
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const editionType =
       dataForMail.length &&
       dataForMail
-        .map(i => i.editionType?.editionTypeId)
+        .map(i => i.editionType)
         .flat()
-        .join('')
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const formattedFromDate = formatDateTime(selectedFromDate)
@@ -283,7 +292,6 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
       recipients,
       clientId,
       notificationFlag
-      // notificationFlag
     }
 
     if (pageCheck === true || allCheck === true) {
@@ -293,21 +301,20 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
     }
 
     if (
-      media === '' &&
-      geography === '' &&
-      language === '' &&
-      tags === '' &&
-      articleIds.length &&
-      articleIds.some(id => id !== undefined)
+      (media === '' &&
+        geography === '' &&
+        language === '' &&
+        tags === '' &&
+        [media, geography, language, tags].some(field => field.includes('articleId'))) ||
+      (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
 
     sendMailRequest(postDataParams)
 
-    dispatch(setNotificationFlag(!notificationFlag, searchCriteria))
+    dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
     if (error) {

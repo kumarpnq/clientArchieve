@@ -6,7 +6,7 @@ const useMailRequest = () => {
   const [response, setResponse] = useState(null)
   const [error, setError] = useState(null)
 
-  const sendMailRequest = async ({ clientId, recipients, searchCriteria }) => {
+  const sendMailRequest = async ({ clientId, recipients, searchCriteria, articleIds }) => {
     const storedToken = localStorage.getItem('accessToken')
 
     try {
@@ -18,6 +18,7 @@ const useMailRequest = () => {
       }
 
       const requestData = {
+        articleIds,
         clientId,
         recipients,
         searchCriteria
