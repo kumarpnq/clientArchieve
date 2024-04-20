@@ -351,14 +351,17 @@ const ArticleListToolbar = ({
   }
 
   const handleEditionTypeSelection = editionType => {
-    if (selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId) {
-      // If the clicked edition type is already selected, deselect it
-      setSelectedEditionType(' ')
-    } else {
-      // If not selected, set it as the selected edition type
-      setSelectedEditionType(editionType)
-    }
-    handleEditionTypeClose()
+    setSelectedEditionType(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(editionType)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== editionType)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, editionType]
+      }
+    })
   }
 
   return (

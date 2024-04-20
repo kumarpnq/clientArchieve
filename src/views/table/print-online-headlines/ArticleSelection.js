@@ -257,8 +257,8 @@ const TableSelection = () => {
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
   const [dataFetchFlag, setDataFetchFlag] = useState(false)
-  const [selectedEditionType, setSelectedEditionType] = useState('')
-  const [selectedPublicationType, setSelectedPublicationType] = useState('')
+  const [selectedEditionType, setSelectedEditionType] = useState([])
+  const [selectedPublicationType, setSelectedPublicationType] = useState([])
 
   const [searchParameters, setSearchParameters] = useState({
     searchHeadline: '',
@@ -290,17 +290,25 @@ const TableSelection = () => {
     console.log('Saving changes:', editedArticle)
   }
 
+  const edition = selectedEditionType?.map(i => {
+    return i.editionTypeId
+  })
+
+  const publicationtype = selectedPublicationType.map(i => {
+    return i.publicationTypeId
+  })
+
   const dataForDump = [
     selectedGeography.length && { geography: selectedGeography },
     selectedMedia.length && { media: selectedMedia },
     selectedTags.length && { tags: selectedTags },
-    selectedLanguages.length && { language: selectedLanguages },
-    selectedEditionType && { editionType: selectedEditionType },
-    selectedPublicationType && { publicationCategory: selectedPublicationType },
-
-    //  selectedEditionType && { editionType: selectedEditionType },
-    //  selectedPublicationType && { publicationCategory: selectedPublicationType },
-    //  selectedSortBy && { sortby: selectedSortBy },
+    selectedLanguages.length && {
+      language: selectedLanguages.map(i => {
+        return i.id
+      })
+    },
+    selectedEditionType && { editionType: edition },
+    selectedPublicationType && { publicationCategory: publicationtype },
     searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },
     searchParameters.searchBody && { body: searchParameters.searchBody },
     searchParameters.journalist && { journalist: searchParameters.journalist },
@@ -311,7 +319,13 @@ const TableSelection = () => {
     selectedArticles.length &&
       selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
     {
-      // selectPageorAll: (pageCheck && currentPage) || 'P'
+      pageCheck: pageCheck
+    },
+    {
+      allCheck: allCheck
+    },
+
+    {
       selectPageorAll:
         (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : 'A'
     },
@@ -351,25 +365,43 @@ const TableSelection = () => {
           const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
+          const selectedTagString = selectedTags.join(', ')
+
+          const selectedCitiesString = selectedGeography.join(', ')
+
+          const edition = selectedEditionType
+            .map(i => {
+              return i.editionTypeId
+            })
+            .join(', ')
+
+          const publicationtype = selectedPublicationType
+            .map(i => {
+              return i.publicationTypeId
+            })
+            .join(', ')
+
+          const selectedLanguagesString = selectedLanguages
+            .map(i => {
+              return i.id
+            })
+            .join(', ')
+
           const request_params = {
             clientIds: clientId,
-            companyIds: selectedCompetitions,
+            companyIds: selectedCompetitions.join(', '),
             fromDate: formattedStartDate,
             toDate: formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
             sortby: selectedSortBy,
-            editionType: selectedEditionType.editionTypeId,
-            publicationCategory: selectedPublicationType.publicationTypeId,
+            editionType: edition,
+            publicationCategory: publicationtype,
 
-            geography: selectedGeography,
-            language: selectedLanguages
-              .map(i => {
-                return i?.id
-              })
-              .join(','),
+            geography: selectedCitiesString,
+            language: selectedLanguagesString,
             media: selectedMedia,
-            tags: selectedTags.join(',')
+            tags: selectedTagString
           }
 
           const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
