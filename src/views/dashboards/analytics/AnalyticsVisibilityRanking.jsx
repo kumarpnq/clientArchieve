@@ -7,10 +7,12 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
+import Dialog from '@mui/material/Dialog'
+import CloseIcon from '@mui/icons-material/Close'
+
 import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
-import useChartsData from 'src/api/dashboard-analytics/useChartsData'
 
 Chart.register(...registerables)
 
@@ -77,7 +79,7 @@ const VisibilityRanking = props => {
     scales: {
       x: {
         grid: {
-          display: false
+          display: true
         }
       },
       y: {
@@ -89,7 +91,7 @@ const VisibilityRanking = props => {
     },
     plugins: {
       legend: {
-        display: false
+        display: true
       }
     }
   }
@@ -107,43 +109,82 @@ const VisibilityRanking = props => {
     ]
   }
 
+  // modal
+  const [isChartClicked, setIsChartClicked] = useState(false)
+
+  const handleChartClick = () => {
+    setIsChartClicked(true)
+  }
+
+  const handleModalClose = () => {
+    setIsChartClicked(false)
+  }
+
   return (
-    <Card>
-      <CardHeader
-        title='Visibility Ranking'
-        action={
-          <Box>
-            <IconButton aria-haspopup='true' onClick={handleIconClick}>
-              <IconifyIcon icon='tabler:dots-vertical' />
-            </IconButton>
-            <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-              <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem>
-              <MenuItem onClick={() => setActiveMenu('chart')}>Chart</MenuItem>
-            </Menu>
-          </Box>
-        }
-      />
-      <CardContent>
-        <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl) && activeMenu === 'media'}>
-          {renderMenuItems(mediaItems, 'media')}
-        </Menu>
+    <>
+      <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
+        <Card>
+          <CardHeader
+            title='Publication Visibility'
+            action={
+              <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
+                <CloseIcon />
+              </IconButton>
+            }
+          />
+          <CardContent>
+            {activeChart === 'Bar' && <Bar data={data} height={500} options={options} />}
+            {activeChart === 'Line' && <Line data={data} height={500} options={options} />}
+          </CardContent>
+        </Card>
+      </Dialog>
+      <Card>
+        <CardHeader
+          title='Visibility Ranking'
+          action={
+            <Box>
+              <IconButton aria-haspopup='true' onClick={handleIconClick}>
+                <IconifyIcon icon='tabler:dots-vertical' />
+              </IconButton>
+              <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+                <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem>
+                <MenuItem onClick={() => setActiveMenu('chart')}>Chart</MenuItem>
+              </Menu>
+            </Box>
+          }
+        />
+        <CardContent onClick={handleChartClick}>
+          <Menu
+            keepMounted
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            open={Boolean(anchorEl) && activeMenu === 'media'}
+          >
+            {renderMenuItems(mediaItems, 'media')}
+          </Menu>
 
-        <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl) && activeMenu === 'chart'}>
-          {renderMenuItems(chartItems, 'chart')}
-        </Menu>
+          <Menu
+            keepMounted
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            open={Boolean(anchorEl) && activeMenu === 'chart'}
+          >
+            {renderMenuItems(chartItems, 'chart')}
+          </Menu>
 
-        {loading ? (
-          <Box>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
-            {activeChart === 'Line' && <Line data={data} height={325} options={options} />}{' '}
-          </>
-        )}
-      </CardContent>
-    </Card>
+          {loading ? (
+            <Box>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
+              {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
+              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}{' '}
+            </>
+          )}
+        </CardContent>
+      </Card>
+    </>
   )
 }
 

@@ -10,7 +10,7 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const useSubjectVisibility = props => {
+const useReportingSubjectVisibility = props => {
   const { media, endpoint } = props
 
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
@@ -31,12 +31,11 @@ const useSubjectVisibility = props => {
     const fetchData = async () => {
       const requestParams = {
         media: media,
-        clientIds: clientId,
-
-        // companyId: selectedCompetitions,
+        clientId: clientId,
         fromDate: formattedStartDate,
         toDate: formattedEndDate
       }
+
       try {
         const storedToken = localStorage.getItem('accessToken')
 
@@ -60,4 +59,4 @@ const useSubjectVisibility = props => {
   return { chartData, loading, error }
 }
 
-export default useSubjectVisibility
+export default useReportingSubjectVisibility
