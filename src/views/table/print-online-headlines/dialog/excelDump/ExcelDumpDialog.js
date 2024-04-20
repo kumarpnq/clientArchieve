@@ -1,4 +1,3 @@
-// ExcelDumpDialog.js
 import React, { useState, useEffect } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -11,8 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import { getArticleFieldList } from '../../../../../api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi' // Adjust the import path accordingly
 import useExcelDump from 'src/api/dump/useExcelDump'
 
-// ** Redux
-import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { useSelector, useDispatch } from 'react-redux'
 import {
   selectSelectedClient,
   selectSelectedCompetitions,
@@ -25,12 +23,11 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-// ** third party import
 import toast from 'react-hot-toast'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   console.log('checkdata=>', dataForExcelDump)
-  //Redux call
+
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -43,7 +40,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
   const [selectAll, setSelectAll] = useState(false)
   const { responseData, loading, error, postData } = useExcelDump()
 
-  // redux states
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
@@ -69,31 +65,25 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
 
   useEffect(() => {
     if (selectAll) {
-      // If "Select All" is checked, select all fields
       setSelectedFields([...fields])
     } else {
-      // If "Select All" is unchecked, clear selected fields
       setSelectedFields([])
     }
   }, [selectAll, fields])
 
   const handleCheckboxChange = fieldName => {
-    // Toggle individual checkbox
     setSelectedFields(prevSelectedFields =>
       prevSelectedFields.includes(fieldName)
         ? prevSelectedFields.filter(field => field !== fieldName)
         : [...prevSelectedFields, fieldName]
     )
 
-    // Uncheck "Select All" if any individual checkbox is unchecked
     setSelectAll(false)
   }
 
   const handleSelectAllChange = () => {
-    // Toggle "Select All" checkbox
     setSelectAll(prevSelectAll => !prevSelectAll)
 
-    // Clear selected fields when "Select All" is unchecked
     setSelectedFields([])
   }
 
@@ -104,6 +94,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
       }
+
       return value
     }
 
@@ -287,18 +278,9 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
     if (tags != '') {
       searchCriteria.tags = tags
     }
-    // const searchCriteria = {}
-    // dataForExcelDump.forEach(item => {
-    //   const [key] = Object.keys(item)
-    //   const value = item[key]
-    //   searchCriteria[key] = value
-    // })
+
     searchCriteria.fromDate = formattedStartDate
     searchCriteria.toDate = formattedEndDate
-    // searchCriteria.selectedCompanyIds = selectedCompanyIds
-
-    // Remove articleIds from searchCriteria
-    // delete searchCriteria.articleId
 
     const postDataParams = {
       clientId,

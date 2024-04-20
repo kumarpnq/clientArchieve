@@ -79,7 +79,6 @@ const AuthProvider = ({ children }) => {
       .then(async response => {
         const { accessToken, userData, defaultScreen } = response.data
 
-        console.log('repsomse==>', defaultScreen)
         // Store data in localStorage
         params.rememberMe ? window.localStorage.setItem(authConfig.storageTokenKeyName, accessToken) : null
         window.localStorage.setItem('userData', JSON.stringify(userData))
@@ -88,7 +87,7 @@ const AuthProvider = ({ children }) => {
         dispatch(setUserData(userData))
 
         const returnUrl = router.query.returnUrl
-        // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
         if (defaultScreen.option === 'printHeadlines') {
           router.replace('/headlines/print/')
         } else if (defaultScreen.option === 'onlineHeadlines') {
@@ -123,7 +122,7 @@ const AuthProvider = ({ children }) => {
         if (response.status === 200) {
           window.localStorage.removeItem('userData')
           window.localStorage.removeItem(authConfig.storageTokenKeyName)
-          // Navigate to the login page
+
           router.push('/login')
         } else {
           // Handle the error
@@ -131,7 +130,6 @@ const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         if (error.response.status === 500) {
-          // Unauthorized error, navigate to the login page
           localStorage.removeItem('accessToken')
           localStorage.removeItem('userData')
           window.location.href = '/login'

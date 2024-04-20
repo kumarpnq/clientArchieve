@@ -301,6 +301,7 @@ const TableSelection = () => {
     if (!isNaN(parseInt(lastChar))) {
       return item.slice(0, -1)
     }
+
     return item
   })
   const result = selectedMediaWithoutLastDigit.join(', ')
@@ -366,9 +367,6 @@ const TableSelection = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const shortCutFlags = useSelector(selectShortCutFlag)
 
-  console.log('toogledata==>', shortCutFlags)
-  // setSelectedMedia([shortCutData?.media])
-
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedFromDate = useSelector(selectSelectedStartDate)
@@ -406,19 +404,21 @@ const TableSelection = () => {
           const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
           const selectedCompaniesString = selectedCompetitions.join(', ')
-          // const selectedMediaString = selectedMedia.join(', ')
-          console.log('componay==>', selectedCompaniesString)
+
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
             const lastChar = item.slice(-1)
             if (!isNaN(parseInt(lastChar))) {
               return item.slice(0, -1)
             }
+
             return item
           })
           const result = selectedMediaWithoutLastDigit.join(', ')
 
           const selectedTagString = selectedTag.join(', ')
+
           const selectedCitiesString = selectedCities.join(', ')
+
           const edition = selectedEditionType
             .map(i => {
               return i.editionTypeId
@@ -476,41 +476,6 @@ const TableSelection = () => {
           }
 
           const res = await axios.post(`${BASE_URL}/userConfigRequest`, requestData, { headers })
-          // const response = await fetchArticles({
-          //   clientIds: clientId,
-          //   companyIds: selectedCompaniesString,
-          //   fromDate: formattedStartDate,
-          //   toDate: formattedEndDate,
-          //   page: currentPage,
-          //   recordsPerPage: recordsPerPage,
-
-          //   media: result,
-          //   tags: selectedTagString,
-          //   geography: selectedCitiesString,
-          //   language: selectedLanguagesString,
-
-          //   // Advanced search
-          //   headline: searchParameters.searchHeadline,
-          //   body: searchParameters.searchBody,
-          //   journalist: searchParameters.journalist,
-          //   wordCombo: searchParameters.combinationOfWords,
-          //   anyWord: searchParameters.anyOfWords,
-          //   ignoreWords: searchParameters.ignoreThis,
-          //   phrase: searchParameters.exactPhrase,
-
-          //   editionType: edition,
-          //   sortby: selectedSortBy,
-
-          //   publicationCategory: publicationtype
-          // })
-
-          // const totalRecords = response.totalRecords
-          // setArticles(response.articles)
-
-          // setPaginationModel(prevPagination => ({
-          //   ...prevPagination,
-          //   totalRecords
-          // }))
         }
       } catch (error) {
         console.error('Error fetching articles:', error)
@@ -543,21 +508,27 @@ const TableSelection = () => {
           }
 
           const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+
           const selectedCompaniesString = selectedCompetitions.join(', ')
-          // const selectedMediaString = selectedMedia.join(', ')
+
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
             const lastChar = item.slice(-1)
             if (!isNaN(parseInt(lastChar))) {
               return item.slice(0, -1)
             }
+
             return item
           })
+
           const result = selectedMediaWithoutLastDigit.join(', ')
           console.log(result)
 
           const selectedTagString = selectedTag.join(', ')
+
           const selectedCitiesString = selectedCities.join(', ')
+
           const edition = selectedEditionType
             .map(i => {
               return i.editionTypeId
@@ -592,6 +563,7 @@ const TableSelection = () => {
             language: selectedLanguagesString,
 
             // Advanced search
+
             headline: searchParameters.searchHeadline,
             body: searchParameters.searchBody,
             journalist: searchParameters.journalist,

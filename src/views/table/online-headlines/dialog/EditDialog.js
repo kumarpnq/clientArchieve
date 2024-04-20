@@ -16,7 +16,6 @@ import ArticleTagEdit from '../ArticleTagEdit'
 import { Box } from '@mui/material'
 
 const EditDialog = ({ open, handleClose, socialFeed, fetchTagsFlag, setFetchTagsFlag }) => {
-  console.log('articleheadline==>', socialFeed)
   const [editedSocialFeed, setEditedSocialFeed] = useState({
     headline: '',
     author: ''

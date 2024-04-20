@@ -68,7 +68,6 @@ const DossierDialog = ({
   const handleEmailChange = event => {
     const { value } = event.target
     setEmail(value)
-    // setSelectedEmail(prev => [...prev, value])
   }
 
   const handleCompanyNameChange = event => {
@@ -89,7 +88,7 @@ const DossierDialog = ({
 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
-    // const searchCriteria = { fromDate, toDate, selectPageOrAll, pageLimit }
+
     let recipients = []
 
     const recipientsFromDropdown = selectedEmail.map(emailId => ({ id: emailId, recipientType: 'to' }))
@@ -104,6 +103,7 @@ const DossierDialog = ({
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
       }
+
       return value
     }
 
@@ -354,9 +354,11 @@ const DossierDialog = ({
       const storedToken = localStorage.getItem('accessToken')
       try {
         const url = `${BASE_URL}/clientMailerList/`
+
         const headers = {
           Authorization: `Bearer ${storedToken}`
         }
+
         const requestData = { clientId }
         const axiosConfig = { headers, params: requestData }
         const axiosResponse = await axios.get(url, axiosConfig)

@@ -253,7 +253,7 @@ const TableSelection = () => {
   const [selectedTags, setSelectedTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
-  const [recordsPerPage, setRecordsPerPage] = useState(10)
+  const [recordsPerPage, setRecordsPerPage] = useState(100)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
   const [dataFetchFlag, setDataFetchFlag] = useState(false)
@@ -350,6 +350,7 @@ const TableSelection = () => {
 
           const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+
           const request_params = {
             clientIds: clientId,
             companyIds: selectedCompetitions,
@@ -380,10 +381,8 @@ const TableSelection = () => {
 
           const totalRecords = response.data.totalAllArticles
 
-          // Assuming the API response contains socialFeeds
           setArticles(response.data.allArticles)
 
-          // Update totalRecords in the state
           setPaginationModel(prevPagination => ({
             ...prevPagination,
             totalRecords

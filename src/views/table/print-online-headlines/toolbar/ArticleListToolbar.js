@@ -55,7 +55,7 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
     }
   })
 )
-// Excel Dump Icon
+
 const ExcelDumpIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>
@@ -80,7 +80,6 @@ const PublicationTypeIcon = () => (
   </SvgIcon>
 )
 
-// Edition Type Icon
 const EditionTypeIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='25' height='25' viewBox='0 0 24 24'>
@@ -92,7 +91,6 @@ const EditionTypeIcon = () => (
   </SvgIcon>
 )
 
-// Advanced Search Icon
 const AdvancedSearchIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='27' height='25' viewBox='0 0 24 24'>
@@ -104,7 +102,6 @@ const AdvancedSearchIcon = () => (
   </SvgIcon>
 )
 
-// Tagging Icon
 const TaggingIcon = () => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='25' height='24' viewBox='0 0 24 24'>
@@ -116,7 +113,6 @@ const TaggingIcon = () => (
   </SvgIcon>
 )
 
-// Sort By Icon
 const SortByIcon = ({ handleSortByLatest, handleSortByMedia }) => (
   <SvgIcon>
     <svg xmlns='http://www.w3.org/2000/svg' width='32' height='27' viewBox='0 0 36 36'>
@@ -139,33 +135,6 @@ const SortByIcon = ({ handleSortByLatest, handleSortByMedia }) => (
     </svg>
   </SvgIcon>
 )
-
-// // 1D Icon
-// const OneDIcon = props => (
-//   <SvgIcon {...props}>
-//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-//       1D
-//     </text>
-//   </SvgIcon>
-// )
-
-// // 7D Icon
-// const SevenDIcon = props => (
-//   <SvgIcon {...props}>
-//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-//       7D
-//     </text>
-//   </SvgIcon>
-// )
-
-// // 1M Icon
-// const OneMIcon = props => (
-//   <SvgIcon {...props}>
-//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-//       1M
-//     </text>
-//   </SvgIcon>
-// )
 
 const ArticleListToolbar = ({
   setSearchQuery,
@@ -200,42 +169,7 @@ const ArticleListToolbar = ({
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
-  //tools visibility
   const { isDossierVisible, isMailVisible, isExcelDumpVisible } = useToolPermission()
-  // const [selectedPublicationType, setSelectedPublicationType] = useState('')
-  // const [selectedFilter, setSelectedFilter] = useState('1D')
-
-  // // Helper function to calculate date by subtracting days from the current date
-  // const calculateDate = days => dayjs().subtract(days, 'day')
-
-  // Function to handle 1D filter
-  // const handleFilter1D = () => {
-  //   const startDate = calculateDate(1)
-  //   setSelectedStartDate(startDate)
-  //   setSelectedEndDate(startDate)
-  //   setSelectedFilter('1D')
-  // }
-
-  // // Function to handle 7D filter
-  // const handleFilter7D = () => {
-  //   const startDate = calculateDate(7)
-  //   setSelectedStartDate(startDate)
-  //   setSelectedEndDate(dayjs()) // Set end date to today
-  //   setSelectedFilter('7D')
-  // }
-
-  // // Function to handle 1M filter
-  // const handleFilter1M = () => {
-  //   const startDate = calculateDate(30)
-  //   setSelectedStartDate(startDate)
-  //   setSelectedEndDate(dayjs()) // Set end date to today
-  //   setSelectedFilter('1M')
-  // }
-
-  // useEffect to set default date for 1D filter and highlight the icon when component mounts
-  // useEffect(() => {
-  //   handleFilter1D()
-  // }, []) // Empty dependency array to run the effect only once
 
   const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false)
 

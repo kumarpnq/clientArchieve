@@ -34,8 +34,15 @@ import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, dataForDossierDownload,pageCheck,
-  allCheck}) => {
+const DossierDialog = ({
+  open,
+  handleClose,
+  selectedStartDate,
+  selectedEndDate,
+  dataForDossierDownload,
+  pageCheck,
+  allCheck
+}) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const clientName = selectedClient ? selectedClient.clientName : null
@@ -61,7 +68,6 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
   const handleEmailChange = event => {
     const { value } = event.target
     setEmail(value)
-    // setSelectedEmail(prev => [...prev, value])
   }
 
   const handleCompanyNameChange = event => {
@@ -82,7 +88,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
-    // const searchCriteria = { fromDate, toDate, selectPageOrAll, pageLimit }
+
     let recipients = []
 
     const recipientsFromDropdown = selectedEmail.map(emailId => ({ id: emailId, recipientType: 'to' }))
@@ -96,6 +102,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
       }
+
       return value
     }
 
@@ -108,6 +115,7 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       dataForDossierDownload.length &&
       dataForDossierDownload?.flatMap(i => i?.socialFeedId?.map(id => ({ id, type: 'online' })))
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
+
     const media =
       dataForDossierDownload.length &&
       dataForDossierDownload
@@ -126,15 +134,15 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .join(',')
         .replace(/,+$/, '')
 
-        const language =
-        dataForDossierDownload.length &&
-        dataForDossierDownload
-          .map(i => i.language)
-          .flat()
-          .join(',')
-          .replace(/^,+/g, '')
-          .replace(/,+/g, ',')
-          .replace(/,+$/, '')
+    const language =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
+        .replace(/,+$/, '')
 
     const tags =
       dataForDossierDownload.length &&
@@ -210,26 +218,25 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
         .join(',')
         .replace(/,+$/, '')
 
-   
-        const publicationCategory =
-        dataForDossierDownload.length &&
-        dataForDossierDownload
-          .map(i => i.publicationCategory)
-          .flat()
-          .join(',')
-          .replace(/^,+/g, '')
-          .replace(/,+/g, ',')
-          .replace(/,+$/, '')
-  
-      const editionType =
-        dataForDossierDownload.length &&
-        dataForDossierDownload
-          .map(i => i.editionType)
-          .flat()
-          .join(',')
-          .replace(/^,+/g, '')
-          .replace(/,+/g, ',')
-          .replace(/,+$/, '')
+    const publicationCategory =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.publicationCategory)
+        .flat()
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
+        .replace(/,+$/, '')
+
+    const editionType =
+      dataForDossierDownload.length &&
+      dataForDossierDownload
+        .map(i => i.editionType)
+        .flat()
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
+        .replace(/,+$/, '')
 
     const searchCriteria = {
       selectPageOrAll,
@@ -294,14 +301,12 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
     if (tags != '') {
       searchCriteria.tags = tags
     }
-    
 
     const formattedFromDate = formatDateTime(selectedStartDate)
     const formattedToDate = formatDateTime(selectedEndDate)
 
     searchCriteria.fromDate = formattedFromDate
     searchCriteria.toDate = formattedToDate
-   
 
     const postDataParams = {
       notificationFlag,
@@ -310,7 +315,6 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       clientId,
       clientName,
       dossierType
-      // notificationFlag
     }
 
     if (pageCheck === true || allCheck === true) {
@@ -331,7 +335,6 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       postDataParams.searchCriteria = searchCriteria
     }
 
-
     sendDossierRequest(postDataParams)
 
     dispatch(setNotificationFlag(!notificationFlag))
@@ -351,9 +354,11 @@ const DossierDialog = ({ open, handleClose, selectedStartDate, selectedEndDate, 
       const storedToken = localStorage.getItem('accessToken')
       try {
         const url = `${BASE_URL}/clientMailerList/`
+
         const headers = {
           Authorization: `Bearer ${storedToken}`
         }
+
         const requestData = { clientId }
         const axiosConfig = { headers, params: requestData }
         const axiosResponse = await axios.get(url, axiosConfig)

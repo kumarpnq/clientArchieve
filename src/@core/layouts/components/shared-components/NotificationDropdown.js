@@ -87,12 +87,12 @@ const NotificationDropdown = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const [clientData, setClientData] = useState(null)
-  console.log('coinet==>', clientData)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const storedToken = localStorage.getItem('accessToken')
+
         const response = await axios.get(`${BASE_URL}/clientArchiveNotificationList/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`

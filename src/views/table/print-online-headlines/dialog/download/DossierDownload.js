@@ -81,12 +81,13 @@ const DossierDownload = ({ open, handleClose, selectedStartDate, selectedEndDate
 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
-    // const searchCriteria = { fromDate, toDate, selectPageOrAll, pageLimit }
+
     const recipients = selectedEmail.map(emailId => ({ id: emailId, recipientType: 'to' }))
     function convertPageOrAll(value) {
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
       }
+
       return value
     }
 
@@ -98,7 +99,9 @@ const DossierDownload = ({ open, handleClose, selectedStartDate, selectedEndDate
     const articleIds =
       dataForDossierDownload.length &&
       dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'both' })))
+
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
+
     const media =
       dataForDossierDownload.length &&
       dataForDossierDownload
@@ -271,24 +274,12 @@ const DossierDownload = ({ open, handleClose, selectedStartDate, selectedEndDate
     if (tags != '') {
       searchCriteria.tags = tags
     }
-    // const searchCriteria = {}
-    // dataForExcelDump.forEach(item => {
-    //   const [key] = Object.keys(item)
-    //   const value = item[key]
-    //   searchCriteria[key] = value
-    // })
-    // const formattedFromDate = formatDateTime(selectedFromDate)
-    // const formattedToDate = formatDateTime(selectedEndDate)
 
     const formattedFromDate = formatDateTime(selectedStartDate)
     const formattedToDate = formatDateTime(selectedEndDate)
 
     searchCriteria.fromDate = formattedFromDate
     searchCriteria.toDate = formattedToDate
-    // searchCriteria.selectedCompanyIds = selectedCompanyIds
-
-    // Remove articleIds from searchCriteria
-    // delete searchCriteria.articleId
 
     const postDataParams = {
       notificationFlag,
@@ -297,7 +288,6 @@ const DossierDownload = ({ open, handleClose, selectedStartDate, selectedEndDate
       clientId,
       clientName,
       dossierType
-      // notificationFlag
     }
 
     if (
@@ -329,11 +319,14 @@ const DossierDownload = ({ open, handleClose, selectedStartDate, selectedEndDate
   useEffect(() => {
     const getClientMailerList = async () => {
       const storedToken = localStorage.getItem('accessToken')
+
       try {
         const url = `${BASE_URL}/clientMailerList/`
+
         const headers = {
           Authorization: `Bearer ${storedToken}`
         }
+
         const requestData = { clientId }
         const axiosConfig = { headers, params: requestData }
         const axiosResponse = await axios.get(url, axiosConfig)
