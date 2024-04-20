@@ -25,9 +25,9 @@ import { selectUserData, selectSelectedMedia } from 'src/store/apps/user/userSli
 import { styled } from '@mui/material/styles'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
-import useChartsData from 'src/api/dashboard-analytics/useChartsData'
 
 // ** hooks
+import useChartsData from 'src/api/dashboard-analytics/useChartsData'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import MultipleCharts from 'src/views/dashboards/analytics/AnalyticsMultipleCharts'
 import VisibilityRanking from 'src/views/dashboards/analytics/AnalyticsVisibilityRanking'
@@ -38,6 +38,12 @@ import useSubjectVisibility from 'src/api/dashboard-analytics/useSubjectVisibili
 import useReportingSubjectVisibility from 'src/api/dashboard-analytics/useSubjectClientVisiblity'
 import AnalyticsSubject from 'src/views/dashboards/analytics/AnalyticsSubject'
 import AnalyticsSubjectClient from 'src/views/dashboards/analytics/AnalyticsSubjectClient'
+import usePublicationClientVisibility from 'src/api/dashboard-analytics/usePublicationClientVisibility'
+import AnalyticsPublicationClient from 'src/views/dashboards/analytics/AnalyticsPublicationClient'
+import useJournalistVisibility from 'src/api/dashboard-analytics/useJournalistVisibility'
+import useJournalistClientVisibility from 'src/api/dashboard-analytics/useJournalistClientVisibility'
+import AnalyticsJournalist from 'src/views/dashboards/analytics/AnalyticsJournalist'
+import AnalyticsJournalistClient from 'src/views/dashboards/analytics/AnalyticsJournalistClient'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -98,6 +104,12 @@ const AnalyticsDashboard = () => {
   } = usePublicationVisibility({ media: selectedMedia, endpoint: '/publicationsVisibility/' })
 
   const {
+    chartData: publicationClientVisibility,
+    loading: publicationClientLoading,
+    error: publicationClientError
+  } = usePublicationClientVisibility({ media: selectedMedia, endpoint: '/publicationsClientVisibility/' })
+
+  const {
     chartData: subjectVisibility,
     loading: subjectLoading,
     error: subjectError
@@ -108,6 +120,18 @@ const AnalyticsDashboard = () => {
     loading: subjectClientLoading,
     error: subjectClientError
   } = useReportingSubjectVisibility({ media: selectedMedia, endpoint: '/reportingSubjectClientVisibility/' })
+
+  const {
+    chartData: journalistVisibility,
+    loading: journalistLoading,
+    error: journalistError
+  } = useJournalistVisibility({ media: selectedMedia, endpoint: '/journalistVisibility/' })
+
+  const {
+    chartData: journalistClientVisibility,
+    loading: journalistClientLoading,
+    error: journalistClientError
+  } = useJournalistClientVisibility({ media: selectedMedia, endpoint: '/journalistClientVisibility/' })
 
   if (!hasAccess) {
     return <div>You don't have access to this page.</div>
@@ -171,6 +195,20 @@ const AnalyticsDashboard = () => {
             />
           </Grid>
           <Grid item xs={12} lg={6}>
+            <AnalyticsPublicationClient
+              chartData={publicationClientVisibility}
+              loading={publicationClientLoading}
+              error={publicationClientError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          </Grid>
+          <Grid item xs={12} lg={6}>
             <AnalyticsSubject
               chartData={subjectVisibility}
               loading={subjectLoading}
@@ -198,6 +236,34 @@ const AnalyticsDashboard = () => {
               green={polarChartGreen}
             />
           </Grid>
+          <Grid item xs={12} lg={6}>
+            <AnalyticsJournalist
+              chartData={journalistVisibility}
+              loading={journalistLoading}
+              error={journalistError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          </Grid>
+          <Grid item xs={12} lg={6}>
+            <AnalyticsJournalistClient
+              chartData={journalistClientVisibility}
+              loading={journalistClientLoading}
+              error={journalistClientError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          </Grid>
 
           <Grid item xs={12} lg={6}>
             <AnalyticsWebsiteAnalyticsSlider
@@ -210,6 +276,7 @@ const AnalyticsDashboard = () => {
               green={polarChartGreen}
             />
           </Grid>
+
           <Grid item xs={12} sm={6} lg={3}>
             <AnalyticsOrderVisits />
           </Grid>
