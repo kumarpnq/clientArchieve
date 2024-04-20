@@ -61,7 +61,6 @@ export const {
   setSelectedMedia,
   setFetchAutoStatusFlag, // Export the new action
   clearUserData,
-  setSelectedMedia,
   shotCutPrint,
   setShotCutPrint,
   shortCutFlag,
