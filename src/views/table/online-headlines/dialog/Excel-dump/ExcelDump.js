@@ -30,7 +30,7 @@ import { formatDateTime } from 'src/utils/formatDateTime'
 import useExcelDump from 'src/api/dump/useExcelDump'
 import { Box, DialogContentText } from '@mui/material'
 
-const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump,pageCheck, allCheck  }) => {
+const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCheck }) => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
@@ -86,6 +86,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump,pageCheck, allChe
 
     setSelectAll(false)
   }
+
   const handleSelectAllChange = () => {
     setSelectAll(prevSelectAll => !prevSelectAll)
   }
@@ -96,6 +97,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump,pageCheck, allChe
       if (typeof value === 'number') {
         return value === 0 ? 'A' : 'P'
       }
+
       return value
     }
 
@@ -105,8 +107,9 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump,pageCheck, allChe
     const page = dataForExcelDump.length && dataForExcelDump.map(i => i.page).join('')
 
     const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
-    console.log('articleIds:', dataForExcelDump)
+
     const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
+
     const media =
       dataForExcelDump.length &&
       dataForExcelDump
@@ -125,16 +128,16 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump,pageCheck, allChe
         .join(',')
         .replace(/,+$/, '')
 
-        const language =
-        dataForExcelDump.length &&
-        dataForExcelDump
-          .map(i => i.language)
-          .flat()
-          .join(',')
-          .replace(/^,+/g, '')
-          .replace(/,+/g, ',')
-          .replace(/,+$/, '')
-   
+    const language =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
+        .replace(/,+$/, '')
+
     // const languageIds = dataForExcelDump
     //   .find(item => item.language)
     //   ?.language.map(lang => lang.id)
@@ -298,10 +301,9 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump,pageCheck, allChe
     if (tags != '') {
       searchCriteria.tags = tags
     }
-   
+
     searchCriteria.fromDate = formattedStartDate
     searchCriteria.toDate = formattedEndDate
-   
 
     const postDataParams = {
       clientId,
@@ -328,7 +330,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump,pageCheck, allChe
     }
 
     postData(postDataParams)
-
 
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))

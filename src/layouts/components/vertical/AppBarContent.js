@@ -130,7 +130,9 @@ const shortcuts = [
 const AppBarContent = props => {
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
 
+
   // const fetchAutoStatusFlag = useSelector(selectShortCut)
+
 
   const [dataShort, setDataShort] = useState([])
 
@@ -155,6 +157,7 @@ const AppBarContent = props => {
         })
 
         setDataShort(response?.data?.configData)
+
 
         // dispatch(setShotCutPrint(response?.data?.configData))
         console.log('userconfig', response?.data?.configData)

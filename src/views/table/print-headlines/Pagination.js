@@ -14,9 +14,8 @@ const Pagination = ({
   handleRightPagination,
   handleRecordsPerPageUpdate
 }) => {
-
-  console.log("pagination==>",recordsPerPage)
   // Calculate the range of records currently displayed
+
   const startRecord = (currentPage - 1) * recordsPerPage + 1
 
   const endRecord =

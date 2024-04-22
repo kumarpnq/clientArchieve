@@ -244,7 +244,6 @@ const ArticleListToolbar = ({
   // }, []) // Empty dependency array to run the effect only once
 
   const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false)
-  // const [selectedPublicationTypes, setSelectedPublicationType] = useState([])
 
   const handleAdvancedSearchOpen = () => {
     setAdvancedSearchOpen(true)
@@ -434,25 +433,7 @@ const ArticleListToolbar = ({
         return [...prevSelected, editionType]
       }
     })
-    // const index = selectedEditionType.indexOf(editionType)
-
-    // if (index > -1) {
-    //   // If the edition type is already selected, deselect it
-    //   setSelectedEditionType(prevState =>
-    //     prevState.filter(selected => selected.editionTypeId !== editionType.editionTypeId)
-    //   )
-    // } else {
-    //   // If not selected, add it to the selected edition types
-    //   setSelectedEditionType(prevState => [...prevState, editionType])
-    // }
-    // handleEditionTypeClose()
   }
-
-  // const isPublicationTypeSelected = publicationType => {
-  //   return selectedPublicationTypes?.some(
-  //     selectedType => selectedType.publicationTypeId === publicationType.publicationTypeId
-  //   )
-  // }
 
   // Edition Type state and logic
   const [editionTypes, setEditionTypes] = useState([])

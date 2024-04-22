@@ -88,7 +88,9 @@ const AuthProvider = ({ children }) => {
 
         const returnUrl = router.query.returnUrl
 
+
         // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
         if (defaultScreen.option === 'printHeadlines') {
           router.replace('/headlines/print/')
         } else if (defaultScreen.option === 'onlineHeadlines') {
@@ -126,6 +128,7 @@ const AuthProvider = ({ children }) => {
           window.localStorage.removeItem('userData')
           window.localStorage.removeItem(authConfig.storageTokenKeyName)
 
+
           // Navigate to the login page
           router.push('/login')
         } else {
@@ -134,7 +137,6 @@ const AuthProvider = ({ children }) => {
         }
       } catch (error) {
         if (error.response.status === 500) {
-          // Unauthorized error, navigate to the login page
           localStorage.removeItem('accessToken')
           localStorage.removeItem('userData')
           window.location.href = '/login'

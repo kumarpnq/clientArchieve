@@ -1,9 +1,10 @@
+import React from 'react'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
-const navigation = () => {
+const Navigation = () => {
   const screenPermissions = useScreenPermissions()
 
-  return [
+  const navigationItems = [
     {
       title: 'Dashboards',
       icon: 'tabler:smart-home',
@@ -673,6 +674,8 @@ const navigation = () => {
     //   ]
     // }
   ]
+
+  return navigationItems
 }
 
-export default navigation
+export default Navigation

@@ -10,7 +10,6 @@ import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
-// import { updateClientTagsToCompany } from '../../../../../api/print-headlines/dialog/view/articleTagEditApi'
 import Card from '@mui/material/Card'
 import { updateClientTagsToCompany } from 'src/api/print-headlines/dialog/view/articleTagEditApi'
 import { BASE_URL } from 'src/api/base'
@@ -49,9 +48,11 @@ const ArticleTagEdit = ({ articles, handleClose, token, fetchTagsFlag, setFetchT
         clientId,
         companyIdsAndTags: companiesWithTags.map((company, companyIndex) => {
           const companyId = company.id
+
           const clientTags = tags[companyIndex]
             ? Object.values(tags[companyIndex]).filter(tag => tag.trim() !== '')
             : []
+
           return { companyId, tags: clientTags }
         }),
         socialFeedId

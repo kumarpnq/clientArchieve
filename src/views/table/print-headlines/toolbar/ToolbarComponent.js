@@ -43,7 +43,6 @@ const ToolbarComponent = ({
   const [searchTermtags, setSearchTermtags] = useState('')
 
   const debouncedSearchTerm = useDebounce(searchTerm, 300)
-  // const [searchterm, setSearchterm] = useState()
 
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
@@ -190,7 +189,9 @@ const ToolbarComponent = ({
           }
         })
         setCities(citiesResponse.data.cities)
+
         // Pre-select media based on shortCutData
+
         const selectedCityIds = citiesResponse.data.cities
           .filter(city => shortCutData?.searchCriteria?.geography?.includes(city.cityId))
           .map(city => city.cityId)
@@ -234,11 +235,14 @@ const ToolbarComponent = ({
             searchTerm: searchTermtags
           }
         })
-        const clientTags = tagsResponse.data.clientTags;
+        const clientTags = tagsResponse.data.clientTags
         setTags(clientTags)
-        const selectedTags = clientTags.filter(tag => shortCutData?.searchCriteria?.tags?.includes(tag));
-        setSelectedTag(selectedTags);
-        console.log('valuecheck==>', clientTags.filter(tag => shortCutData?.searchCriteria?.tags))
+        const selectedTags = clientTags.filter(tag => shortCutData?.searchCriteria?.tags?.includes(tag))
+        setSelectedTag(selectedTags)
+        console.log(
+          'valuecheck==>',
+          clientTags.filter(tag => shortCutData?.searchCriteria?.tags)
+        )
       } catch (error) {
         console.log(error)
       }
@@ -408,7 +412,6 @@ const ToolbarComponent = ({
           {tags?.map((item, index) => (
             <div key={`${index}`}>
               <MenuItem
-                // key={`${item}-${index}`}
                 onClick={() => handleTagSelect(item)}
                 selected={selectedTag.includes(item) || shortCutData?.searchCriteria?.tags?.includes(item)}
               >

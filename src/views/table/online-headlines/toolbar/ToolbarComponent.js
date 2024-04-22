@@ -43,7 +43,6 @@ const ToolbarComponent = ({
   const [media, setMedia] = useState('')
   const [searchTermtags, setSearchTermtags] = useState('')
 
-
   const selectedClient = useSelector(selectSelectedClient)
   const shortCutData = useSelector(selectShortCut)
 
@@ -126,7 +125,6 @@ const ToolbarComponent = ({
     debounceMediaChange(value)
   }
 
-
   const handleSearchChangeTags = event => {
     console.log('event==>', event.target.value)
     setSearchTermtags(event.target.value)
@@ -181,7 +179,7 @@ const ToolbarComponent = ({
       }
     }
     fetchTags()
-  }, [clientId, fetchTagsFlag, setTags,searchTermtags])
+  }, [clientId, fetchTagsFlag, setTags, searchTermtags])
 
   return (
     <AppBar sx={{ position: 'static' }}>
@@ -375,7 +373,6 @@ const ToolbarComponent = ({
           {tags?.map((item, index) => (
             <div key={`${index}`}>
               <MenuItem
-                // key={`${item}-${index}`}
                 onClick={() => handleTagSelect(item)}
                 selected={selectedTags.includes(item) || shortCutData?.searchCriteria?.tags?.includes(item)}
               >
