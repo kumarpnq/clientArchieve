@@ -31,7 +31,7 @@ import {
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const EmailDialog = ({ open, onClose, dataForMailDump }) => {
+const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) => {
   const [emailType, setEmailType] = useState({})
   const [selectAll, setSelectAll] = useState(false)
   const [selectedEmails, setSelectedEmails] = useState([])
@@ -97,6 +97,8 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
         .map(i => i.media)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const geography =
@@ -107,11 +109,15 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
         .join(',')
         .replace(/,+$/, '')
 
-    const language = dataForMailDump
-      .find(item => item.language)
-      ?.language.map(lang => lang.id)
-      .join(',')
-      .replace(/,+$/, '')
+    const language =
+      dataForMailDump.length &&
+      dataForMailDump
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
+        .replace(/,+$/, '')
 
     const tags =
       dataForMailDump.length &&
@@ -126,15 +132,15 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       dataForMailDump
         .map(i => i.headline)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const body =
       dataForMailDump.length &&
       dataForMailDump
-        .map(i => i.headline)
+        .map(i => i.body)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const journalist =
@@ -142,7 +148,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       dataForMailDump
         .map(i => i.journalist)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const wordCombo =
@@ -150,7 +156,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       dataForMailDump
         .map(i => i.wordCombo)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const anyWord =
@@ -158,7 +164,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       dataForMailDump
         .map(i => i.anyWord)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const ignoreWords =
@@ -166,7 +172,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       dataForMailDump
         .map(i => i.ignoreWords)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const phrase =
@@ -174,7 +180,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       dataForMailDump
         .map(i => i.phrase)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const sortby =
@@ -182,7 +188,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       dataForMailDump
         .map(i => i.sortby)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const publicationCategory =
@@ -191,14 +197,18 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
         .map(i => i.publicationCategory)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const editionType =
       dataForMailDump.length &&
       dataForMailDump
-        .map(i => i.editionType?.editionTypeId)
+        .map(i => i.editionType)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const searchCriteria = {
@@ -278,6 +288,12 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
       notificationFlag
     }
 
+    if (pageCheck === true || allCheck === true) {
+      postDataParams.searchCriteria = searchCriteria
+    } else {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    }
+
     if (
       (media === '' &&
         geography === '' &&
@@ -286,7 +302,6 @@ const EmailDialog = ({ open, onClose, dataForMailDump }) => {
         [media, geography, language, tags].some(field => field.includes('articleId'))) ||
       (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
