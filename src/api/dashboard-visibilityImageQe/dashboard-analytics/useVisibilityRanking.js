@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { BASE_URL } from '../base'
+import { BASE_URL } from 'src/api/base'
 import { useSelector } from 'react-redux'
 import {
   selectSelectedClient,
@@ -10,7 +10,7 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const useReportingSubjectVisibility = props => {
+const useVisibilityRanking = props => {
   const { media, endpoint } = props
 
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
@@ -31,11 +31,11 @@ const useReportingSubjectVisibility = props => {
     const fetchData = async () => {
       const requestParams = {
         media: media,
-        clientId: clientId,
-        fromDate: formattedStartDate,
-        toDate: formattedEndDate
+        clientIds: clientId,
+        companyIds: selectedCompetitions,
+        fromDate: formattedStartDate, //'2024-02-26 00:00:00',
+        toDate: formattedEndDate //'2024-02-27 00:00:00'
       }
-
       try {
         const storedToken = localStorage.getItem('accessToken')
 
@@ -45,7 +45,7 @@ const useReportingSubjectVisibility = props => {
           },
           params: requestParams
         })
-        setChartData(response.data.reportingSubjectVisibility || [])
+        setChartData(response.data.visibilityRanking)
       } catch (error) {
         setError(error)
       } finally {
@@ -59,4 +59,4 @@ const useReportingSubjectVisibility = props => {
   return { chartData, loading, error }
 }
 
-export default useReportingSubjectVisibility
+export default useVisibilityRanking

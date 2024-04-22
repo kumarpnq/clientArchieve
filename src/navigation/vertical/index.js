@@ -15,17 +15,25 @@ const Navigation = () => {
         screenPermissions.analytics && {
           title: 'Analytics',
           path: '/dashboards/analytics',
+          icon: 'clarity:analytics-line',
           hidden: !screenPermissions.analytics
         },
         screenPermissions.printDashboard && {
           title: 'Print',
           path: '/dashboards/print',
+          icon: 'arcticons:mobile-print',
           hidden: !screenPermissions.printDashboard
         },
         screenPermissions.onlineDashboard && {
           title: 'Online',
           path: '/dashboards/online',
+          icon: 'fluent-mdl2:join-online-meeting',
           hidden: !screenPermissions.onlineDashboard
+        },
+        screenPermissions.visibilityImageQE && {
+          title: 'Visibility Image QE',
+          path: '/dashboards/visibility-image-qe',
+          hidden: !screenPermissions.visibilityImageQE
         }
       ]
     },
