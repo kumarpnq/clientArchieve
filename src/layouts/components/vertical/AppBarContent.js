@@ -129,6 +129,7 @@ const shortcuts = [
 
 const AppBarContent = props => {
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
+
   // const fetchAutoStatusFlag = useSelector(selectShortCut)
 
   const [dataShort, setDataShort] = useState([])
@@ -139,6 +140,7 @@ const AppBarContent = props => {
   const currentRoute = router.pathname
 
   const isOnAnalyticsPage = currentRoute === '/dashboards/analytics'
+  const isOnVisibilityImageQePage = currentRoute === '/dashboards/visibility-image-qe'
 
   useEffect(() => {
     console.log('maindata==>')
@@ -153,6 +155,7 @@ const AppBarContent = props => {
         })
 
         setDataShort(response?.data?.configData)
+
         // dispatch(setShotCutPrint(response?.data?.configData))
         console.log('userconfig', response?.data?.configData)
       } catch (error) {
@@ -194,7 +197,7 @@ const AppBarContent = props => {
           <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <Box>
               <Competition settings={settings} />
-              {isOnAnalyticsPage && <Media settings={settings} />}
+              {(isOnAnalyticsPage || isOnVisibilityImageQePage) && <Media settings={settings} />}
             </Box>
             <Box>
               <DateBar />
