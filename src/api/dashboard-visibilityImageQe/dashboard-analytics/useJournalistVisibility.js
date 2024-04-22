@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { BASE_URL } from '../base'
+import { BASE_URL } from 'src/api/base'
 import { useSelector } from 'react-redux'
 import {
   selectSelectedClient,
@@ -10,7 +10,7 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const useChartsData = props => {
+const useJournalistVisibility = props => {
   const { media, endpoint } = props
 
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
@@ -32,9 +32,10 @@ const useChartsData = props => {
       const requestParams = {
         media: media,
         clientIds: clientId,
-        companyIds: selectedCompetitions,
-        fromDate: formattedStartDate, //'2024-02-26 00:00:00',
-        toDate: formattedEndDate //'2024-02-27 00:00:00'
+
+        // companyId: selectedCompetitions,
+        fromDate: formattedStartDate,
+        toDate: formattedEndDate
       }
       try {
         const storedToken = localStorage.getItem('accessToken')
@@ -45,7 +46,7 @@ const useChartsData = props => {
           },
           params: requestParams
         })
-        setChartData(response.data.companyVisibility)
+        setChartData(response.data.journalistVisibility || [])
       } catch (error) {
         setError(error)
       } finally {
@@ -59,4 +60,4 @@ const useChartsData = props => {
   return { chartData, loading, error }
 }
 
-export default useChartsData
+export default useJournalistVisibility

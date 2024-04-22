@@ -2,7 +2,15 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectUserData } from 'src/store/apps/user/userSlice'
 
-const screens = ['onlineHeadlines', 'printHeadlines', 'bothHeadlines', 'printDashboard', 'onlineDashboard', 'analytics']
+const screens = [
+  'onlineHeadlines',
+  'printHeadlines',
+  'bothHeadlines',
+  'printDashboard',
+  'onlineDashboard',
+  'analytics',
+  'visibilityImageQE'
+]
 
 const useScreenPermissions = () => {
   const userData = useSelector(selectUserData)
