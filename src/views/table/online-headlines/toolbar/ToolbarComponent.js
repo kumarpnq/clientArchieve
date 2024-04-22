@@ -27,6 +27,7 @@ const ToolbarComponent = ({
   selectedLanguage,
   setSelectedLanguage,
   setSelectedMedia,
+  selectedMedia,
   selectedTags,
   setSelectedTags,
   tags,
@@ -37,10 +38,11 @@ const ToolbarComponent = ({
   const [languageAnchor, setLanguageAnchor] = useState(null)
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
+  const [searchTerm, setSearchTerm] = useState('')
 
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
-  const [media, setMedia] = useState('')
+  const [media, setMedia] = useState([])
   const [searchTermtags, setSearchTermtags] = useState('')
 
   const selectedClient = useSelector(selectSelectedClient)
@@ -50,6 +52,11 @@ const ToolbarComponent = ({
 
   const openDropdown = (event, anchorSetter) => {
     anchorSetter(event.currentTarget)
+  }
+
+  const handleSelectAllMedia = () => {
+    const allMediaIds = media.map((item, index) => item.publicationId + index)
+    setSelectedMedia(allMediaIds)
   }
 
   const closeDropdown = anchorSetter => {
@@ -125,9 +132,28 @@ const ToolbarComponent = ({
     debounceMediaChange(value)
   }
 
+  const handleSearchChange = event => {
+    console.log('event==>', event.target.value)
+    setSearchTerm(event.target.value)
+  }
+
   const handleSearchChangeTags = event => {
     console.log('event==>', event.target.value)
     setSearchTermtags(event.target.value)
+  }
+
+  const handleMediaSelect = (publicationId, itemIndex) => {
+    setSelectedMedia(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== publicationId + itemIndex)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, publicationId + itemIndex]
+      }
+    })
   }
 
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
@@ -152,13 +178,24 @@ const ToolbarComponent = ({
           }
         })
         setCities(citiesResponse.data.cities)
+
+        const mediaResponse = await axios.get(`${BASE_URL}/onlineMediaList`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            clientId: clientId,
+            searchTerm: searchTerm
+          }
+        })
+        setMedia(mediaResponse.data.mediaList)
       } catch (error) {
         console.error('Error fetching user data and companies:', error)
       }
     }
 
     fetchUserDataAndCompanies()
-  }, [clientId])
+  }, [clientId, searchTerm])
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -330,31 +367,32 @@ const ToolbarComponent = ({
         </Menu>
         {/* Media Dropdown Menu */}
         <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
-          {/* {media.length > 0 && (
+          {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          )} */}
-          <MenuItem>
-            <TextField
-              id='outlined-basic'
-              type='text'
-              value={media}
-              onChange={handleMediaChange}
-              label='Media'
-              variant='outlined'
-            />
-          </MenuItem>
-          {/* {media.map(item => (
-            <MenuItem
-              key={item.publicationGroupId}
-              onClick={() => handleMediaSelect(item.publicationGroupId)}
-              selected={selectedMedia.includes(item.publicationGroupId)}
-            >
-              {item.publicationName}
-            </MenuItem>
-          ))} */}
+          }
+
+          {
+            <ListItem>
+              <TextField placeholder='Search Media' value={searchTerm} onChange={handleSearchChange} />
+            </ListItem>
+          }
+          {media.map((item, index) => (
+            <div key={`${item.publicationId}-${index}`}>
+              <MenuItem
+                onClick={() => handleMediaSelect(item.publicationId, index)}
+                selected={
+                  selectedMedia?.includes(item.publicationId + index) ||
+                  shortCutData?.searchCriteria?.media?.includes(item.publicationId)
+                }
+              >
+                {item.publicationName}
+              </MenuItem>
+            </div>
+          ))}
+          {/* Add more items as needed */}
         </Menu>
 
         <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>

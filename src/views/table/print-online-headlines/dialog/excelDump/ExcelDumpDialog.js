@@ -25,7 +25,7 @@ import { formatDateTime } from 'src/utils/formatDateTime'
 
 import toast from 'react-hot-toast'
 
-const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
+const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCheck }) => {
   console.log('checkdata=>', dataForExcelDump)
 
   const selectedClient = useSelector(selectSelectedClient)
@@ -112,6 +112,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         .map(i => i.media)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const geography =
@@ -122,10 +124,15 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         .join(',')
         .replace(/,+$/, '')
 
-    const language = dataForExcelDump
-      .find(item => item.language)
-      ?.language.map(lang => lang.id)
-      .join(',')
+    const language =
+      dataForExcelDump.length &&
+      dataForExcelDump
+        .map(i => i.language)
+        .flat()
+        .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
+        .replace(/,+$/, '')
 
     const tags =
       dataForExcelDump.length &&
@@ -133,6 +140,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         .map(i => i.tags)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const headline =
@@ -140,7 +149,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       dataForExcelDump
         .map(i => i.headline)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const body =
@@ -148,7 +157,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       dataForExcelDump
         .map(i => i.headline)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const journalist =
@@ -156,7 +165,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       dataForExcelDump
         .map(i => i.journalist)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const wordCombo =
@@ -164,7 +173,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       dataForExcelDump
         .map(i => i.wordCombo)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const anyWord =
@@ -172,7 +181,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       dataForExcelDump
         .map(i => i.anyWord)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const ignoreWords =
@@ -180,7 +189,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       dataForExcelDump
         .map(i => i.ignoreWords)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const phrase =
@@ -188,7 +197,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       dataForExcelDump
         .map(i => i.phrase)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const sortby =
@@ -196,7 +205,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       dataForExcelDump
         .map(i => i.sortby)
         .flat()
-        .join(',')
+        .join('')
         .replace(/,+$/, '')
 
     const publicationCategory =
@@ -205,6 +214,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         .map(i => i.publicationCategory)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const editionType =
@@ -213,6 +224,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         .map(i => i.editionType?.editionTypeId)
         .flat()
         .join(',')
+        .replace(/^,+/g, '')
+        .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
     const searchCriteria = {
@@ -288,6 +301,12 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
       notificationFlag
     }
 
+    if (pageCheck === true || allCheck === true) {
+      postDataParams.searchCriteria = searchCriteria
+    } else {
+      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+    }
+
     if (
       (media === '' &&
         geography === '' &&
@@ -296,7 +315,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump }) => {
         [media, geography, language, tags].some(field => field.includes('articleId'))) ||
       (articleIds.length && articleIds.some(id => id !== undefined))
     ) {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
     } else {
       postDataParams.searchCriteria = searchCriteria
     }
