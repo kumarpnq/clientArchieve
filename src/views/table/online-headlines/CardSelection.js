@@ -160,7 +160,7 @@ const CardSelection = () => {
         </Button>
       </Toolbar>
 
-      {isContainerOpen && (
+      {isContainerOpen ? (
         <>
           {loading ? (
             <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
@@ -168,44 +168,51 @@ const CardSelection = () => {
             </Box>
           ) : (
             <Grid container spacing={2} justifyContent='center' p={4}>
-              {console.log('carddata==>', companyData)}
-              {companyData.map(company => (
-                <Grid item xs={12} sm={6} md={4} key={company.companyId}>
-                  <Card sx={{ width: '100%', textAlign: 'center' }}>
-                    <CardHeader title={<Typography color='primary'>{company.companyName}</Typography>} />
-                    {company.articles.length > 0 ? (
-                      <Table>
-                        <TableBody>
-                          {company.articles.map(article => (
-                            <TableRow key={article.articleId}>
-                              <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                                <CustomTooltip
-                                  title={article.headline}
-                                  arrow
-                                  arrowPlacement='bottom'
-                                  placement='bottom-start' // Adjust the placement as needed
-                                >
-                                  <span
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
-                                  >
-                                    {article.headline}
-                                  </span>
-                                </CustomTooltip>
-                                <br />
-                                {`${article.publication} -  (${formatDate(article.articleDate)})`}
-                                {loadingArticleId === article.articleId && <CircularProgress size={17} />}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    ) : (
-                      <Typography variant='body1'>No articles available</Typography>
-                    )}
-                  </Card>
-                </Grid>
-              ))}
+              {companyData.length > 0 && (
+                <>
+                  {companyData
+                    .filter(company => company.articles.length > 0) // Filter out companies with no articles
+                    .map(company => (
+                      <Grid item xs={12} sm={6} md={4} key={company.companyId}>
+                        <Card sx={{ width: '100%', textAlign: 'center' }}>
+                          <CardHeader title={<Typography color='primary'>{company.companyName}</Typography>} />
+                          <Table>
+                            <TableBody>
+                              {company.articles.map(article => (
+                                <TableRow key={article.articleId}>
+                                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    <CustomTooltip
+                                      title={article.headline}
+                                      arrow
+                                      arrowPlacement='bottom'
+                                      placement='bottom-start' // Adjust the placement as needed
+                                    >
+                                      <a
+                                        href={article?.link}
+                                        target='_blank'
+                                        style={{ textDecoration: 'none', color: '#86838b' }}
+                                      >
+                                        <span
+                                          style={{ cursor: 'pointer' }}
+                                          onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
+                                        >
+                                          {article.headline}
+                                        </span>
+                                      </a>
+                                    </CustomTooltip>
+                                    <br />
+                                    {`${article.publication} -  (${formatDate(article.articleDate)})`}
+                                    {loadingArticleId === article.articleId && <CircularProgress size={17} />}
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </Card>
+                      </Grid>
+                    ))}
+                </>
+              )}
             </Grid>
           )}
           <Box display='flex' justifyContent='center' pb={4}>
@@ -214,7 +221,7 @@ const CardSelection = () => {
             </Button>
           </Box>
         </>
-      )}
+      ) : null}
     </Card>
   )
 }
