@@ -165,7 +165,9 @@ const ArticleListToolbar = ({
   setFetchTagsFlag,
   dataForDump,
   dataFetchFlag,
-  setDataFetchFlag
+  setDataFetchFlag,
+  pageCheck,
+  allCheck
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
@@ -340,14 +342,17 @@ const ArticleListToolbar = ({
   }
 
   const handlePublicationTypeSelection = publicationType => {
-    if (selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId) {
-      // If the clicked publication type is already selected, deselect it
-      setSelectedPublicationType('')
-    } else {
-      // If not selected, set it as the selected publication type
-      setSelectedPublicationType(publicationType)
-    }
-    handlePublicationTypeClose()
+    setSelectedPublicationType(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(publicationType)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== publicationType)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, publicationType]
+      }
+    })
   }
 
   const handleEditionTypeSelection = editionType => {
@@ -416,7 +421,13 @@ const ArticleListToolbar = ({
               <EmailIcon />
             </Button>
           </CustomTooltip>
-          <EmailDialog open={isEmailDialogOpen} onClose={handleEmailDialogClose} dataForMailDump={dataForDump} />
+          <EmailDialog
+            pageCheck={pageCheck}
+            allCheck={allCheck}
+            open={isEmailDialogOpen}
+            onClose={handleEmailDialogClose}
+            dataForMailDump={dataForDump}
+          />
         </Fragment>
       )}
 
@@ -440,6 +451,8 @@ const ArticleListToolbar = ({
             selectedStartDate={selectedStartDate}
             selectedEndDate={selectedEndDate}
             dataForDossierDownload={dataForDump}
+            pageCheck={pageCheck}
+            allCheck={allCheck}
           />
         </Fragment>
       )}
@@ -456,6 +469,8 @@ const ArticleListToolbar = ({
             open={excelDumpDialogOpen}
             handleClose={handleExcelDumpDialogClose}
             dataForExcelDump={dataForDump}
+            pageCheck={pageCheck}
+            allCheck={allCheck}
           />
         </Fragment>
       )}

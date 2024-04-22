@@ -15,7 +15,7 @@ import useUserDataAndCompanies from 'src/api/print-online-headlines/useToolbarCo
 
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { selectSelectedClient, selectShortCut } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
 
 // ** third party imports
@@ -31,8 +31,8 @@ const ToolbarComponent = ({
   setSelectedLanguages,
   selectedMedia,
   setSelectedMedia,
-  selectedTags,
-  setSelectedTags,
+  selectedTag,
+  setSelectedTag,
   tags,
   setTags,
   fetchTagsFlag
@@ -42,6 +42,7 @@ const ToolbarComponent = ({
   const [languageAnchor, setLanguageAnchor] = useState(null)
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
+  const [searchTermtags, setSearchTermtags] = useState('')
 
   // states
   const [media, setMedia] = useState('')
@@ -49,6 +50,7 @@ const ToolbarComponent = ({
   const { languages, cities } = useUserDataAndCompanies()
   console.log('media', media)
   const selectedClient = useSelector(selectSelectedClient)
+  const shortCutData = useSelector(selectShortCut)
 
   // const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : null
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -119,7 +121,7 @@ const ToolbarComponent = ({
   }
 
   const handleTagSelect = item => {
-    setSelectedTags(prevSelected => {
+    setSelectedTag(prevSelected => {
       const isAlreadySelected = prevSelected.includes(item)
 
       if (isAlreadySelected) {
@@ -132,9 +134,14 @@ const ToolbarComponent = ({
     })
   }
 
+  const handleSearchChangeTags = event => {
+    console.log('event==>', event.target.value)
+    setSearchTermtags(event.target.value)
+  }
+
   const handleSelectAllTags = () => {
     const allTags = tags.map(item => item)
-    setSelectedTags(allTags)
+    setSelectedTag(allTags)
   }
 
   const debounceMediaChange = debounce(value => {
@@ -159,7 +166,8 @@ const ToolbarComponent = ({
             Authorization: `Bearer ${storedToken}`
           },
           params: {
-            clientId: clientId
+            clientId: clientId,
+            searchTerm: searchTermtags
           }
         })
         setTags(tagsResponse.data.clientTags)
@@ -168,7 +176,7 @@ const ToolbarComponent = ({
       }
     }
     fetchData()
-  }, [clientId, selectedClient, setTags, fetchTagsFlag])
+  }, [clientId, selectedClient, setTags, fetchTagsFlag, searchTermtags])
 
   return (
     <AppBar sx={{ position: 'static' }}>
@@ -346,17 +354,29 @@ const ToolbarComponent = ({
 
         {/* Tags Dropdown Menu */}
         <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
-          {tags.length > 0 && (
+          {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>
-              <Button onClick={() => setSelectedTags([])}>Deselect All</Button>
+              <Button onClick={() => setSelectedTag([])}>Deselect All</Button>
             </ListItem>
-          )}
-          {tags?.map(item => (
-            <MenuItem key={item} onClick={() => handleTagSelect(item)} selected={selectedTags.includes(item)}>
-              {item}
-            </MenuItem>
+          }
+
+          {
+            <ListItem>
+              <TextField placeholder='Search Tags' value={searchTermtags} onChange={handleSearchChangeTags} />
+            </ListItem>
+          }
+          {tags?.map((item, index) => (
+            <div key={`${index}`}>
+              <MenuItem
+                onClick={() => handleTagSelect(item)}
+                selected={selectedTag?.includes(item) || shortCutData?.searchCriteria?.tags?.includes(item)}
+              >
+                {item}
+              </MenuItem>
+            </div>
           ))}
+          {/* Add more items as needed */}
         </Menu>
       </Toolbar>
     </AppBar>
