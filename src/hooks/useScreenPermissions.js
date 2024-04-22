@@ -9,7 +9,7 @@ const screens = [
   'printDashboard',
   'onlineDashboard',
   'analytics',
-  'visibilityImageQe'
+  'visibilityImageQE'
 ]
 
 const useScreenPermissions = () => {

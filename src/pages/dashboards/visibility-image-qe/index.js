@@ -30,6 +30,9 @@ import { styled } from '@mui/material/styles'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 
+// ** hooks
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
+
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
   color: theme.palette.primary.main
@@ -146,6 +149,13 @@ const VisibilityChartJS = () => {
     error: journalistClientError
   } = useJournalistClientVisibility({ media: selectedMedia, endpoint: '/journalistClientVisibility/' })
 
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['visibilityImageQE']
+
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
+
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
@@ -166,102 +176,116 @@ const VisibilityChartJS = () => {
           )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <VisibilityRanking
-            chartData={visibilityRanking}
-            loading={rankingLoading}
-            error={rankingError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!visibilityRankingPermission && (
+            <VisibilityRanking
+              chartData={visibilityRanking}
+              loading={rankingLoading}
+              error={rankingError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <PublicationVisibility
-            chartData={publicationVisibility}
-            loading={visibilityLoading}
-            error={visibilityError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!publicationsVisibilityPermission && (
+            <PublicationVisibility
+              chartData={publicationVisibility}
+              loading={visibilityLoading}
+              error={visibilityError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <AnalyticsPublicationClient
-            chartData={publicationClientVisibility}
-            loading={publicationClientLoading}
-            error={publicationClientError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!publicationsClientVisibilityPermission && (
+            <AnalyticsPublicationClient
+              chartData={publicationClientVisibility}
+              loading={publicationClientLoading}
+              error={publicationClientError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <AnalyticsSubject
-            chartData={subjectVisibility}
-            loading={subjectLoading}
-            error={subjectError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!reportingSubjectVisibilityPermission && (
+            <AnalyticsSubject
+              chartData={subjectVisibility}
+              loading={subjectLoading}
+              error={subjectError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <AnalyticsSubjectClient
-            chartData={subjectClientVisibility}
-            loading={subjectClientLoading}
-            error={subjectClientError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!reportingSubjectClientVisibilityPermission && (
+            <AnalyticsSubjectClient
+              chartData={subjectClientVisibility}
+              loading={subjectClientLoading}
+              error={subjectClientError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <AnalyticsJournalist
-            chartData={journalistVisibility}
-            loading={journalistLoading}
-            error={journalistError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!journalistVisibilityPermission && (
+            <AnalyticsJournalist
+              chartData={journalistVisibility}
+              loading={journalistLoading}
+              error={journalistError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <AnalyticsJournalistClient
-            chartData={journalistClientVisibility}
-            loading={journalistClientLoading}
-            error={journalistClientError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!journalistClientVisibilityPermission && (
+            <AnalyticsJournalistClient
+              chartData={journalistClientVisibility}
+              loading={journalistClientLoading}
+              error={journalistClientError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
       </Grid>
     </ApexChartWrapper>

@@ -29,17 +29,11 @@ const navigation = () => {
           icon: 'fluent-mdl2:join-online-meeting',
           hidden: !screenPermissions.onlineDashboard
         },
-        {
+        screenPermissions.visibilityImageQE && {
           title: 'Visibility Image QE',
           path: '/dashboards/visibility-image-qe',
-          icon: 'material-symbols-light:visibility-outline'
+          hidden: !screenPermissions.visibilityImageQE
         }
-
-        // screenPermissions.visibilityImageQe && {
-        //   title: 'Visibility Image QE',
-        //   path: '/dashboards/visibility-image-qe',
-        //   hidden: !screenPermissions.visibilityImageQe
-        // }
       ]
     },
 
