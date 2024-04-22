@@ -18,6 +18,11 @@ const navigation = () => {
           icon: 'tabler:shopping-cart',
           title: 'eCommerce',
           path: '/dashboards/ecommerce'
+        },
+        {
+          icon: 'tabler:shopping-cart',
+          title: 'eCommerce',
+          path: '/dashboards/ecommerce'
         }
       ]
     },

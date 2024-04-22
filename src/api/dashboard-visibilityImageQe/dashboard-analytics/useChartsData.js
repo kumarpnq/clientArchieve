@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { BASE_URL } from '../base'
 import { useSelector } from 'react-redux'
 import {
   selectSelectedClient,
@@ -9,8 +8,9 @@ import {
   selectSelectedEndDate
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
+import { BASE_URL } from 'src/api/base'
 
-const usePublicationClientVisibility = props => {
+const useChartsData = props => {
   const { media, endpoint } = props
 
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
@@ -31,9 +31,8 @@ const usePublicationClientVisibility = props => {
     const fetchData = async () => {
       const requestParams = {
         media: media,
-        clientId: clientId,
-
-        // companyIds: selectedCompetitions,
+        clientIds: clientId,
+        companyIds: selectedCompetitions,
         fromDate: formattedStartDate, //'2024-02-26 00:00:00',
         toDate: formattedEndDate //'2024-02-27 00:00:00'
       }
@@ -46,7 +45,7 @@ const usePublicationClientVisibility = props => {
           },
           params: requestParams
         })
-        setChartData(response.data.publicationVisibility || [])
+        setChartData(response.data.companyVisibility)
       } catch (error) {
         setError(error)
       } finally {
@@ -60,4 +59,4 @@ const usePublicationClientVisibility = props => {
   return { chartData, loading, error }
 }
 
-export default usePublicationClientVisibility
+export default useChartsData

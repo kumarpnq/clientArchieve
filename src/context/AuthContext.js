@@ -88,12 +88,17 @@ const AuthProvider = ({ children }) => {
 
         const returnUrl = router.query.returnUrl
 
+
+        // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+
         if (defaultScreen.option === 'printHeadlines') {
           router.replace('/headlines/print/')
         } else if (defaultScreen.option === 'onlineHeadlines') {
           router.replace('/headlines/online/')
         } else if (defaultScreen.option === 'bothHeadlines') {
           router.replace('/headlines/print-online/')
+        } else if (defaultScreen.option === 'visibilityImageQe') {
+          router.replace('/dashboards/visibility-image-qe/')
         } else {
           router.replace('/dashboards/analytics/')
         }
@@ -123,6 +128,8 @@ const AuthProvider = ({ children }) => {
           window.localStorage.removeItem('userData')
           window.localStorage.removeItem(authConfig.storageTokenKeyName)
 
+
+          // Navigate to the login page
           router.push('/login')
         } else {
           // Handle the error
