@@ -23,6 +23,7 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import { BASE_URL } from 'src/api/base'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -53,7 +54,7 @@ const CardSelection = () => {
       setLoading(true)
       const storedToken = localStorage.getItem('accessToken')
       if (storedToken) {
-        const response = await axios.get('http://51.68.220.77:8001/latestArticlesForCompetition/', {
+        const response = await axios.get(`${BASE_URL}/latestSocialFeedsForClientCompany/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -63,7 +64,7 @@ const CardSelection = () => {
         })
 
         // Sort the companies with articles first
-        const sortedCompanies = response.data.companies.sort((a, b) => b.articles.length - a.articles.length)
+        const sortedCompanies = response.data.companies.sort((a, b) => b.socialFeeds.length - a.socialFeeds.length)
         setCompanyData(sortedCompanies)
       }
     } catch (error) {
@@ -171,15 +172,16 @@ const CardSelection = () => {
               {companyData.length > 0 && (
                 <>
                   {companyData
-                    .filter(company => company.articles.length > 0) // Filter out companies with no articles
+                    .filter(company => company.socialFeeds
+                      .length > 0) // Filter out companies with no articles
                     .map(company => (
                       <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                         <Card sx={{ width: '100%', textAlign: 'center' }}>
                           <CardHeader title={<Typography color='primary'>{company.companyName}</Typography>} />
                           <Table>
                             <TableBody>
-                              {company.articles.map(article => (
-                                <TableRow key={article.articleId}>
+                              {company.socialFeeds.map(article => (
+                                <TableRow key={article.socialFeedId}>
                                   <TableCell sx={{ whiteSpace: 'nowrap' }}>
                                     <CustomTooltip
                                       title={article.headline}
@@ -201,7 +203,7 @@ const CardSelection = () => {
                                       </a>
                                     </CustomTooltip>
                                     <br />
-                                    {`${article.publication} -  (${formatDate(article.articleDate)})`}
+                                    {`${article.publication} -  (${formatDate(article.feedDate)})`}
                                     {loadingArticleId === article.articleId && <CircularProgress size={17} />}
                                   </TableCell>
                                 </TableRow>

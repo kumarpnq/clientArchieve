@@ -515,6 +515,7 @@ const TableSelection = () => {
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
           const selectedCompaniesString = selectedCompetitions.join(', ')
+          console.log("compnayarticle==>",selectedCompetitions)
 
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
             const lastChar = item.slice(-1)
