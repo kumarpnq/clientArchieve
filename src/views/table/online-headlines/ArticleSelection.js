@@ -147,6 +147,14 @@ const TableSelection = () => {
                   handleEdit(params.row)
                 }
               }
+            },
+            {
+              text: 'View',
+              menuItemProps: {
+                onClick: () => {
+                  handleView(params.row)
+                }
+              }
             }
           ]}
         />
@@ -269,22 +277,28 @@ const TableSelection = () => {
   ].filter(Boolean)
 
   const handleEdit = row => {
+    console.log('row', row)
     setSelectedArticle(row)
     setIsEditDialogOpen(true)
+  }
+
+  const handleView = row => {
+    console.log('row', row.socialFeedlink)
+    window.open(row.socialFeedlink, '_blank')
   }
 
   // const shortCutFlags = useSelector(selectShortCutFlag)
 
   //user shortcut
   useEffect(() => {
-    // setSelectedArticles([])
+    setSelectedArticles([])
+
     const fetchArticlesApi = async () => {
       try {
-        console.log('buttonchek')
+        setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
 
         if (storedToken) {
-          // Format start and end dates
           const formatDateTimes = (date, setTime, isEnd) => {
             let formattedDate = date
             if (isEnd) {
@@ -300,21 +314,20 @@ const TableSelection = () => {
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
           const selectedCompaniesString = selectedCompetitions.join(', ')
 
-          console.log('componay==>', selectedCompaniesString)
+          // const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+          //   const lastChar = item.slice(-1)
+          //   if (!isNaN(parseInt(lastChar))) {
+          //     return item.slice(0, -1)
+          //   }
 
-          const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
-            const lastChar = item.slice(-1)
-            if (!isNaN(parseInt(lastChar))) {
-              return item.slice(0, -1)
-            }
+          //   return item
+          // })
 
-            return item
-          })
-          const result = selectedMediaWithoutLastDigit.join(', ')
+          // const result = selectedMediaWithoutLastDigit.join(', ')
 
           const selectedTagString = selectedTags.join(', ')
 
-          const selectedCitiesString = selectedCities.join(', ')
+          const selectedCitiesString = selectedGeography.join(', ')
 
           const edition = selectedEditionType
             .map(i => {
@@ -328,11 +341,13 @@ const TableSelection = () => {
             })
             .join(', ')
 
-          const selectedLanguagesString = selectedLanguages
+          const selectedLanguagesString = selectedLanguage
             .map(i => {
               return i.id
             })
             .join(', ')
+
+          console.log('checnages--done==>')
 
           const headers = {
             'Content-Type': 'application/json',
@@ -341,9 +356,9 @@ const TableSelection = () => {
 
           const requestData = {
             clientId: clientId,
-            screenName: 'onlineHeadlines',
+            screenName: 'bothHeadlines',
             searchCriteria: {
-              requestEntity: 'online',
+              requestEntity: 'both',
               clientIds: clientId,
               companyIds: selectedCompaniesString,
               fromDate: formattedStartDate,
@@ -351,7 +366,7 @@ const TableSelection = () => {
               page: currentPage,
               recordsPerPage: recordsPerPage,
 
-              media: result,
+              // media: result,
               tags: selectedTagString,
               geography: selectedCitiesString,
               language: selectedLanguagesString,
