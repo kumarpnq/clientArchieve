@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import CloseIcon from '@mui/icons-material/Close'
+import Switch from '@mui/material/Switch'
 
 import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
@@ -16,6 +17,13 @@ Chart.register(...registerables)
 
 const MultipleCharts = props => {
   const [activeChart, setActiveChart] = useState('Line')
+  const [chartIndexAxis, setChartIndexAxis] = useState('x')
+  const [checked, setChecked] = useState(false)
+
+  const handleChange = () => {
+    setActiveChart('Bar')
+    setChecked(prev => !prev)
+  }
 
   const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
 
@@ -30,18 +38,24 @@ const MultipleCharts = props => {
   }
 
   const options = {
+    indexAxis: chartIndexAxis,
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: 'easeInOutQuart'
+    },
     scales: {
       x: {
-        grid: {
-          display: true
-        }
-      },
-      y: {
+        stacked: checked,
         beginAtZero: true,
         grid: {
           color: 'rgba(0, 0, 0, 0.05)'
+        }
+      },
+      y: {
+        grid: {
+          display: true
         }
       }
     },
@@ -60,21 +74,24 @@ const MultipleCharts = props => {
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.vScore)
+        data: chartData.map(data => data.vScore),
+        ...(checked && { stack: 'Stack 1' })
+      },
+      {
+        label: 'QE',
+        backgroundColor: getRandomColor(),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: chartData.map(data => data.QE),
+        ...(checked && { stack: 'Stack 1' })
       },
       {
         label: 'iScore',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.iScore)
-      },
-      {
-        label: 'QC',
-        backgroundColor: getRandomColor(),
-        borderColor: 'rgba(0, 0, 0, 0.1)',
-        borderWidth: 1,
-        data: chartData.map(data => data.QE)
+        data: chartData.map(data => data.iScore),
+        ...(checked && { stack: 'Stack 1' })
       }
     ]
   }
@@ -113,17 +130,39 @@ const MultipleCharts = props => {
           title='Company Visibility'
           action={
             <Box>
+              {chartIndexAxis === 'x' ? (
+                <IconButton
+                  onClick={() => {
+                    setActiveChart('Bar')
+                    setChartIndexAxis('y')
+                  }}
+                  sx={{
+                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
+                  }}
+                >
+                  <IconifyIcon icon='et:bargraph' />
+                </IconButton>
+              ) : (
+                <IconButton
+                  onClick={() => {
+                    setActiveChart('Bar')
+                    setChartIndexAxis('x')
+                  }}
+                  sx={{
+                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main',
+                    transform: 'rotate(90deg)'
+                  }}
+                >
+                  <IconifyIcon icon='et:bargraph' />
+                </IconButton>
+              )}
               <IconButton
-                onClick={() => setActiveChart('Bar')}
-                sx={{
-                  backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
-                  color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
+                onClick={() => {
+                  setChartIndexAxis('x')
+                  setActiveChart('Line')
                 }}
-              >
-                <IconifyIcon icon='et:bargraph' />
-              </IconButton>
-              <IconButton
-                onClick={() => setActiveChart('Line')}
                 sx={{
                   backgroundColor: activeChart === 'Line' ? 'primary.main' : '',
                   color: activeChart === 'Line' ? 'inherit' : 'primary.main'
@@ -131,6 +170,12 @@ const MultipleCharts = props => {
               >
                 <IconifyIcon icon='et:linegraph' />
               </IconButton>
+              <Switch
+                checked={checked}
+                onChange={handleChange}
+                sx={{ color: activeChart === 'Line' ? 'inherit' : 'primary.main' }}
+                inputProps={{ 'aria-label': 'toggle button' }}
+              />
             </Box>
           }
         />
