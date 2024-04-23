@@ -16,7 +16,7 @@ import IconifyIcon from 'src/@core/components/icon'
 
 Chart.register(...registerables)
 
-const VisibilityRanking = props => {
+const VolumeRanking = props => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeChart, setActiveChart] = useState('Line')
   const [activeMenu, setActiveMenu] = useState('main')
@@ -60,7 +60,6 @@ const VisibilityRanking = props => {
     ))
   }
 
-  // const mediaItems = ['Print', 'Online', 'Online&Headline']
   const chartItems = ['Bar', 'Line', 'Pie', 'Doughnut']
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
@@ -104,11 +103,11 @@ const VisibilityRanking = props => {
     labels: chartData.map(data => data.companyName.substring(0, 15)),
     datasets: [
       {
-        label: 'vScore',
+        label: 'Volume',
         backgroundColor: chartData.map(() => getRandomColor()),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.vScore)
+        data: chartData.map(data => data.volume)
       }
     ]
   }
@@ -129,7 +128,7 @@ const VisibilityRanking = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title='Visibility'
+            title='Volume Ranking'
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -147,7 +146,7 @@ const VisibilityRanking = props => {
 
       <Card>
         <CardHeader
-          title='Visibility Ranking'
+          title='Volume Ranking'
           action={
             <Box>
               <IconButton aria-haspopup='true' onClick={handleIconClick}>
@@ -198,4 +197,4 @@ const VisibilityRanking = props => {
   )
 }
 
-export default VisibilityRanking
+export default VolumeRanking

@@ -12,6 +12,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
+import Switch from '@mui/material/Switch'
 
 Chart.register(...registerables)
 
@@ -22,6 +23,13 @@ const AnalyticsJournalist = props => {
   const [chartLoaded, setChartLoaded] = useState(false)
   const [selectedCount, setSelectedCount] = useState(10)
   const [selectedFilter, setSelectedFilter] = useState('Top')
+  const [chartIndexAxis, setChartIndexAxis] = useState('x')
+  const [checked, setChecked] = useState(false)
+
+  const handleChange = () => {
+    setActiveChart('Bar')
+    setChecked(prev => !prev)
+  }
 
   const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
 
@@ -40,18 +48,24 @@ const AnalyticsJournalist = props => {
   }
 
   const options = {
+    indexAxis: chartIndexAxis,
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: 'easeInOutQuart'
+    },
     scales: {
       x: {
-        grid: {
-          display: true
-        }
-      },
-      y: {
+        stacked: checked,
         beginAtZero: true,
         grid: {
           color: 'rgba(0, 0, 0, 0.05)'
+        }
+      },
+      y: {
+        grid: {
+          display: true
         }
       }
     },
@@ -70,21 +84,24 @@ const AnalyticsJournalist = props => {
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: dataForCharts.map(data => data.vScore)
+        data: dataForCharts.map(data => data.vScore),
+        ...(checked && { stack: 'Stack 1' })
       },
       {
         label: 'iScore',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: dataForCharts.map(data => data.iScore)
+        data: dataForCharts.map(data => data.iScore),
+        ...(checked && { stack: 'Stack 1' })
       },
       {
         label: 'QE',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: dataForCharts.map(data => data.QE)
+        data: dataForCharts.map(data => data.QE),
+        ...(checked && { stack: 'Stack 1' })
       }
     ]
   }
@@ -156,15 +173,34 @@ const AnalyticsJournalist = props => {
           title='Journalist Visibility'
           action={
             <Box>
-              <IconButton
-                onClick={() => setActiveChart('Bar')}
-                sx={{
-                  backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
-                  color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
-                }}
-              >
-                <IconifyIcon icon='et:bargraph' />
-              </IconButton>
+              {chartIndexAxis === 'x' ? (
+                <IconButton
+                  onClick={() => {
+                    setActiveChart('Bar')
+                    setChartIndexAxis('y')
+                  }}
+                  sx={{
+                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
+                  }}
+                >
+                  <IconifyIcon icon='et:bargraph' />
+                </IconButton>
+              ) : (
+                <IconButton
+                  onClick={() => {
+                    setActiveChart('Bar')
+                    setChartIndexAxis('x')
+                  }}
+                  sx={{
+                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main',
+                    transform: 'rotate(90deg)'
+                  }}
+                >
+                  <IconifyIcon icon='et:bargraph' />
+                </IconButton>
+              )}
               <IconButton
                 onClick={() => setActiveChart('Line')}
                 sx={{
@@ -174,6 +210,12 @@ const AnalyticsJournalist = props => {
               >
                 <IconifyIcon icon='et:linegraph' />
               </IconButton>
+              <Switch
+                checked={checked}
+                onChange={handleChange}
+                sx={{ color: activeChart === 'Line' ? 'inherit' : 'primary.main' }}
+                inputProps={{ 'aria-label': 'toggle button' }}
+              />
               <IconButton aria-haspopup='true' onClick={handleIconClick}>
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>

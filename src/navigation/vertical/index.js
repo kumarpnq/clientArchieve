@@ -33,7 +33,13 @@ const Navigation = () => {
         screenPermissions.visibilityImageQE && {
           title: 'Visibility Image QE',
           path: '/dashboards/visibility-image-qe',
+          icon: 'mage:chart-up',
           hidden: !screenPermissions.visibilityImageQE
+        },
+        {
+          title: 'Visibility & Count ',
+          path: '/dashboards/visibility-&-count',
+          icon: 'oui:token-token-count'
         }
       ]
     },
