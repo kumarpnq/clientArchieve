@@ -25,7 +25,7 @@ const Competition = props => {
   const userData = useSelector(selectUserData)
   const shortCutData = useSelector(selectShortCut)
 
-  console.log('shortcutdata==>', shortCutData)
+  console.log('shortcutdata==>', selectedClient)
 
   const competitionSelection = userData.clientArchiveRoles
     .filter(i => i.name === 'competition')
@@ -36,7 +36,7 @@ const Competition = props => {
   const { competitions } = useFetchCompetition()
 
   const [localeComps, setLocaleComps] = useState([])
-
+  console.log("locaplcomps==>", localeComps)
   const handleClientClick = selectedComp => {
     setLocaleComps(prevSelected => {
       const isAlreadySelected = prevSelected.includes(selectedComp)

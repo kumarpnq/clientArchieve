@@ -95,6 +95,11 @@ const TableSelection = () => {
     setPdfSrc('')
   }
 
+  const handleView = row => {
+    console.log('row', row.socialFeedlink)
+    window.open(row.socialFeedlink, '_blank')
+  }
+
   // ** Renders social feed column
   const renderArticle = params => {
     const { row } = params
@@ -179,51 +184,77 @@ const TableSelection = () => {
       headerName: 'Article',
       renderCell: renderArticle
     },
-
     {
       flex: 0.1,
       minWidth: 5,
       field: 'more',
       headerName: 'More',
-      renderCell: params => (
-        <OptionsMenu
+      renderCell: params => {
+        // Check if articleId is online
+        if (params.row.articleType === 'online') {
+          return <OptionsMenu
           iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
           options={[
+            // {
+            //   text: 'Edit Detail',
+            //   menuItemProps: {
+            //     onClick: () => {
+            //       handleEdit(params.row)
+            //     }
+            //   }
+            // },
             {
-              text: 'View HTML',
+              text: 'View',
               menuItemProps: {
                 onClick: () => {
-                  fetchReadArticleFile('htm', params.row)
-                  setHtmlDialogOpen(true)
-                  setSelectedArticle(params.row)
-                }
-              }
-            },
-            {
-              text: 'View JPG',
-              menuItemProps: {
-                onClick: () => {
-                  fetchReadArticleFile('jpg', params.row)
-                  setJpgDialogOpen(true)
-                  setSelectedArticle(params.row)
-                }
-              }
-            },
-            {
-              text: 'View PDF',
-              menuItemProps: {
-                onClick: () => {
-                  fetchReadArticleFile('pdf', params.row)
-                  setPdfDialogOpen(true)
-                  setSelectedArticle(params.row)
+                  handleView(params.row)
                 }
               }
             }
           ]}
         />
-      )
+        }
+        return (
+          <OptionsMenu
+            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+            options={[
+              {
+                text: 'View HTML',
+                menuItemProps: {
+                  onClick: () => {
+                    fetchReadArticleFile('htm', params.row)
+                    setHtmlDialogOpen(true)
+                    setSelectedArticle(params.row)
+                  }
+                }
+              },
+              {
+                text: 'View JPG',
+                menuItemProps: {
+                  onClick: () => {
+                    fetchReadArticleFile('jpg', params.row)
+                    setJpgDialogOpen(true)
+                    setSelectedArticle(params.row)
+                  }
+                }
+              },
+              {
+                text: 'View PDF',
+                menuItemProps: {
+                  onClick: () => {
+                    fetchReadArticleFile('pdf', params.row)
+                    setPdfDialogOpen(true)
+                    setSelectedArticle(params.row)
+                  }
+                }
+              }
+            ]}
+          />
+        )
+      }
     }
   ]
+  
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
@@ -524,7 +555,7 @@ const TableSelection = () => {
 
           const totalRecords = response.data.totalAllArticles
 
-          setArticles(response.data.allArticles)
+          setArticles(response.data.articles)
 
           setPaginationModel(prevPagination => ({
             ...prevPagination,

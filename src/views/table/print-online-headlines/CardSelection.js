@@ -53,7 +53,7 @@ const CardSelection = () => {
       setLoading(true)
       const storedToken = localStorage.getItem('accessToken')
       if (storedToken) {
-        const response = await axios.get(`${BASE_URL}/latestSocialFeedsForClientCompany/`, {
+        const response = await axios.get(`${BASE_URL}/latestSocialFeedsAndArticlesForClientCompany/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -63,7 +63,7 @@ const CardSelection = () => {
         })
 
         // Sort the companies with articles first
-        const sortedCompanies = response.data.companies.sort((a, b) => b.socialFeeds.length - a.socialFeeds.length)
+        const sortedCompanies = response.data.companies.sort((a, b) => b.articlesAndSocialFeeds.length - a.articlesAndSocialFeeds.length)
         setCompanyData(sortedCompanies)
       }
     } catch (error) {
@@ -168,15 +168,15 @@ const CardSelection = () => {
               {companyData.length > 0 && (
                 <>
                   {companyData
-                    .filter(company => company?.articles?.length > 0) // Filter out companies with no articles
+                    .filter(company => company?.articlesAndSocialFeeds?.length > 0) // Filter out companies with no articles
                     .map(company => (
                       <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                         <Card sx={{ width: '100%', textAlign: 'center' }}>
                           <CardHeader title={<Typography color='primary'>{company.companyName}</Typography>} />
                           <Table>
                             <TableBody>
-                              {company.articles.map(article => (
-                                <TableRow key={article.articleId}>
+                              {company.articlesAndSocialFeeds.map(article => (
+                                <TableRow key={article.documentId}>
                                   <TableCell sx={{ whiteSpace: 'nowrap' }}>
                                     <CustomTooltip
                                       title={article.headline}
@@ -198,7 +198,7 @@ const CardSelection = () => {
                                       </a>
                                     </CustomTooltip>
                                     <br />
-                                    {`${article.publication} -  (${formatDate(article.articleDate)})`}
+                                    {`${article.publication} -  (${formatDate(article.date)})`}
                                     {loadingArticleId === article.articleId && <CircularProgress size={17} />}
                                   </TableCell>
                                 </TableRow>
