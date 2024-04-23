@@ -297,7 +297,10 @@ const ToolbarComponent = ({
             <MenuItem
               key={city.cityId}
               onClick={() => handleCityClick(city.cityId)}
-              selected={selectedGeography.includes(city.cityId)}
+              selected={
+                selectedGeography.includes(city.cityId) ||
+                shortCutData?.searchCriteria?.geography?.includes(city.cityId)
+              }
             >
               {city.cityName}
             </MenuItem>
@@ -316,7 +319,10 @@ const ToolbarComponent = ({
             <MenuItem
               key={languageCode}
               onClick={() => handleLanguageClick(languageCode)}
-              selected={selectedLanguages.includes(languageCode)}
+              selected={
+                selectedLanguages.includes(languageCode) ||
+                shortCutData?.searchCriteria?.language?.includes(languageCode)
+              }
             >
               {languageCode.name}
             </MenuItem>

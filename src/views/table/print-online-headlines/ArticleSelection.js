@@ -354,8 +354,6 @@ const TableSelection = () => {
         const storedToken = localStorage.getItem('accessToken')
 
         if (storedToken) {
-          // Format start and end dates
-
           const formatDateTimes = (date, setTime, isEnd) => {
             let formattedDate = date
             if (isEnd) {
