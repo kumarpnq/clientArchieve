@@ -381,109 +381,112 @@ const TableSelection = () => {
 
   //user shortcut
   useEffect(() => {
-    setSelectedArticles([])
+    if (shortCutFlags) {
+      console.log('betwwiwn==>')
+      setSelectedArticles([])
 
-    const fetchArticlesApi = async () => {
-      try {
-        setLoading(true)
-        const storedToken = localStorage.getItem('accessToken')
+      const fetchArticlesApi = async () => {
+        try {
+          setLoading(true)
+          const storedToken = localStorage.getItem('accessToken')
 
-        if (storedToken) {
-          // Format start and end dates
-          const formatDateTimes = (date, setTime, isEnd) => {
-            let formattedDate = date
-            if (isEnd) {
-              formattedDate = date.add(1, 'day')
-            }
-            const isoString = formattedDate.toISOString().slice(0, 10)
-            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+          if (storedToken) {
+            // Format start and end dates
+            const formatDateTimes = (date, setTime, isEnd) => {
+              let formattedDate = date
+              if (isEnd) {
+                formattedDate = date.add(1, 'day')
+              }
+              const isoString = formattedDate.toISOString().slice(0, 10)
+              const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
 
-            return `${isoString} ${timeString}`
-          }
-
-          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
-          const selectedCompaniesString = selectedCompetitions.join(', ')
-
-          const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
-            const lastChar = item.slice(-1)
-            if (!isNaN(parseInt(lastChar))) {
-              return item.slice(0, -1)
+              return `${isoString} ${timeString}`
             }
 
-            return item
-          })
-          const result = selectedMediaWithoutLastDigit.join(', ')
+            const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+            const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+            const selectedCompaniesString = selectedCompetitions.join(', ')
 
-          const selectedTagString = selectedTag.join(', ')
+            const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+              const lastChar = item.slice(-1)
+              if (!isNaN(parseInt(lastChar))) {
+                return item.slice(0, -1)
+              }
 
-          const selectedCitiesString = selectedCities.join(', ')
-
-          const edition = selectedEditionType
-            .map(i => {
-              return i.editionTypeId
+              return item
             })
-            .join(', ')
+            const result = selectedMediaWithoutLastDigit.join(', ')
 
-          const publicationtype = selectedPublicationType
-            .map(i => {
-              return i.publicationTypeId
-            })
-            .join(', ')
+            const selectedTagString = selectedTag.join(', ')
 
-          const selectedLanguagesString = selectedLanguages
-            .map(i => {
-              return i.id
-            })
-            .join(', ')
+            const selectedCitiesString = selectedCities.join(', ')
 
-          const headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${storedToken}`
-          }
+            const edition = selectedEditionType
+              .map(i => {
+                return i.editionTypeId
+              })
+              .join(', ')
 
-          const requestData = {
-            clientId: clientId,
-            screenName: 'printHeadlines',
-            searchCriteria: {
-              requestEntity: 'print',
-              clientIds: clientId,
-              companyIds: selectedCompaniesString,
-              fromDate: formattedStartDate,
-              toDate: formattedEndDate,
-              page: currentPage,
-              recordsPerPage: recordsPerPage,
+            const publicationtype = selectedPublicationType
+              .map(i => {
+                return i.publicationTypeId
+              })
+              .join(', ')
 
-              media: result,
-              tags: selectedTagString,
-              geography: selectedCitiesString,
-              language: selectedLanguagesString,
+            const selectedLanguagesString = selectedLanguages
+              .map(i => {
+                return i.id
+              })
+              .join(', ')
 
-              // Advanced search
-              headline: searchParameters.searchHeadline,
-              body: searchParameters.searchBody,
-              journalist: searchParameters.journalist,
-              wordCombo: searchParameters.combinationOfWords,
-              anyWord: searchParameters.anyOfWords,
-              ignoreWords: searchParameters.ignoreThis,
-              phrase: searchParameters.exactPhrase,
-
-              editionType: edition,
-              sortby: selectedSortBy,
-
-              publicationCategory: publicationtype
+            const headers = {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${storedToken}`
             }
-          }
 
-          const res = await axios.post(`${BASE_URL}/userConfigRequest`, requestData, { headers })
+            const requestData = {
+              clientId: clientId,
+              screenName: 'printHeadlines',
+              searchCriteria: {
+                requestEntity: 'print',
+                clientIds: clientId,
+                companyIds: selectedCompaniesString,
+                fromDate: formattedStartDate,
+                toDate: formattedEndDate,
+                page: currentPage,
+                recordsPerPage: recordsPerPage,
+
+                media: result,
+                tags: selectedTagString,
+                geography: selectedCitiesString,
+                language: selectedLanguagesString,
+
+                // Advanced search
+                headline: searchParameters.searchHeadline,
+                body: searchParameters.searchBody,
+                journalist: searchParameters.journalist,
+                wordCombo: searchParameters.combinationOfWords,
+                anyWord: searchParameters.anyOfWords,
+                ignoreWords: searchParameters.ignoreThis,
+                phrase: searchParameters.exactPhrase,
+
+                editionType: edition,
+                sortby: selectedSortBy,
+
+                publicationCategory: publicationtype
+              }
+            }
+
+            const res = await axios.post(`${BASE_URL}/userConfigRequest`, requestData, { headers })
+          }
+        } catch (error) {
+          console.error('Error fetching articles:', error)
+        } finally {
+          setLoading(false)
         }
-      } catch (error) {
-        console.error('Error fetching articles:', error)
-      } finally {
-        setLoading(false)
       }
+      fetchArticlesApi()
     }
-    fetchArticlesApi()
   }, [shortCutFlags])
 
   useEffect(() => {
