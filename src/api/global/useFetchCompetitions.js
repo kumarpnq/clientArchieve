@@ -14,29 +14,31 @@ const useFetchCompetition = () => {
   const clientId = selectedClient ? selectedClient.clientId : null
 
   useEffect(() => {
-    const fetchCompetitions = async () => {
-      const storedToken = localStorage.getItem('accessToken')
-      try {
-        setLoading(true)
+    if (clientId) {
+      const fetchCompetitions = async () => {
+        const storedToken = localStorage.getItem('accessToken')
+        try {
+          setLoading(true)
 
-        const response = await axios.get(`${BASE_URL}/companyListByClient/`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          params: {
-            clientId: clientId
-          }
-        })
-        setCompetitions(response.data.companies)
-        setLoading(false)
-      } catch (error) {
-        console.log(error)
-        setCompetitions([])
-        setError(error)
-        setLoading(false)
+          const response = await axios.get(`${BASE_URL}/companyListByClient/`, {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            },
+            params: {
+              clientId: clientId
+            }
+          })
+          setCompetitions(response.data.companies)
+          setLoading(false)
+        } catch (error) {
+          console.log(error)
+          setCompetitions([])
+          setError(error)
+          setLoading(false)
+        }
       }
+      fetchCompetitions()
     }
-    fetchCompetitions()
   }, [clientId])
 
   return { competitions, loading, error }
