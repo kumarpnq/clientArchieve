@@ -63,7 +63,9 @@ const CardSelection = () => {
         })
 
         // Sort the companies with articles first
-        const sortedCompanies = response.data.companies.sort((a, b) => b.articlesAndSocialFeeds.length - a.articlesAndSocialFeeds.length)
+        const sortedCompanies = response.data.companies.sort(
+          (a, b) => b.articlesAndSocialFeeds.length - a.articlesAndSocialFeeds.length
+        )
         setCompanyData(sortedCompanies)
       }
     } catch (error) {
@@ -191,7 +193,7 @@ const CardSelection = () => {
                                       >
                                         <span
                                           style={{ cursor: 'pointer' }}
-                                          onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
+                                          // onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
                                         >
                                           {article.headline}
                                         </span>
