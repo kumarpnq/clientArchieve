@@ -24,6 +24,9 @@ export const fetchArticles = async ({
   sortby,
   language
 }) => {
+  let cancel
+  const source = axios.CancelToken.source()
+
   try {
     const storedToken = localStorage.getItem('accessToken')
 
@@ -56,18 +59,31 @@ export const fetchArticles = async ({
       headers: {
         Authorization: `Bearer ${storedToken}`
       },
-      params: request_params
+      params: request_params,
+      cancelToken: source.token
     })
 
     return response.data
   } catch (error) {
-    if (error.response.status === 401) {
+    if (axios.isCancel(error)) {
+      console.log('Request canceled:', error.message)
+    } else if (error.response && error.response.status === 401) {
       // Unauthorized error, navigate to the login page
       localStorage.removeItem('accessToken')
       localStorage.removeItem('userData')
       window.location.href = '/login'
+    } else {
+      throw error
     }
+  } finally {
+    if (cancel) {
+      cancel()
+    }
+  }
+}
 
-    throw error
+export const cancelFetchArticles = () => {
+  if (source) {
+    source.cancel('Request canceled by user')
   }
 }

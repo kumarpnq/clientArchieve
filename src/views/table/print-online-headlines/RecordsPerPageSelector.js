@@ -54,9 +54,10 @@ const RecordsPerPageSelector = ({ recordsPerPage, handleRecordsPerPageUpdate }) 
         }}
       >
         {' '}
-        <MenuItem onClick={() => handlePredefinedUpdate(10)}>10</MenuItem>
-        <MenuItem onClick={() => handlePredefinedUpdate(30)}>30</MenuItem>
-        <MenuItem>
+        <MenuItem onClick={() => handlePredefinedUpdate(100)}>100</MenuItem>
+        <MenuItem onClick={() => handlePredefinedUpdate(200)}>200</MenuItem>
+        <MenuItem onClick={() => handlePredefinedUpdate(500)}>500</MenuItem>
+        {/* <MenuItem>
           <TextField
             label='Custom'
             type='number'
@@ -67,7 +68,7 @@ const RecordsPerPageSelector = ({ recordsPerPage, handleRecordsPerPageUpdate }) 
           <Button size='small' onClick={handleCustomUpdate}>
             Update
           </Button>
-        </MenuItem>
+        </MenuItem> */}
       </Popover>
     </Box>
   )
