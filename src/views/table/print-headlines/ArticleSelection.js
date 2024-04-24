@@ -493,6 +493,22 @@ const TableSelection = () => {
     setSelectedArticles([])
 
     const fetchArticlesApi = async () => {
+      console.log('checking', {
+        selectedEndDate,
+        selectedFromDate,
+        currentPage,
+        recordsPerPage,
+        selectedCompetitions,
+        selectedLanguages,
+        clientId,
+        selectedMedia,
+        selectedTag,
+        selectedCities,
+        searchParameters,
+        selectedEditionType,
+        selectedPublicationType,
+        selectedSortBy
+      })
       try {
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
@@ -613,8 +629,7 @@ const TableSelection = () => {
     searchParameters,
     selectedEditionType,
     selectedPublicationType,
-    selectedSortBy,
-    dataFetchFlag
+    selectedSortBy
   ])
 
   // Divide social feeds into left and right columns
