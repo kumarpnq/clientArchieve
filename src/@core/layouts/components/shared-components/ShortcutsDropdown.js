@@ -151,7 +151,7 @@ const ShortcutsDropdown = props => {
               }
             }}
           >
-            {shortcuts.map(shortcut => (
+            {shortcuts?.map(shortcut => (
               <Grid
                 item
                 xs={6}
