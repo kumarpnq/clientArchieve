@@ -1,41 +1,43 @@
-import React, { useState } from 'react'
-import Box from '@mui/material/Box'
+import React, { useEffect, useState } from 'react'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import CloseIcon from '@mui/icons-material/Close'
-import Switch from '@mui/material/Switch'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
 
-import { Line, Bar } from 'react-chartjs-2'
-import { Chart, registerables } from 'chart.js'
+// icons
 import IconifyIcon from 'src/@core/components/icon'
 
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 
+// ** charts
+import { Bar } from 'react-chartjs-2'
+import { Chart, registerables } from 'chart.js'
+
 Chart.register(...registerables)
 
-const MultipleCharts = props => {
-  const [activeChart, setActiveChart] = useState('Line')
-  const [chartIndexAxis, setChartIndexAxis] = useState('x')
-  const [checked, setChecked] = useState(false)
+const TonalityVScore = props => {
+  const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeType, setActiveType] = useState('chart')
 
-  const handleChange = () => {
-    setActiveChart('Bar')
-    setChecked(prev => !prev)
-  }
-
-  const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
-  let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
+
+  const backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
 
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -58,7 +60,7 @@ const MultipleCharts = props => {
   }
 
   const options = {
-    indexAxis: chartIndexAxis,
+    indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
     animation: {
@@ -67,7 +69,7 @@ const MultipleCharts = props => {
     },
     scales: {
       x: {
-        stacked: checked,
+        stacked: true,
         beginAtZero: true,
         grid: {
           color: 'rgba(0, 0, 0, 0.05)'
@@ -86,45 +88,32 @@ const MultipleCharts = props => {
     }
   }
 
-  const vscore = chartData.map(data => data.vScore)
-  const QE = chartData.map(data => data.QE)
-  const iScore = chartData.map(data => data.iScore)
-
   const data = {
     labels: chartData.map(data => data.companyName.substring(0, 15)),
     datasets: [
       {
-        type: 'line',
-        label: 'Average',
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgb(255, 99, 132)',
-        borderWidth: 2,
-        fill: false,
-        data: [...vscore, ...QE, ...iScore]
-      },
-      {
-        label: 'vScore',
-        backgroundColor: getRandomColor(),
+        label: 'Negative',
+        backgroundColor: warning,
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.vScore),
-        ...(checked && { stack: 'Stack 1' })
+        data: chartData.map(data => data.negative),
+        stack: 'Stack 1'
       },
       {
-        label: 'QE',
-        backgroundColor: getRandomColor(),
+        label: 'Neutral',
+        backgroundColor: yellow,
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.QE),
-        ...(checked && { stack: 'Stack 1' })
+        data: chartData.map(data => data.neutral),
+        stack: 'Stack 1'
       },
       {
-        label: 'iScore',
-        backgroundColor: getRandomColor(),
+        label: 'positive',
+        backgroundColor: green,
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.iScore),
-        ...(checked && { stack: 'Stack 1' })
+        data: chartData.map(data => data.positive),
+        stack: 'Stack 1'
       }
     ]
   }
@@ -138,11 +127,11 @@ const MultipleCharts = props => {
         setActiveType('table')
         break
       case 'image':
-        toBlob(document.getElementById('multiple-charts')).then(function (blob) {
+        toBlob(document.getElementById('tonality-vScore')).then(function (blob) {
           const url = window.URL.createObjectURL(blob)
           const a = document.createElement('a')
           a.href = url
-          a.download = 'multiple-charts.png'
+          a.download = 'tonalityVScore.png'
           document.body.appendChild(a)
           a.click()
           window.URL.revokeObjectURL(url)
@@ -150,12 +139,12 @@ const MultipleCharts = props => {
         break
       case 'pdf':
         const doc = new jsPDF()
-        toBlob(document.getElementById('multiple-charts')).then(function (blob) {
+        toBlob(document.getElementById('tonality-vScore')).then(function (blob) {
           const url = URL.createObjectURL(blob)
           const img = new Image()
           img.onload = function () {
             doc.addImage(this, 'PNG', 10, 10, 180, 100)
-            doc.save('multiple-charts.pdf')
+            doc.save('tonalityVScore.pdf')
             URL.revokeObjectURL(url)
           }
           img.src = url
@@ -187,12 +176,47 @@ const MultipleCharts = props => {
     setIsChartClicked(false)
   }
 
+  const getColorStyle = company => {
+    if (company.negative === 0 && company.neutral === 0 && company.positive === 0) {
+      return { backgroundColor: '#FECACA' } // Example color for zero values
+    }
+
+    return {}
+  }
+
+  const TableComp = () => {
+    return (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: primary }}>
+              <TableCell size='small'>Company</TableCell>
+              <TableCell size='small'>Negative</TableCell>
+              <TableCell size='small'>Neutral</TableCell>
+              <TableCell size='small'>Positive</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {chartData.map((company, index) => (
+              <TableRow key={index} sx={getColorStyle(company)}>
+                <TableCell size='small'>{company.companyName}</TableCell>
+                <TableCell size='small'>{company.negative}</TableCell>
+                <TableCell size='small'>{company.neutral}</TableCell>
+                <TableCell size='small'>{company.positive}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
+  }
+
   return (
     <>
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title='Company Visibility'
+            title='Tonality VScore'
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -200,64 +224,17 @@ const MultipleCharts = props => {
             }
           />
           <CardContent>
-            {activeChart === 'Bar' && <Bar data={data} height={500} options={options} />}
-            {activeChart === 'Line' && <Line data={data} height={500} options={options} />}
+            {activeType === 'chart' && <Bar data={data} height={500} options={options} />}
+            {activeType === 'table' && <TableComp />}
           </CardContent>
         </Card>
       </Dialog>
       <Card>
         <CardHeader
-          title='Company Visibility'
-          sx={{ mb: 4.4 }}
+          title='Tonality VScore'
+          sx={{ mb: 2.5 }}
           action={
             <Box>
-              {chartIndexAxis === 'x' ? (
-                <IconButton
-                  onClick={() => {
-                    setActiveChart('Bar')
-                    setChartIndexAxis('y')
-                  }}
-                  sx={{
-                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
-                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
-                  }}
-                >
-                  <IconifyIcon icon='ic:baseline-bar-chart' />
-                </IconButton>
-              ) : (
-                <IconButton
-                  onClick={() => {
-                    setActiveChart('Bar')
-                    setChartIndexAxis('x')
-                  }}
-                  sx={{
-                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
-                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main',
-                    transform: 'rotate(90deg)'
-                  }}
-                >
-                  <IconifyIcon icon='ic:baseline-bar-chart' />
-                </IconButton>
-              )}
-              <IconButton
-                onClick={() => {
-                  setChartIndexAxis('x')
-                  setActiveChart('Line')
-                }}
-                sx={{
-                  backgroundColor: activeChart === 'Line' ? 'primary.main' : '',
-                  color: activeChart === 'Line' ? 'inherit' : 'primary.main'
-                }}
-              >
-                <IconifyIcon icon='lets-icons:line-up' />
-              </IconButton>
-              <Switch
-                checked={checked}
-                onChange={handleChange}
-                sx={{ color: activeChart === 'Line' ? 'inherit' : 'primary.main' }}
-                inputProps={{ 'aria-label': 'toggle button' }}
-              />
-
               <IconButton aria-haspopup='true' onClick={handleIconClick}>
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
@@ -271,16 +248,11 @@ const MultipleCharts = props => {
             </Box>
           }
         />
-        <CardContent onClick={handleChartClick} id='multiple-charts'>
+        <CardContent onClick={handleChartClick} id='tonality-vScore'>
           {loading ? (
-            <Box>
-              <CircularProgress />
-            </Box>
+            <CircularProgress />
           ) : (
-            <>
-              {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
-              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
-            </>
+            <>{activeType === 'chart' ? <Bar data={data} height={350} options={options} /> : <TableComp />}</>
           )}
         </CardContent>
       </Card>
@@ -288,4 +260,4 @@ const MultipleCharts = props => {
   )
 }
 
-export default MultipleCharts
+export default TonalityVScore

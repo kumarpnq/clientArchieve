@@ -40,6 +40,11 @@ const Navigation = () => {
           title: 'Visibility & Count ',
           path: '/dashboards/visibility-&-count',
           icon: 'oui:token-token-count'
+        },
+        {
+          title: 'Tonality',
+          path: '/dashboards/tonality',
+          icon: 'material-symbols-light:tonality'
         }
       ]
     },

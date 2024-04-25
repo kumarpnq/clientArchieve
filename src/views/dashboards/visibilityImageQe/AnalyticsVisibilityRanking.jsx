@@ -105,7 +105,7 @@ const VisibilityRanking = props => {
     datasets: [
       {
         label: 'vScore',
-        backgroundColor: chartData.map(() => getRandomColor()),
+        backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
         data: chartData.map(data => data.vScore)

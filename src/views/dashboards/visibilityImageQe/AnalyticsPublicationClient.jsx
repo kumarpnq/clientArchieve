@@ -38,13 +38,26 @@ const AnalyticsPublicationClient = props => {
   const dataForCharts = topData || bottomData
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
+  let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
 
-  const backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[array[i], array[j]] = [array[j], array[i]]
+    }
+
+    return array
+  }
+
+  shuffleArray(backgroundColors)
+
+  let colorIndex = 0
 
   const getRandomColor = () => {
-    const randomIndex = Math.floor(Math.random() * backgroundColors.length)
+    const color = backgroundColors[colorIndex]
+    colorIndex = (colorIndex + 1) % backgroundColors.length // Move to the next color
 
-    return backgroundColors[randomIndex]
+    return color
   }
 
   const options = {
@@ -184,7 +197,7 @@ const AnalyticsPublicationClient = props => {
                     color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
                   }}
                 >
-                  <IconifyIcon icon='et:bargraph' />
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
                 </IconButton>
               ) : (
                 <IconButton
@@ -198,7 +211,7 @@ const AnalyticsPublicationClient = props => {
                     transform: 'rotate(90deg)'
                   }}
                 >
-                  <IconifyIcon icon='et:bargraph' />
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
                 </IconButton>
               )}
               <IconButton
@@ -208,7 +221,7 @@ const AnalyticsPublicationClient = props => {
                   color: activeChart === 'Line' ? 'inherit' : 'primary.main'
                 }}
               >
-                <IconifyIcon icon='et:linegraph' />
+                <IconifyIcon icon='lets-icons:line-up' />
               </IconButton>
               <Switch
                 checked={checked}

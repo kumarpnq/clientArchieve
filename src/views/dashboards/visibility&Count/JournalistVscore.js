@@ -16,7 +16,7 @@ import IconifyIcon from 'src/@core/components/icon'
 
 Chart.register(...registerables)
 
-const SubjectVscore = props => {
+const JournalistVscore = props => {
   const { chartData, loading, error, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
 
   console.log(chartData)
@@ -32,9 +32,9 @@ const SubjectVscore = props => {
   }
 
   const data = {
-    labels: chartData.map(data => data.reportingSubject),
-    datasets: chartData.flatMap((data, index) => ({
-      label: data.reportingSubject,
+    labels: chartData.map(data => data.journalist.trim()),
+    datasets: chartData.map((data, index) => ({
+      label: data.journalist,
       data: data.companies.map(company => company.vScore),
       backgroundColor: getRandomColor(),
       order: index,
@@ -71,7 +71,7 @@ const SubjectVscore = props => {
 
   return (
     <Card>
-      <CardHeader title='Subject VScore' />
+      <CardHeader title='Journalist VScore' />
       <CardContent>
         <Bar data={data} options={options} />
       </CardContent>
@@ -79,4 +79,4 @@ const SubjectVscore = props => {
   )
 }
 
-export default SubjectVscore
+export default JournalistVscore

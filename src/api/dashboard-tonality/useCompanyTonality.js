@@ -10,7 +10,7 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const useJournalistVscore = props => {
+const useTonality = props => {
   const { media, endpoint } = props
 
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
@@ -46,8 +46,10 @@ const useJournalistVscore = props => {
           },
           params: requestParams
         })
-        setChartData(response.data.journalistVscore)
+
+        setChartData(response.data.companyTonality || response.data.tonalityVscore)
       } catch (error) {
+        console.log(error)
         setError(error)
       } finally {
         setLoading(false)
@@ -60,4 +62,4 @@ const useJournalistVscore = props => {
   return { chartData, loading, error }
 }
 
-export default useJournalistVscore
+export default useTonality
