@@ -196,7 +196,7 @@ const AnalyticsSubjectClient = props => {
                     color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
                   }}
                 >
-                  <IconifyIcon icon='et:bargraph' />
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
                 </IconButton>
               ) : (
                 <IconButton
@@ -210,7 +210,7 @@ const AnalyticsSubjectClient = props => {
                     transform: 'rotate(90deg)'
                   }}
                 >
-                  <IconifyIcon icon='et:bargraph' />
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
                 </IconButton>
               )}
               <IconButton
@@ -220,7 +220,7 @@ const AnalyticsSubjectClient = props => {
                   color: activeChart === 'Line' ? 'inherit' : 'primary.main'
                 }}
               >
-                <IconifyIcon icon='et:linegraph' />
+                <IconifyIcon icon='lets-icons:line-up' />
               </IconButton>
               <Switch
                 checked={checked}

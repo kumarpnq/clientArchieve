@@ -8,10 +8,16 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import CloseIcon from '@mui/icons-material/Close'
 import Switch from '@mui/material/Switch'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 
 import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
+
+// ** third party imports
+import { toBlob } from 'html-to-image'
+import jsPDF from 'jspdf'
 
 Chart.register(...registerables)
 
@@ -19,6 +25,8 @@ const MultipleCharts = props => {
   const [activeChart, setActiveChart] = useState('Line')
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
   const [checked, setChecked] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [activeType, setActiveType] = useState('chart')
 
   const handleChange = () => {
     setActiveChart('Bar')
@@ -78,9 +86,22 @@ const MultipleCharts = props => {
     }
   }
 
+  const vscore = chartData.map(data => data.vScore)
+  const QE = chartData.map(data => data.QE)
+  const iScore = chartData.map(data => data.iScore)
+
   const data = {
     labels: chartData.map(data => data.companyName.substring(0, 15)),
     datasets: [
+      {
+        type: 'line',
+        label: 'Average',
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderWidth: 2,
+        fill: false,
+        data: [...vscore, ...QE, ...iScore]
+      },
       {
         label: 'vScore',
         backgroundColor: getRandomColor(),
@@ -106,6 +127,53 @@ const MultipleCharts = props => {
         ...(checked && { stack: 'Stack 1' })
       }
     ]
+  }
+
+  const handleMenuClick = menuItem => {
+    switch (menuItem) {
+      case 'chart':
+        setActiveType('chart')
+        break
+      case 'table':
+        setActiveType('table')
+        break
+      case 'image':
+        toBlob(document.getElementById('multiple-charts')).then(function (blob) {
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'multiple-charts.png'
+          document.body.appendChild(a)
+          a.click()
+          window.URL.revokeObjectURL(url)
+        })
+        break
+      case 'pdf':
+        const doc = new jsPDF()
+        toBlob(document.getElementById('multiple-charts')).then(function (blob) {
+          const url = URL.createObjectURL(blob)
+          const img = new Image()
+          img.onload = function () {
+            doc.addImage(this, 'PNG', 10, 10, 180, 100)
+            doc.save('multiple-charts.pdf')
+            URL.revokeObjectURL(url)
+          }
+          img.src = url
+        })
+        break
+      default:
+        break
+    }
+    handleClose() // Close the menu after handling the selection
+  }
+
+  const handleIconClick = event => {
+    event.stopPropagation()
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
   }
 
   // modal
@@ -154,7 +222,7 @@ const MultipleCharts = props => {
                     color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
                   }}
                 >
-                  <IconifyIcon icon='et:bargraph' />
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
                 </IconButton>
               ) : (
                 <IconButton
@@ -168,7 +236,7 @@ const MultipleCharts = props => {
                     transform: 'rotate(90deg)'
                   }}
                 >
-                  <IconifyIcon icon='et:bargraph' />
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
                 </IconButton>
               )}
               <IconButton
@@ -181,7 +249,7 @@ const MultipleCharts = props => {
                   color: activeChart === 'Line' ? 'inherit' : 'primary.main'
                 }}
               >
-                <IconifyIcon icon='et:linegraph' />
+                <IconifyIcon icon='lets-icons:line-up' />
               </IconButton>
               <Switch
                 checked={checked}
@@ -189,10 +257,21 @@ const MultipleCharts = props => {
                 sx={{ color: activeChart === 'Line' ? 'inherit' : 'primary.main' }}
                 inputProps={{ 'aria-label': 'toggle button' }}
               />
+
+              <IconButton aria-haspopup='true' onClick={handleIconClick}>
+                <IconifyIcon icon='tabler:dots-vertical' />
+              </IconButton>
+
+              <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+              </Menu>
             </Box>
           }
         />
-        <CardContent onClick={handleChartClick}>
+        <CardContent onClick={handleChartClick} id='multiple-charts'>
           {loading ? (
             <Box>
               <CircularProgress />

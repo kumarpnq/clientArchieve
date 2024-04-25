@@ -25,9 +25,8 @@ import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 
 // ** charts
-import { Line, Bar } from 'react-chartjs-2'
+import { Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
-import ReactApexCharts from 'react-apexcharts'
 
 Chart.register(...registerables)
 
