@@ -171,16 +171,13 @@ const ToolbarComponent = ({
         })
         setLanguages(languageResponse.data.languages)
 
-        const selectedLanguageCodes = languageResponse.data.languages
-          .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
-          .map(languageCode => languageCode.id)
-        setSelectedLanguages(selectedLanguageCodes)
-
-        // const selectedLanguageCodes = Object.entries(languageResponse.data.languages)
-        //   .filter(([_, languageCode]) => shortCutData?.searchCriteria?.language?.includes(languageCode))
-        //   .map(([languageName, languageCode]) => languageCode)
-        // setSelectedLanguages(selectedLanguageCodes)
-        console.log('selectedCityIds==?', selectedLanguageCodes)
+        if (shortCutData?.screenName == 'printHeadlines') {
+          const selectedLanguageCodes = languageResponse.data.languages
+            .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
+            .map(languageCode => languageCode)
+          console.log('checkingshortcut==>', selectedLanguageCodes)
+          setSelectedLanguages(selectedLanguageCodes)
+        }
 
         // Fetch cities
         const citiesResponse = await axios.get(`${BASE_URL}/citieslist/`, {
@@ -191,11 +188,12 @@ const ToolbarComponent = ({
         setCities(citiesResponse.data.cities)
 
         // Pre-select media based on shortCutData
-
-        const selectedCityIds = citiesResponse.data.cities
-          .filter(city => shortCutData?.searchCriteria?.geography?.includes(city.cityId))
-          .map(city => city.cityId)
-        setSelectedCities(selectedCityIds)
+        if (shortCutData?.screenName == 'printHeadlines') {
+          const selectedCityIds = citiesResponse.data.cities
+            .filter(city => shortCutData?.searchCriteria?.geography?.includes(city.cityId))
+            .map(city => city.cityId)
+          setSelectedCities(selectedCityIds)
+        }
 
         // Fetch media
         const mediaResponse = await axios.get(`${BASE_URL}/printMediaList`, {
@@ -210,10 +208,12 @@ const ToolbarComponent = ({
         setMedia(mediaResponse.data.mediaList)
 
         // Pre-select media based on shortCutData
-        const selectedMediaIds = mediaResponse.data.mediaList
-          .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
-          .map((item, index) => item.publicationId + index)
-        setSelectedMedia(selectedMediaIds)
+        if (shortCutData?.screenName == 'printHeadlines') {
+          const selectedMediaIds = mediaResponse.data.mediaList
+            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
+            .map((item, index) => item.publicationId + index)
+          setSelectedMedia(selectedMediaIds)
+        }
       } catch (error) {
         console.error('Error fetching user data and companies:', error)
       }
@@ -236,13 +236,15 @@ const ToolbarComponent = ({
           }
         })
         const clientTags = tagsResponse.data.clientTags
+        console.log('clienttag=>', shortCutData?.searchCriteria?.tags.split(','))
         setTags(clientTags)
-        const selectedTags = clientTags.filter(tag => shortCutData?.searchCriteria?.tags?.includes(tag))
-        setSelectedTag(selectedTags)
-        console.log(
-          'valuecheck==>',
-          clientTags.filter(tag => shortCutData?.searchCriteria?.tags)
-        )
+        if (shortCutData?.screenName == 'printHeadlines') {
+          const selectedTags = clientTags
+            .filter(tag => shortCutData?.searchCriteria?.tags.split(',')?.includes(tag))
+            .map(tag => tag)
+          setSelectedTag(selectedTags)
+          console.log('valuecheck==>', selectedTags)
+        }
       } catch (error) {
         console.log(error)
       }

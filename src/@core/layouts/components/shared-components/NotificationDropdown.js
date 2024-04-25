@@ -88,6 +88,8 @@ const NotificationDropdown = () => {
   const clientId = selectedClient ? selectedClient.clientId : null
   const [clientData, setClientData] = useState(null)
 
+  console.log('checing=>', clientData)
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -209,131 +211,137 @@ const NotificationDropdown = () => {
           sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
         >
           <div>
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant='h5'>ExcelDump</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {clientData &&
-                  clientData.excelDump.map((job, index) => (
-                    <MenuItem
-                      key={index}
-                      disableRipple
-                      disableTouchRipple
-                      sx={{
-                        cursor: 'default',
-                        userSelect: 'auto',
-                        backgroundColor: 'transparent !important'
-                      }}
-                    >
-                      <Accordion style={{ width: '100%' }}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <Box
-                            component='span'
-                            bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
-                            color='text.primary'
-                            borderRadius='20%'
-                            px={2}
-                            ml={1}
-                          >
-                            {job.jobName}
-                          </Box>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Typography key={job.jobId}>{job.jobName}</Typography>
-                          <Typography>Status: {job.jobStatus}</Typography>
-                          <Typography>Download Link: {job.downloadLink}</Typography>
-                        </AccordionDetails>
-                      </Accordion>
-                    </MenuItem>
-                  ))}
-              </AccordionDetails>
-            </Accordion>
+            {clientData?.excelDump.length > 0 && (
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant='h5'>ExcelDump</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {clientData &&
+                    clientData.excelDump.map((job, index) => (
+                      <MenuItem
+                        key={index}
+                        disableRipple
+                        disableTouchRipple
+                        sx={{
+                          cursor: 'default',
+                          userSelect: 'auto',
+                          backgroundColor: 'transparent !important'
+                        }}
+                      >
+                        <Accordion style={{ width: '100%' }}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Box
+                              component='span'
+                              bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                              color='text.primary'
+                              borderRadius='20%'
+                              px={2}
+                              ml={1}
+                            >
+                              {job.jobName}
+                            </Box>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <Typography key={job.jobId}>{job.jobName}</Typography>
+                            <Typography>Status: {job.jobStatus}</Typography>
+                            <Typography>Download Link: {job.downloadLink}</Typography>
+                          </AccordionDetails>
+                        </Accordion>
+                      </MenuItem>
+                    ))}
+                </AccordionDetails>
+              </Accordion>
+            )}
 
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant='h5'>Dossier</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {clientData &&
-                  clientData.dossier.map((job, index) => (
-                    <MenuItem
-                      key={index}
-                      disableRipple
-                      disableTouchRipple
-                      sx={{
-                        cursor: 'default',
-                        userSelect: 'auto',
-                        backgroundColor: 'transparent !important'
-                      }}
-                    >
-                      <Accordion style={{ width: '100%' }}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <Box
-                            component='span'
-                            bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
-                            color='text.primary'
-                            borderRadius='20%'
-                            px={2}
-                            ml={1}
-                          >
-                            {job.jobName}
-                          </Box>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Typography key={job.jobId}>{job.jobName}</Typography>
-                          <Typography>Status: {job.jobStatus}</Typography>
-                          <Typography>Download Link: {job.downloadLink}</Typography>
-                        </AccordionDetails>
-                      </Accordion>
-                    </MenuItem>
-                  ))}
-              </AccordionDetails>
-            </Accordion>
+            {clientData?.dossier.length > 0 && (
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant='h5'>Dossier</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {clientData &&
+                    clientData.dossier.map((job, index) => (
+                      <MenuItem
+                        key={index}
+                        disableRipple
+                        disableTouchRipple
+                        sx={{
+                          cursor: 'default',
+                          userSelect: 'auto',
+                          backgroundColor: 'transparent !important'
+                        }}
+                      >
+                        <Accordion style={{ width: '100%' }}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Box
+                              component='span'
+                              bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                              color='text.primary'
+                              borderRadius='20%'
+                              px={2}
+                              ml={1}
+                            >
+                              {job.jobName}
+                            </Box>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <Typography key={job.jobId}>{job.jobName}</Typography>
+                            <Typography>Status: {job.jobStatus}</Typography>
+                            <Typography>Download Link: {job.downloadLink}</Typography>
+                          </AccordionDetails>
+                        </Accordion>
+                      </MenuItem>
+                    ))}
+                </AccordionDetails>
+              </Accordion>
+            )}
 
-            <Accordion>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant='h5'>Mail</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                {clientData &&
-                  clientData.mail.map((job, index) => (
-                    <MenuItem
-                      key={index}
-                      disableRipple
-                      disableTouchRipple
-                      sx={{
-                        cursor: 'default',
-                        userSelect: 'auto',
-                        backgroundColor: 'transparent !important'
-                      }}
-                    >
-                      <Accordion style={{ width: '100%' }}>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          {/* <Typography variant='h5' style={{ color: 'yellow' }}>
-                            {job.jobName}
-                          </Typography> */}
-                          <Box
-                            component='span'
-                            bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
-                            color='text.primary'
-                            borderRadius='20%'
-                            px={2}
-                            ml={1}
-                          >
-                            {job.jobName}
-                          </Box>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Typography key={job.jobId}>{job.jobName}</Typography>
-                          <Typography>Status: {job.jobStatus}</Typography>
-                          <Typography>Download Link: {job.downloadLink}</Typography>
-                        </AccordionDetails>
-                      </Accordion>
-                    </MenuItem>
-                  ))}
-              </AccordionDetails>
-            </Accordion>
+            {clientData?.mail.length > 0 && (
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant='h5'>Mail</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {clientData &&
+                    clientData.mail.map((job, index) => (
+                      <MenuItem
+                        key={index}
+                        disableRipple
+                        disableTouchRipple
+                        sx={{
+                          cursor: 'default',
+                          userSelect: 'auto',
+                          backgroundColor: 'transparent !important'
+                        }}
+                      >
+                        <Accordion style={{ width: '100%' }}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            {/* <Typography variant='h5' style={{ color: 'yellow' }}>
+                        {job.jobName}
+                      </Typography> */}
+                            <Box
+                              component='span'
+                              bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                              color='text.primary'
+                              borderRadius='20%'
+                              px={2}
+                              ml={1}
+                            >
+                              {job.jobName}
+                            </Box>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <Typography key={job.jobId}>{job.jobName}</Typography>
+                            <Typography>Status: {job.jobStatus}</Typography>
+                            <Typography>Download Link: {job.downloadLink}</Typography>
+                          </AccordionDetails>
+                        </Accordion>
+                      </MenuItem>
+                    ))}
+                </AccordionDetails>
+              </Accordion>
+            )}
           </div>
         </MenuItem>
         <MenuItem

@@ -566,7 +566,7 @@ const TableSelection = () => {
               return i.id
             })
             .join(', ')
-          console.log('')
+          console.log('checking==>', selectedLanguages)
 
           // if(shortCutData)
           const response = await fetchArticles({
