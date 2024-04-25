@@ -113,7 +113,7 @@ const NotificationDropdown = () => {
     if (clientId) {
       fetchData()
     }
-  }, [clientId])
+  }, [anchorEl])
 
   const handleNotificationDetails = jobId => {
     updateReadClientNotification(jobId)
