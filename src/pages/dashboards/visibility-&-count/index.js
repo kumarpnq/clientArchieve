@@ -18,6 +18,7 @@ import { selectUserData, selectSelectedMedia } from 'src/store/apps/user/userSli
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 import VolumeRanking from 'src/views/dashboards/visibility&Count/VolumeRanking'
 import SubjectVscore from 'src/views/dashboards/visibility&Count/SubjectVscore'
+import JournalistVscore from 'src/views/dashboards/visibility&Count/JournalistVscore'
 
 // ** custom hooks import
 import useVisibilityCount from 'src/api/dashboard-visibilityCount/useVisibilityCount'
@@ -72,10 +73,6 @@ const CountCharts = () => {
     error: journalistVscoreError
   } = useJournalistVscore({ media: selectedMedia, endpoint: '/journalistVscore/' })
 
-  console.log(volumeRankingData)
-  console.log(subjectVscoreData)
-  console.log(journalistVscoreData)
-
   // const screenPermissions = useScreenPermissions()
   // const hasAccess = screenPermissions['visibilityImageQE']
 
@@ -105,6 +102,20 @@ const CountCharts = () => {
             chartData={subjectVscoreData}
             loading={subjectVscoreLoading}
             error={subjectVscoreError}
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <JournalistVscore
+            chartData={journalistVscoreData}
+            loading={journalistVscoreLoading}
+            error={journalistVscoreError}
             legendColor={legendColor}
             primary={primaryColor}
             yellow={yellowColor}
