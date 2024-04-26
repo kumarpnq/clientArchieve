@@ -9,6 +9,7 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import CloseIcon from '@mui/icons-material/Close'
+import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
 
 import { Line, Bar, Pie, Doughnut } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
@@ -16,11 +17,16 @@ import IconifyIcon from 'src/@core/components/icon'
 
 Chart.register(...registerables)
 
+// ** third party imports
+import { toBlob } from 'html-to-image'
+import jsPDF from 'jspdf'
+
 const VisibilityRanking = props => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeChart, setActiveChart] = useState('Line')
   const [activeMenu, setActiveMenu] = useState('main')
   const [chartLoaded, setChartLoaded] = useState(false)
+  const [activeType, setActiveType] = useState('chart')
 
   const { chartData, loading, error, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
 
@@ -58,6 +64,44 @@ const VisibilityRanking = props => {
         {item}
       </MenuItem>
     ))
+  }
+
+  const handleMenuClick = menuItem => {
+    switch (menuItem) {
+      case 'chart':
+        setActiveType('chart')
+        break
+      case 'table':
+        setActiveType('table')
+        break
+      case 'image':
+        toBlob(document.getElementById('visibility-ranking')).then(function (blob) {
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'visibility-ranking.png'
+          document.body.appendChild(a)
+          a.click()
+          window.URL.revokeObjectURL(url)
+        })
+        break
+      case 'pdf':
+        const doc = new jsPDF()
+        toBlob(document.getElementById('visibility-ranking')).then(function (blob) {
+          const url = URL.createObjectURL(blob)
+          const img = new Image()
+          img.onload = function () {
+            doc.addImage(this, 'PNG', 10, 10, 180, 100)
+            doc.save('visibility-ranking.pdf')
+            URL.revokeObjectURL(url)
+          }
+          img.src = url
+        })
+        break
+      default:
+        break
+    }
+    handleClose()
   }
 
   // const mediaItems = ['Print', 'Online', 'Online&Headline']
@@ -103,6 +147,16 @@ const VisibilityRanking = props => {
   const data = {
     labels: chartData.map(data => data.companyName.substring(0, 15)),
     datasets: [
+      // {
+      //   type: 'line',
+      //   label: 'Average',
+      //   borderColor: 'rgb(255, 99, 132)',
+      //   backgroundColor: 'rgb(255, 99, 132)',
+      //   borderWidth: 2,
+      //   fill: false,
+      //   tension: 0.4,
+      //   data: [...vscore, ...QE, ...iScore]
+      // },
       {
         label: 'vScore',
         backgroundColor: getRandomColor(),
@@ -111,6 +165,31 @@ const VisibilityRanking = props => {
         data: chartData.map(data => data.vScore)
       }
     ]
+  }
+
+  const TableComp = () => {
+    return (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Company ID</TableCell>
+              <TableCell>Company Name</TableCell>
+              <TableCell>vScore</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {chartData.map((company, index) => (
+              <TableRow key={index}>
+                <TableCell>{company.companyId}</TableCell>
+                <TableCell>{company.companyName}</TableCell>
+                <TableCell>{company.vScore}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
   }
 
   // modal
@@ -137,14 +216,20 @@ const VisibilityRanking = props => {
             }
           />
           <CardContent>
-            {activeChart === 'Bar' && <Bar data={data} height={500} options={options} />}
-            {activeChart === 'Line' && <Line data={data} height={500} options={options} />}
-            {activeChart === 'Pie' && <Pie data={data} height={500} options={options} />}
-            {activeChart === 'Doughnut' && <Doughnut data={data} height={500} options={options} />}
+            {activeType === 'chart' ? (
+              <>
+                {' '}
+                {activeChart === 'Bar' && <Bar data={data} height={500} options={options} />}
+                {activeChart === 'Line' && <Line data={data} height={500} options={options} />}
+                {activeChart === 'Pie' && <Pie data={data} height={500} options={options} />}
+                {activeChart === 'Doughnut' && <Doughnut data={data} height={500} options={options} />}
+              </>
+            ) : (
+              <TableComp />
+            )}
           </CardContent>
         </Card>
       </Dialog>
-
       <Card>
         <CardHeader
           title='Visibility Ranking'
@@ -155,7 +240,11 @@ const VisibilityRanking = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {/* <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem> */}
-                <MenuItem onClick={() => setActiveMenu('chart')}>Chart</MenuItem>
+                <MenuItem onClick={() => setActiveMenu('chart')}>Chart Types</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
               </Menu>
             </Box>
           }
@@ -179,17 +268,23 @@ const VisibilityRanking = props => {
             {renderMenuItems(chartItems, 'chart')}
           </Menu>
         </Box>
-        <CardContent onClick={handleChartClick}>
+        <CardContent onClick={handleChartClick} id='visibility-ranking'>
           {loading ? (
             <Box>
               <CircularProgress />
             </Box>
           ) : (
             <>
-              {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
-              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
-              {activeChart === 'Pie' && <Pie data={data} height={325} options={options} />}
-              {activeChart === 'Doughnut' && <Doughnut data={data} height={325} options={options} />}
+              {activeType === 'chart' ? (
+                <>
+                  {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
+                  {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
+                  {activeChart === 'Pie' && <Pie data={data} height={325} options={options} />}
+                  {activeChart === 'Doughnut' && <Doughnut data={data} height={325} options={options} />}
+                </>
+              ) : (
+                <TableComp />
+              )}
             </>
           )}
         </CardContent>

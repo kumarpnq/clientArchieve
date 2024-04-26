@@ -156,17 +156,19 @@ const CompanyTonality = props => {
             {activeType === 'table' && (
               <TableContainer component={Paper}>
                 <Table>
-                  <TableHead>
+                  <TableHead sx={{ backgroundColor: primary }}>
                     <TableRow>
-                      <TableCell>one</TableCell>
-                      <TableCell>Two</TableCell>
+                      <TableCell>Tonality</TableCell>
+                      <TableCell>vScore</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow>
-                      <TableCell>1</TableCell>
-                      <TableCell>2</TableCell>
-                    </TableRow>
+                    {chartData.map((item, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{item.tonality}</TableCell>
+                        <TableCell>{item.vScore}</TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </TableContainer>

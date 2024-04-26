@@ -13,6 +13,11 @@ import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
 import Switch from '@mui/material/Switch'
+import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
+
+// ** third party imports
+import { toBlob } from 'html-to-image'
+import jsPDF from 'jspdf'
 
 Chart.register(...registerables)
 
@@ -25,6 +30,7 @@ const AnalyticsSubjectClient = props => {
   const [selectedFilter, setSelectedFilter] = useState('Top')
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
   const [checked, setChecked] = useState(false)
+  const [activeType, setActiveType] = useState('chart')
 
   const handleChange = () => {
     setActiveChart('Bar')
