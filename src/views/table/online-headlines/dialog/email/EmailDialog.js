@@ -56,6 +56,8 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
 
+  console.log('dataForMail==>', mailList)
+
   const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')
 
   const handleEmailTypeChange = (event, email) => {

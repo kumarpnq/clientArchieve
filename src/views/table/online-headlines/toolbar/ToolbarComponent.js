@@ -389,7 +389,7 @@ const ToolbarComponent = ({
               key={languageCode}
               onClick={() => handleDropdownItemClick(languageCode)}
               selected={
-                selectedLanguages.includes(languageCode) ||
+                selectedLanguage.includes(languageCode) ||
                 shortCutData?.searchCriteria?.language?.includes(languageCode)
               }
             >

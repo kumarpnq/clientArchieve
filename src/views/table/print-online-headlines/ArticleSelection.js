@@ -39,7 +39,8 @@ import {
   selectSelectedCompetitions,
   selectSelectedStartDate,
   selectSelectedEndDate,
-  selectShortCutFlag
+  selectShortCutFlag,
+  selectShortCut
 } from 'src/store/apps/user/userSlice'
 
 // ** Tooltip
@@ -309,6 +310,8 @@ const TableSelection = () => {
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const shortCutFlags = useSelector(selectShortCutFlag)
+  const shortCutData = useSelector(selectShortCut)
+
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
@@ -532,8 +535,8 @@ const TableSelection = () => {
           const request_params = {
             clientIds: clientId,
             companyIds: selectedCompetitions.join(', '),
-            fromDate: formattedStartDate,
-            toDate: formattedEndDate,
+            fromDate:shortCutData?.searchCriteria?.fromDate|| formattedStartDate,
+            toDate:shortCutData?.searchCriteria?.toDate|| formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
             sortby: selectedSortBy,

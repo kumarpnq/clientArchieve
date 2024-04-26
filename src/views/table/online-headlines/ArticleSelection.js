@@ -41,7 +41,8 @@ import {
   selectSelectedCompetitions,
   selectSelectedStartDate,
   selectSelectedEndDate,
-  selectShortCutFlag
+  selectShortCutFlag,
+  selectShortCut
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 import OptionsMenu from 'src/@core/components/option-menu'
@@ -198,6 +199,8 @@ const TableSelection = () => {
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const shortCutFlags = useSelector(selectShortCutFlag)
+  const shortCutData = useSelector(selectShortCut)
+
 
   const clientId = selectedClient ? selectedClient.clientId : null
 
@@ -356,9 +359,9 @@ const TableSelection = () => {
 
             const requestData = {
               clientId: clientId,
-              screenName: 'bothHeadlines',
+              screenName: 'onlineHeadlines',
               searchCriteria: {
-                requestEntity: 'both',
+                requestEntity: 'online',
                 clientIds: clientId,
                 companyIds: selectedCompaniesString,
                 fromDate: formattedStartDate,
@@ -447,8 +450,8 @@ const TableSelection = () => {
           const request_params = {
             clientIds: clientId,
             companyIds: selectedCompaniesString,
-            fromDate: formattedStartDate,
-            toDate: formattedEndDate,
+            fromDate:shortCutData?.searchCriteria?.fromDate|| formattedStartDate,
+            toDate:shortCutData?.searchCriteria?.toDate|| formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
 

@@ -366,6 +366,8 @@ const TableSelection = () => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const shortCutFlags = useSelector(selectShortCutFlag)
+  // const shortCutData = useSelector(selectShortCut)
+
 
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
@@ -526,12 +528,12 @@ const TableSelection = () => {
             return `${isoString} ${timeString}`
           }
 
-          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+          const formattedStartDate =  selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
 
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
           const selectedCompaniesString = selectedCompetitions.join(', ')
-          console.log('compnayarticle==>', selectedCompetitions)
+          
 
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
             const lastChar = item.slice(-1)
@@ -572,8 +574,8 @@ const TableSelection = () => {
           const response = await fetchArticles({
             clientIds: clientId,
             companyIds: selectedCompaniesString,
-            fromDate: formattedStartDate,
-            toDate: formattedEndDate,
+            fromDate:shortCutData?.searchCriteria?.fromDate|| formattedStartDate,
+            toDate:shortCutData?.searchCriteria?.toDate|| formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
 

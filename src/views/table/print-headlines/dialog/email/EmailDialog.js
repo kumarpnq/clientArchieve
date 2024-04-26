@@ -55,6 +55,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
 
+  console.log("mailleist",mailList)
+
   const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
 
   const handleEmailTypeChange = (event, email) => {
@@ -365,7 +367,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
           label='Select All'
         />
 
-        {mailList.map(email => (
+        {mailList?.map(email => (
           <div key={email} style={{ display: 'flex', justifyContent: 'space-between' }}>
             <FormControlLabel
               control={
