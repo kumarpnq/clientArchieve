@@ -171,6 +171,14 @@ const ToolbarComponent = ({
         })
         setLanguages(languageResponse.data.languages)
 
+        if (shortCutData?.screenName == 'onlineHeadlines') {
+          const selectedLanguageCodes = languageResponse.data.languages
+            .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
+            .map(languageCode => languageCode)
+          console.log('checkingshortcut==>', selectedLanguageCodes)
+          setSelectedLanguage(selectedLanguageCodes)
+        }
+
         // Fetch cities
         const citiesResponse = await axios.get('http://51.68.220.77:8001/citieslist/', {
           headers: {
@@ -178,6 +186,13 @@ const ToolbarComponent = ({
           }
         })
         setCities(citiesResponse.data.cities)
+
+        if (shortCutData?.screenName == 'onlineHeadlines') {
+          const selectedCityIds = citiesResponse.data.cities
+            .filter(city => shortCutData?.searchCriteria?.geography?.includes(city.cityId))
+            .map(city => city.cityId)
+          setSelectedGeography(selectedCityIds)
+        }
 
         const mediaResponse = await axios.get(`${BASE_URL}/onlineMediaList`, {
           headers: {
@@ -189,6 +204,13 @@ const ToolbarComponent = ({
           }
         })
         setMedia(mediaResponse.data.mediaList)
+
+        if (shortCutData?.screenName == 'onlineHeadlines') {
+          const selectedMediaIds = mediaResponse.data.mediaList
+            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
+            .map((item, index) => item.publicationId + index)
+          setSelectedMedia(selectedMediaIds)
+        }
       } catch (error) {
         console.error('Error fetching user data and companies:', error)
       }
@@ -211,6 +233,13 @@ const ToolbarComponent = ({
           }
         })
         setTags(tagsResponse.data.clientTags)
+        if (shortCutData?.screenName == 'onlineHeadlines') {
+          const selectedTags = tagsResponse.data.clientTags
+            .filter(tag => shortCutData?.searchCriteria?.tags.split(',')?.includes(tag))
+            .map(tag => tag)
+          setSelectedTags(selectedTags)
+          console.log('valuecheck==>', selectedTags)
+        }
       } catch (error) {
         console.error('Error fetching user tags:', error)
       }
@@ -359,7 +388,10 @@ const ToolbarComponent = ({
             <MenuItem
               key={languageCode}
               onClick={() => handleDropdownItemClick(languageCode)}
-              selected={selectedLanguage.includes(languageCode)}
+              selected={
+                selectedLanguages.includes(languageCode) ||
+                shortCutData?.searchCriteria?.language?.includes(languageCode)
+              }
             >
               {languageCode.name}
             </MenuItem>
@@ -384,7 +416,7 @@ const ToolbarComponent = ({
               <MenuItem
                 onClick={() => handleMediaSelect(item.publicationId, index)}
                 selected={
-                  selectedMedia?.includes(item.publicationId + index) ||
+                  selectedMedia.includes(item.publicationId + index) ||
                   shortCutData?.searchCriteria?.media?.includes(item.publicationId)
                 }
               >
