@@ -34,7 +34,21 @@ const useAutoNotification = () => {
       const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing')
       console.log('testcode==>', completeJobs)
       if (completeJobs.length) {
-        completeJobs.map(item => toast.success(`Job: ${item.jobName}. Status: ${item.jobStatus}`, { duration: 10000 }))
+        completeJobs.forEach(item => {
+          toast.success(
+            <a
+              className=''
+              key={item.jobId}
+              href={`example/link/${item.jobId}`}
+              target='_blank'
+              rel='noopener noreferrer'
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              {`Job: ${item.jobName}. Status: ${item.jobStatus}. Download Link`}
+            </a>,
+            { duration: 10000 }
+          )
+        })
 
         // Check if all jobs have a status of 'Completed'
         if (jobData.length && keepFetching) {
