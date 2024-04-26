@@ -28,20 +28,20 @@ const DaysJumper = ({ settings }) => {
   const { direction } = settings
   const dispatch = useDispatch()
   const shortCutData = useSelector(selectShortCut)
-  console.log('shortCutData==>', shortCutData?.searchCriteria?.fromDate)
+
   const [selectedDayFilter, setSelectedDayFilter] = useState('1D')
 
-  const calculateDate = days => dayjs().subtract(days, 'day')
+  const calculateDate = (days, startDate = null) =>
+    startDate ? dayjs(startDate).subtract(days, 'day') : dayjs().subtract(days, 'day')
 
   const handleFilter = (days, label) => {
-    const start = calculateDate(days)
+    const start = calculateDate(days, shortCutData?.searchCriteria?.fromDate)
+
     dispatch(
-      setSelectedDateRange(
-        { startDate: start, endDate: start } || {
-          startDate: shortCutData?.searchCriteria?.fromDate,
-          endDate: shortCutData?.searchCriteria?.toDate
-        }
-      )
+      setSelectedDateRange({
+        startDate: start || shortCutData?.searchCriteria?.fromDate,
+        endDate: start || shortCutData?.searchCriteria?.toDate
+      })
     )
     setSelectedDayFilter(label)
   }
@@ -53,7 +53,30 @@ const DaysJumper = ({ settings }) => {
   }
 
   useEffect(() => {
-    handleFilter(1, '1D') // Default filter
+    if (shortCutData?.searchCriteria?.fromDate && shortCutData?.searchCriteria?.toDate) {
+      const fromDate = dayjs(shortCutData?.searchCriteria?.fromDate)
+      const toDate = dayjs(shortCutData?.searchCriteria?.toDate)
+      const daysDifference = toDate.diff(fromDate, 'day')
+      console.log('chekcingstaus==>', daysDifference - 1)
+      // let selectedIcon = icons.find(icon => icon.days === daysDifference)
+      // if (!selectedIcon) {
+      //   selectedIcon = { label: `${daysDifference}D`, days: daysDifference, component: GenericIcon }
+      // }
+
+      if (daysDifference - 1 === 90) {
+        handleFilter(daysDifference - 1, '3M')
+      } else if (daysDifference - 1 === 30) {
+        handleFilter(daysDifference - 1, '1M')
+      } else if (daysDifference - 1 === 7) {
+        handleFilter(daysDifference - 1, '7D')
+      } else if (daysDifference - 1 === 1) {
+        handleFilter(daysDifference - 1, '1D')
+      }
+    }
+  }, [shortCutData])
+
+  useEffect(() => {
+    handleFilter(1, '1D')
   }, [])
 
   return (

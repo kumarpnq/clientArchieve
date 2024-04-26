@@ -43,11 +43,13 @@ const ToolbarComponent = ({
   const [mediaAnchor, setMediaAnchor] = useState(null)
   const [tagsAnchor, setTagsAnchor] = useState(null)
   const [searchTermtags, setSearchTermtags] = useState('')
-
+  const [searchTerm, setSearchTerm] = useState('')
+  const [languages, setLanguages] = useState({})
+  const [cities, setCities] = useState([])
+  const [media, setMedia] = useState([])
   // states
-  const [media, setMedia] = useState('')
 
-  const { languages, cities } = useUserDataAndCompanies()
+  // const { languages, cities } = useUserDataAndCompanies()
   console.log('media', media)
   const selectedClient = useSelector(selectSelectedClient)
   const shortCutData = useSelector(selectShortCut)
@@ -158,7 +160,68 @@ const ToolbarComponent = ({
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserDataAndCompanies = async () => {
+      try {
+        const storedToken = localStorage.getItem('accessToken')
+
+        // Fetch languages
+        const languageResponse = await axios.get('http://51.68.220.77:8001/languagelist/', {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          }
+        })
+        setLanguages(languageResponse.data.languages)
+
+        if (shortCutData?.screenName == 'onlineHeadlines') {
+          const selectedLanguageCodes = languageResponse.data.languages
+            .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
+            .map(languageCode => languageCode)
+          console.log('checkingshortcut==>', selectedLanguageCodes)
+          setSelectedLanguage(selectedLanguageCodes)
+        }
+
+        // Fetch cities
+        const citiesResponse = await axios.get('http://51.68.220.77:8001/citieslist/', {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          }
+        })
+        setCities(citiesResponse.data.cities)
+
+        if (shortCutData?.screenName == 'onlineHeadlines') {
+          const selectedCityIds = citiesResponse.data.cities
+            .filter(city => shortCutData?.searchCriteria?.geography?.includes(city.cityId))
+            .map(city => city.cityId)
+          setSelectedGeography(selectedCityIds)
+        }
+
+        const mediaResponse = await axios.get(`${BASE_URL}/onlineMediaList`, {
+          headers: {
+            Authorization: `Bearer ${storedToken}`
+          },
+          params: {
+            clientId: clientId,
+            searchTerm: searchTerm
+          }
+        })
+        setMedia(mediaResponse.data.mediaList)
+
+        if (shortCutData?.screenName == 'onlineHeadlines') {
+          const selectedMediaIds = mediaResponse.data.mediaList
+            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
+            .map((item, index) => item.publicationId + index)
+          setSelectedMedia(selectedMediaIds)
+        }
+      } catch (error) {
+        console.error('Error fetching user data and companies:', error)
+      }
+    }
+
+    fetchUserDataAndCompanies()
+  }, [clientId, searchTerm])
+
+  useEffect(() => {
+    const fetchTags = async () => {
       const storedToken = localStorage.getItem('accessToken')
       try {
         const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
@@ -171,12 +234,19 @@ const ToolbarComponent = ({
           }
         })
         setTags(tagsResponse.data.clientTags)
+        if (shortCutData?.screenName == 'onlineHeadlines') {
+          const selectedTags = tagsResponse.data.clientTags
+            .filter(tag => shortCutData?.searchCriteria?.tags.split(',')?.includes(tag))
+            .map(tag => tag)
+          setSelectedTags(selectedTags)
+          console.log('valuecheck==>', selectedTags)
+        }
       } catch (error) {
-        console.log(error)
+        console.error('Error fetching user tags:', error)
       }
     }
-    fetchData()
-  }, [clientId, selectedClient, setTags, fetchTagsFlag, searchTermtags])
+    fetchTags()
+  }, [clientId, fetchTagsFlag, setTags, searchTermtags])
 
   return (
     <AppBar sx={{ position: 'static' }}>
