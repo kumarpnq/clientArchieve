@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close'
 import Switch from '@mui/material/Switch'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
 
 import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
@@ -100,6 +101,7 @@ const MultipleCharts = props => {
         backgroundColor: 'rgb(255, 99, 132)',
         borderWidth: 2,
         fill: false,
+        tension: 0.4,
         data: [...vscore, ...QE, ...iScore]
       },
       {
@@ -187,6 +189,35 @@ const MultipleCharts = props => {
     setIsChartClicked(false)
   }
 
+  const TableComp = () => {
+    return (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ background: primary }}>
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>vScore</TableCell>
+              <TableCell>iScore</TableCell>
+              <TableCell>QE</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {chartData.map((company, index) => (
+              <TableRow key={index}>
+                <TableCell size='small'>{company.companyId}</TableCell>
+                <TableCell size='small'>{company.companyName}</TableCell>
+                <TableCell size='small'>{company.vScore}</TableCell>
+                <TableCell size='small'>{company.iScore}</TableCell>
+                <TableCell size='small'>{company.QE}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
+  }
+
   return (
     <>
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
@@ -200,8 +231,14 @@ const MultipleCharts = props => {
             }
           />
           <CardContent>
-            {activeChart === 'Bar' && <Bar data={data} height={500} options={options} />}
-            {activeChart === 'Line' && <Line data={data} height={500} options={options} />}
+            {activeType === 'chart' ? (
+              <>
+                {activeChart === 'Bar' && <Bar data={data} height={500} options={options} />}
+                {activeChart === 'Line' && <Line data={data} height={500} options={options} />}
+              </>
+            ) : (
+              <TableComp />
+            )}
           </CardContent>
         </Card>
       </Dialog>
@@ -278,8 +315,15 @@ const MultipleCharts = props => {
             </Box>
           ) : (
             <>
-              {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
-              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
+              {activeType === 'chart' ? (
+                <>
+                  {' '}
+                  {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
+                  {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
+                </>
+              ) : (
+                <TableComp />
+              )}
             </>
           )}
         </CardContent>
