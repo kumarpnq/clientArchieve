@@ -201,7 +201,6 @@ const TableSelection = () => {
   const shortCutFlags = useSelector(selectShortCutFlag)
   const shortCutData = useSelector(selectShortCut)
 
-
   const clientId = selectedClient ? selectedClient.clientId : null
 
   // Access priorityCompanyName from selectedClient
@@ -450,14 +449,14 @@ const TableSelection = () => {
           const request_params = {
             clientIds: clientId,
             companyIds: selectedCompaniesString,
-            fromDate:shortCutData?.searchCriteria?.fromDate|| formattedStartDate,
-            toDate:shortCutData?.searchCriteria?.toDate|| formattedEndDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
 
             geography: selectedCitiesString,
             media: selectedMedia,
-            tags: selectedTagString,
+            tags: shortCutData?.searchCriteria?.tags || selectedTagString,
             language: selectedLanguagesString,
 
             // Advanced search

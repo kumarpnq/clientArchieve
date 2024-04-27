@@ -49,7 +49,6 @@ const ToolbarComponent = ({
   const clientId = selectedClient ? selectedClient.clientId : null
   const shortCutData = useSelector(selectShortCut)
 
-
   const handleSelectAllMedia = () => {
     const allMediaIds = media.map((item, index) => item.publicationId + index)
     setSelectedMedia(allMediaIds)
@@ -83,7 +82,7 @@ const ToolbarComponent = ({
   const handleTagSelect = item => {
     setSelectedTag(prevSelected => {
       const isAlreadySelected = prevSelected.includes(item)
-  
+
       if (isAlreadySelected) {
         // If already selected, remove from the list
         return prevSelected.filter(tag => tag !== item)
@@ -138,8 +137,6 @@ const ToolbarComponent = ({
     })
   }
 
-
-
   const openDropdown = (event, anchorSetter) => {
     anchorSetter(event.currentTarget)
   }
@@ -167,7 +164,7 @@ const ToolbarComponent = ({
           const selectedLanguageCodes = languageResponse.data.languages
             .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
             .map(languageCode => languageCode)
-        
+
           setSelectedLanguages(selectedLanguageCodes)
         }
 
@@ -201,7 +198,6 @@ const ToolbarComponent = ({
 
         // Pre-select media based on shortCutData
         if (shortCutData?.screenName == 'printHeadlines') {
-          
           const selectedMediaIds = mediaResponse.data.mediaList
             .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
             .map((item, index) => item.publicationId + index)
@@ -229,15 +225,13 @@ const ToolbarComponent = ({
           }
         })
         const clientTags = tagsResponse.data.clientTags
-       
+
         setTags(clientTags)
         if (shortCutData?.screenName == 'printHeadlines') {
-          
-          const selectedTagsIds = tagsResponse.data.clientTags
-          .filter(tag => shortCutData?.searchCriteria?.tags?.split(',').includes(tag))
+          const selectedTagsIds = tagsResponse.data.clientTags.filter(tag =>
+            shortCutData?.searchCriteria?.tags?.split(',').includes(tag)
+          )
           setSelectedTag(selectedTagsIds)
-          console.log("checking the tags==>",selectedTagsIds)
-          // setSelectedMedia(selectedMediaIds)
         }
       } catch (error) {
         console.log(error)

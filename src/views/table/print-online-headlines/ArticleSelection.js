@@ -193,28 +193,31 @@ const TableSelection = () => {
       renderCell: params => {
         // Check if articleId is online
         if (params.row.articleType === 'online') {
-          return <OptionsMenu
-          iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-          options={[
-            // {
-            //   text: 'Edit Detail',
-            //   menuItemProps: {
-            //     onClick: () => {
-            //       handleEdit(params.row)
-            //     }
-            //   }
-            // },
-            {
-              text: 'View',
-              menuItemProps: {
-                onClick: () => {
-                  handleView(params.row)
+          return (
+            <OptionsMenu
+              iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+              options={[
+                // {
+                //   text: 'Edit Detail',
+                //   menuItemProps: {
+                //     onClick: () => {
+                //       handleEdit(params.row)
+                //     }
+                //   }
+                // },
+                {
+                  text: 'View',
+                  menuItemProps: {
+                    onClick: () => {
+                      handleView(params.row)
+                    }
+                  }
                 }
-              }
-            }
-          ]}
-        />
+              ]}
+            />
+          )
         }
+
         return (
           <OptionsMenu
             iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
@@ -255,7 +258,7 @@ const TableSelection = () => {
       }
     }
   ]
-  
+
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
@@ -311,7 +314,6 @@ const TableSelection = () => {
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const shortCutFlags = useSelector(selectShortCutFlag)
   const shortCutData = useSelector(selectShortCut)
-
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
@@ -382,12 +384,12 @@ const TableSelection = () => {
   useEffect(() => {
     setSelectedArticles([])
 
-    if(shortCutFlags){
+    if (shortCutFlags) {
       const fetchArticlesApi = async () => {
         try {
           setLoading(true)
           const storedToken = localStorage.getItem('accessToken')
-  
+
           if (storedToken) {
             const formatDateTimes = (date, setTime, isEnd) => {
               let formattedDate = date
@@ -396,52 +398,52 @@ const TableSelection = () => {
               }
               const isoString = formattedDate.toISOString().slice(0, 10)
               const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-  
+
               return `${isoString} ${timeString}`
             }
-  
+
             const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
             const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
             const selectedCompaniesString = selectedCompetitions.join(', ')
-  
+
             const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
               const lastChar = item.slice(-1)
               if (!isNaN(parseInt(lastChar))) {
                 return item.slice(0, -1)
               }
-  
+
               return item
             })
-  
+
             const result = selectedMediaWithoutLastDigit.join(', ')
             console.log('checnages--done==>')
             const selectedTagString = selectedTags.join(', ')
-  
+
             const selectedCitiesString = selectedGeography.join(', ')
-  
+
             const edition = selectedEditionType
               .map(i => {
                 return i.editionTypeId
               })
               .join(', ')
-  
+
             const publicationtype = selectedPublicationType
               .map(i => {
                 return i.publicationTypeId
               })
               .join(', ')
-  
+
             const selectedLanguagesString = selectedLanguages
               .map(i => {
                 return i.id
               })
               .join(', ')
-  
+
             const headers = {
               'Content-Type': 'application/json',
               Authorization: `Bearer ${storedToken}`
             }
-  
+
             const requestData = {
               clientId: clientId,
               screenName: 'bothHeadlines',
@@ -453,12 +455,12 @@ const TableSelection = () => {
                 toDate: formattedEndDate,
                 page: currentPage,
                 recordsPerPage: recordsPerPage,
-  
+
                 // media: result,
                 tags: selectedTagString,
                 geography: selectedCitiesString,
                 language: selectedLanguagesString,
-  
+
                 // Advanced search
                 headline: searchParameters.searchHeadline,
                 body: searchParameters.searchBody,
@@ -467,14 +469,14 @@ const TableSelection = () => {
                 anyWord: searchParameters.anyOfWords,
                 ignoreWords: searchParameters.ignoreThis,
                 phrase: searchParameters.exactPhrase,
-  
+
                 editionType: edition,
                 sortby: selectedSortBy,
-  
+
                 publicationCategory: publicationtype
               }
             }
-  
+
             const res = await axios.post(`${BASE_URL}/userConfigRequest`, requestData, { headers })
           }
         } catch (error) {
@@ -485,7 +487,6 @@ const TableSelection = () => {
       }
       fetchArticlesApi()
     }
-    
   }, [shortCutFlags])
 
   // Fetch social feeds based on the provided API
@@ -535,8 +536,8 @@ const TableSelection = () => {
           const request_params = {
             clientIds: clientId,
             companyIds: selectedCompetitions.join(', '),
-            fromDate:shortCutData?.searchCriteria?.fromDate|| formattedStartDate,
-            toDate:shortCutData?.searchCriteria?.toDate|| formattedEndDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
             sortby: selectedSortBy,
@@ -546,7 +547,7 @@ const TableSelection = () => {
             geography: selectedCitiesString,
             language: selectedLanguagesString,
             media: selectedMedia,
-            tags: selectedTagString
+            tags: shortCutData?.searchCriteria?.tags || selectedTagString
           }
 
           const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {

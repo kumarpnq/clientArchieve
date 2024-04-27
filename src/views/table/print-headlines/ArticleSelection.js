@@ -366,8 +366,6 @@ const TableSelection = () => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const shortCutFlags = useSelector(selectShortCutFlag)
-  // const shortCutData = useSelector(selectShortCut)
-
 
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
@@ -384,7 +382,6 @@ const TableSelection = () => {
   //user shortcut
   useEffect(() => {
     if (shortCutFlags) {
-      console.log('betwwiwn==>')
       setSelectedArticles([])
 
       const fetchArticlesApi = async () => {
@@ -528,12 +525,11 @@ const TableSelection = () => {
             return `${isoString} ${timeString}`
           }
 
-          const formattedStartDate =  selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
 
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
           const selectedCompaniesString = selectedCompetitions.join(', ')
-          
 
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
             const lastChar = item.slice(-1)
@@ -568,19 +564,19 @@ const TableSelection = () => {
               return i.id
             })
             .join(', ')
-          console.log('checking==>', selectedLanguages)
+          console.log('checking==>', shortCutData?.searchCriteria?.tags)
 
           // if(shortCutData)
           const response = await fetchArticles({
             clientIds: clientId,
             companyIds: selectedCompaniesString,
-            fromDate:shortCutData?.searchCriteria?.fromDate|| formattedStartDate,
-            toDate:shortCutData?.searchCriteria?.toDate|| formattedEndDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
 
             media: result,
-            tags: selectedTagString,
+            tags: shortCutData?.searchCriteria?.tags || selectedTagString,
             geography: selectedCitiesString,
             language: selectedLanguagesString,
 

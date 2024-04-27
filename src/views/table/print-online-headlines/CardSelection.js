@@ -191,12 +191,7 @@ const CardSelection = () => {
                                         target='_blank'
                                         style={{ textDecoration: 'none', color: '#86838b' }}
                                       >
-                                        <span
-                                          style={{ cursor: 'pointer' }}
-                                          // onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
-                                        >
-                                          {article.headline}
-                                        </span>
+                                        <span style={{ cursor: 'pointer' }}>{article.headline}</span>
                                       </a>
                                     </CustomTooltip>
                                     <br />
