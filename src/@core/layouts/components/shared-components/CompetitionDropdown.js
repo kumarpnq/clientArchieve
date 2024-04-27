@@ -36,7 +36,7 @@ const Competition = props => {
   const { competitions } = useFetchCompetition()
 
   const [localeComps, setLocaleComps] = useState([])
-  console.log('locaplcomps==>', localeComps)
+
   const handleClientClick = selectedComp => {
     console.log('checkingserch', selectedComp)
     setLocaleComps(prevSelected => {

@@ -47,10 +47,7 @@ const ToolbarComponent = ({
   const [languages, setLanguages] = useState({})
   const [cities, setCities] = useState([])
   const [media, setMedia] = useState([])
-  // states
 
-  // const { languages, cities } = useUserDataAndCompanies()
-  console.log('media', media)
   const selectedClient = useSelector(selectSelectedClient)
   const shortCutData = useSelector(selectShortCut)
 

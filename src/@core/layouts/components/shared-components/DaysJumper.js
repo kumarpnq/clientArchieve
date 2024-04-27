@@ -57,11 +57,6 @@ const DaysJumper = ({ settings }) => {
       const fromDate = dayjs(shortCutData?.searchCriteria?.fromDate)
       const toDate = dayjs(shortCutData?.searchCriteria?.toDate)
       const daysDifference = toDate.diff(fromDate, 'day')
-      console.log('chekcingstaus==>', daysDifference - 1)
-      // let selectedIcon = icons.find(icon => icon.days === daysDifference)
-      // if (!selectedIcon) {
-      //   selectedIcon = { label: `${daysDifference}D`, days: daysDifference, component: GenericIcon }
-      // }
 
       if (daysDifference - 1 === 90) {
         handleFilter(daysDifference - 1, '3M')
