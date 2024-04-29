@@ -36,22 +36,22 @@ const useAutoNotification = () => {
       if (completeJobs.length) {
         completeJobs.forEach(item => {
           toast.success(
-            <div style={{display:"flex", flexDirection:"column",gap:"0.2rem"}}>
-              <h1>Job: ${item.jobName}</h1>
-              <h1>Status: ${item.jobStatus}</h1>
-            {/* {`Job: ${item.jobName}. Status: ${item.jobStatus}.`}, */}
-            <a
-              className=''
-              key={item.jobId}
-              href={`example/link/${item.jobId}`}
-              target='_blank'
-              rel='noopener noreferrer'
-              style={{ }}
-            >
-              {` DownloadLink`}
-            </a>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+              <span>Job: {item.jobName}</span>
+              <span>Status: {item.jobStatus}</span>
+              {/* {`Job: ${item.jobName}. Status: ${item.jobStatus}.`}, */}
+              <a
+                className=''
+                key={item.jobId}
+                href={`example/link/${item.jobId}`}
+                target='_blank'
+                rel='noopener noreferrer'
+                style={{}}
+              >
+                {` DownloadLink`}
+              </a>
             </div>,
-            
+
             { duration: 10000 }
           )
         })
