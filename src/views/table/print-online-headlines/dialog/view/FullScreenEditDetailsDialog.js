@@ -26,7 +26,7 @@ const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles }) 
   }, [open, imageSrc])
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='xl' fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth='2xl' fullWidth>
       <IconButton aria-label='close' onClick={handleClose} style={{ position: 'absolute', right: 8, top: 8 }}>
         <CloseIcon />
       </IconButton>

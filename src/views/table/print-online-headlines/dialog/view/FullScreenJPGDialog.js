@@ -22,7 +22,7 @@ const FullScreenJPGDialog = ({ open, handleClose, imageSrc, articles }) => {
   }, [open, imageSrc])
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='xl' fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth='2xl' fullWidth>
       <DialogContent>
         <PublicationLogo articles={articles} />
         {/* Render the PublicationInfo component and pass the articles prop */}

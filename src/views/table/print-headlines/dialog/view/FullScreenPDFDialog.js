@@ -21,7 +21,7 @@ const FullScreenPDFDialog = ({ open, handleClose, pdfSrc, articles }) => {
   }, [open, pdfSrc])
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='xl' fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth='2xl' fullWidth>
       <DialogContent>
         <PublicationLogo articles={articles} />
         <PublicationInfo articles={articles} />

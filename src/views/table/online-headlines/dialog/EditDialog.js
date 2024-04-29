@@ -9,18 +9,40 @@ import TextField from '@mui/material/TextField'
 import Iframe from 'react-iframe'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
+import { useSelector } from 'react-redux'
 
 // ** third party imports
 import toast from 'react-hot-toast'
 import ArticleTagEdit from '../ArticleTagEdit'
 import { Box } from '@mui/material'
+import useGetTagsForArticle from 'src/api/online-headline/tag/useGetTagsForArtcile'
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 const EditDialog = ({ open, handleClose, socialFeed, fetchTagsFlag, setFetchTagsFlag }) => {
+  const companyId = socialFeed?.companies.map(i => i.id).join()
+  const articleId = socialFeed?.socialFeedId
+  const [fetchFlag, setFetchFlag] = useState(false)
+  console.log("article==>",socialFeed)
+  
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+  
   const [editedSocialFeed, setEditedSocialFeed] = useState({
     headline: '',
     author: ''
   })
   const { author } = editedSocialFeed
+
+  const {
+    tagsData,
+    loading: fetchLoading,
+    error: fetchError
+  } = useGetTagsForArticle({
+    articleId,
+    clientId,
+    companyIds: companyId,
+    fetchFlag
+  })
 
   useEffect(() => {
     if (socialFeed) {

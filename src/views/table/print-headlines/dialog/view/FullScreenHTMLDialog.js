@@ -20,7 +20,7 @@ const FullScreenHTMLDialog = ({ open, handleClose, fileContent, articles }) => {
   }, [open, fileContent])
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='xl' fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth='2xl' fullWidth>
       <DialogContent>
         <PublicationLogo articles={articles} />
         <PublicationInfo articles={articles} />
