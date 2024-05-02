@@ -22,11 +22,11 @@ const EditDialog = ({ open, handleClose, socialFeed, fetchTagsFlag, setFetchTags
   const companyId = socialFeed?.companies.map(i => i.id).join()
   const articleId = socialFeed?.socialFeedId
   const [fetchFlag, setFetchFlag] = useState(false)
-  console.log("article==>",socialFeed)
-  
+  console.log('article==>', socialFeed)
+
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-  
+
   const [editedSocialFeed, setEditedSocialFeed] = useState({
     headline: '',
     author: ''
@@ -43,6 +43,8 @@ const EditDialog = ({ open, handleClose, socialFeed, fetchTagsFlag, setFetchTags
     companyIds: companyId,
     fetchFlag
   })
+
+  console.log('tagsData==>', tagsData)
 
   useEffect(() => {
     if (socialFeed) {
