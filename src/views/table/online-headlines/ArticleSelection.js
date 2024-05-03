@@ -455,7 +455,7 @@ const TableSelection = () => {
             recordsPerPage: recordsPerPage,
 
             geography: selectedCitiesString,
-            media: selectedMedia,
+            media: selectedMedia.join(', '),
             tags: shortCutData?.searchCriteria?.tags || selectedTagString,
             language: selectedLanguagesString,
 
