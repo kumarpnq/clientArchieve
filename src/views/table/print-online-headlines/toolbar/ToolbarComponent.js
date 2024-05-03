@@ -25,10 +25,10 @@ import { debounce } from 'lodash'
 const ToolbarComponent = ({
   // selectedCompanyId,
   // setSelectedCompanyId,
+  setSelectedLanguages,
   selectedGeography,
   setSelectedGeography,
   selectedLanguages,
-  setSelectedLanguages,
   selectedMedia,
   setSelectedMedia,
   selectedTag,
@@ -82,7 +82,7 @@ const ToolbarComponent = ({
   }
 
   const handleLanguageClick = languageCode => {
-    setSelectedLanguages(prevSelected => {
+    prevSelected => {
       const isAlreadySelected = prevSelected.includes(languageCode)
 
       if (isAlreadySelected) {
@@ -92,7 +92,7 @@ const ToolbarComponent = ({
         // If not selected, add to the list
         return [...prevSelected, languageCode]
       }
-    })
+    }
   }
 
   const handleSelectAllLanguage = () => {
@@ -103,6 +103,20 @@ const ToolbarComponent = ({
   const handleSelectAllMedia = () => {
     const allMediaIds = media.map(item => item.publicationGroupId)
     setSelectedMedia(allMediaIds)
+  }
+
+  const handleLanguageSelect = languageCode => {
+    setSelectedLanguages(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(languageCode)
+
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== languageCode)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, languageCode]
+      }
+    })
   }
 
   const handleMediaSelect = publicationGroupId => {
@@ -143,6 +157,11 @@ const ToolbarComponent = ({
     setSelectedTag(allTags)
   }
 
+  const handleSearchChange = event => {
+    console.log('event==>', event.target.value)
+    setSearchTerm(event.target.value)
+  }
+
   const debounceMediaChange = debounce(value => {
     if (value.length > 3) {
       setSelectedMedia(value)
@@ -169,12 +188,12 @@ const ToolbarComponent = ({
         })
         setLanguages(languageResponse.data.languages)
 
-        if (shortCutData?.screenName == 'onlineHeadlines') {
+        if (shortCutData?.screenName == 'bothHeadlines') {
           const selectedLanguageCodes = languageResponse.data.languages
             .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
             .map(languageCode => languageCode)
           console.log('checkingshortcut==>', selectedLanguageCodes)
-          setSelectedLanguage(selectedLanguageCodes)
+          setSelectedLanguages(selectedLanguageCodes)
         }
 
         // Fetch cities
@@ -185,14 +204,14 @@ const ToolbarComponent = ({
         })
         setCities(citiesResponse.data.cities)
 
-        if (shortCutData?.screenName == 'onlineHeadlines') {
+        if (shortCutData?.screenName == 'bothHeadlines') {
           const selectedCityIds = citiesResponse.data.cities
             .filter(city => shortCutData?.searchCriteria?.geography?.includes(city.cityId))
             .map(city => city.cityId)
           setSelectedGeography(selectedCityIds)
         }
 
-        const mediaResponse = await axios.get(`${BASE_URL}/onlineMediaList`, {
+        const mediaResponse = await axios.get(`${BASE_URL}`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -203,7 +222,7 @@ const ToolbarComponent = ({
         })
         setMedia(mediaResponse.data.mediaList)
 
-        if (shortCutData?.screenName == 'onlineHeadlines') {
+        if (shortCutData?.screenName == 'bothHeadlines') {
           const selectedMediaIds = mediaResponse.data.mediaList
             .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
             .map((item, index) => item.publicationId + index)
@@ -231,7 +250,7 @@ const ToolbarComponent = ({
           }
         })
         setTags(tagsResponse.data.clientTags)
-        if (shortCutData?.screenName == 'onlineHeadlines') {
+        if (shortCutData?.screenName == 'bothHeadlines') {
           const selectedTags = tagsResponse.data.clientTags
             .filter(tag => shortCutData?.searchCriteria?.tags.split(',')?.includes(tag))
             .map(tag => tag)
@@ -379,13 +398,13 @@ const ToolbarComponent = ({
           {Object.entries(languages).length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllLanguage}>Select All</Button>
-              <Button onClick={() => setSelectedLanguages([])}>Deselect All</Button>
+              <Button onClick={() => ss([])}>Deselect All</Button>
             </ListItem>
           )}
           {Object.entries(languages).map(([languageName, languageCode]) => (
             <MenuItem
               key={languageCode}
-              onClick={() => handleLanguageClick(languageCode)}
+              onClick={() => handleLanguageSelect(languageCode)}
               selected={
                 selectedLanguages.includes(languageCode) ||
                 shortCutData?.searchCriteria?.language?.includes(languageCode)
@@ -397,31 +416,32 @@ const ToolbarComponent = ({
         </Menu>
         {/* Media Dropdown Menu */}
         <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
-          {/* {media.length > 0 && (
+          {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          )} */}
-          {/* {media.map(item => (
-            <MenuItem
-              key={item.publicationGroupId}
-              onClick={() => handleMediaSelect(item.publicationGroupId)}
-              selected={selectedMedia.includes(item.publicationGroupId)}
-            >
-              {item.publicationName}
-            </MenuItem>
-          ))} */}
-          <MenuItem>
-            <TextField
-              id='outlined-basic'
-              type='text'
-              value={media}
-              onChange={handleMediaChange}
-              label='Media'
-              variant='outlined'
-            />
-          </MenuItem>
+          }
+
+          {
+            <ListItem>
+              <TextField placeholder='Search Media' value={searchTerm} onChange={handleSearchChange} />
+            </ListItem>
+          }
+          {media.map((item, index) => (
+            <div key={`${item.publicationId}-${index}`}>
+              {console.log('checing item==>', item)}
+              <MenuItem
+                onClick={() => handleMediaSelect(item.publicationId, index)}
+                selected={
+                  selectedMedia?.includes(item.publicationId + index) ||
+                  shortCutData?.searchCriteria?.media?.includes(item.publicationId)
+                }
+              >
+                {item.publicationName}
+              </MenuItem>
+            </div>
+          ))}
           {/* Add more items as needed */}
         </Menu>
 
