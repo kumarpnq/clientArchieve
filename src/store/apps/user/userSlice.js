@@ -12,7 +12,8 @@ const userSlice = createSlice({
     fetchAutoStatusFlag: false,
     selectedMedia: 'print',
     shotCutPrint: [],
-    shortCutFlag: false
+    shortCutFlag: false,
+    customDashboardScreens: false
   },
   reducers: {
     setShotCutPrint: (state, action) => {
@@ -48,6 +49,9 @@ const userSlice = createSlice({
     },
     setSelectedMedia: (state, action) => {
       state.selectedMedia = action.payload
+    },
+    setCustomDashboardScreens: (state, action) => {
+      state.customDashboardScreens = action.payload
     }
   }
 })
@@ -64,7 +68,8 @@ export const {
   shotCutPrint,
   setShotCutPrint,
   shortCutFlag,
-  setShortCutFlag
+  setShortCutFlag,
+  setCustomDashboardScreens
 } = userSlice.actions
 
 export const selectUserData = state => state.user.data
@@ -86,5 +91,7 @@ export const selectNotificationFlag = state => state.user.notificationFlag
 export const selectFetchAutoStatusFlag = state => state.user.fetchAutoStatusFlag
 
 export const selectSelectedMedia = state => state.user.selectedMedia
+
+export const customDashboardsScreensWithCharts = state => state.user.customDashboardScreens
 
 export default userSlice.reducer

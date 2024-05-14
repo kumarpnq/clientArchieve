@@ -10,7 +10,7 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const useTonality = props => {
+const usePeersData = props => {
   const { media, endpoint, idType, isCompanyIds } = props
 
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
@@ -49,13 +49,11 @@ const useTonality = props => {
           },
           params: requestParams
         })
-        setChartData(
-          response.data.companyTonality ||
-            response.data.tonalityVscore ||
-            response.data.clientTonality ||
-            response.data.positiveTonality ||
-            response.data.negativeTonality
-        )
+
+        const data =
+          (endpoint === '/reportPeers/' && response.data.reportPeers.print) ||
+          (endpoint === '/visibilityPeers/' && response.data.visibilityPeers.print)
+        setChartData(data)
       } catch (error) {
         setError(error)
       } finally {
@@ -64,9 +62,9 @@ const useTonality = props => {
     }
 
     fetchData()
-  }, [clientId, selectedCompetitions, formattedEndDate, formattedStartDate, endpoint, media, idType, isCompanyIds])
+  }, [clientId, selectedCompetitions, formattedEndDate, formattedStartDate, endpoint, media, isCompanyIds, idType])
 
   return { chartData, loading, error }
 }
 
-export default useTonality
+export default usePeersData

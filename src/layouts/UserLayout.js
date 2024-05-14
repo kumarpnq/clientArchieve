@@ -1,4 +1,8 @@
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { useEffect, useState } from 'react'
+
+// *third party imports
+import axios from 'axios'
 
 // ** Layout Imports
 // !Do not remove this Layout import
@@ -18,8 +22,113 @@ import HorizontalAppBarContent from './components/horizontal/AppBarContent'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { BASE_URL } from 'src/api/base'
+
+// ** redux import
+import { useSelector, useDispatch } from 'react-redux'
+import { selectSelectedClient, setCustomDashboardScreens } from 'src/store/apps/user/userSlice'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const UserLayout = ({ children, contentHeightFixed }) => {
+  // ** redux
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+  const dispatch = useDispatch()
+  const screenPermissions = useScreenPermissions()
+
+  const [navItems, setNavItems] = useState([])
+
+  useEffect(() => {
+    const newNavItems = [
+      {
+        title: 'Dashboards',
+        icon: 'tabler:smart-home',
+        badgeColor: 'error',
+        children: [
+          {
+            title: 'My Dashboard',
+            path: '/dashboards/custom'
+          },
+          screenPermissions.analytics && {
+            title: 'Analytics',
+            path: '/dashboards/analytics',
+            icon: 'clarity:analytics-line'
+          },
+          screenPermissions.printDashboard && {
+            title: 'Print',
+            path: '/dashboards/print',
+            icon: 'arcticons:mobile-print'
+          },
+          screenPermissions.onlineDashboard && {
+            title: 'Online',
+            path: '/dashboards/online',
+            icon: 'fluent-mdl2:join-online-meeting'
+          },
+          screenPermissions.visibilityImageQE && {
+            title: 'Visibility Image QE',
+            path: '/dashboards/visibility-image-qe',
+            icon: 'mage:chart-up'
+          },
+          {
+            title: 'Visibility & Count ',
+            path: '/dashboards/visibility-&-count',
+            icon: 'oui:token-token-count'
+          },
+          {
+            title: 'Tonality',
+            path: '/dashboards/tonality',
+            icon: 'material-symbols-light:tonality'
+          },
+          {
+            title: 'Peers',
+            path: '/dashboards/peers',
+            icon: 'line-md:peertube-alt'
+          },
+          {
+            title: 'Performance',
+            path: '/dashboards/performance',
+            icon: 'mingcute:performance-fill'
+          },
+          {
+            title: 'KPI Peers',
+            path: '/dashboards/kpi-peers',
+            icon: 'carbon:summary-kpi-mirror'
+          }
+        ]
+      },
+      screenPermissions.onlineHeadlines && {
+        title: 'Online Headlines',
+        icon: 'fluent-mdl2:news-search',
+        path: '/headlines/online',
+        hidden: !screenPermissions.onlineHeadlines
+      },
+      screenPermissions.onlineHeadlines && {
+        title: 'Print Headlines',
+        icon: 'emojione-monotone:newspaper',
+        path: '/headlines/print',
+        hidden: !screenPermissions.printHeadlines
+      },
+      screenPermissions.bothHeadlines && {
+        title: 'Print & Online Headlines',
+        icon: 'material-symbols:article-shortcut-outline-rounded',
+        path: '/headlines/print-online',
+        hidden: !screenPermissions.bothHeadlines
+      },
+      {
+        sectionTitle: 'Demo'
+      },
+      {
+        title: 'Demo page',
+        icon: 'tabler:archive',
+        path: '/demo-pages'
+      }
+    ]
+
+    // Filter out undefined elements
+    const filteredNavItems = newNavItems.filter(item => item)
+    setNavItems(filteredNavItems)
+  }, [screenPermissions])
+
   // ** Hooks
   const { settings, saveSettings } = useSettings()
 
@@ -38,6 +147,34 @@ const UserLayout = ({ children, contentHeightFixed }) => {
   if (hidden && settings.layout === 'horizontal') {
     settings.layout = 'vertical'
   }
+  const items = VerticalNavItems()
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedToken = localStorage.getItem('accessToken') // Replace with your authentication token
+        const url = `${BASE_URL}/userDashboardList`
+
+        const headers = {
+          Authorization: `Bearer ${storedToken}`
+        }
+
+        const request_data = {
+          clientId: clientId // Replace with your request data
+        }
+
+        const response = await axios.get(url, {
+          headers: headers,
+          params: request_data
+        })
+        dispatch(setCustomDashboardScreens(response.data.userDashboardList))
+        console.log('screen1', response.data)
+      } catch (error) {
+        console.error('Error fetching user dashboard data:', error)
+      }
+    }
+
+    fetchData()
+  }, [clientId, dispatch])
 
   return (
     <Layout
@@ -47,7 +184,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
       contentHeightFixed={contentHeightFixed}
       verticalLayoutProps={{
         navMenu: {
-          navItems: VerticalNavItems()
+          navItems: navItems
 
           // Uncomment the below line when using server-side menu in vertical layout and comment the above line
           // navItems: verticalMenuItems

@@ -1,4 +1,3 @@
-import React from 'react'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const Navigation = () => {
@@ -12,6 +11,12 @@ const Navigation = () => {
       // badgeContent: 'new',
       badgeColor: 'error',
       children: [
+        {
+          title: 'My Dashboard',
+          path: '/dashboards/custom'
+
+          // icon: 'oui:token-token-count'
+        },
         screenPermissions.analytics && {
           title: 'Analytics',
           path: '/dashboards/analytics',
@@ -45,6 +50,21 @@ const Navigation = () => {
           title: 'Tonality',
           path: '/dashboards/tonality',
           icon: 'material-symbols-light:tonality'
+        },
+        {
+          title: 'Peers',
+          path: '/dashboards/peers',
+          icon: 'line-md:peertube-alt'
+        },
+        {
+          title: 'Performance',
+          path: '/dashboards/performance',
+          icon: 'mingcute:performance-fill'
+        },
+        {
+          title: 'KPI Peers',
+          path: '/dashboards/kpi-peers',
+          icon: 'carbon:summary-kpi-mirror'
         }
       ]
     },

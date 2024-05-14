@@ -89,7 +89,7 @@ const TonalityVScore = props => {
   }
 
   const data = {
-    labels: chartData.map(data => data.companyName.substring(0, 15)),
+    labels: chartData.map(data => data?.companyName?.substring(0, 15)),
     datasets: [
       {
         label: 'Negative',

@@ -10,8 +10,8 @@ import {
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
-const useTonality = props => {
-  const { media, endpoint, idType, isCompanyIds } = props
+const useKpiChartsData = props => {
+  const { endpoint } = props
 
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedFromDate = useSelector(selectSelectedStartDate)
@@ -30,16 +30,14 @@ const useTonality = props => {
   useEffect(() => {
     const fetchData = async () => {
       const requestParams = {
-        media: media,
-        [idType]: clientId,
+        // media: media,
+        clientIds: clientId,
 
-        // companyIds: selectedCompetitions,
+        companyIds: selectedCompetitions,
         fromDate: formattedStartDate, //'2024-02-26 00:00:00',
         toDate: formattedEndDate //'2024-02-27 00:00:00'
       }
-      if (isCompanyIds) {
-        requestParams.companyIds = selectedCompetitions
-      }
+
       try {
         const storedToken = localStorage.getItem('accessToken')
 
@@ -49,14 +47,14 @@ const useTonality = props => {
           },
           params: requestParams
         })
-        setChartData(
-          response.data.companyTonality ||
-            response.data.tonalityVscore ||
-            response.data.clientTonality ||
-            response.data.positiveTonality ||
-            response.data.negativeTonality
-        )
+        console.log('test', response.data)
+
+        const data =
+          (endpoint === '/reportPeers/' && response.data.reportPeers.print) ||
+          (endpoint === '/visibilityPeers/' && response.data.visibilityPeers.print)
+        setChartData(data)
       } catch (error) {
+        console.log(error)
         setError(error)
       } finally {
         setLoading(false)
@@ -64,9 +62,9 @@ const useTonality = props => {
     }
 
     fetchData()
-  }, [clientId, selectedCompetitions, formattedEndDate, formattedStartDate, endpoint, media, idType, isCompanyIds])
+  }, [clientId, selectedCompetitions, formattedEndDate, formattedStartDate, endpoint])
 
   return { chartData, loading, error }
 }
 
-export default useTonality
+export default useKpiChartsData

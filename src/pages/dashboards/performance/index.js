@@ -14,54 +14,79 @@ import Link from 'next/link'
 
 // ** hooks
 // import useScreenPermissions from 'src/hooks/useScreenPermissions'
-import useTonality from 'src/api/dashboard-tonality/useCompanyTonality'
+import usePerformanceData from 'src/api/dashboard-performance/usePerformance'
 
 // * components import
-import CompanyTonality from 'src/views/dashboards/tonality/CompanyTonality'
-import TonalityVScore from 'src/views/dashboards/tonality/TonalityVScore'
-import ClientTonality from 'src/views/dashboards/tonality/ClientTonality'
-import PositiveTonality from 'src/views/dashboards/tonality/PositiveTonality'
-import NegativeTonality from 'src/views/dashboards/tonality/NegativeTonality'
+import Region from 'src/views/dashboards/performance/Region'
+import Publication from 'src/views/dashboards/performance/Publication'
+import Reportings from 'src/views/dashboards/performance/Reportings'
+import Journalist from 'src/views/dashboards/performance/Journalist'
+import Language from 'src/views/dashboards/performance/Language'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
   color: theme.palette.primary.main
 }))
 
-const TonalityCharts = () => {
+const PeersCharts = () => {
   const userDetails = useSelector(selectUserData)
   const selectedMedia = useSelector(selectSelectedMedia)
 
   // * data hooks
   const {
-    chartData: companyTonalityData,
-    loading: companyTonalityLoading,
-    error: companyTonalityError
-  } = useTonality({ media: selectedMedia, endpoint: '/companyTonality/', idType: 'clientIds', isCompanyIds: false })
+    chartData: regionPerformanceData,
+    loading: regionPerformanceDataLoading,
+    error: regionPerformanceDataError
+  } = usePerformanceData({
+    media: selectedMedia,
+    endpoint: '/regionPerformance/',
+    idType: 'clientIds',
+    isCompanyIds: true
+  })
 
   const {
-    chartData: tonalityVScoreData,
-    loading: tonalityVScoreLoading,
-    error: tonalityVScoreError
-  } = useTonality({ media: selectedMedia, endpoint: '/tonalityVscore/', idType: 'clientIds', isCompanyIds: false })
+    chartData: publicationPerformanceData,
+    loading: publicationPerformanceDataLoading,
+    error: publicationPerformanceDataError
+  } = usePerformanceData({
+    media: selectedMedia,
+    endpoint: '/publicationPerformance/',
+    idType: 'clientIds',
+    isCompanyIds: true
+  })
 
   const {
-    chartData: clientTonality,
-    loading: clientTonalityLoading,
-    error: clientTonalityError
-  } = useTonality({ media: selectedMedia, endpoint: '/clientTonality/', idType: 'clientId', isCompanyIds: false })
+    chartData: reporingPerformanceData,
+    loading: reporingPerformanceDataLoading,
+    error: reporingPerformanceDataError
+  } = usePerformanceData({
+    media: selectedMedia,
+    endpoint: '/reporingPerformance/',
+    idType: 'clientIds',
+    isCompanyIds: true
+  })
 
   const {
-    chartData: positiveTonality,
-    loading: positiveTonalityLoading,
-    error: positiveTonalityError
-  } = useTonality({ media: selectedMedia, endpoint: '/positiveTonality/', idType: 'clientId', isCompanyIds: false })
+    chartData: journalistPerformanceData,
+    loading: journalistPerformanceDataLoading,
+    error: journalistPerformanceDataError
+  } = usePerformanceData({
+    media: selectedMedia,
+    endpoint: '/journalistPerformance/',
+    idType: 'clientIds',
+    isCompanyIds: true
+  })
 
   const {
-    chartData: negativeTonality,
-    loading: negativeTonalityLoading,
-    error: negativeTonalityError
-  } = useTonality({ media: selectedMedia, endpoint: '/negativeTonality/', idType: 'clientIds', isCompanyIds: false })
+    chartData: languagePerformanceData,
+    loading: languagePerformanceDataLoading,
+    error: languagePerformanceDataError
+  } = usePerformanceData({
+    media: selectedMedia,
+    endpoint: '/languagePerformance/',
+    idType: 'clientIds',
+    isCompanyIds: true
+  })
 
   // ** Hook
   const theme = useTheme()
@@ -100,10 +125,53 @@ const TonalityCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <CompanyTonality
-            chartData={companyTonalityData}
-            loading={companyTonalityLoading}
-            error={companyTonalityError}
+          <Region
+            regionData={regionPerformanceData}
+            loading={regionPerformanceDataLoading}
+            error={regionPerformanceDataError}
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+
+        <Grid item xs={12} lg={6}>
+          <Reportings
+            reportingData={reporingPerformanceData}
+            loading={reporingPerformanceDataLoading}
+            error={reporingPerformanceDataError}
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+        <Grid item xs={12} lg={16}>
+          <Publication
+            publicationData={publicationPerformanceData}
+            loading={publicationPerformanceDataLoading}
+            error={publicationPerformanceDataError}
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+        <Grid item xs={12} lg={16}>
+          <Journalist
+            journalistData={journalistPerformanceData}
+            loading={journalistPerformanceDataLoading}
+            error={journalistPerformanceDataError}
             legendColor={legendColor}
             primary={primaryColor}
             yellow={yellowColor}
@@ -114,52 +182,10 @@ const TonalityCharts = () => {
           />
         </Grid>
         <Grid item xs={12} lg={6}>
-          <TonalityVScore
-            chartData={tonalityVScoreData}
-            loading={tonalityVScoreLoading}
-            error={tonalityVScoreError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
-        </Grid>
-        <Grid item xs={12} lg={6}>
-          <ClientTonality
-            chartData={clientTonality}
-            loading={clientTonalityLoading}
-            error={clientTonalityError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
-        </Grid>
-        <Grid item xs={12} lg={6}>
-          <PositiveTonality
-            chartData={positiveTonality}
-            loading={positiveTonalityLoading}
-            error={positiveTonalityError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
-        </Grid>
-        <Grid item xs={12} lg={6}>
-          <NegativeTonality
-            chartData={negativeTonality}
-            loading={negativeTonalityLoading}
-            error={negativeTonalityError}
+          <Language
+            languageData={languagePerformanceData}
+            loading={languagePerformanceDataLoading}
+            error={languagePerformanceDataError}
             legendColor={legendColor}
             primary={primaryColor}
             yellow={yellowColor}
@@ -174,4 +200,4 @@ const TonalityCharts = () => {
   )
 }
 
-export default TonalityCharts
+export default PeersCharts
