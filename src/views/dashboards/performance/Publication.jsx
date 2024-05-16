@@ -21,7 +21,13 @@ Chart.register(...registerables)
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 
+// ** custom imports
+import usePath from 'src/@core/utils/usePath'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+
 const Publication = props => {
+  const { currentPath, asPath } = usePath()
   const { publicationData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
   const publications = Object.keys(publicationData || {})
 
@@ -37,15 +43,6 @@ const Publication = props => {
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
   const [checked, setChecked] = useState(false)
   const [activeType, setActiveType] = useState('chart')
-
-  // useEffect(() => {
-  //   if (publications) {
-  //     const randomIndex = Math.floor(Math.random() * publications.length)
-  //     const randomPublication = publications[randomIndex]
-  //     setChartData(publicationData[randomPublication] || [])
-  //     setSelectedPublication(randomPublication)
-  //   }
-  // }, [])
 
   const handleChange = () => {
     setActiveChart('Bar')
@@ -270,6 +267,12 @@ const Publication = props => {
     handleClose()
   }
 
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+
   const TableComp = () => {
     return (
       <TableContainer component={Paper}>
@@ -376,6 +379,11 @@ const Publication = props => {
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+                {asPath === '/dashboards/custom/' ? (
+                  <MenuItem onClick={() => handleRemoveFromChartList('Publication')}>Remove from Custom</MenuItem>
+                ) : (
+                  <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
+                )}
                 <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Publications</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
@@ -436,6 +444,7 @@ const Publication = props => {
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
     </>
   )
 }

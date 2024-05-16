@@ -20,14 +20,6 @@ import ChartjsPolarAreaChart from 'src/views/charts/online-charts/ChartjsPolarAr
 import ChartjsTable from 'src/views/charts/online-charts/ChartjsTable'
 import ChartsAppBar from 'src/views/charts/online-charts/ChartsAppBar'
 
-import {
-  filterArticlesByDateRange,
-  countArticlesByCompany,
-  calculateShareOfVoice,
-  calculateArticleCountsByCompany
-} from 'src/views/charts/online-charts/articleUtils' // Adjust the import path
-import { articles } from 'src/views/table/data-grid/Db-Articles'
-
 // ** Third Party Styles Import
 import 'chart.js/auto'
 import ChartjsBarChart from 'src/views/charts/online-charts/ChartjsBarChart'

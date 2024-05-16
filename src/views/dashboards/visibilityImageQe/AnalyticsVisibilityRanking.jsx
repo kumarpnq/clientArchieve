@@ -21,7 +21,13 @@ Chart.register(...registerables)
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 
+// ** custom imports
+import usePath from 'src/@core/utils/usePath'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+
 const VisibilityRanking = props => {
+  const { currentPath, asPath } = usePath()
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeChart, setActiveChart] = useState('Line')
   const [activeMenu, setActiveMenu] = useState('main')
@@ -167,6 +173,12 @@ const VisibilityRanking = props => {
     ]
   }
 
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+
   const TableComp = () => {
     return (
       <TableContainer component={Paper}>
@@ -240,6 +252,11 @@ const VisibilityRanking = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {/* <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem> */}
+                {asPath === '/dashboards/custom/' ? (
+                  <MenuItem onClick={() => handleRemoveFromChartList('VisibilityRanking')}>Remove from Custom</MenuItem>
+                ) : (
+                  <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
+                )}
                 <MenuItem onClick={() => setActiveMenu('chart')}>Chart Types</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
@@ -289,6 +306,7 @@ const VisibilityRanking = props => {
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
     </>
   )
 }

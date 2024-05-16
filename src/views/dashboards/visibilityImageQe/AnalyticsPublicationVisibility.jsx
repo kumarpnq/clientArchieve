@@ -21,7 +21,13 @@ Chart.register(...registerables)
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 
+// ** custom imports
+import usePath from 'src/@core/utils/usePath'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+
 const PublicationVisibility = props => {
+  const { currentPath, asPath } = usePath()
   const [activeChart, setActiveChart] = useState('Line')
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeMenu, setActiveMenu] = useState('main')
@@ -38,6 +44,8 @@ const PublicationVisibility = props => {
   }
 
   const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+
+  const ChartDataForChart = chartData || []
 
   const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
   const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
@@ -95,9 +103,9 @@ const PublicationVisibility = props => {
     }
   }
 
-  const vscore = chartData.map(data => data.vScore)
-  const QE = chartData.map(data => data.QE)
-  const iScore = chartData.map(data => data.iScore)
+  const vscore = dataForCharts.map(data => data.vScore)
+  const QE = dataForCharts.map(data => data.QE)
+  const iScore = dataForCharts.map(data => data.iScore)
 
   const data = {
     labels: dataForCharts.map(data => data.publicationGroupName.substring(0, 15)),
@@ -221,6 +229,12 @@ const PublicationVisibility = props => {
     setIsChartClicked(false)
   }
 
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+
   const TableComp = () => {
     return (
       <TableContainer component={Paper}>
@@ -325,6 +339,13 @@ const PublicationVisibility = props => {
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+                {asPath === '/dashboards/custom/' ? (
+                  <MenuItem onClick={() => handleRemoveFromChartList('PublicationVisibility')}>
+                    Remove from Custom
+                  </MenuItem>
+                ) : (
+                  <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
+                )}
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
@@ -373,6 +394,7 @@ const PublicationVisibility = props => {
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
     </>
   )
 }

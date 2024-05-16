@@ -49,9 +49,9 @@ const UserLayout = ({ children, contentHeightFixed }) => {
             title: 'My Dashboard',
             path: '/dashboards/custom'
           },
-          screenPermissions.analytics && {
-            title: 'Analytics',
-            path: '/dashboards/analytics',
+          {
+            title: 'Clouds',
+            path: '/dashboards/clouds',
             icon: 'clarity:analytics-line'
           },
           screenPermissions.printDashboard && {
@@ -113,14 +113,6 @@ const UserLayout = ({ children, contentHeightFixed }) => {
         icon: 'material-symbols:article-shortcut-outline-rounded',
         path: '/headlines/print-online',
         hidden: !screenPermissions.bothHeadlines
-      },
-      {
-        sectionTitle: 'Demo'
-      },
-      {
-        title: 'Demo page',
-        icon: 'tabler:archive',
-        path: '/demo-pages'
       }
     ]
 
@@ -151,7 +143,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = localStorage.getItem('accessToken') // Replace with your authentication token
+        const storedToken = localStorage.getItem('accessToken')
         const url = `${BASE_URL}/userDashboardList`
 
         const headers = {
@@ -167,7 +159,6 @@ const UserLayout = ({ children, contentHeightFixed }) => {
           params: request_data
         })
         dispatch(setCustomDashboardScreens(response.data.userDashboardList))
-        console.log('screen1', response.data)
       } catch (error) {
         console.error('Error fetching user dashboard data:', error)
       }

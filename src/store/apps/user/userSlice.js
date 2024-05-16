@@ -52,6 +52,9 @@ const userSlice = createSlice({
     },
     setCustomDashboardScreens: (state, action) => {
       state.customDashboardScreens = action.payload
+    },
+    removeChart: (state, action) => {
+      state.customDashboardScreens = state.customDashboardScreens.filter(chart => chart.id !== action.payload)
     }
   }
 })
@@ -69,7 +72,8 @@ export const {
   setShotCutPrint,
   shortCutFlag,
   setShortCutFlag,
-  setCustomDashboardScreens
+  setCustomDashboardScreens,
+  removeChart
 } = userSlice.actions
 
 export const selectUserData = state => state.user.data

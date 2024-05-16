@@ -321,7 +321,7 @@ const Customizer = () => {
                 }}
               >
                 <FormControlLabel value='vertical' label='Vertical' control={<Radio />} />
-                <FormControlLabel value='horizontal' label='Horizontal' control={<Radio />} />
+                {/* <FormControlLabel value='horizontal' label='Horizontal' control={<Radio />} /> */}
               </RadioGroup>
             </Box>
 

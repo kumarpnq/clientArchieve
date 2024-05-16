@@ -76,57 +76,6 @@ const notifications = [
   }
 ]
 
-const shortcuts = [
-  {
-    title: 'Calendar',
-    url: '/apps/calendar',
-    icon: 'tabler:calendar',
-    subtitle: 'Appointments'
-  },
-  {
-    title: 'Invoice App',
-    url: '/apps/invoice/list',
-    icon: 'tabler:file-invoice',
-    subtitle: 'Manage Accounts'
-  },
-  {
-    title: 'User App',
-    icon: 'tabler:users',
-    url: '/apps/user/list',
-    subtitle: 'Manage Users'
-  },
-  {
-    url: '/apps/roles',
-    icon: 'tabler:lock',
-    subtitle: 'Permissions',
-    title: 'Role Management'
-  },
-  {
-    subtitle: 'CRM',
-    title: 'Dashboard',
-    url: '/dashboards/crm',
-    icon: 'tabler:device-analytics'
-  },
-  {
-    title: 'Settings',
-    icon: 'tabler:settings',
-    subtitle: 'Account Settings',
-    url: '/pages/account-settings/account'
-  },
-  {
-    icon: 'tabler:help',
-    title: 'Help Center',
-    url: '/pages/help-center',
-    subtitle: 'FAQs & Articles'
-  },
-  {
-    title: 'Dialogs',
-    icon: 'tabler:square',
-    subtitle: 'Useful Popups',
-    url: '/pages/dialog-examples'
-  }
-]
-
 const AppBarContent = props => {
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
 
@@ -142,9 +91,13 @@ const AppBarContent = props => {
   const isOnAnalyticsPage = currentRoute === '/dashboards/analytics'
   const isOnVisibilityImageQePage = currentRoute === '/dashboards/visibility-image-qe'
   const isOnTonalityPage = currentRoute === '/dashboards/tonality'
+  const isOnPeersPage = currentRoute === '/dashboards/peers'
+  const isOnPerformancePage = currentRoute === '/dashboards/performance'
+
+  const isShowMedia =
+    isOnAnalyticsPage || isOnVisibilityImageQePage || isOnTonalityPage || isOnPeersPage || isOnPerformancePage
 
   useEffect(() => {
-    console.log('maindata==>')
     const storedToken = localStorage.getItem('accessToken')
 
     const fetchData = async () => {
@@ -158,7 +111,6 @@ const AppBarContent = props => {
         setDataShort(response?.data?.configData)
 
         // dispatch(setShotCutPrint(response?.data?.configData))
-        console.log('userconfig', response?.data?.configData)
       } catch (error) {
         console.error('Error fetching data:', error)
       }
@@ -198,7 +150,7 @@ const AppBarContent = props => {
           <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <Box>
               <Competition settings={settings} />
-              {(isOnAnalyticsPage || isOnVisibilityImageQePage || isOnTonalityPage) && <Media settings={settings} />}
+              {isShowMedia && <Media settings={settings} />}
             </Box>
             <Box>
               <DateBar />

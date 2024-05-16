@@ -12,6 +12,8 @@ import { styled } from '@mui/material/styles'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import useKpiChartsData from 'src/api/dashboard-kpicharts/useFetchKpiChartsData'
+import RankingKpiPeers from 'src/views/dashboards/kpi-peers/RankingKpiPeers'
+import RankingKpiPeersWithVisibility from 'src/views/dashboards/kpi-peers/RankingKpiPeersWithVisibility'
 
 // ** hooks
 // import useScreenPermissions from 'src/hooks/useScreenPermissions'
@@ -41,9 +43,8 @@ const KPIPeersCharts = () => {
     loading: rankingKpiVisibilityDataLoading,
     error: rankingKpiVisibilityDataError
   } = useKpiChartsData({
-    endpoint: '/rankingKpiPeersWithVisibility/'
+    endpoint: '/RankingKpiPeersWithVisibility/'
   })
-  console.log(rankingKpiData)
 
   // ** Hook
   const theme = useTheme()
@@ -82,7 +83,32 @@ const KPIPeersCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          test
+          <RankingKpiPeers
+            chartData={rankingKpiData}
+            loading={rankingKpiDataLoading}
+            error={rankingKpiDataError}
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <RankingKpiPeersWithVisibility
+            chartData={rankingKpiVisibilityData}
+            loading={rankingKpiVisibilityDataLoading}
+            error={rankingKpiVisibilityDataError}
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
         </Grid>
       </Grid>
     </ApexChartWrapper>

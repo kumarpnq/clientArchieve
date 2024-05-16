@@ -45,7 +45,7 @@ const usePublicationVisibility = props => {
           },
           params: requestParams
         })
-        setChartData(response.data.publicationVisibility)
+        setChartData(response.data.publicationVisibility || [])
       } catch (error) {
         setError(error)
       } finally {

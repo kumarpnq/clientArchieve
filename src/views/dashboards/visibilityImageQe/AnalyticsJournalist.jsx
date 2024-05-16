@@ -19,9 +19,15 @@ import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 
+// ** custom imports
+import usePath from 'src/@core/utils/usePath'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+
 Chart.register(...registerables)
 
 const AnalyticsJournalist = props => {
+  const { currentPath, asPath } = usePath()
   const [activeChart, setActiveChart] = useState('Line')
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeMenu, setActiveMenu] = useState('main')
@@ -220,6 +226,12 @@ const AnalyticsJournalist = props => {
     handleClose()
   }
 
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+
   const TableComp = () => {
     return (
       <TableContainer component={Paper}>
@@ -324,6 +336,11 @@ const AnalyticsJournalist = props => {
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+                {asPath === '/dashboards/custom/' ? (
+                  <MenuItem onClick={() => handleRemoveFromChartList('Journalist')}>Remove from Custom</MenuItem>
+                ) : (
+                  <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
+                )}
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
@@ -373,6 +390,7 @@ const AnalyticsJournalist = props => {
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
     </>
   )
 }

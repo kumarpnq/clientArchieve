@@ -37,98 +37,44 @@ const defaultSuggestionsData = [
     suggestions: [
       {
         icon: 'tabler:chart-pie-2',
-        suggestion: 'Analytics',
-        link: '/dashboards/analytics'
+        suggestion: 'Clouds',
+        link: '/dashboards/clouds'
       },
       {
         icon: 'tabler:device-analytics',
-        suggestion: 'CRM',
-        link: '/dashboards/crm'
+        suggestion: 'Online',
+        link: '/dashboards/online'
       },
       {
         icon: 'tabler:shopping-cart',
-        suggestion: 'eCommerce',
-        link: '/dashboards/ecommerce'
+        suggestion: 'Peers',
+        link: '/dashboards/peers'
       },
       {
         icon: 'tabler:users',
-        suggestion: 'User List',
-        link: '/apps/user/list'
+        suggestion: 'Visibility & Count',
+        link: '/apps/user/visibility-&-count'
       }
     ]
   },
-  {
-    category: 'Apps & Pages',
-    suggestions: [
-      {
-        icon: 'tabler:calendar',
-        suggestion: 'Calendar',
-        link: '/apps/calendar'
-      },
-      {
-        icon: 'tabler:list-numbers',
-        suggestion: 'Invoice List',
-        link: '/apps/invoice/list'
-      },
-      {
-        icon: 'tabler:currency-dollar',
-        suggestion: 'Pricing',
-        link: '/pages/pricing'
-      },
-      {
-        icon: 'tabler:settings',
-        suggestion: 'Account Settings',
-        link: '/pages/account-settings/account'
-      }
-    ]
-  },
-  {
-    category: 'User Interface',
-    suggestions: [
-      {
-        icon: 'tabler:typography',
-        suggestion: 'Typography',
-        link: '/ui/typography'
-      },
-      {
-        icon: 'tabler:browser',
-        suggestion: 'Tabs',
-        link: '/components/tabs'
-      },
-      {
-        icon: 'tabler:hand-click',
-        suggestion: 'Buttons',
-        link: '/components/buttons'
-      },
-      {
-        icon: 'tabler:id',
-        suggestion: 'Advanced Cards',
-        link: '/ui/cards/advanced'
-      }
-    ]
-  },
+
   {
     category: 'Forms & Tables',
     suggestions: [
       {
         icon: 'tabler:list-check',
-        suggestion: 'Select',
-        link: '/forms/form-elements/select'
+        suggestion: 'Online',
+        link: '/headlines/online'
       },
       {
         icon: 'tabler:space',
-        suggestion: 'Autocomplete',
-        link: '/forms/form-elements/autocomplete'
+        suggestion: 'Print',
+        link: '/headlines/print'
       },
       {
         icon: 'tabler:layout-grid',
-        suggestion: 'Table',
-        link: '/tables/mui'
-      },
-      {
-        icon: 'tabler:calendar-event',
-        suggestion: 'Date Pickers',
-        link: '/forms/form-elements/pickers'
+        suggestion: 'Print&Headline',
+        link: '/headlines/print-online'
       }
     ]
   }

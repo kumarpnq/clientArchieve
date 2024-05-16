@@ -19,8 +19,6 @@ Chart.register(...registerables)
 const SubjectVscore = props => {
   const { chartData, loading, error, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
 
-  console.log(chartData)
-
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
 
   const backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]

@@ -46,6 +46,7 @@ const usePublicationClientVisibility = props => {
           },
           params: requestParams
         })
+        console.log(response.data)
         setChartData(response.data.publicationVisibility || [])
       } catch (error) {
         setError(error)

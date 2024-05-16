@@ -113,7 +113,7 @@ const CountCharts = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           <JournalistVscore
-            chartData={journalistVscoreData}
+            JournalistVScoreData={journalistVscoreData}
             loading={journalistVscoreLoading}
             error={journalistVscoreError}
             legendColor={legendColor}

@@ -20,9 +20,15 @@ import IconifyIcon from 'src/@core/components/icon'
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 
+// ** custom imports
+import usePath from 'src/@core/utils/usePath'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+
 Chart.register(...registerables)
 
 const MultipleCharts = props => {
+  const { currentPath, asPath } = usePath()
   const [activeChart, setActiveChart] = useState('Line')
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
   const [checked, setChecked] = useState(false)
@@ -189,6 +195,12 @@ const MultipleCharts = props => {
     setIsChartClicked(false)
   }
 
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+
   const TableComp = () => {
     return (
       <TableContainer component={Paper}>
@@ -300,6 +312,11 @@ const MultipleCharts = props => {
               </IconButton>
 
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
+                {asPath === '/dashboards/custom/' ? (
+                  <MenuItem onClick={() => handleRemoveFromChartList('CompanyVisibility')}>Remove from Custom</MenuItem>
+                ) : (
+                  <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
+                )}
                 <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
@@ -328,6 +345,7 @@ const MultipleCharts = props => {
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
     </>
   )
 }

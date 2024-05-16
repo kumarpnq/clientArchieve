@@ -26,16 +26,10 @@ import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
 
-const Language = props => {
+const RankingKpiPeersWithVisibility = props => {
   const { currentPath, asPath } = usePath()
-  const { languageData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
-  const regions = Object.keys(languageData)
-
-  const [selectedRegion, setSelectedRegion] = useState('English')
-  const [chartData, setChartData] = useState([])
   const [activeChart, setActiveChart] = useState('Line')
   const [anchorEl, setAnchorEl] = useState(null)
-  const [anchorE2, setAnchorE2] = useState(null)
   const [activeMenu, setActiveMenu] = useState('main')
   const [chartLoaded, setChartLoaded] = useState(false)
   const [selectedCount, setSelectedCount] = useState(10)
@@ -48,12 +42,9 @@ const Language = props => {
     setActiveChart('Bar')
     setChecked(prev => !prev)
   }
-  useEffect(() => {
-    if (!!languageData) {
-      const data = languageData['English'] || []
-      setChartData(data)
-    }
-  }, [languageData])
+
+  const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+
   const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
   const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
   const dataForCharts = topData || bottomData
@@ -76,7 +67,7 @@ const Language = props => {
 
   const getRandomColor = () => {
     const color = backgroundColors[colorIndex]
-    colorIndex = (colorIndex + 1) % backgroundColors.length
+    colorIndex = (colorIndex + 1) % backgroundColors.length // Move to the next color
 
     return color
   }
@@ -109,13 +100,16 @@ const Language = props => {
       }
     }
   }
+
+  const AVEMN = chartData.map(data => data['AVE(mn)'])
+  const QE = chartData.map(data => data.QE)
+  const iScore = chartData.map(data => data.iScore)
   const vScore = chartData.map(data => data.vScore)
+  const ReachMN = chartData.map(data => data['reach(mn)'])
   const volume = chartData.map(data => data.volume)
-  const qe = chartData.map(data => data.QE)
-  const volumeSov = chartData.map(data => data.volumeSOV)
 
   const data = {
-    labels: dataForCharts.map(data => data.companyName.substring(0, 15)),
+    labels: chartData.map(data => data.companyName.substring(0, 15)),
     datasets: [
       {
         type: 'line',
@@ -125,10 +119,42 @@ const Language = props => {
         borderWidth: 2,
         fill: false,
         tension: 0.4,
-        data: [...volume, ...vScore, ...qe, ...volumeSov]
+        data: [...AVEMN, ...QE, ...iScore, ...ReachMN, ...volume]
       },
       {
-        label: 'visibility',
+        label: 'ave(mn)',
+        backgroundColor: getRandomColor(),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: AVEMN,
+        ...(checked && { stack: 'Stack 1' })
+      },
+      {
+        label: 'QE',
+        backgroundColor: getRandomColor(),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: QE,
+        ...(checked && { stack: 'Stack 1' })
+      },
+      {
+        label: 'iScore',
+        backgroundColor: getRandomColor(),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: iScore,
+        ...(checked && { stack: 'Stack 1' })
+      },
+      {
+        label: 'reach(mn)',
+        backgroundColor: getRandomColor(),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: ReachMN,
+        ...(checked && { stack: 'Stack 1' })
+      },
+      {
+        label: 'Volume',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
@@ -136,30 +162,52 @@ const Language = props => {
         ...(checked && { stack: 'Stack 1' })
       },
       {
-        label: 'volume',
+        label: 'vScore',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
         data: vScore,
         ...(checked && { stack: 'Stack 1' })
-      },
-      {
-        label: 'volume SOV',
-        backgroundColor: getRandomColor(),
-        borderColor: 'rgba(0, 0, 0, 0.1)',
-        borderWidth: 1,
-        data: qe,
-        ...(checked && { stack: 'Stack 1' })
-      },
-      {
-        label: 'visibility SOV',
-        backgroundColor: getRandomColor(),
-        borderColor: 'rgba(0, 0, 0, 0.1)',
-        borderWidth: 1,
-        data: volumeSov,
-        ...(checked && { stack: 'Stack 1' })
       }
     ]
+  }
+
+  const handleMenuClick = menuItem => {
+    switch (menuItem) {
+      case 'chart':
+        setActiveType('chart')
+        break
+      case 'table':
+        setActiveType('table')
+        break
+      case 'image':
+        toBlob(document.getElementById('ranking-kpi-peers-with-visibility')).then(function (blob) {
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'ranking-kpi-peers-with-visibility.png'
+          document.body.appendChild(a)
+          a.click()
+          window.URL.revokeObjectURL(url)
+        })
+        break
+      case 'pdf':
+        const doc = new jsPDF()
+        toBlob(document.getElementById('ranking-kpi-peers-with-visibility')).then(function (blob) {
+          const url = URL.createObjectURL(blob)
+          const img = new Image()
+          img.onload = function () {
+            doc.addImage(this, 'PNG', 10, 10, 180, 100)
+            doc.save('ranking-kpi-peers-with-visibility.pdf')
+            URL.revokeObjectURL(url)
+          }
+          img.src = url
+        })
+        break
+      default:
+        break
+    }
+    handleClose()
   }
 
   useEffect(() => {
@@ -175,10 +223,6 @@ const Language = props => {
   const handleClose = () => {
     setAnchorEl(null)
     setActiveMenu('main')
-  }
-
-  const handleRegionClose = () => {
-    setAnchorE2(null)
   }
 
   const handleClick = (item, menu) => {
@@ -210,52 +254,6 @@ const Language = props => {
     setIsChartClicked(false)
   }
 
-  // regionClick
-  const handleRegionClick = region => {
-    setSelectedRegion(region)
-    const data = languageData[region] || []
-    setChartData(data)
-    setAnchorE2(null)
-  }
-
-  const handleMenuClick = menuItem => {
-    switch (menuItem) {
-      case 'chart':
-        setActiveType('chart')
-        break
-      case 'table':
-        setActiveType('table')
-        break
-      case 'image':
-        toBlob(document.getElementById('language')).then(function (blob) {
-          const url = window.URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.href = url
-          a.download = 'language.png'
-          document.body.appendChild(a)
-          a.click()
-          window.URL.revokeObjectURL(url)
-        })
-        break
-      case 'pdf':
-        const doc = new jsPDF()
-        toBlob(document.getElementById('language')).then(function (blob) {
-          const url = URL.createObjectURL(blob)
-          const img = new Image()
-          img.onload = function () {
-            doc.addImage(this, 'PNG', 10, 10, 180, 100)
-            doc.save('language.pdf')
-            URL.revokeObjectURL(url)
-          }
-          img.src = url
-        })
-        break
-      default:
-        break
-    }
-    handleClose()
-  }
-
   // ** add to custom dashboard
   const [openAddPopup, setOpenAddPopup] = useState(false)
 
@@ -268,21 +266,23 @@ const Language = props => {
         <Table>
           <TableHead>
             <TableRow sx={{ background: primary }}>
-              <TableCell>Company Name</TableCell>
-              <TableCell>Volume</TableCell>
-              <TableCell>vScore</TableCell>
+              <TableCell>AVE(mn)</TableCell>
               <TableCell>QE</TableCell>
-              <TableCell>Volume SOV (%)</TableCell>
+              <TableCell>iScore</TableCell>
+              <TableCell>vScore</TableCell>
+              <TableCell>Reach(mn)</TableCell>
+              <TableCell>Volume</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {chartData.map((data, index) => (
+            {chartData.map((item, index) => (
               <TableRow key={index}>
-                <TableCell size='small'>{data.companyName}</TableCell>
-                <TableCell size='small'>{data.volume}</TableCell>
-                <TableCell size='small'>{data.vScore}</TableCell>
-                <TableCell size='small'>{data.QE}</TableCell>
-                <TableCell size='small'>{data.volumeSOV}</TableCell>
+                <TableCell size='small'>{item['AVE(mn)']}</TableCell>
+                <TableCell size='small'>{item.QE}</TableCell>
+                <TableCell size='small'>{item.iScore}</TableCell>
+                <TableCell size='small'>{item.vScore}</TableCell>
+                <TableCell size='small'>{item['reach(mn)']}</TableCell>
+                <TableCell size='small'>{item.volume}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -296,7 +296,7 @@ const Language = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title={`Language : ${selectedRegion || ''}`}
+            title='Ranking KPI Peers Visibility'
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -318,7 +318,7 @@ const Language = props => {
       </Dialog>
       <Card>
         <CardHeader
-          title={`Language : ${selectedRegion || ''}`}
+          title='Ranking KPI Peers Visibility'
           action={
             <Box>
               {chartIndexAxis === 'x' ? (
@@ -369,24 +369,18 @@ const Language = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('Language')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveFromChartList('RankingKpiPeersWithVisibility')}>
+                    Remove from Custom
+                  </MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
-                <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Languages</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
-              </Menu>
-              <Menu keepMounted anchorEl={anchorE2} onClose={handleRegionClose} open={Boolean(anchorE2)}>
-                {regions.map(item => (
-                  <MenuItem key={item} onClick={() => handleRegionClick(item)} selected={item === selectedRegion}>
-                    {item}
-                  </MenuItem>
-                ))}
               </Menu>
             </Box>
           }
@@ -410,7 +404,7 @@ const Language = props => {
             {renderMenuItems(['Top', 'Bottom'], 'filter')}
           </Menu>
         </Box>
-        <CardContent onClick={handleChartClick} id='language'>
+        <CardContent onClick={handleChartClick} id='ranking-kpi-peers-with-visibility'>
           {loading ? (
             <Box>
               <CircularProgress />
@@ -434,4 +428,4 @@ const Language = props => {
   )
 }
 
-export default Language
+export default RankingKpiPeersWithVisibility

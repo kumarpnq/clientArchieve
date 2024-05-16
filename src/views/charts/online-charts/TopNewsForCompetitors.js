@@ -36,6 +36,7 @@ const TopNewsForCompetitors = () => {
 
   const { competitors } = useUserDataAndCompanies(clientId)
   const { topNews, loading } = useLatestArticlesForCompetition(clientId, selectedCompetitor, limit)
+  const topNewsList = topNews || []
 
   // const competitors = Object.keys(newsForCompetitors)
 
@@ -68,8 +69,8 @@ const TopNewsForCompetitors = () => {
             <Box>
               <CircularProgress />
             </Box>
-          ) : topNews.length > 0 ? (
-            topNews.map(news => (
+          ) : topNewsList.length > 0 ? (
+            topNewsList.map(news => (
               <div key={news.articleId}>
                 <Typography
                   variant='h6'

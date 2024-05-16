@@ -30,7 +30,6 @@ const useKpiChartsData = props => {
   useEffect(() => {
     const fetchData = async () => {
       const requestParams = {
-        // media: media,
         clientIds: clientId,
 
         companyIds: selectedCompetitions,
@@ -47,14 +46,9 @@ const useKpiChartsData = props => {
           },
           params: requestParams
         })
-        console.log('test', response.data)
-
-        const data =
-          (endpoint === '/reportPeers/' && response.data.reportPeers.print) ||
-          (endpoint === '/visibilityPeers/' && response.data.visibilityPeers.print)
+        const data = response.data.rankingKpiPeers?.print || response.data.rankingKpiPeersWithVisibility?.print
         setChartData(data)
       } catch (error) {
-        console.log(error)
         setError(error)
       } finally {
         setLoading(false)
