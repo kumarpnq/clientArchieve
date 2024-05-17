@@ -93,6 +93,16 @@ const UserLayout = ({ children, contentHeightFixed }) => {
             title: 'KPI Peers',
             path: '/dashboards/kpi-peers',
             icon: 'carbon:summary-kpi-mirror'
+          },
+          {
+            title: 'Publication',
+            path: '/dashboards/publication',
+            icon: 'ic:baseline-public'
+          },
+          {
+            title: 'Journalist',
+            path: '/dashboards/journalist',
+            icon: 'oui:reporter'
           }
         ]
       },
