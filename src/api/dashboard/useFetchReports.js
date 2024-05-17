@@ -31,6 +31,7 @@ const useFetchReports = props => {
     const fetchData = async () => {
       const requestParams = {
         [idType]: clientId,
+
         companyIds: selectedCompetitions,
         fromDate: formattedStartDate,
         toDate: formattedEndDate

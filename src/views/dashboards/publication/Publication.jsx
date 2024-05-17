@@ -114,13 +114,14 @@ const PublicationPerformance = props => {
       }
     }
   }
+  console.log(chartDataForMap)
   const vScore = chartDataForMap.map(data => data.vScore)
   const volume = chartDataForMap.map(data => data.volume)
   const positivity = chartDataForMap.map(data => data.positivity)
   const visibilitySOV = chartDataForMap.map(data => data.visibilitySOV)
 
   const data = {
-    labels: regions.map(data => data.substring(0, 15)),
+    labels: regions.map((_, index) => index),
     datasets: [
       {
         type: 'line',

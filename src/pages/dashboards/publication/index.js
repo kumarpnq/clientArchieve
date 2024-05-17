@@ -102,9 +102,6 @@ const PublicationCharts = () => {
     dataKey: 'publicationPerformanceND'
   })
 
-  console.log(publicationPerformanceOnlineTop10Data)
-  console.log(publicationPerformanceOnlineTop10DataError)
-
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
