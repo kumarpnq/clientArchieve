@@ -13,6 +13,7 @@ import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import useFetchReports from 'src/api/dashboard/useFetchReports'
 import JournalistND from 'src/views/dashboards/journalist/JournalistND'
+import JournalistPerformance from 'src/views/dashboards/journalist/JournalistND'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -84,10 +85,11 @@ const JournalistCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <JournalistND
+          <JournalistPerformance
             chartData={journalistPerformanceNDData}
             loading={journalistPerformanceNDDataLoading}
             error={journalistPerformanceNDDataError}
+            cardTitle='JournalistND'
             chartId='journalist-nd'
             legendColor={legendColor}
             primary={primaryColor}
@@ -100,10 +102,11 @@ const JournalistCharts = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {' '}
-          <JournalistND
+          <JournalistPerformance
             chartData={journalistPerformanceRDData}
             loading={journalistPerformanceRDDataLoading}
             error={journalistPerformanceRDDataError}
+            cardTitle='JournalistRD'
             chartId='journalist-rd'
             legendColor={legendColor}
             primary={primaryColor}
@@ -116,10 +119,11 @@ const JournalistCharts = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {' '}
-          <JournalistND
+          <JournalistPerformance
             chartData={journalistPerformanceBDData}
             loading={journalistPerformanceBDDataLoading}
             error={journalistPerformanceBDDataError}
+            cardTitle='JournalistBD'
             chartId='journalist-bd'
             legendColor={legendColor}
             primary={primaryColor}

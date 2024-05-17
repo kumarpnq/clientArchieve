@@ -46,12 +46,10 @@ const Region = props => {
 
   useEffect(() => {
     if (regions) {
-      const randomIndex = Math.floor(Math.random() * regions.length)
-      const randomRegion = regions[randomIndex]
-      setChartData(regionData[randomRegion] || [])
-      setSelectedRegion(randomRegion)
+      setChartData(regionData['All India'])
+      setSelectedRegion('All India')
     }
-  }, [])
+  }, [regionData, regions])
 
   const handleChange = () => {
     setActiveChart('Bar')

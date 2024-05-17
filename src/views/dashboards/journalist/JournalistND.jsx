@@ -26,9 +26,11 @@ import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
 
-const JournalistND = props => {
+const JournalistPerformance = props => {
   const { currentPath, asPath } = usePath()
-  const { chartData, loading, error, chartId, primary, yellow, warning, info, grey, green, legendColor } = props
+
+  const { chartData, loading, error, chartId, cardTitle, primary, yellow, warning, info, grey, green, legendColor } =
+    props
   const regions = (!!chartData && Object.keys(chartData)) || []
 
   const [selectedRegion, setSelectedRegion] = useState('English')
@@ -115,7 +117,7 @@ const JournalistND = props => {
   const vScore = chartDataForMap.map(data => data.vScore)
   const volume = chartDataForMap.map(data => data.volume)
   const positivity = chartDataForMap.map(data => data.positivity)
-  const visibilitySOV = chartDataForMap.map(data => data.visibilitySOVSOV)
+  const visibilitySOV = chartDataForMap.map(data => data.visibilitySOV)
 
   const data = {
     labels: chartDataForMap.map(data => data.companyName.substring(0, 15)),
@@ -299,7 +301,7 @@ const JournalistND = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title={`Journalist : ${selectedRegion || ''}`}
+            title={`${cardTitle} : ${selectedRegion || ''}`}
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -321,7 +323,7 @@ const JournalistND = props => {
       </Dialog>
       <Card>
         <CardHeader
-          title={`Journalist : ${selectedRegion || ''}`}
+          title={`${cardTitle} : ${selectedRegion || ''}`}
           action={
             <Box>
               {chartIndexAxis === 'x' ? (
@@ -437,4 +439,4 @@ const JournalistND = props => {
   )
 }
 
-export default JournalistND
+export default JournalistPerformance

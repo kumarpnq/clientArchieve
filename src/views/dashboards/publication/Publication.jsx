@@ -26,13 +26,15 @@ import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
 
-const Reportings = props => {
+const PublicationPerformance = props => {
   const { currentPath, asPath } = usePath()
-  const { reportingData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
-  const regions = Object.keys(reportingData)
 
-  const [selectedRegion, setSelectedRegion] = useState('')
-  const [chartData, setChartData] = useState([])
+  const { chartData, loading, error, chartId, cardTitle, primary, yellow, warning, info, grey, green, legendColor } =
+    props
+  const regions = (!!chartData && Object.keys(chartData)) || []
+
+  const [selectedRegion, setSelectedRegion] = useState('English')
+  const [chartDataForMap, setChartDataForMap] = useState([])
   const [activeChart, setActiveChart] = useState('Line')
   const [anchorEl, setAnchorEl] = useState(null)
   const [anchorE2, setAnchorE2] = useState(null)
@@ -44,22 +46,22 @@ const Reportings = props => {
   const [checked, setChecked] = useState(false)
   const [activeType, setActiveType] = useState('chart')
 
-  useEffect(() => {
-    if (regions) {
-      const firstKey = Object.keys(reportingData)[0]
-      setChartData(reportingData[firstKey] || [])
-      setSelectedRegion(firstKey)
-    }
-  }, [regions, reportingData])
-
   const handleChange = () => {
     setActiveChart('Bar')
     setChecked(prev => !prev)
   }
+  useEffect(() => {
+    if (!!chartData) {
+      const firstKey = Object.keys(chartData)[0]
+      const data = chartData[firstKey] || []
+      setSelectedRegion(firstKey)
+      setChartDataForMap(data)
+    }
+  }, [chartData])
 
-  const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
-  const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
-  const dataForCharts = topData || bottomData
+  // const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
+  // const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
+  // const dataForCharts = topData || bottomData
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
   let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
@@ -79,7 +81,7 @@ const Reportings = props => {
 
   const getRandomColor = () => {
     const color = backgroundColors[colorIndex]
-    colorIndex = (colorIndex + 1) % backgroundColors.length // Move to the next color
+    colorIndex = (colorIndex + 1) % backgroundColors.length
 
     return color
   }
@@ -112,13 +114,13 @@ const Reportings = props => {
       }
     }
   }
-  const vScore = chartData.map(data => data.vScore)
-  const volume = chartData.map(data => data.volume)
-  const qe = chartData.map(data => data.QE)
-  const volumeSov = chartData.map(data => data.volumeSOV)
+  const vScore = chartDataForMap.map(data => data.vScore)
+  const volume = chartDataForMap.map(data => data.volume)
+  const positivity = chartDataForMap.map(data => data.positivity)
+  const visibilitySOV = chartDataForMap.map(data => data.visibilitySOV)
 
   const data = {
-    labels: dataForCharts.map(data => data.companyName.substring(0, 15)),
+    labels: regions.map(data => data.substring(0, 15)),
     datasets: [
       {
         type: 'line',
@@ -128,18 +130,10 @@ const Reportings = props => {
         borderWidth: 2,
         fill: false,
         tension: 0.4,
-        data: [...volume, ...vScore, ...qe, ...volumeSov]
+        data: [...vScore, ...volume, ...positivity, ...visibilitySOV]
       },
       {
-        label: 'visibility',
-        backgroundColor: getRandomColor(),
-        borderColor: 'rgba(0, 0, 0, 0.1)',
-        borderWidth: 1,
-        data: volume,
-        ...(checked && { stack: 'Stack 1' })
-      },
-      {
-        label: 'volume',
+        label: 'vScore',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
@@ -147,11 +141,19 @@ const Reportings = props => {
         ...(checked && { stack: 'Stack 1' })
       },
       {
-        label: 'volume SOV',
+        label: 'Volume',
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: qe,
+        data: volume,
+        ...(checked && { stack: 'Stack 1' })
+      },
+      {
+        label: 'Positivity',
+        backgroundColor: getRandomColor(),
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: positivity,
         ...(checked && { stack: 'Stack 1' })
       },
       {
@@ -159,7 +161,7 @@ const Reportings = props => {
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: volumeSov,
+        data: visibilitySOV,
         ...(checked && { stack: 'Stack 1' })
       }
     ]
@@ -216,8 +218,8 @@ const Reportings = props => {
   // regionClick
   const handleRegionClick = region => {
     setSelectedRegion(region)
-    const data = reportingData[region] || []
-    setChartData(data)
+    const data = chartData[region] || []
+    setChartDataForMap(data)
     setAnchorE2(null)
   }
 
@@ -230,11 +232,11 @@ const Reportings = props => {
         setActiveType('table')
         break
       case 'image':
-        toBlob(document.getElementById('reportings')).then(function (blob) {
+        toBlob(document.getElementById(chartId)).then(function (blob) {
           const url = window.URL.createObjectURL(blob)
           const a = document.createElement('a')
           a.href = url
-          a.download = 'reportings.png'
+          a.download = `${chartId}.png`
           document.body.appendChild(a)
           a.click()
           window.URL.revokeObjectURL(url)
@@ -242,12 +244,12 @@ const Reportings = props => {
         break
       case 'pdf':
         const doc = new jsPDF()
-        toBlob(document.getElementById('reportings')).then(function (blob) {
+        toBlob(document.getElementById(chartId)).then(function (blob) {
           const url = URL.createObjectURL(blob)
           const img = new Image()
           img.onload = function () {
             doc.addImage(this, 'PNG', 10, 10, 180, 100)
-            doc.save('reportings.pdf')
+            doc.save(`${chartId}.pdf`)
             URL.revokeObjectURL(url)
           }
           img.src = url
@@ -274,18 +276,18 @@ const Reportings = props => {
               <TableCell>Company Name</TableCell>
               <TableCell>Volume</TableCell>
               <TableCell>vScore</TableCell>
-              <TableCell>QE</TableCell>
-              <TableCell>Volume SOV (%)</TableCell>
+              <TableCell>Positivity</TableCell>
+              <TableCell>Visibility SOV (%)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {chartData.map((data, index) => (
+            {chartDataForMap.map((data, index) => (
               <TableRow key={index}>
                 <TableCell size='small'>{data.companyName}</TableCell>
                 <TableCell size='small'>{data.volume}</TableCell>
                 <TableCell size='small'>{data.vScore}</TableCell>
-                <TableCell size='small'>{data.QE}</TableCell>
-                <TableCell size='small'>{data.volumeSOV}</TableCell>
+                <TableCell size='small'>{data.positivity}</TableCell>
+                <TableCell size='small'>{data.visibilitySOV}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -299,7 +301,7 @@ const Reportings = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title={`Reportings : ${selectedRegion || ''}`}
+            title={`${cardTitle} : ${selectedRegion || ''}`}
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -321,7 +323,7 @@ const Reportings = props => {
       </Dialog>
       <Card>
         <CardHeader
-          title={`Reportings : ${selectedRegion || ''}`}
+          title={`${cardTitle} : ${selectedRegion || ''}`}
           action={
             <Box>
               {chartIndexAxis === 'x' ? (
@@ -372,11 +374,11 @@ const Reportings = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('Reportings')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveFromChartList('JournalistND')}>Remove from Custom</MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
-                <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Reportings</MenuItem>
+                <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Publications</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
                 <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
@@ -413,7 +415,7 @@ const Reportings = props => {
             {renderMenuItems(['Top', 'Bottom'], 'filter')}
           </Menu>
         </Box>
-        <CardContent onClick={handleChartClick} id='region'>
+        <CardContent onClick={handleChartClick} id={chartId}>
           {loading ? (
             <Box>
               <CircularProgress />
@@ -437,4 +439,4 @@ const Reportings = props => {
   )
 }
 
-export default Reportings
+export default PublicationPerformance

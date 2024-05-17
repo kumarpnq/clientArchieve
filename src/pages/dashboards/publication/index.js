@@ -12,6 +12,7 @@ import { styled } from '@mui/material/styles'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import useFetchReports from 'src/api/dashboard/useFetchReports'
+import PublicationPerformance from 'src/views/dashboards/publication/Publication'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -53,7 +54,8 @@ const PublicationCharts = () => {
   } = useFetchReports({
     endpoint: '/publicationPerformanceND/',
     idType: 'clientIds',
-    isMedia: false
+    isMedia: false,
+    dataKey: 'publicationPerformanceND'
   })
 
   const {
@@ -63,7 +65,8 @@ const PublicationCharts = () => {
   } = useFetchReports({
     endpoint: '/publicationPerformanceBD/',
     idType: 'clientIds',
-    isMedia: false
+    isMedia: false,
+    dataKey: 'publicationPerformanceND'
   })
 
   const {
@@ -73,7 +76,8 @@ const PublicationCharts = () => {
   } = useFetchReports({
     endpoint: '/publicationPerformanceRD/',
     idType: 'clientIds',
-    isMedia: false
+    isMedia: false,
+    dataKey: 'publicationPerformanceND'
   })
 
   const {
@@ -83,7 +87,8 @@ const PublicationCharts = () => {
   } = useFetchReports({
     endpoint: '/publicationPerformanceMagazine/',
     idType: 'clientIds',
-    isMedia: false
+    isMedia: false,
+    dataKey: 'publicationPerformanceND'
   })
 
   const {
@@ -93,7 +98,8 @@ const PublicationCharts = () => {
   } = useFetchReports({
     endpoint: '/publicationPerformanceOnlineTop10/',
     idType: 'clientIds',
-    isMedia: false
+    isMedia: false,
+    dataKey: 'publicationPerformanceND'
   })
 
   console.log(publicationPerformanceOnlineTop10Data)
@@ -102,7 +108,22 @@ const PublicationCharts = () => {
   return (
     <ApexChartWrapper>
       <Grid container spacing={6}>
-        <Grid item xs={12} lg={6}></Grid>
+        <Grid item xs={12} lg={6}>
+          <PublicationPerformance
+            chartData={publicationPerformanceNDData}
+            loading={publicationPerformanceNDDataLoading}
+            error={publicationPerformanceNDDataError}
+            cardTitle='publicationND'
+            chartId='publication-nd'
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
       </Grid>
     </ApexChartWrapper>
   )

@@ -14,7 +14,7 @@ import Link from 'next/link'
 
 // ** hooks
 // import useScreenPermissions from 'src/hooks/useScreenPermissions'
-import usePerformanceData from 'src/api/dashboard-performance/usePerformance'
+import useFetchReports from 'src/api/dashboard/useFetchReports'
 
 // * components import
 import Region from 'src/views/dashboards/performance/Region'
@@ -37,55 +37,60 @@ const PeersCharts = () => {
     chartData: regionPerformanceData,
     loading: regionPerformanceDataLoading,
     error: regionPerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/regionPerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/regionPerformance/',
+    dataKey: 'regionPerformance',
+    isMedia: true
   })
 
   const {
     chartData: publicationPerformanceData,
     loading: publicationPerformanceDataLoading,
     error: publicationPerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/publicationPerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/publicationPerformance/',
+    dataKey: 'publicationPerformance',
+    isMedia: true
   })
 
   const {
     chartData: reporingPerformanceData,
     loading: reporingPerformanceDataLoading,
     error: reporingPerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/reporingPerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/reporingPerformance/',
+    dataKey: 'reporingPerformance',
+    isMedia: true
   })
 
   const {
     chartData: journalistPerformanceData,
     loading: journalistPerformanceDataLoading,
     error: journalistPerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/journalistPerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/journalistPerformance/',
+    dataKey: 'journalistPerformance',
+    isMedia: true
   })
 
   const {
     chartData: languagePerformanceData,
     loading: languagePerformanceDataLoading,
     error: languagePerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/languagePerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/languagePerformance/',
+    dataKey: 'languagePerformance',
+    isMedia: true
   })
 
   // ** Hook
