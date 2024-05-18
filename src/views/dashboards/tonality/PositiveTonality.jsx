@@ -20,6 +20,7 @@ Chart.register(...registerables)
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 const PositiveTonality = props => {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -98,6 +99,14 @@ const PositiveTonality = props => {
           img.src = url
         })
         break
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'positiveTonality.xlsx')
+        }
+        break
       default:
         break
     }
@@ -147,16 +156,6 @@ const PositiveTonality = props => {
   const data = {
     labels: chartData.map(data => data.companyName),
     datasets: [
-      // {
-      //   type: 'line',
-      //   label: 'Average',
-      //   borderColor: 'rgb(255, 99, 132)',
-      //   backgroundColor: 'rgb(255, 99, 132)',
-      //   borderWidth: 2,
-      //   fill: false,
-      //   tension: 0.4,
-      //   data: [...vscore, ...QE, ...iScore]
-      // },
       {
         label: 'vScore',
         backgroundColor: getRandomColor(),
@@ -237,26 +236,26 @@ const PositiveTonality = props => {
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                {/* <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem> */}
                 <MenuItem onClick={() => setActiveMenu('chart')}>Chart Types</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }
         />
         <Box>
           {' '}
-          {/* <Menu
-            keepMounted
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            open={Boolean(anchorEl) && activeMenu === 'media'}
-          >
-            {renderMenuItems(mediaItems, 'media')}
-          </Menu> */}
           <Menu
             keepMounted
             anchorEl={anchorEl}

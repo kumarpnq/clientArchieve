@@ -20,6 +20,7 @@ Chart.register(...registerables)
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 const NegativeTonality = props => {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -97,6 +98,14 @@ const NegativeTonality = props => {
           }
           img.src = url
         })
+        break
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'NegativeTonality.xlsx')
+        }
         break
       default:
         break
@@ -239,24 +248,24 @@ const NegativeTonality = props => {
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {/* <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem> */}
                 <MenuItem onClick={() => setActiveMenu('chart')}>Chart Types</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }
         />
         <Box>
-          {' '}
-          {/* <Menu
-            keepMounted
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            open={Boolean(anchorEl) && activeMenu === 'media'}
-          >
-            {renderMenuItems(mediaItems, 'media')}
-          </Menu> */}
           <Menu
             keepMounted
             anchorEl={anchorEl}

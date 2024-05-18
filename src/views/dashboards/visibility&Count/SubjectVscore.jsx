@@ -30,8 +30,8 @@ const SubjectVscore = props => {
   }
 
   const data = {
-    labels: chartData.map(data => data.reportingSubject),
-    datasets: chartData.flatMap((data, index) => ({
+    labels: chartData?.map(data => data.reportingSubject),
+    datasets: chartData?.flatMap((data, index) => ({
       label: data.reportingSubject,
       data: data.companies.map(company => company.vScore),
       backgroundColor: getRandomColor(),

@@ -23,6 +23,7 @@ import IconifyIcon from 'src/@core/components/icon'
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 // ** charts
 import { Bar } from 'react-chartjs-2'
@@ -150,6 +151,14 @@ const TonalityVScore = props => {
           img.src = url
         })
         break
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'tonalityVScore.xlsx')
+        }
+        break
       default:
         break
     }
@@ -240,10 +249,19 @@ const TonalityVScore = props => {
               </IconButton>
 
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }

@@ -13,6 +13,12 @@ import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
 import Switch from '@mui/material/Switch'
+import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
+
+// ** third party imports
+import { toBlob } from 'html-to-image'
+import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 // ** custom imports
 import usePath from 'src/@core/utils/usePath'
@@ -31,6 +37,7 @@ const AnalyticsJournalistClient = props => {
   const [selectedFilter, setSelectedFilter] = useState('Top')
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
   const [checked, setChecked] = useState(false)
+  const [activeType, setActiveType] = useState('chart')
 
   const handleChange = () => {
     setActiveChart('Bar')
@@ -169,11 +176,84 @@ const AnalyticsJournalistClient = props => {
     setIsChartClicked(false)
   }
 
+  const handleMenuClick = menuItem => {
+    switch (menuItem) {
+      case 'chart':
+        setActiveType('chart')
+        break
+      case 'table':
+        setActiveType('table')
+        break
+      case 'image':
+        toBlob(document.getElementById('journalist-client')).then(function (blob) {
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'journalist-client.png'
+          document.body.appendChild(a)
+          a.click()
+          window.URL.revokeObjectURL(url)
+        })
+        break
+      case 'pdf':
+        const doc = new jsPDF()
+        toBlob(document.getElementById('journalist-client')).then(function (blob) {
+          const url = URL.createObjectURL(blob)
+          const img = new Image()
+          img.onload = function () {
+            doc.addImage(this, 'PNG', 10, 10, 180, 100)
+            doc.save('journalist-client.pdf')
+            URL.revokeObjectURL(url)
+          }
+          img.src = url
+        })
+        break
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'journalist-client.xlsx')
+        }
+        break
+      default:
+        break
+    }
+    handleClose()
+  }
+
   // ** add to custom dashboard
   const [openAddPopup, setOpenAddPopup] = useState(false)
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+
+  const TableComp = () => {
+    return (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ background: primary }}>
+              <TableCell>Journalist</TableCell>
+              <TableCell>vScore</TableCell>
+              <TableCell>iScore</TableCell>
+              <TableCell>QE</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {chartData.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell size='small'>{item.journalist}</TableCell>
+                <TableCell size='small'>{item.vScore}</TableCell>
+                <TableCell size='small'>{item.iScore}</TableCell>
+                <TableCell size='small'>{item.QE}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
+  }
 
   return (
     <>
@@ -252,6 +332,21 @@ const AnalyticsJournalistClient = props => {
                 )}
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')} disabled={!chartData.length}>
+                      Download Xlsx
+                    </MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }
@@ -275,15 +370,22 @@ const AnalyticsJournalistClient = props => {
             {renderMenuItems(['Top', 'Bottom'], 'filter')}
           </Menu>
         </Box>
-        <CardContent onClick={handleChartClick}>
+        <CardContent onClick={handleChartClick} id='journalist-client'>
           {loading ? (
             <Box>
               <CircularProgress />
             </Box>
           ) : (
             <>
-              {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
-              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
+              {activeType === 'chart' ? (
+                <>
+                  {' '}
+                  {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
+                  {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
+                </>
+              ) : (
+                <TableComp />
+              )}
             </>
           )}
         </CardContent>

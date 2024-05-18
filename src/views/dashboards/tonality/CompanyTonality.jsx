@@ -26,6 +26,7 @@ import ReactApexCharts from 'react-apexcharts'
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 const CompanyTonality = props => {
   const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
@@ -111,6 +112,14 @@ const CompanyTonality = props => {
           img.src = url
         })
         break
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'companyTonality.xlsx')
+        }
+        break
       default:
         break
     }
@@ -186,10 +195,19 @@ const CompanyTonality = props => {
               </IconButton>
 
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }

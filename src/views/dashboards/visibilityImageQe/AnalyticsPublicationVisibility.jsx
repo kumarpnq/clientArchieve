@@ -20,6 +20,7 @@ Chart.register(...registerables)
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 // ** custom imports
 import usePath from 'src/@core/utils/usePath'
@@ -178,6 +179,14 @@ const PublicationVisibility = props => {
           }
           img.src = url
         })
+        break
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'publicationVisibility.xlsx')
+        }
         break
       default:
         break
@@ -348,10 +357,19 @@ const PublicationVisibility = props => {
                 )}
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }
