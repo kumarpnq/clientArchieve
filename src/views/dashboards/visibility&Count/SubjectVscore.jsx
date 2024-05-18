@@ -70,7 +70,7 @@ const SubjectVscore = props => {
   return (
     <Card>
       <CardHeader title='Subject VScore' />
-      <CardContent>
+      <CardContent sx={{ height: '100%' }}>
         <Bar data={data} options={options} />
       </CardContent>
     </Card>

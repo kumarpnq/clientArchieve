@@ -261,7 +261,7 @@ const MultipleCharts = props => {
           </CardContent>
         </Card>
       </Dialog>
-      <Card>
+      <Card sx={{ height: '100%' }}>
         <CardHeader
           title='Company Visibility'
           sx={{ mb: 4.4 }}
@@ -334,7 +334,9 @@ const MultipleCharts = props => {
                 ) : (
                   <>
                     <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('xlsx')}>Download Xlsx</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')} disabled={!chartData.length}>
+                      Download Xlsx
+                    </MenuItem>
                   </>
                 )}
               </Menu>

@@ -293,7 +293,7 @@ const AnalyticsJournalist = props => {
           </CardContent>
         </Card>
       </Dialog>
-      <Card>
+      <Card sx={{ height: '100%' }}>
         <CardHeader
           title='Journalist Visibility'
           action={
@@ -356,8 +356,12 @@ const AnalyticsJournalist = props => {
                   <>
                     {' '}
                     <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')} disabled={!chartData.length}>
+                      Download Image
+                    </MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')} disabled={!chartData.length}>
+                      Download PDF
+                    </MenuItem>
                   </>
                 ) : (
                   <>

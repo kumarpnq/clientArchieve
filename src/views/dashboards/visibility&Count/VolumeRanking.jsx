@@ -348,7 +348,7 @@ const VolumeRanking = props => {
             {renderMenuItems(['Top', 'Bottom'], 'filter')}
           </Menu>
         </Box>
-        <CardContent onClick={handleChartClick}>
+        <CardContent onClick={handleChartClick} sx={{ minHeight: '100%' }}>
           {loading ? (
             <Box>
               <CircularProgress />
