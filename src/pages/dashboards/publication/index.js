@@ -66,7 +66,7 @@ const PublicationCharts = () => {
     endpoint: '/publicationPerformanceBD/',
     idType: 'clientIds',
     isMedia: false,
-    dataKey: 'publicationPerformanceND'
+    dataKey: 'publicationPerformanceBD'
   })
 
   const {
@@ -77,7 +77,7 @@ const PublicationCharts = () => {
     endpoint: '/publicationPerformanceRD/',
     idType: 'clientIds',
     isMedia: false,
-    dataKey: 'publicationPerformanceND'
+    dataKey: 'publicationPerformanceRD'
   })
 
   const {
@@ -112,6 +112,38 @@ const PublicationCharts = () => {
             error={publicationPerformanceNDDataError}
             cardTitle='publicationND'
             chartId='publication-nd'
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <PublicationPerformance
+            chartData={publicationPerformanceBDData}
+            loading={publicationPerformanceBDDataLoading}
+            error={publicationPerformanceBDDataError}
+            cardTitle='publicationBD'
+            chartId='publication-bd'
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <PublicationPerformance
+            chartData={publicationPerformanceRDData}
+            loading={publicationPerformanceRDDataLoading}
+            error={publicationPerformanceRDDataError}
+            cardTitle='publicationRD'
+            chartId='publication-rd'
             legendColor={legendColor}
             primary={primaryColor}
             yellow={yellowColor}

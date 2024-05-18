@@ -20,6 +20,7 @@ Chart.register(...registerables)
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 // ** custom imports
 import usePath from 'src/@core/utils/usePath'
@@ -55,10 +56,6 @@ const Region = props => {
     setActiveChart('Bar')
     setChecked(prev => !prev)
   }
-
-  const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
-  const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
-  const dataForCharts = topData || bottomData
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
   let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
@@ -111,13 +108,13 @@ const Region = props => {
       }
     }
   }
-  const vScore = chartData.map(data => data.vScore)
-  const volume = chartData.map(data => data.volume)
-  const qe = chartData.map(data => data.QE)
-  const volumeSov = chartData.map(data => data.volumeSOV)
+  const vScore = chartData?.map(data => data.vScore) || []
+  const volume = chartData?.map(data => data.volume) || []
+  const qe = chartData?.map(data => data.QE) || []
+  const volumeSov = chartData?.map(data => data.volumeSOV) || []
 
   const data = {
-    labels: dataForCharts.map(data => data.companyName.substring(0, 15)),
+    labels: chartData?.map(data => data.companyName.substring(0, 15)),
     datasets: [
       {
         type: 'line',
@@ -224,6 +221,7 @@ const Region = props => {
     switch (menuItem) {
       case 'chart':
         setActiveType('chart')
+
         break
       case 'table':
         setActiveType('table')
@@ -251,6 +249,15 @@ const Region = props => {
           }
           img.src = url
         })
+        break
+
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'region.xlsx')
+        }
         break
       default:
         break
@@ -378,10 +385,20 @@ const Region = props => {
                 <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Regions</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('table')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
               <Menu keepMounted anchorEl={anchorE2} onClose={handleRegionClose} open={Boolean(anchorE2)}>
                 {regions.map(item => (

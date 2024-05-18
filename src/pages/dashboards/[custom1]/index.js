@@ -22,7 +22,7 @@ import useJournalistClientVisibility from 'src/api/dashboard-visibilityImageQe/d
 import useVisibilityCount from 'src/api/dashboard-visibilityCount/useVisibilityCount'
 import useJournalistVscore from 'src/api/dashboard-visibilityCount/useJournalistVscore'
 import useTonality from 'src/api/dashboard-tonality/useCompanyTonality'
-import usePerformanceData from 'src/api/dashboard-performance/usePerformance'
+
 import usePeersData from 'src/api/dashboard-peers/usePeersData'
 
 import MultipleCharts from 'src/views/dashboards/visibilityImageQe/AnalyticsMultipleCharts'
@@ -45,6 +45,7 @@ import Publication from 'src/views/dashboards/performance/Publication'
 import Journalist from 'src/views/dashboards/performance/Journalist'
 import { Language } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
+import useFetchReports from 'src/api/dashboard/useFetchReports'
 
 //**  components
 const CustomDashboard = () => {
@@ -171,55 +172,60 @@ const CustomDashboard = () => {
     chartData: regionPerformanceData,
     loading: regionPerformanceDataLoading,
     error: regionPerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/regionPerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/regionPerformance/',
+    dataKey: 'regionPerformance',
+    isMedia: true
   })
 
   const {
     chartData: publicationPerformanceData,
     loading: publicationPerformanceDataLoading,
     error: publicationPerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/publicationPerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/publicationPerformance/',
+    dataKey: 'publicationPerformance',
+    isMedia: true
   })
 
   const {
     chartData: reporingPerformanceData,
     loading: reporingPerformanceDataLoading,
     error: reporingPerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/reporingPerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/reporingPerformance/',
+    dataKey: 'reporingPerformance',
+    isMedia: true
   })
 
   const {
     chartData: journalistPerformanceData,
     loading: journalistPerformanceDataLoading,
     error: journalistPerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/journalistPerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/journalistPerformance/',
+    dataKey: 'journalistPerformance',
+    isMedia: true
   })
 
   const {
     chartData: languagePerformanceData,
     loading: languagePerformanceDataLoading,
     error: languagePerformanceDataError
-  } = usePerformanceData({
+  } = useFetchReports({
     media: selectedMedia,
-    endpoint: '/languagePerformance/',
     idType: 'clientIds',
-    isCompanyIds: true
+    endpoint: '/languagePerformance/',
+    dataKey: 'languagePerformance',
+    isMedia: true
   })
 
   return (

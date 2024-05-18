@@ -45,10 +45,6 @@ const RankingKpiPeers = props => {
 
   const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
 
-  const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
-  const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
-  const dataForCharts = topData || bottomData
-
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
   let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
 

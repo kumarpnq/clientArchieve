@@ -20,6 +20,7 @@ Chart.register(...registerables)
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 // ** custom imports
 import usePath from 'src/@core/utils/usePath'
@@ -31,7 +32,6 @@ const Publication = props => {
   const { publicationData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
   const publications = Object.keys(publicationData || {})
 
-  const [selectedPublication, setSelectedPublication] = useState('')
   const [chartData, setChartData] = useState([])
   const [activeChart, setActiveChart] = useState('Line')
   const [anchorEl, setAnchorEl] = useState(null)
@@ -48,10 +48,6 @@ const Publication = props => {
     setActiveChart('Bar')
     setChecked(prev => !prev)
   }
-
-  const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
-  const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
-  const dataForCharts = topData || bottomData
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
   let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
@@ -104,11 +100,6 @@ const Publication = props => {
       }
     }
   }
-
-  // const vScore = chartData.map(data => data.vScore)
-  // const volume = chartData.map(data => data.volume)
-  // const qe = chartData.map(data => data.QE)
-  // const volumeSov = chartData.map(data => data.volumeSOV)
 
   const volume = []
   const vScore = []
@@ -188,10 +179,6 @@ const Publication = props => {
     setActiveMenu('main')
   }
 
-  const handlePublicationClose = () => {
-    setAnchorE2(null)
-  }
-
   const handleClick = (item, menu) => {
     if (menu === 'count') {
       setSelectedCount(item)
@@ -221,13 +208,23 @@ const Publication = props => {
     setIsChartClicked(false)
   }
 
-  // regionClick
-  const handlePublicationClick = publication => {
-    setSelectedPublication(publication)
-    const data = publicationData[publication] || []
-    setChartData(data)
-    setAnchorE2(null)
+  const flattenPublicationData = data => {
+    const flattenedData = []
+    for (const [companyName, records] of Object.entries(data)) {
+      records.forEach(record => {
+        flattenedData.push({
+          companyName,
+          volume: record.volume,
+          vScore: record.vScore,
+          QE: record.QE,
+          volumeSOV: record.volumeSOV
+        })
+      })
+    }
+
+    return flattenedData
   }
+  const flattenedData = flattenPublicationData(publicationData)
 
   const handleMenuClick = menuItem => {
     switch (menuItem) {
@@ -261,6 +258,14 @@ const Publication = props => {
           img.src = url
         })
         break
+      case 'xlsx':
+        if (publicationData) {
+          const ws = XLSX.utils.json_to_sheet(flattenedData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Publication Data')
+          XLSX.writeFile(wb, 'publication.xlsx')
+        }
+        break
       default:
         break
     }
@@ -273,7 +278,7 @@ const Publication = props => {
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
 
-  const TableComp = () => {
+  const TableComp = ({ data }) => {
     return (
       <TableContainer component={Paper}>
         <Table>
@@ -287,7 +292,7 @@ const Publication = props => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {chartData.map((data, index) => (
+            {data.map((data, index) => (
               <TableRow key={index}>
                 <TableCell size='small'>{data.companyName}</TableCell>
                 <TableCell size='small'>{data.volume}</TableCell>
@@ -307,7 +312,7 @@ const Publication = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title={`Publication : ${selectedPublication || ''}`}
+            title={`Publication`}
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -329,7 +334,7 @@ const Publication = props => {
       </Dialog>
       <Card>
         <CardHeader
-          title={`Publication : ${selectedPublication || ''}`}
+          title={`Publication`}
           action={
             <Box>
               {chartIndexAxis === 'x' ? (
@@ -384,24 +389,21 @@ const Publication = props => {
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
-                <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Publications</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
-              </Menu>
-              <Menu keepMounted anchorEl={anchorE2} onClose={handlePublicationClose} open={Boolean(anchorE2)}>
-                {publications.map(item => (
-                  <MenuItem
-                    key={item}
-                    onClick={() => handlePublicationClick(item)}
-                    selected={item === selectedPublication}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('table')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }
@@ -438,7 +440,7 @@ const Publication = props => {
                   {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
                 </>
               ) : (
-                <TableComp />
+                <TableComp data={flattenedData} />
               )}
             </>
           )}

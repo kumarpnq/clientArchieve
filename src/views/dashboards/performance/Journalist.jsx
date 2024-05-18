@@ -20,6 +20,7 @@ Chart.register(...registerables)
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 // ** custom imports
 import usePath from 'src/@core/utils/usePath'
@@ -114,11 +115,6 @@ const Journalist = props => {
     }
   }
 
-  // const vScore = chartData.map(data => data.vScore)
-  // const volume = chartData.map(data => data.volume)
-  // const qe = chartData.map(data => data.QE)
-  // const volumeSov = chartData.map(data => data.volumeSOV)
-
   const volume = []
   const vScore = []
   const qe = []
@@ -197,10 +193,6 @@ const Journalist = props => {
     setActiveMenu('main')
   }
 
-  const handlePublicationClose = () => {
-    setAnchorE2(null)
-  }
-
   const handleClick = (item, menu) => {
     if (menu === 'count') {
       setSelectedCount(item)
@@ -238,6 +230,24 @@ const Journalist = props => {
     setAnchorE2(null)
   }
 
+  const flattenPublicationData = data => {
+    const flattenedData = []
+    for (const [companyName, records] of Object.entries(data)) {
+      records.forEach(record => {
+        flattenedData.push({
+          companyName,
+          volume: record.volume,
+          vScore: record.vScore,
+          QE: record.QE,
+          volumeSOV: record.volumeSOV
+        })
+      })
+    }
+
+    return flattenedData
+  }
+  const flattenedData = flattenPublicationData(journalistData)
+
   const handleMenuClick = menuItem => {
     switch (menuItem) {
       case 'chart':
@@ -270,6 +280,15 @@ const Journalist = props => {
           img.src = url
         })
         break
+      case 'xlsx':
+        if (journalistData) {
+          const ws = XLSX.utils.json_to_sheet(flattenedData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Journalist Data')
+          XLSX.writeFile(wb, 'journalist.xlsx')
+        }
+        br
+        break
       default:
         break
     }
@@ -282,7 +301,7 @@ const Journalist = props => {
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
 
-  const TableComp = () => {
+  const TableComp = ({ data }) => {
     return (
       <TableContainer component={Paper}>
         <Table>
@@ -296,7 +315,7 @@ const Journalist = props => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {chartData.map((data, index) => (
+            {data.map((data, index) => (
               <TableRow key={index}>
                 <TableCell size='small'>{data.companyName}</TableCell>
                 <TableCell size='small'>{data.volume}</TableCell>
@@ -393,24 +412,21 @@ const Journalist = props => {
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
-                <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Publications</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
-              </Menu>
-              <Menu keepMounted anchorEl={anchorE2} onClose={handlePublicationClose} open={Boolean(anchorE2)}>
-                {publications.map(item => (
-                  <MenuItem
-                    key={item}
-                    onClick={() => handlePublicationClick(item)}
-                    selected={item === selectedPublication}
-                  >
-                    {item}
-                  </MenuItem>
-                ))}
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('table')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }
@@ -447,7 +463,7 @@ const Journalist = props => {
                   {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
                 </>
               ) : (
-                <TableComp />
+                <TableComp data={flattenedData} />
               )}
             </>
           )}

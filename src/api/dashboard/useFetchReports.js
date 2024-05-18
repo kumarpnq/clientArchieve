@@ -32,7 +32,7 @@ const useFetchReports = props => {
       const requestParams = {
         [idType]: clientId,
 
-        companyIds: selectedCompetitions,
+        // companyIds: selectedCompetitions,
         fromDate: formattedStartDate,
         toDate: formattedEndDate
       }
