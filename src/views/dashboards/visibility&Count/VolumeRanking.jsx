@@ -9,18 +9,34 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import CloseIcon from '@mui/icons-material/Close'
+import Switch from '@mui/material/Switch'
+import IconifyIcon from 'src/@core/components/icon'
 
+import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
+
+// ** custom imports
+import usePath from 'src/@core/utils/usePath'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+
+// ** third party imports
 import { Line, Bar, Pie, Doughnut } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
-import IconifyIcon from 'src/@core/components/icon'
+import { toBlob } from 'html-to-image'
+import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 Chart.register(...registerables)
 
 const VolumeRanking = props => {
+  const { currentPath, asPath } = usePath()
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeChart, setActiveChart] = useState('Line')
   const [activeMenu, setActiveMenu] = useState('main')
   const [chartLoaded, setChartLoaded] = useState(false)
+  const [activeType, setActiveType] = useState('chart')
+  const [checked, setChecked] = useState(false)
+  const [chartIndexAxis, setChartIndexAxis] = useState('x')
 
   const { chartData, loading, error, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
 
@@ -28,6 +44,11 @@ const VolumeRanking = props => {
     setActiveChart('Line')
     setChartLoaded(true)
   }, [])
+
+  const handleChange = () => {
+    setActiveChart('Bar')
+    setChecked(prev => !prev)
+  }
 
   const handleIconClick = event => {
     event.stopPropagation()
@@ -112,6 +133,52 @@ const VolumeRanking = props => {
     ]
   }
 
+  const handleMenuClick = menuItem => {
+    switch (menuItem) {
+      case 'chart':
+        setActiveType('chart')
+        break
+      case 'table':
+        setActiveType('table')
+        break
+      case 'image':
+        toBlob(document.getElementById('volume-ranking')).then(function (blob) {
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.href = url
+          a.download = 'volume-ranking.png'
+          document.body.appendChild(a)
+          a.click()
+          window.URL.revokeObjectURL(url)
+        })
+        break
+      case 'pdf':
+        const doc = new jsPDF()
+        toBlob(document.getElementById('volume-ranking')).then(function (blob) {
+          const url = URL.createObjectURL(blob)
+          const img = new Image()
+          img.onload = function () {
+            doc.addImage(this, 'PNG', 10, 10, 180, 100)
+            doc.save('volume-ranking.pdf')
+            URL.revokeObjectURL(url)
+          }
+          img.src = url
+        })
+        break
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'volume-ranking.xlsx')
+        }
+        break
+      default:
+        break
+    }
+    handleClose()
+  }
+
   // modal
   const [isChartClicked, setIsChartClicked] = useState(false)
 
@@ -121,6 +188,35 @@ const VolumeRanking = props => {
 
   const handleModalClose = () => {
     setIsChartClicked(false)
+  }
+
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+
+  const TableComp = () => {
+    return (
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ background: primary }}>
+              <TableCell>Company</TableCell>
+              <TableCell>Volume</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {chartData.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell size='small'>{item.companyName}</TableCell>
+                <TableCell size='small'>{item.volume}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
   }
 
   return (
@@ -149,26 +245,81 @@ const VolumeRanking = props => {
           title='Volume Ranking'
           action={
             <Box>
+              {chartIndexAxis === 'x' ? (
+                <IconButton
+                  onClick={() => {
+                    setActiveChart('Bar')
+                    setChartIndexAxis('y')
+                  }}
+                  sx={{
+                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
+                  }}
+                >
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
+                </IconButton>
+              ) : (
+                <IconButton
+                  onClick={() => {
+                    setActiveChart('Bar')
+                    setChartIndexAxis('x')
+                  }}
+                  sx={{
+                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main',
+                    transform: 'rotate(90deg)'
+                  }}
+                >
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
+                </IconButton>
+              )}
+              <IconButton
+                onClick={() => setActiveChart('Line')}
+                sx={{
+                  backgroundColor: activeChart === 'Line' ? 'primary.main' : '',
+                  color: activeChart === 'Line' ? 'inherit' : 'primary.main'
+                }}
+              >
+                <IconifyIcon icon='lets-icons:line-up' />
+              </IconButton>
+              <Switch
+                checked={checked}
+                onChange={handleChange}
+                sx={{ color: activeChart === 'Line' ? 'inherit' : 'primary.main' }}
+                inputProps={{ 'aria-label': 'toggle button' }}
+              />
               <IconButton aria-haspopup='true' onClick={handleIconClick}>
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                {/* <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem> */}
-                <MenuItem onClick={() => setActiveMenu('chart')}>Chart</MenuItem>
+                {asPath === '/dashboards/custom/' ? (
+                  <MenuItem onClick={() => handleRemoveFromChartList('VolumeRanking')}>Remove from Custom</MenuItem>
+                ) : (
+                  <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
+                )}
+                <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
+                <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')} disabled={!chartData.length}>
+                      Download Xlsx
+                    </MenuItem>
+                  </>
+                )}
               </Menu>
             </Box>
           }
         />
         <Box>
           {' '}
-          {/* <Menu
-            keepMounted
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            open={Boolean(anchorEl) && activeMenu === 'media'}
-          >
-            {renderMenuItems(mediaItems, 'media')}
-          </Menu> */}
           <Menu
             keepMounted
             anchorEl={anchorEl}
@@ -178,6 +329,25 @@ const VolumeRanking = props => {
             {renderMenuItems(chartItems, 'chart')}
           </Menu>
         </Box>
+        <Box>
+          <Menu
+            keepMounted
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            open={Boolean(anchorEl) && activeMenu === 'count'}
+          >
+            {renderMenuItems([10, 20, 30], 'count')}
+          </Menu>
+
+          <Menu
+            keepMounted
+            anchorEl={anchorEl}
+            onClose={handleClose}
+            open={Boolean(anchorEl) && activeMenu === 'filter'}
+          >
+            {renderMenuItems(['Top', 'Bottom'], 'filter')}
+          </Menu>
+        </Box>
         <CardContent onClick={handleChartClick}>
           {loading ? (
             <Box>
@@ -185,14 +355,22 @@ const VolumeRanking = props => {
             </Box>
           ) : (
             <>
-              {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
-              {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
-              {activeChart === 'Pie' && <Pie data={data} height={325} options={options} />}
-              {activeChart === 'Doughnut' && <Doughnut data={data} height={325} options={options} />}
+              {activeType === 'chart' ? (
+                <>
+                  {' '}
+                  {activeChart === 'Bar' && <Bar data={data} height={325} options={options} />}
+                  {activeChart === 'Line' && <Line data={data} height={325} options={options} />}
+                  {activeChart === 'Pie' && <Pie data={data} height={325} options={options} />}
+                  {activeChart === 'Doughnut' && <Doughnut data={data} height={325} options={options} />}
+                </>
+              ) : (
+                <TableComp />
+              )}
             </>
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
     </>
   )
 }

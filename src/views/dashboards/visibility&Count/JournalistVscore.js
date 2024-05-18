@@ -20,6 +20,7 @@ Chart.register(...registerables)
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 // ** custom imports
 import usePath from 'src/@core/utils/usePath'
@@ -217,6 +218,14 @@ const JournalistVScore = props => {
           img.src = url
         })
         break
+      case 'xlsx':
+        if (chartData) {
+          const ws = XLSX.utils.json_to_sheet(chartData)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
+          XLSX.writeFile(wb, 'journalist-vScore.xlsx')
+        }
+        break
       default:
         break
     }
@@ -229,27 +238,23 @@ const JournalistVScore = props => {
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
 
+  const dataForTable = chartData.flatMap(i => i.companies)
+
   const TableComp = () => {
     return (
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow sx={{ background: primary }}>
-              <TableCell>Company Name</TableCell>
-              <TableCell>Volume</TableCell>
+              <TableCell>Company</TableCell>
               <TableCell>vScore</TableCell>
-              <TableCell>QE</TableCell>
-              <TableCell>Volume SOV (%)</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {chartData.map((data, index) => (
+            {dataForTable.map((data, index) => (
               <TableRow key={index}>
-                <TableCell size='small'>{data.companyName}</TableCell>
-                <TableCell size='small'>{data.volume}</TableCell>
+                <TableCell size='small'>{data.company}</TableCell>
                 <TableCell size='small'>{data.vScore}</TableCell>
-                <TableCell size='small'>{data.QE}</TableCell>
-                <TableCell size='small'>{data.volumeSOV}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -343,10 +348,21 @@ const JournalistVScore = props => {
                 <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Journalist</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')} disabled={!chartData.length}>
+                      Download Xlsx
+                    </MenuItem>
+                  </>
+                )}
               </Menu>
               <Menu keepMounted anchorEl={anchorE2} onClose={handleRegionClose} open={Boolean(anchorE2)}>
                 {journalists.map(item => (

@@ -98,10 +98,10 @@ const CountCharts = () => {
           />
         </Grid>
         <Grid item xs={12} lg={6}>
-          <SubjectVscore
-            chartData={subjectVscoreData}
-            loading={subjectVscoreLoading}
-            error={subjectVscoreError}
+          <JournalistVscore
+            JournalistVScoreData={journalistVscoreData}
+            loading={journalistVscoreLoading}
+            error={journalistVscoreError}
             legendColor={legendColor}
             primary={primaryColor}
             yellow={yellowColor}
@@ -112,10 +112,10 @@ const CountCharts = () => {
           />
         </Grid>
         <Grid item xs={12} lg={6}>
-          <JournalistVscore
-            JournalistVScoreData={journalistVscoreData}
-            loading={journalistVscoreLoading}
-            error={journalistVscoreError}
+          <SubjectVscore
+            chartData={subjectVscoreData}
+            loading={subjectVscoreLoading}
+            error={subjectVscoreError}
             legendColor={legendColor}
             primary={primaryColor}
             yellow={yellowColor}
