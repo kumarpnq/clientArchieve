@@ -240,7 +240,7 @@ const VolumeRanking = props => {
         </Card>
       </Dialog>
 
-      <Card>
+      <Card sx={{ minHeight: '100%' }}>
         <CardHeader
           title='Volume Ranking'
           action={
@@ -348,7 +348,7 @@ const VolumeRanking = props => {
             {renderMenuItems(['Top', 'Bottom'], 'filter')}
           </Menu>
         </Box>
-        <CardContent onClick={handleChartClick} sx={{ minHeight: '100%' }}>
+        <CardContent onClick={handleChartClick}>
           {loading ? (
             <Box>
               <CircularProgress />

@@ -20,6 +20,7 @@ Chart.register(...registerables)
 // ** third party imports
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
+import * as XLSX from 'xlsx'
 
 // ** custom imports
 import usePath from 'src/@core/utils/usePath'
@@ -114,7 +115,6 @@ const PublicationPerformance = props => {
       }
     }
   }
-  console.log(chartDataForMap)
   const vScore = chartDataForMap.map(data => data.vScore)
   const volume = chartDataForMap.map(data => data.volume)
   const positivity = chartDataForMap.map(data => data.positivity)
@@ -256,6 +256,14 @@ const PublicationPerformance = props => {
           img.src = url
         })
         break
+      case 'xlsx':
+        if (chartDataForMap) {
+          const ws = XLSX.utils.json_to_sheet(chartDataForMap)
+          const wb = XLSX.utils.book_new()
+          XLSX.utils.book_append_sheet(wb, ws, `${chartId} Data`)
+          XLSX.writeFile(wb, `${chartId}.xlsx`)
+        }
+        break
       default:
         break
     }
@@ -322,7 +330,7 @@ const PublicationPerformance = props => {
           </CardContent>
         </Card>
       </Dialog>
-      <Card>
+      <Card sx={{ height: '100%' }}>
         <CardHeader
           title={`${cardTitle} : ${selectedRegion || ''}`}
           action={
@@ -382,10 +390,19 @@ const PublicationPerformance = props => {
                 <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Publications</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                {activeType === 'chart' ? (
+                  <>
+                    {' '}
+                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('table')}>Download Xlsx</MenuItem>
+                  </>
+                )}
               </Menu>
               <Menu keepMounted anchorEl={anchorE2} onClose={handleRegionClose} open={Boolean(anchorE2)}>
                 {regions.map(item => (

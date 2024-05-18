@@ -227,7 +227,7 @@ const PositiveTonality = props => {
           </CardContent>
         </Card>
       </Dialog>
-      <Card>
+      <Card sx={{ height: '100%' }}>
         <CardHeader
           title='Positive Tonality'
           action={
@@ -241,13 +241,19 @@ const PositiveTonality = props => {
                   <>
                     {' '}
                     <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('image')}>Download Image</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('pdf')}>Download PDF</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('image')} disabled={!chartData.length}>
+                      Download Image
+                    </MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('pdf')} disabled={!chartData.length}>
+                      Download PDF
+                    </MenuItem>
                   </>
                 ) : (
                   <>
                     <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('xlsx')}>Download Xlsx</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')} disabled={!chartData.length}>
+                      Download Xlsx
+                    </MenuItem>
                   </>
                 )}
               </Menu>

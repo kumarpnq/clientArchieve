@@ -287,7 +287,6 @@ const Journalist = props => {
           XLSX.utils.book_append_sheet(wb, ws, 'Journalist Data')
           XLSX.writeFile(wb, 'journalist.xlsx')
         }
-        br
         break
       default:
         break
@@ -355,7 +354,7 @@ const Journalist = props => {
           </CardContent>
         </Card>
       </Dialog>
-      <Card>
+      <Card sx={{ height: '100%' }}>
         <CardHeader
           title={`Journalist`}
           action={
@@ -424,7 +423,7 @@ const Journalist = props => {
                 ) : (
                   <>
                     <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('table')}>Download Xlsx</MenuItem>
+                    <MenuItem onClick={() => handleMenuClick('xlsx')}>Download Xlsx</MenuItem>
                   </>
                 )}
               </Menu>
