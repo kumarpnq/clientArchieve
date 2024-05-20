@@ -390,17 +390,17 @@ const Region = props => {
                   <>
                     {' '}
                     <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('image')} disabled={!chartData.length}>
+                    <MenuItem onClick={() => handleMenuClick('image')} disabled={!chartData?.length}>
                       Download Image
                     </MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('pdf')} disabled={!chartData.length}>
+                    <MenuItem onClick={() => handleMenuClick('pdf')} disabled={!chartData?.length}>
                       Download PDF
                     </MenuItem>
                   </>
                 ) : (
                   <>
                     <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('table')} disabled={!chartData.length}>
+                    <MenuItem onClick={() => handleMenuClick('table')} disabled={!chartData?.length}>
                       Download Xlsx
                     </MenuItem>
                   </>
