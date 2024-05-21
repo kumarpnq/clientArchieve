@@ -249,7 +249,7 @@ const PublicationVisibility = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Publication</TableCell>
               <TableCell>vScore</TableCell>
               <TableCell>iScore</TableCell>
@@ -401,7 +401,7 @@ const PublicationVisibility = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='publication-visibility'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

@@ -274,7 +274,7 @@ const RankingKpiPeersWithVisibility = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>AVE(mn)</TableCell>
               <TableCell>QE</TableCell>
               <TableCell>iScore</TableCell>
@@ -424,7 +424,7 @@ const RankingKpiPeersWithVisibility = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='ranking-kpi-peers-with-visibility'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

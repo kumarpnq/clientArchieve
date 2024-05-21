@@ -165,8 +165,8 @@ const CompanyTonality = props => {
             {activeType === 'table' && (
               <TableContainer component={Paper}>
                 <Table>
-                  <TableHead sx={{ backgroundColor: primary }}>
-                    <TableRow>
+                  <TableHead>
+                    <TableRow sx={{ backgroundColor: 'primary.main' }}>
                       <TableCell>Tonality</TableCell>
                       <TableCell>vScore</TableCell>
                     </TableRow>
@@ -220,7 +220,9 @@ const CompanyTonality = props => {
         />
         <CardContent onClick={handleChartClick} id='company-tonality'>
           {loading ? (
-            <CircularProgress />
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CircularProgress />
+            </Box>
           ) : (
             <>
               {' '}
@@ -229,7 +231,7 @@ const CompanyTonality = props => {
               ) : (
                 <TableContainer component={Paper}>
                   <Table>
-                    <TableHead sx={{ backgroundColor: primary }}>
+                    <TableHead sx={{ backgroundColor: 'primary.main' }}>
                       <TableRow>
                         <TableCell>Tonality</TableCell>
                         <TableCell>vScore</TableCell>

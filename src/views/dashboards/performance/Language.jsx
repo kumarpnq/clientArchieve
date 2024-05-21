@@ -276,7 +276,7 @@ const Language = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Company Name</TableCell>
               <TableCell>Volume</TableCell>
               <TableCell>vScore</TableCell>
@@ -436,7 +436,7 @@ const Language = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='language'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

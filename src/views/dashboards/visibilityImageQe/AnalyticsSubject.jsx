@@ -247,7 +247,7 @@ const AnalyticsSubject = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Subject</TableCell>
               <TableCell>vScore</TableCell>
               <TableCell>iScore</TableCell>
@@ -397,7 +397,7 @@ const AnalyticsSubject = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='subject-visibility'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

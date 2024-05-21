@@ -98,14 +98,14 @@ const RankingKpiPeers = props => {
     }
   }
 
-  const AVEMN = chartData.map(data => data['AVE(mn)'])
-  const QE = chartData.map(data => data.QE)
-  const iScore = chartData.map(data => data.iScore)
-  const ReachMN = chartData.map(data => data['reach(mn)'])
-  const volume = chartData.map(data => data.volume)
+  const AVEMN = chartData?.map(data => data['AVE(mn)']) || []
+  const QE = chartData?.map(data => data.QE) || []
+  const iScore = chartData?.map(data => data.iScore) || []
+  const ReachMN = chartData?.map(data => data['reach(mn)']) || []
+  const volume = chartData?.map(data => data.volume) || []
 
   const data = {
-    labels: chartData.map(data => data.companyName.substring(0, 15)),
+    labels: chartData?.map(data => data.companyName.substring(0, 15)),
     datasets: [
       {
         type: 'line',
@@ -261,7 +261,7 @@ const RankingKpiPeers = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>AVE(mn)</TableCell>
               <TableCell>QE</TableCell>
               <TableCell>iScore</TableCell>
@@ -270,7 +270,7 @@ const RankingKpiPeers = props => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {chartData.map((item, index) => (
+            {chartData?.map((item, index) => (
               <TableRow key={index}>
                 <TableCell size='small'>{item['AVE(mn)']}</TableCell>
                 <TableCell size='small'>{item.QE}</TableCell>
@@ -407,7 +407,7 @@ const RankingKpiPeers = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='ranking-kpi-peers'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

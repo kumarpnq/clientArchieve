@@ -247,7 +247,7 @@ const AnalyticsPublicationClient = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Publication</TableCell>
               <TableCell>vScore</TableCell>
               <TableCell>iScore</TableCell>
@@ -397,7 +397,7 @@ const AnalyticsPublicationClient = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='publication-client-visibility'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

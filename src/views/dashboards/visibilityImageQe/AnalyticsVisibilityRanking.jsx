@@ -183,7 +183,7 @@ const VisibilityRanking = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Company Name</TableCell>
               <TableCell>vScore</TableCell>
             </TableRow>
@@ -291,7 +291,7 @@ const VisibilityRanking = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='visibility-ranking'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

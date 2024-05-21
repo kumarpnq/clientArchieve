@@ -246,7 +246,7 @@ const AnalyticsJournalist = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Journalist</TableCell>
               <TableCell>vScore</TableCell>
               <TableCell>iScore</TableCell>
@@ -396,7 +396,7 @@ const AnalyticsJournalist = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='journalist-visibility'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

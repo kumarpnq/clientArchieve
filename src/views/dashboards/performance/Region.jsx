@@ -13,7 +13,7 @@ import { Line, Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 import IconifyIcon from 'src/@core/components/icon'
 import Switch from '@mui/material/Switch'
-import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
+import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Button } from '@mui/material'
 
 Chart.register(...registerables)
 
@@ -276,7 +276,7 @@ const Region = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Company Name</TableCell>
               <TableCell>Volume</TableCell>
               <TableCell>vScore</TableCell>
@@ -285,7 +285,7 @@ const Region = props => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {chartData.map((data, index) => (
+            {chartData?.map((data, index) => (
               <TableRow key={index}>
                 <TableCell size='small'>{data.companyName}</TableCell>
                 <TableCell size='small'>{data.volume}</TableCell>
@@ -437,7 +437,7 @@ const Region = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='region'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

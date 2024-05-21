@@ -245,7 +245,7 @@ const JournalistVScore = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Company</TableCell>
               <TableCell>vScore</TableCell>
             </TableRow>
@@ -399,7 +399,7 @@ const JournalistVScore = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='journalist-vScore'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

@@ -198,7 +198,7 @@ const TonalityVScore = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ backgroundColor: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell size='small'>Company</TableCell>
               <TableCell size='small'>Negative</TableCell>
               <TableCell size='small'>Neutral</TableCell>
@@ -274,7 +274,9 @@ const TonalityVScore = props => {
         />
         <CardContent onClick={handleChartClick} id='tonality-vScore'>
           {loading ? (
-            <CircularProgress />
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CircularProgress />
+            </Box>
           ) : (
             <>{activeType === 'chart' ? <Bar data={data} height={350} options={options} /> : <TableComp />}</>
           )}

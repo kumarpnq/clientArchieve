@@ -101,8 +101,6 @@ const PublicationCharts = () => {
     isMedia: false,
     dataKey: 'publicationPerformanceOnlineTop10'
   })
-  console.log(publicationPerformanceMagazineData)
-  console.log(publicationPerformanceOnlineTop10Data)
 
   return (
     <ApexChartWrapper>

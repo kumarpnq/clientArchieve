@@ -201,7 +201,7 @@ const VolumeRanking = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Company</TableCell>
               <TableCell>Volume</TableCell>
             </TableRow>
@@ -350,7 +350,7 @@ const VolumeRanking = props => {
         </Box>
         <CardContent onClick={handleChartClick}>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

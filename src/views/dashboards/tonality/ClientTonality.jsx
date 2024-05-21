@@ -181,7 +181,7 @@ const ClientTonality = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Tonality</TableCell>
               <TableCell>vScore</TableCell>
             </TableRow>
@@ -284,7 +284,7 @@ const ClientTonality = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='client-tonality'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

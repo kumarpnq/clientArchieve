@@ -305,7 +305,7 @@ const Journalist = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow sx={{ background: primary }}>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Company Name</TableCell>
               <TableCell>Volume</TableCell>
               <TableCell>vScore</TableCell>
@@ -452,7 +452,7 @@ const Journalist = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='region'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (

@@ -181,7 +181,7 @@ const NegativeTonality = props => {
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Company</TableCell>
               <TableCell>vScore</TableCell>
             </TableRow>
@@ -283,7 +283,7 @@ const NegativeTonality = props => {
         </Box>
         <CardContent onClick={handleChartClick} id='negative-tonality'>
           {loading ? (
-            <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
             </Box>
           ) : (
