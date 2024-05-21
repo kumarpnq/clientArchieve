@@ -292,15 +292,16 @@ const Publication = props => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((data, index) => (
-              <TableRow key={index}>
-                <TableCell size='small'>{data.companyName}</TableCell>
-                <TableCell size='small'>{data.volume}</TableCell>
-                <TableCell size='small'>{data.vScore}</TableCell>
-                <TableCell size='small'>{data.QE}</TableCell>
-                <TableCell size='small'>{data.volumeSOV}</TableCell>
-              </TableRow>
-            ))}
+            {data.length &&
+              data.map((data, index) => (
+                <TableRow key={index}>
+                  <TableCell size='small'>{data.companyName}</TableCell>
+                  <TableCell size='small'>{data.volume}</TableCell>
+                  <TableCell size='small'>{data.vScore}</TableCell>
+                  <TableCell size='small'>{data.QE}</TableCell>
+                  <TableCell size='small'>{data.volumeSOV}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

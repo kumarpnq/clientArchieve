@@ -282,7 +282,7 @@ const PublicationPerformance = props => {
         <Table>
           <TableHead>
             <TableRow sx={{ background: primary }}>
-              <TableCell>Company Name</TableCell>
+              <TableCell>Company</TableCell>
               <TableCell>Volume</TableCell>
               <TableCell>vScore</TableCell>
               <TableCell>Positivity</TableCell>
@@ -292,7 +292,7 @@ const PublicationPerformance = props => {
           <TableBody>
             {chartDataForMap.map((data, index) => (
               <TableRow key={index}>
-                <TableCell size='small'>{data.companyName}</TableCell>
+                <TableCell size='small'>{selectedRegion}</TableCell>
                 <TableCell size='small'>{data.volume}</TableCell>
                 <TableCell size='small'>{data.vScore}</TableCell>
                 <TableCell size='small'>{data.positivity}</TableCell>

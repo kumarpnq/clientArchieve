@@ -88,7 +88,7 @@ const PublicationCharts = () => {
     endpoint: '/publicationPerformanceMagazine/',
     idType: 'clientIds',
     isMedia: false,
-    dataKey: 'publicationPerformanceND'
+    dataKey: 'publicationPerformanceMagazine'
   })
 
   const {
@@ -99,8 +99,10 @@ const PublicationCharts = () => {
     endpoint: '/publicationPerformanceOnlineTop10/',
     idType: 'clientIds',
     isMedia: false,
-    dataKey: 'publicationPerformanceND'
+    dataKey: 'publicationPerformanceOnlineTop10'
   })
+  console.log(publicationPerformanceMagazineData)
+  console.log(publicationPerformanceOnlineTop10Data)
 
   return (
     <ApexChartWrapper>
@@ -144,6 +146,38 @@ const PublicationCharts = () => {
             error={publicationPerformanceRDDataError}
             cardTitle='publicationRD'
             chartId='publication-rd'
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <PublicationPerformance
+            chartData={publicationPerformanceMagazineData}
+            loading={publicationPerformanceMagazineDataLoading}
+            error={publicationPerformanceMagazineDataError}
+            cardTitle='publicationMagazine'
+            chartId='publication-mg'
+            legendColor={legendColor}
+            primary={primaryColor}
+            yellow={yellowColor}
+            warning={lineChartWarning}
+            info={polarChartInfo}
+            grey={polarChartGrey}
+            green={polarChartGreen}
+          />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <PublicationPerformance
+            chartData={publicationPerformanceOnlineTop10Data}
+            loading={publicationPerformanceOnlineTop10DataLoading}
+            error={publicationPerformanceOnlineTop10DataError}
+            cardTitle='publicationTop10'
+            chartId='publication-top-10'
             legendColor={legendColor}
             primary={primaryColor}
             yellow={yellowColor}
