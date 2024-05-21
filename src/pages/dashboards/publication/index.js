@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid'
 
 // ** Custom Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+import PublicationPerformance from 'src/views/dashboards/publication/Publication'
 
 // ** redux import
 import { useSelector } from 'react-redux'
@@ -11,8 +12,10 @@ import { selectUserData, selectSelectedMedia } from 'src/store/apps/user/userSli
 import { styled } from '@mui/material/styles'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
+
+// ** custom hooks
 import useFetchReports from 'src/api/dashboard/useFetchReports'
-import PublicationPerformance from 'src/views/dashboards/publication/Publication'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -101,6 +104,13 @@ const PublicationCharts = () => {
     isMedia: false,
     dataKey: 'publicationPerformanceOnlineTop10'
   })
+
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['publication']
+
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <ApexChartWrapper>

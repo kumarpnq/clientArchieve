@@ -38,6 +38,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
 
   const [navItems, setNavItems] = useState([])
 
+  console.log(navItems)
   useEffect(() => {
     const newNavItems = [
       {
@@ -69,42 +70,42 @@ const UserLayout = ({ children, contentHeightFixed }) => {
             path: '/dashboards/visibility-image-qe',
             icon: 'mage:chart-up'
           },
-          {
+          screenPermissions.visibilityAndCount && {
             title: 'Visibility & Count ',
             path: '/dashboards/visibility-&-count',
             icon: 'oui:token-token-count'
           },
-          {
+          screenPermissions.tonality && {
             title: 'Tonality',
             path: '/dashboards/tonality',
             icon: 'material-symbols-light:tonality'
           },
-          {
+          screenPermissions.peers && {
             title: 'Peers',
             path: '/dashboards/peers',
             icon: 'line-md:peertube-alt'
           },
-          {
+          screenPermissions.performance && {
             title: 'Performance',
             path: '/dashboards/performance',
             icon: 'mingcute:performance-fill'
           },
-          {
+          screenPermissions.kpiPeers && {
             title: 'KPI Peers',
             path: '/dashboards/kpi-peers',
             icon: 'carbon:summary-kpi-mirror'
           },
-          {
+          screenPermissions.publication && {
             title: 'Publication',
             path: '/dashboards/publication',
             icon: 'ic:baseline-public'
           },
-          {
+          screenPermissions.journalist && {
             title: 'Journalist',
             path: '/dashboards/journalist',
             icon: 'oui:reporter'
           }
-        ]
+        ].filter(item => item)
       },
       screenPermissions.onlineHeadlines && {
         title: 'Online Headlines',
@@ -124,11 +125,9 @@ const UserLayout = ({ children, contentHeightFixed }) => {
         path: '/headlines/print-online',
         hidden: !screenPermissions.bothHeadlines
       }
-    ]
+    ].filter(item => item)
 
-    // Filter out undefined elements
-    const filteredNavItems = newNavItems.filter(item => item)
-    setNavItems(filteredNavItems)
+    setNavItems(newNavItems)
   }, [screenPermissions])
 
   // ** Hooks

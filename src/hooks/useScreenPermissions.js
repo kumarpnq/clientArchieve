@@ -9,7 +9,14 @@ const screens = [
   'printDashboard',
   'onlineDashboard',
   'analytics',
-  'visibilityImageQE'
+  'visibilityImageQE',
+  'visibilityAndCount',
+  'tonality',
+  'peers',
+  'performance',
+  'kpiPeers',
+  'publication',
+  'journalist'
 ]
 
 const useScreenPermissions = () => {

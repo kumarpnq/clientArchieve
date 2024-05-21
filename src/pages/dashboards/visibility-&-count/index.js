@@ -23,6 +23,7 @@ import JournalistVscore from 'src/views/dashboards/visibility&Count/JournalistVs
 // ** custom hooks import
 import useVisibilityCount from 'src/api/dashboard-visibilityCount/useVisibilityCount'
 import useJournalistVscore from 'src/api/dashboard-visibilityCount/useJournalistVscore'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const CountCharts = () => {
   const userDetails = useSelector(selectUserData)
@@ -73,12 +74,13 @@ const CountCharts = () => {
     error: journalistVscoreError
   } = useJournalistVscore({ media: selectedMedia, endpoint: '/journalistVscore/' })
 
-  // const screenPermissions = useScreenPermissions()
-  // const hasAccess = screenPermissions['visibilityImageQE']
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['visibilityAndCount']
+  console.log(hasAccess)
 
-  // if (!hasAccess) {
-  //   return <div>You don't have access to this page.</div>
-  // }
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <ApexChartWrapper>

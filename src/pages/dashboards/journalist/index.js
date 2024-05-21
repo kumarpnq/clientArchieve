@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid'
 
 // ** Custom Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
+import JournalistPerformance from 'src/views/dashboards/journalist/JournalistND'
 
 // ** redux import
 import { useSelector } from 'react-redux'
@@ -11,9 +12,10 @@ import { selectUserData, selectSelectedMedia } from 'src/store/apps/user/userSli
 import { styled } from '@mui/material/styles'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
+
+// ** custom hooks
 import useFetchReports from 'src/api/dashboard/useFetchReports'
-import JournalistND from 'src/views/dashboards/journalist/JournalistND'
-import JournalistPerformance from 'src/views/dashboards/journalist/JournalistND'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -80,6 +82,13 @@ const JournalistCharts = () => {
     isMedia: false,
     dataKey: 'journalistPerformanceRD'
   })
+
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['journalist']
+
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <ApexChartWrapper>

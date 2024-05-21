@@ -88,7 +88,6 @@ const AuthProvider = ({ children }) => {
 
         const returnUrl = router.query.returnUrl
 
-
         // const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
 
         if (defaultScreen.option === 'printHeadlines') {
@@ -100,7 +99,7 @@ const AuthProvider = ({ children }) => {
         } else if (defaultScreen.option === 'visibilityImageQe') {
           router.replace('/dashboards/visibility-image-qe/')
         } else {
-          router.replace('/dashboards/analytics/')
+          router.replace('/dashboards/clouds/')
         }
       })
       .catch(err => {
@@ -127,7 +126,6 @@ const AuthProvider = ({ children }) => {
         if (response.status === 200) {
           window.localStorage.removeItem('userData')
           window.localStorage.removeItem(authConfig.storageTokenKeyName)
-
 
           // Navigate to the login page
           router.push('/login')

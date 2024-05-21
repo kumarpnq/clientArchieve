@@ -16,7 +16,7 @@ import RankingKpiPeers from 'src/views/dashboards/kpi-peers/RankingKpiPeers'
 import RankingKpiPeersWithVisibility from 'src/views/dashboards/kpi-peers/RankingKpiPeersWithVisibility'
 
 // ** hooks
-// import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 // * components import
 
@@ -72,12 +72,12 @@ const KPIPeersCharts = () => {
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
 
-  // const screenPermissions = useScreenPermissions()
-  // const hasAccess = screenPermissions['tonality']
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['kpiPeer']
 
-  // if (!hasAccess) {
-  //   return <div>You don't have access to this page.</div>
-  // }
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <ApexChartWrapper>

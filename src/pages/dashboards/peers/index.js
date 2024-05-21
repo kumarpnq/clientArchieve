@@ -14,6 +14,7 @@ import Link from 'next/link'
 import usePeersData from 'src/api/dashboard-peers/usePeersData'
 import ReportPeers from 'src/views/dashboards/peers/ReportsPeers'
 import VisibilityPeers from 'src/views/dashboards/peers/VisibilityPeersData'
+import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 // ** hooks
 // import useScreenPermissions from 'src/hooks/useScreenPermissions'
@@ -68,12 +69,12 @@ const PeersCharts = () => {
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
 
-  // const screenPermissions = useScreenPermissions()
-  // const hasAccess = screenPermissions['tonality']
+  const screenPermissions = useScreenPermissions()
+  const hasAccess = screenPermissions['peers']
 
-  // if (!hasAccess) {
-  //   return <div>You don't have access to this page.</div>
-  // }
+  if (!hasAccess) {
+    return <div>You don't have access to this page.</div>
+  }
 
   return (
     <ApexChartWrapper>
