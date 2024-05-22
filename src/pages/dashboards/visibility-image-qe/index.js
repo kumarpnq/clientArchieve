@@ -32,6 +32,7 @@ import Link from 'next/link'
 
 // ** hooks
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -42,37 +43,15 @@ const VisibilityChartJS = () => {
   const userDetails = useSelector(selectUserData)
   const selectedMedia = useSelector(selectSelectedMedia)
 
-  const companyVisibilityPermission = userDetails?.clientArchiveRoles?.find(
-    i => i.name === 'companyVisibility'
-  )?.permission
-
-  const visibilityRankingPermission = userDetails?.clientArchiveRoles?.find(
-    i => i.name === 'visibilityRanking'
-  )?.permission
-
-  const publicationsVisibilityPermission = userDetails?.clientArchiveRoles?.find(
-    i => i.name === 'publicationsVisibility'
-  )?.permission
-
-  const publicationsClientVisibilityPermission = userDetails?.clientArchiveRoles?.find(
-    i => i.name === 'publicationsClientVisibility'
-  )?.permission
-
-  const journalistVisibilityPermission = userDetails?.clientArchiveRoles?.find(
-    i => i.name === 'journalistVisibility'
-  )?.permission
-
-  const journalistClientVisibilityPermission = userDetails?.clientArchiveRoles?.find(
-    i => i.name === 'journalistClientVisibility'
-  )?.permission
-
-  const reportingSubjectVisibilityPermission = userDetails?.clientArchiveRoles?.find(
-    i => i.name === 'reportingSubjectVisibility'
-  )?.permission
-
-  const reportingSubjectClientVisibilityPermission = userDetails?.clientArchiveRoles?.find(
-    i => i.name === 'reportingSubjectClientVisibility'
-  )?.permission
+  // ** chart permissions
+  const companyVisibilityPermission = useChartPermission('companyVisibility')
+  const visibilityRankingPermission = useChartPermission('visibilityRanking')
+  const publicationsVisibilityPermission = useChartPermission('publicationsVisibility')
+  const publicationsClientVisibilityPermission = useChartPermission('publicationsClientVisibility')
+  const journalistVisibilityPermission = useChartPermission('journalistVisibility')
+  const journalistClientVisibilityPermission = useChartPermission('journalistClientVisibility')
+  const reportingSubjectVisibilityPermission = useChartPermission('reportingSubjectVisibility')
+  const reportingSubjectClientVisibilityPermission = useChartPermission('reportingSubjectClientVisibility')
 
   // ** Hook
   const theme = useTheme()

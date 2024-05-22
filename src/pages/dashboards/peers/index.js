@@ -15,6 +15,7 @@ import usePeersData from 'src/api/dashboard-peers/usePeersData'
 import ReportPeers from 'src/views/dashboards/peers/ReportsPeers'
 import VisibilityPeers from 'src/views/dashboards/peers/VisibilityPeersData'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 // ** hooks
 // import useScreenPermissions from 'src/hooks/useScreenPermissions'
@@ -29,6 +30,10 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const PeersCharts = () => {
   const userDetails = useSelector(selectUserData)
   const selectedMedia = useSelector(selectSelectedMedia)
+
+  // ** chart permissions
+  const reportPeersPermission = useChartPermission('reportPeers')
+  const visibilityPeersPermission = useChartPermission('visibilityPeers')
 
   // * data hooks
   const {
@@ -80,32 +85,36 @@ const PeersCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <ReportPeers
-            chartData={reportPeersData}
-            loading={reportPeersDataLoading}
-            error={reportPeersDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!reportPeersPermission && (
+            <ReportPeers
+              chartData={reportPeersData}
+              loading={reportPeersDataLoading}
+              error={reportPeersDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <VisibilityPeers
-            chartData={visibilityPeersData}
-            loading={visibilityPeersDataLoading}
-            error={visibilityPeersDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!visibilityPeersPermission && (
+            <VisibilityPeers
+              chartData={visibilityPeersData}
+              loading={visibilityPeersDataLoading}
+              error={visibilityPeersDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
       </Grid>
     </ApexChartWrapper>

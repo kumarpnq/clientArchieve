@@ -24,6 +24,7 @@ import JournalistVscore from 'src/views/dashboards/visibility&Count/JournalistVs
 import useVisibilityCount from 'src/api/dashboard-visibilityCount/useVisibilityCount'
 import useJournalistVscore from 'src/api/dashboard-visibilityCount/useJournalistVscore'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 const CountCharts = () => {
   const userDetails = useSelector(selectUserData)
@@ -55,6 +56,11 @@ const CountCharts = () => {
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
 
+  // ** chart permissions
+  const volumeRankingPermission = useChartPermission('volumeRanking')
+  const reportingSubjectVScorePermission = useChartPermission('reportingSubjectVscore')
+  const journalistVScorePermission = useChartPermission('journalistVscore')
+
   // * data hooks
   const {
     chartData: volumeRankingData,
@@ -76,7 +82,6 @@ const CountCharts = () => {
 
   const screenPermissions = useScreenPermissions()
   const hasAccess = screenPermissions['visibilityAndCount']
-  console.log(hasAccess)
 
   if (!hasAccess) {
     return <div>You don't have access to this page.</div>
@@ -86,46 +91,52 @@ const CountCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <VolumeRanking
-            chartData={volumeRankingData}
-            loading={volumeRankingLoading}
-            error={volumeRankingError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!volumeRankingPermission && (
+            <VolumeRanking
+              chartData={volumeRankingData}
+              loading={volumeRankingLoading}
+              error={volumeRankingError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <JournalistVscore
-            JournalistVScoreData={journalistVscoreData}
-            loading={journalistVscoreLoading}
-            error={journalistVscoreError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!journalistVScorePermission && (
+            <JournalistVscore
+              JournalistVScoreData={journalistVscoreData}
+              loading={journalistVscoreLoading}
+              error={journalistVscoreError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <SubjectVscore
-            chartData={subjectVscoreData}
-            loading={subjectVscoreLoading}
-            error={subjectVscoreError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!reportingSubjectVScorePermission && (
+            <SubjectVscore
+              chartData={subjectVscoreData}
+              loading={subjectVscoreLoading}
+              error={subjectVscoreError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
       </Grid>
     </ApexChartWrapper>

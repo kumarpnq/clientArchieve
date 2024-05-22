@@ -16,6 +16,7 @@ import Link from 'next/link'
 // ** custom hooks
 import useFetchReports from 'src/api/dashboard/useFetchReports'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -48,6 +49,13 @@ const PublicationCharts = () => {
   const borderColor = theme.palette.divider
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
+
+  // ** Chart permissions
+  const publicationPerformanceNDPermission = useChartPermission('publicationPerformanceND')
+  const publicationPerformanceBDPermission = useChartPermission('publicationPerformanceBD')
+  const publicationPerformanceRDPermission = useChartPermission('publicationPerformanceRD')
+  const publicationPerformanceMagazinePermission = useChartPermission('publicationPerformanceMagazine')
+  const publicationPerformanceOnlineTop10Permission = useChartPermission('publicationPerformanceOnlineTop10')
 
   // ** data hooks
   const {
@@ -116,84 +124,94 @@ const PublicationCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <PublicationPerformance
-            chartData={publicationPerformanceNDData}
-            loading={publicationPerformanceNDDataLoading}
-            error={publicationPerformanceNDDataError}
-            cardTitle='publicationND'
-            chartId='publication-nd'
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!publicationPerformanceNDPermission && (
+            <PublicationPerformance
+              chartData={publicationPerformanceNDData}
+              loading={publicationPerformanceNDDataLoading}
+              error={publicationPerformanceNDDataError}
+              cardTitle='publicationND'
+              chartId='publication-nd'
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <PublicationPerformance
-            chartData={publicationPerformanceBDData}
-            loading={publicationPerformanceBDDataLoading}
-            error={publicationPerformanceBDDataError}
-            cardTitle='publicationBD'
-            chartId='publication-bd'
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!publicationPerformanceBDPermission && (
+            <PublicationPerformance
+              chartData={publicationPerformanceBDData}
+              loading={publicationPerformanceBDDataLoading}
+              error={publicationPerformanceBDDataError}
+              cardTitle='publicationBD'
+              chartId='publication-bd'
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <PublicationPerformance
-            chartData={publicationPerformanceRDData}
-            loading={publicationPerformanceRDDataLoading}
-            error={publicationPerformanceRDDataError}
-            cardTitle='publicationRD'
-            chartId='publication-rd'
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!publicationPerformanceRDPermission && (
+            <PublicationPerformance
+              chartData={publicationPerformanceRDData}
+              loading={publicationPerformanceRDDataLoading}
+              error={publicationPerformanceRDDataError}
+              cardTitle='publicationRD'
+              chartId='publication-rd'
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <PublicationPerformance
-            chartData={publicationPerformanceMagazineData}
-            loading={publicationPerformanceMagazineDataLoading}
-            error={publicationPerformanceMagazineDataError}
-            cardTitle='publicationMagazine'
-            chartId='publication-mg'
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!publicationPerformanceMagazinePermission && (
+            <PublicationPerformance
+              chartData={publicationPerformanceMagazineData}
+              loading={publicationPerformanceMagazineDataLoading}
+              error={publicationPerformanceMagazineDataError}
+              cardTitle='publicationMagazine'
+              chartId='publication-mg'
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <PublicationPerformance
-            chartData={publicationPerformanceOnlineTop10Data}
-            loading={publicationPerformanceOnlineTop10DataLoading}
-            error={publicationPerformanceOnlineTop10DataError}
-            cardTitle='publicationTop10'
-            chartId='publication-top-10'
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!publicationPerformanceOnlineTop10Permission && (
+            <PublicationPerformance
+              chartData={publicationPerformanceOnlineTop10Data}
+              loading={publicationPerformanceOnlineTop10DataLoading}
+              error={publicationPerformanceOnlineTop10DataError}
+              cardTitle='publicationTop10'
+              chartId='publication-top-10'
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
       </Grid>
     </ApexChartWrapper>

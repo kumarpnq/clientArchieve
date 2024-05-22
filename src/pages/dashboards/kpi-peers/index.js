@@ -17,6 +17,7 @@ import RankingKpiPeersWithVisibility from 'src/views/dashboards/kpi-peers/Rankin
 
 // ** hooks
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 // * components import
 
@@ -28,6 +29,10 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const KPIPeersCharts = () => {
   const userDetails = useSelector(selectUserData)
   const selectedMedia = useSelector(selectSelectedMedia)
+
+  // ** chart permissions
+  const rankingKpiPeersPermission = useChartPermission('rankingKpiPeers')
+  const rankinKpiPeersWithVisibilityPermission = useChartPermission('RankingKpiPeersWithVisibility')
 
   // * data hooks
   const {
@@ -83,32 +88,36 @@ const KPIPeersCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <RankingKpiPeers
-            chartData={rankingKpiData}
-            loading={rankingKpiDataLoading}
-            error={rankingKpiDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!rankingKpiPeersPermission && (
+            <RankingKpiPeers
+              chartData={rankingKpiData}
+              loading={rankingKpiDataLoading}
+              error={rankingKpiDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <RankingKpiPeersWithVisibility
-            chartData={rankingKpiVisibilityData}
-            loading={rankingKpiVisibilityDataLoading}
-            error={rankingKpiVisibilityDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!rankinKpiPeersWithVisibilityPermission && (
+            <RankingKpiPeersWithVisibility
+              chartData={rankingKpiVisibilityData}
+              loading={rankingKpiVisibilityDataLoading}
+              error={rankingKpiVisibilityDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
       </Grid>
     </ApexChartWrapper>

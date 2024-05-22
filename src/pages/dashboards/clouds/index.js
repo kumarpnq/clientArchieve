@@ -8,16 +8,13 @@ import AnalyticsWordCloud from 'src/views/dashboards/analytics/AnalyticsWordClou
 import KeenSliderWrapper from 'src/@core/styles/libs/keen-slider'
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
 
-// ** redux import
-import { useSelector } from 'react-redux'
-import { selectUserData } from 'src/store/apps/user/userSlice'
-
 import { styled } from '@mui/material/styles'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 
 // ** hooks
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -25,8 +22,6 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }))
 
 const AnalyticsDashboard = () => {
-  const userDetails = useSelector(selectUserData)
-
   // ** Hook
   const theme = useTheme()
 
@@ -52,7 +47,7 @@ const AnalyticsDashboard = () => {
   const borderColor = theme.palette.divider
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
-  const wordCloudPermission = userDetails?.clientArchiveRoles?.find(i => i.name === 'wordCloud')?.permission
+  const wordCloudPermissions = useChartPermission('wordCloud')
 
   const screenPermissions = useScreenPermissions()
   const hasAccess = screenPermissions['analytics']
@@ -65,7 +60,7 @@ const AnalyticsDashboard = () => {
     <ApexChartWrapper>
       <KeenSliderWrapper>
         <Grid container spacing={6}>
-          {!!wordCloudPermission && (
+          {!!wordCloudPermissions && (
             <>
               {' '}
               <Grid item xs={12} md={6}>

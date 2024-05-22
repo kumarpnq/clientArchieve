@@ -23,6 +23,7 @@ import Reportings from 'src/views/dashboards/performance/Reportings'
 import Journalist from 'src/views/dashboards/performance/Journalist'
 import Language from 'src/views/dashboards/performance/Language'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -32,6 +33,13 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const PeersCharts = () => {
   const userDetails = useSelector(selectUserData)
   const selectedMedia = useSelector(selectSelectedMedia)
+
+  // ** chart permission
+  const regionPerformancePermission = useChartPermission('regionPerformance')
+  const publicationPerformancePermission = useChartPermission('publicationPerformance')
+  const reporingPerformancePermission = useChartPermission('reportingPerformance')
+  const journalistPerformancePermission = useChartPermission('journalistPerformance')
+  const languagePerformancePermission = useChartPermission('languagePerformance')
 
   // * data hooks
   const {
@@ -131,75 +139,85 @@ const PeersCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <Region
-            regionData={regionPerformanceData}
-            loading={regionPerformanceDataLoading}
-            error={regionPerformanceDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!regionPerformancePermission && (
+            <Region
+              regionData={regionPerformanceData}
+              loading={regionPerformanceDataLoading}
+              error={regionPerformanceDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
 
         <Grid item xs={12} lg={6}>
-          <Reportings
-            reportingData={reporingPerformanceData}
-            loading={reporingPerformanceDataLoading}
-            error={reporingPerformanceDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!reporingPerformancePermission && (
+            <Reportings
+              reportingData={reporingPerformanceData}
+              loading={reporingPerformanceDataLoading}
+              error={reporingPerformanceDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={16}>
-          <Publication
-            publicationData={publicationPerformanceData}
-            loading={publicationPerformanceDataLoading}
-            error={publicationPerformanceDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!publicationPerformancePermission && (
+            <Publication
+              publicationData={publicationPerformanceData}
+              loading={publicationPerformanceDataLoading}
+              error={publicationPerformanceDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={16}>
-          <Journalist
-            journalistData={journalistPerformanceData}
-            loading={journalistPerformanceDataLoading}
-            error={journalistPerformanceDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!journalistPerformancePermission && (
+            <Journalist
+              journalistData={journalistPerformanceData}
+              loading={journalistPerformanceDataLoading}
+              error={journalistPerformanceDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <Language
-            languageData={languagePerformanceData}
-            loading={languagePerformanceDataLoading}
-            error={languagePerformanceDataError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!languagePerformancePermission && (
+            <Language
+              languageData={languagePerformanceData}
+              loading={languagePerformanceDataLoading}
+              error={languagePerformanceDataError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
       </Grid>
     </ApexChartWrapper>

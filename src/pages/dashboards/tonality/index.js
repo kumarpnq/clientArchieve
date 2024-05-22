@@ -23,6 +23,7 @@ import ClientTonality from 'src/views/dashboards/tonality/ClientTonality'
 import PositiveTonality from 'src/views/dashboards/tonality/PositiveTonality'
 import NegativeTonality from 'src/views/dashboards/tonality/NegativeTonality'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -32,6 +33,13 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const TonalityCharts = () => {
   const userDetails = useSelector(selectUserData)
   const selectedMedia = useSelector(selectSelectedMedia)
+
+  // ** chart permissions
+  const companyTonalityPermission = useChartPermission('companyTonality')
+  const tonalityVScorePermission = useChartPermission('tonalityVscore')
+  const clientTonalityPermission = useChartPermission('clientTonality')
+  const positiveTonalityPermission = useChartPermission('positiveTonality')
+  const negativeTonalityPermission = useChartPermission('negativeTonality')
 
   // * data hooks
   const {
@@ -101,74 +109,84 @@ const TonalityCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <CompanyTonality
-            chartData={companyTonalityData}
-            loading={companyTonalityLoading}
-            error={companyTonalityError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!companyTonalityPermission && (
+            <CompanyTonality
+              chartData={companyTonalityData}
+              loading={companyTonalityLoading}
+              error={companyTonalityError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <TonalityVScore
-            chartData={tonalityVScoreData}
-            loading={tonalityVScoreLoading}
-            error={tonalityVScoreError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!tonalityVScorePermission && (
+            <TonalityVScore
+              chartData={tonalityVScoreData}
+              loading={tonalityVScoreLoading}
+              error={tonalityVScoreError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <ClientTonality
-            chartData={clientTonality}
-            loading={clientTonalityLoading}
-            error={clientTonalityError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!clientTonalityPermission && (
+            <ClientTonality
+              chartData={clientTonality}
+              loading={clientTonalityLoading}
+              error={clientTonalityError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <PositiveTonality
-            chartData={positiveTonality}
-            loading={positiveTonalityLoading}
-            error={positiveTonalityError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!positiveTonalityPermission && (
+            <PositiveTonality
+              chartData={positiveTonality}
+              loading={positiveTonalityLoading}
+              error={positiveTonalityError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
-          <NegativeTonality
-            chartData={negativeTonality}
-            loading={negativeTonalityLoading}
-            error={negativeTonalityError}
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!negativeTonalityPermission && (
+            <NegativeTonality
+              chartData={negativeTonality}
+              loading={negativeTonalityLoading}
+              error={negativeTonalityError}
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
       </Grid>
     </ApexChartWrapper>

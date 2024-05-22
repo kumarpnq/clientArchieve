@@ -16,6 +16,7 @@ import Link from 'next/link'
 // ** custom hooks
 import useFetchReports from 'src/api/dashboard/useFetchReports'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import useChartPermission from 'src/hooks/useChartPermission'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -48,6 +49,11 @@ const JournalistCharts = () => {
   const borderColor = theme.palette.divider
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
+
+  // ** Chart permissions
+  const journalistPerformanceNDPermission = useChartPermission('journalistPerformanceND')
+  const journalistPerformanceBDPermission = useChartPermission('journalistPerformanceBD')
+  const journalistPerformanceRDPermission = useChartPermission('journalistPerformanceRD')
 
   // ** data hooks
   const {
@@ -94,54 +100,60 @@ const JournalistCharts = () => {
     <ApexChartWrapper>
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
-          <JournalistPerformance
-            chartData={journalistPerformanceNDData}
-            loading={journalistPerformanceNDDataLoading}
-            error={journalistPerformanceNDDataError}
-            cardTitle='JournalistND'
-            chartId='journalist-nd'
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!journalistPerformanceNDPermission && (
+            <JournalistPerformance
+              chartData={journalistPerformanceNDData}
+              loading={journalistPerformanceNDDataLoading}
+              error={journalistPerformanceNDDataError}
+              cardTitle='JournalistND'
+              chartId='journalist-nd'
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
           {' '}
-          <JournalistPerformance
-            chartData={journalistPerformanceRDData}
-            loading={journalistPerformanceRDDataLoading}
-            error={journalistPerformanceRDDataError}
-            cardTitle='JournalistRD'
-            chartId='journalist-rd'
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!journalistPerformanceBDPermission && (
+            <JournalistPerformance
+              chartData={journalistPerformanceRDData}
+              loading={journalistPerformanceRDDataLoading}
+              error={journalistPerformanceRDDataError}
+              cardTitle='JournalistRD'
+              chartId='journalist-rd'
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
         <Grid item xs={12} lg={6}>
           {' '}
-          <JournalistPerformance
-            chartData={journalistPerformanceBDData}
-            loading={journalistPerformanceBDDataLoading}
-            error={journalistPerformanceBDDataError}
-            cardTitle='JournalistBD'
-            chartId='journalist-bd'
-            legendColor={legendColor}
-            primary={primaryColor}
-            yellow={yellowColor}
-            warning={lineChartWarning}
-            info={polarChartInfo}
-            grey={polarChartGrey}
-            green={polarChartGreen}
-          />
+          {!!journalistPerformanceRDPermission && (
+            <JournalistPerformance
+              chartData={journalistPerformanceBDData}
+              loading={journalistPerformanceBDDataLoading}
+              error={journalistPerformanceBDDataError}
+              cardTitle='JournalistBD'
+              chartId='journalist-bd'
+              legendColor={legendColor}
+              primary={primaryColor}
+              yellow={yellowColor}
+              warning={lineChartWarning}
+              info={polarChartInfo}
+              grey={polarChartGrey}
+              green={polarChartGreen}
+            />
+          )}
         </Grid>
       </Grid>
     </ApexChartWrapper>
