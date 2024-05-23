@@ -41,7 +41,23 @@ const MultipleCharts = props => {
     setChecked(prev => !prev)
   }
 
-  const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+  const {
+    chartData,
+    loading,
+    error,
+    chartTitle,
+    chartId,
+    dataAccessKey,
+    reportId,
+    path,
+    primary,
+    yellow,
+    warning,
+    info,
+    grey,
+    green,
+    legendColor
+  } = props
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
   let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
 
@@ -99,7 +115,7 @@ const MultipleCharts = props => {
   const iScore = chartData.map(data => data.iScore)
 
   const data = {
-    labels: chartData.map(data => data.companyName.substring(0, 15)),
+    labels: chartData.map(data => data[dataAccessKey].substring(0, 15)),
     datasets: [
       {
         type: 'line',
@@ -111,6 +127,7 @@ const MultipleCharts = props => {
         tension: 0.4,
         data: [...vscore, ...QE, ...iScore]
       },
+
       {
         label: 'vScore',
         backgroundColor: getRandomColor(),
@@ -147,11 +164,11 @@ const MultipleCharts = props => {
         setActiveType('table')
         break
       case 'image':
-        toBlob(document.getElementById('multiple-charts')).then(function (blob) {
+        toBlob(document.getElementById(chartId)).then(function (blob) {
           const url = window.URL.createObjectURL(blob)
           const a = document.createElement('a')
           a.href = url
-          a.download = 'multiple-charts.png'
+          a.download = `${chartId}.png`
           document.body.appendChild(a)
           a.click()
           window.URL.revokeObjectURL(url)
@@ -159,12 +176,12 @@ const MultipleCharts = props => {
         break
       case 'pdf':
         const doc = new jsPDF()
-        toBlob(document.getElementById('multiple-charts')).then(function (blob) {
+        toBlob(document.getElementById(chartId)).then(function (blob) {
           const url = URL.createObjectURL(blob)
           const img = new Image()
           img.onload = function () {
             doc.addImage(this, 'PNG', 10, 10, 180, 100)
-            doc.save('multiple-charts.pdf')
+            doc.save(`${chartId}.pdf`)
             URL.revokeObjectURL(url)
           }
           img.src = url
@@ -175,7 +192,7 @@ const MultipleCharts = props => {
           const ws = XLSX.utils.json_to_sheet(chartData)
           const wb = XLSX.utils.book_new()
           XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
-          XLSX.writeFile(wb, 'companyVisibility.xlsx')
+          XLSX.writeFile(wb, `${chartId}.xlsx`)
         }
         break
       default:
@@ -216,7 +233,7 @@ const MultipleCharts = props => {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: 'primary.main' }}>
-              <TableCell>Name</TableCell>
+              <TableCell>{dataAccessKey}</TableCell>
               <TableCell>vScore</TableCell>
               <TableCell>iScore</TableCell>
               <TableCell>QE</TableCell>
@@ -225,7 +242,7 @@ const MultipleCharts = props => {
           <TableBody>
             {chartData.map((company, index) => (
               <TableRow key={index}>
-                <TableCell size='small'>{company.companyName}</TableCell>
+                <TableCell size='small'>{company[dataAccessKey]}</TableCell>
                 <TableCell size='small'>{company.vScore}</TableCell>
                 <TableCell size='small'>{company.iScore}</TableCell>
                 <TableCell size='small'>{company.QE}</TableCell>
@@ -242,7 +259,7 @@ const MultipleCharts = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title='Company Visibility'
+            title={chartTitle}
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -263,7 +280,7 @@ const MultipleCharts = props => {
       </Dialog>
       <Card sx={{ height: '100%' }}>
         <CardHeader
-          title='Company Visibility'
+          title={chartTitle}
           sx={{ mb: 4.4 }}
           action={
             <Box>
@@ -343,7 +360,7 @@ const MultipleCharts = props => {
             </Box>
           }
         />
-        <CardContent onClick={handleChartClick} id='multiple-charts'>
+        <CardContent onClick={handleChartClick} id={chartId}>
           {loading ? (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
@@ -363,7 +380,7 @@ const MultipleCharts = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={reportId} path={path} />
     </>
   )
 }

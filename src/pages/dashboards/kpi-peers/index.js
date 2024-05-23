@@ -12,12 +12,12 @@ import { styled } from '@mui/material/styles'
 import { useTheme } from '@mui/material/styles'
 import Link from 'next/link'
 import useKpiChartsData from 'src/api/dashboard-kpicharts/useFetchKpiChartsData'
-import RankingKpiPeers from 'src/views/dashboards/kpi-peers/RankingKpiPeers'
-import RankingKpiPeersWithVisibility from 'src/views/dashboards/kpi-peers/RankingKpiPeersWithVisibility'
 
 // ** hooks
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import useChartPermission from 'src/hooks/useChartPermission'
+import { useRouter } from 'next/router'
+import RankingKpiPeersCharts from 'src/views/dashboards/kpi-peers/RankingKpiPeersWithVisibility'
 
 // * components import
 
@@ -31,8 +31,8 @@ const KPIPeersCharts = () => {
   const selectedMedia = useSelector(selectSelectedMedia)
 
   // ** chart permissions
-  const rankingKpiPeersPermission = useChartPermission('rankingKpiPeers')
-  const rankinKpiPeersWithVisibilityPermission = useChartPermission('RankingKpiPeersWithVisibility')
+  const rankingKpiPeersPermission = useChartPermission('rankingKPIPeers')
+  const rankinKpiPeersWithVisibilityPermission = useChartPermission('rankingKPIPeersWithVisibility')
 
   // * data hooks
   const {
@@ -48,11 +48,13 @@ const KPIPeersCharts = () => {
     loading: rankingKpiVisibilityDataLoading,
     error: rankingKpiVisibilityDataError
   } = useKpiChartsData({
-    endpoint: '/RankingKpiPeersWithVisibility/'
+    endpoint: '/rankingKpiPeersWithVisibility/'
   })
 
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
+  const { query, asPath } = router
 
   // Vars
   const whiteColor = '#fff'
@@ -78,7 +80,7 @@ const KPIPeersCharts = () => {
   const legendColor = theme.palette.text.secondary
 
   const screenPermissions = useScreenPermissions()
-  const hasAccess = screenPermissions['kpiPeer']
+  const hasAccess = screenPermissions['kpiPeers']
 
   if (!hasAccess) {
     return <div>You don't have access to this page.</div>
@@ -89,10 +91,14 @@ const KPIPeersCharts = () => {
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
           {!!rankingKpiPeersPermission && (
-            <RankingKpiPeers
+            <RankingKpiPeersCharts
               chartData={rankingKpiData}
               loading={rankingKpiDataLoading}
               error={rankingKpiDataError}
+              chartTitle={'Ranking KPI Peers'}
+              chartId='ranking-kpi-peers'
+              reportId='rankingKpiPeers'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -105,10 +111,14 @@ const KPIPeersCharts = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {!!rankinKpiPeersWithVisibilityPermission && (
-            <RankingKpiPeersWithVisibility
+            <RankingKpiPeersCharts
               chartData={rankingKpiVisibilityData}
               loading={rankingKpiVisibilityDataLoading}
               error={rankingKpiVisibilityDataError}
+              chartTitle={'KPI Peers Visibility'}
+              chartId='ranking-kpi-peers-visibility'
+              reportId='rankingKpiPeersWithVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

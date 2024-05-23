@@ -38,7 +38,6 @@ const UserLayout = ({ children, contentHeightFixed }) => {
 
   const [navItems, setNavItems] = useState([])
 
-  console.log(navItems)
   useEffect(() => {
     const newNavItems = [
       {
@@ -167,6 +166,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
           headers: headers,
           params: request_data
         })
+
         dispatch(setCustomDashboardScreens(response.data.userDashboardList))
       } catch (error) {
         console.error('Error fetching user dashboard data:', error)

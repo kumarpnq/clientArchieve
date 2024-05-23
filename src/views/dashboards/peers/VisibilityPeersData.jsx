@@ -26,6 +26,7 @@ import * as XLSX from 'xlsx'
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
 
 const VisibilityPeers = props => {
   const { currentPath, asPath } = usePath()
@@ -44,7 +45,7 @@ const VisibilityPeers = props => {
     setChecked(prev => !prev)
   }
 
-  const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+  const { chartData, loading, error, path, primary, yellow, warning, info, grey, green, legendColor } = props
 
   const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
   const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
@@ -249,6 +250,12 @@ const VisibilityPeers = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(reportId)
+    deleteJournalistReport('My Dashboard', reportId)
+  }
 
   const TableComp = () => {
     return (
@@ -357,7 +364,7 @@ const VisibilityPeers = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('VisibilityPeers')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveCharts('visibilityPeers')}>Remove from Custom</MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
@@ -424,7 +431,7 @@ const VisibilityPeers = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={'visibilityPeers'} path={path} />
     </>
   )
 }

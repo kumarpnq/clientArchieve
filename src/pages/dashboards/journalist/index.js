@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router'
+
 // ** MUI Import
 import Grid from '@mui/material/Grid'
 
@@ -24,6 +26,9 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }))
 
 const JournalistCharts = () => {
+  const router = useRouter()
+  const { query, asPath } = router
+
   // ** Hook
   const theme = useTheme()
 
@@ -107,6 +112,8 @@ const JournalistCharts = () => {
               error={journalistPerformanceNDDataError}
               cardTitle='JournalistND'
               chartId='journalist-nd'
+              reportId='journalistPerformanceND'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -126,6 +133,8 @@ const JournalistCharts = () => {
               error={journalistPerformanceRDDataError}
               cardTitle='JournalistRD'
               chartId='journalist-rd'
+              reportId='journalistPerformanceRD'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -145,6 +154,8 @@ const JournalistCharts = () => {
               error={journalistPerformanceBDDataError}
               cardTitle='JournalistBD'
               chartId='journalist-bd'
+              reportId='journalistPerformanceBD'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

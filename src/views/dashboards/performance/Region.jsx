@@ -26,13 +26,30 @@ import * as XLSX from 'xlsx'
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
 
-const Region = props => {
+const PerformanceShortChart = props => {
   const { currentPath, asPath } = usePath()
-  const { regionData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
-  const regions = Object.keys(regionData)
 
-  const [selectedRegion, setSelectedRegion] = useState('All India')
+  const {
+    regionData,
+    loading,
+    error,
+    chartTitle,
+    chartId,
+    reportId,
+    path,
+    primary,
+    yellow,
+    warning,
+    info,
+    grey,
+    green,
+    legendColor
+  } = props
+  const regions = Object.keys(regionData || {})
+
+  const [selectedRegion, setSelectedRegion] = useState('')
   const [chartData, setChartData] = useState([])
   const [activeChart, setActiveChart] = useState('Line')
   const [anchorEl, setAnchorEl] = useState(null)
@@ -47,10 +64,11 @@ const Region = props => {
 
   useEffect(() => {
     if (regions) {
-      setChartData(regionData['All India'])
-      setSelectedRegion('All India')
+      const firstKey = regions[0]
+      setChartData(regionData[firstKey] || [])
+      setSelectedRegion(firstKey)
     }
-  }, [regionData, regions])
+  }, [regionData])
 
   const handleChange = () => {
     setActiveChart('Bar')
@@ -227,11 +245,11 @@ const Region = props => {
         setActiveType('table')
         break
       case 'image':
-        toBlob(document.getElementById('region')).then(function (blob) {
+        toBlob(document.getElementById(chartId)).then(function (blob) {
           const url = window.URL.createObjectURL(blob)
           const a = document.createElement('a')
           a.href = url
-          a.download = 'region.png'
+          a.download = `${chartId}.png`
           document.body.appendChild(a)
           a.click()
           window.URL.revokeObjectURL(url)
@@ -239,12 +257,12 @@ const Region = props => {
         break
       case 'pdf':
         const doc = new jsPDF()
-        toBlob(document.getElementById('region')).then(function (blob) {
+        toBlob(document.getElementById(chartId)).then(function (blob) {
           const url = URL.createObjectURL(blob)
           const img = new Image()
           img.onload = function () {
             doc.addImage(this, 'PNG', 10, 10, 180, 100)
-            doc.save('region.pdf')
+            doc.save(`${chartId}.pdf`)
             URL.revokeObjectURL(url)
           }
           img.src = url
@@ -256,7 +274,7 @@ const Region = props => {
           const ws = XLSX.utils.json_to_sheet(chartData)
           const wb = XLSX.utils.book_new()
           XLSX.utils.book_append_sheet(wb, ws, 'Chart Data')
-          XLSX.writeFile(wb, 'region.xlsx')
+          XLSX.writeFile(wb, `${chartId}.xlsx`)
         }
         break
       default:
@@ -270,6 +288,12 @@ const Region = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(reportId)
+    deleteJournalistReport('My Dashboard', reportId)
+  }
 
   const TableComp = () => {
     return (
@@ -305,7 +329,7 @@ const Region = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title={`Region : ${selectedRegion || ''}`}
+            title={`${chartTitle} : ${selectedRegion || ''}`}
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -327,7 +351,7 @@ const Region = props => {
       </Dialog>
       <Card sx={{ height: '100%' }}>
         <CardHeader
-          title={`Region : ${selectedRegion || ''}`}
+          title={`${chartTitle} : ${selectedRegion || ''}`}
           action={
             <Box>
               {chartIndexAxis === 'x' ? (
@@ -378,11 +402,11 @@ const Region = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('Region')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>Remove from Custom</MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
-                <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>Regions</MenuItem>
+                <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>{chartTitle}</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
 
@@ -435,7 +459,7 @@ const Region = props => {
             {renderMenuItems(['Top', 'Bottom'], 'filter')}
           </Menu>
         </Box>
-        <CardContent onClick={handleChartClick} id='region'>
+        <CardContent onClick={handleChartClick} id={chartId}>
           {loading ? (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
@@ -454,9 +478,9 @@ const Region = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={reportId} path={path} />
     </>
   )
 }
 
-export default Region
+export default PerformanceShortChart

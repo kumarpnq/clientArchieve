@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router'
+
 // ** MUI Import
 import Grid from '@mui/material/Grid'
 
@@ -15,15 +17,12 @@ import Link from 'next/link'
 // ** hooks
 // import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import useFetchReports from 'src/api/dashboard/useFetchReports'
-
-// * components import
-import Region from 'src/views/dashboards/performance/Region'
-import Publication from 'src/views/dashboards/performance/Publication'
-import Reportings from 'src/views/dashboards/performance/Reportings'
-import Journalist from 'src/views/dashboards/performance/Journalist'
-import Language from 'src/views/dashboards/performance/Language'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import useChartPermission from 'src/hooks/useChartPermission'
+
+// * components import
+import PerformanceShortChart from 'src/views/dashboards/performance/Region'
+import PerformanceLongCharts from 'src/views/dashboards/performance/Publication'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -37,7 +36,7 @@ const PeersCharts = () => {
   // ** chart permission
   const regionPerformancePermission = useChartPermission('regionPerformance')
   const publicationPerformancePermission = useChartPermission('publicationPerformance')
-  const reporingPerformancePermission = useChartPermission('reportingPerformance')
+  const reportingPerformancePermission = useChartPermission('reportingPerformance')
   const journalistPerformancePermission = useChartPermission('journalistPerformance')
   const languagePerformancePermission = useChartPermission('languagePerformance')
 
@@ -67,14 +66,14 @@ const PeersCharts = () => {
   })
 
   const {
-    chartData: reporingPerformanceData,
-    loading: reporingPerformanceDataLoading,
-    error: reporingPerformanceDataError
+    chartData: reportingPerformanceData,
+    loading: reportingPerformanceDataLoading,
+    error: reportingPerformanceDataError
   } = useFetchReports({
     media: selectedMedia,
     idType: 'clientIds',
-    endpoint: '/reporingPerformance/',
-    dataKey: 'reporingPerformance',
+    endpoint: '/reportingPerformance/',
+    dataKey: 'reportingPerformance',
     isMedia: true
   })
 
@@ -104,6 +103,8 @@ const PeersCharts = () => {
 
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
+  const { query, asPath } = router
 
   // Vars
   const whiteColor = '#fff'
@@ -140,10 +141,14 @@ const PeersCharts = () => {
       <Grid container spacing={6}>
         <Grid item xs={12} lg={6}>
           {!!regionPerformancePermission && (
-            <Region
+            <PerformanceShortChart
               regionData={regionPerformanceData}
               loading={regionPerformanceDataLoading}
               error={regionPerformanceDataError}
+              chartTitle='Region'
+              chartId='region-performance'
+              reportId='regionPerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -156,11 +161,15 @@ const PeersCharts = () => {
         </Grid>
 
         <Grid item xs={12} lg={6}>
-          {!!reporingPerformancePermission && (
-            <Reportings
-              reportingData={reporingPerformanceData}
-              loading={reporingPerformanceDataLoading}
-              error={reporingPerformanceDataError}
+          {!!reportingPerformancePermission && (
+            <PerformanceShortChart
+              regionData={reportingPerformanceData}
+              loading={reportingPerformanceDataLoading}
+              error={reportingPerformanceDataError}
+              chartTitle='Reporting'
+              chartId='reporting-performance'
+              reportId='reportingPerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -173,10 +182,14 @@ const PeersCharts = () => {
         </Grid>
         <Grid item xs={12} lg={16}>
           {!!publicationPerformancePermission && (
-            <Publication
+            <PerformanceLongCharts
               publicationData={publicationPerformanceData}
               loading={publicationPerformanceDataLoading}
               error={publicationPerformanceDataError}
+              chartTitle='Publication'
+              chartId='publication-performance'
+              reportId='publicationPerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -189,10 +202,14 @@ const PeersCharts = () => {
         </Grid>
         <Grid item xs={12} lg={16}>
           {!!journalistPerformancePermission && (
-            <Journalist
-              journalistData={journalistPerformanceData}
+            <PerformanceLongCharts
+              publicationData={journalistPerformanceData}
               loading={journalistPerformanceDataLoading}
               error={journalistPerformanceDataError}
+              chartTitle='Journalist'
+              chartId='journalist-performance'
+              reportId='journalistPerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -205,10 +222,14 @@ const PeersCharts = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {!!languagePerformancePermission && (
-            <Language
-              languageData={languagePerformanceData}
+            <PerformanceShortChart
+              regionData={languagePerformanceData}
               loading={languagePerformanceDataLoading}
               error={languagePerformanceDataError}
+              chartTitle='Language'
+              chartId='language-performance'
+              reportId='languagePerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

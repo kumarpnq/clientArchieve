@@ -26,12 +26,27 @@ import * as XLSX from 'xlsx'
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
 
 const JournalistPerformance = props => {
   const { currentPath, asPath } = usePath()
 
-  const { chartData, loading, error, chartId, cardTitle, primary, yellow, warning, info, grey, green, legendColor } =
-    props
+  const {
+    chartData,
+    loading,
+    error,
+    cardTitle,
+    chartId,
+    reportId,
+    path,
+    primary,
+    yellow,
+    warning,
+    info,
+    grey,
+    green,
+    legendColor
+  } = props
   const regions = (!!chartData && Object.keys(chartData)) || []
 
   const [selectedRegion, setSelectedRegion] = useState('English')
@@ -59,10 +74,6 @@ const JournalistPerformance = props => {
       setChartDataForMap(data)
     }
   }, [chartData])
-
-  // const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
-  // const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
-  // const dataForCharts = topData || bottomData
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
   let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
@@ -275,6 +286,12 @@ const JournalistPerformance = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(reportId)
+    deleteJournalistReport('My Dashboard', reportId)
+  }
 
   const TableComp = () => {
     return (
@@ -383,7 +400,7 @@ const JournalistPerformance = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('JournalistND')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>Remove from Custom</MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
@@ -452,7 +469,7 @@ const JournalistPerformance = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={reportId} path={path} />
     </>
   )
 }

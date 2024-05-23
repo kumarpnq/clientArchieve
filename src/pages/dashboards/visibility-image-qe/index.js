@@ -3,24 +3,8 @@ import Grid from '@mui/material/Grid'
 
 // ** Custom Component Import
 import ApexChartWrapper from 'src/@core/styles/libs/react-apexcharts'
-import AnalyticsJournalist from 'src/views/dashboards/visibilityImageQe/AnalyticsJournalist'
-import AnalyticsJournalistClient from 'src/views/dashboards/visibilityImageQe/AnalyticsJournalistClient'
 import MultipleCharts from 'src/views/dashboards/visibilityImageQe/AnalyticsMultipleCharts'
-import AnalyticsPublicationClient from 'src/views/dashboards/visibilityImageQe/AnalyticsPublicationClient'
-import PublicationVisibility from 'src/views/dashboards/visibilityImageQe/AnalyticsPublicationVisibility'
-import AnalyticsSubject from 'src/views/dashboards/visibilityImageQe/AnalyticsSubject'
-import AnalyticsSubjectClient from 'src/views/dashboards/visibilityImageQe/AnalyticsSubjectClient'
 import VisibilityRanking from 'src/views/dashboards/visibilityImageQe/AnalyticsVisibilityRanking'
-
-// ** custom hooks import
-import useChartsData from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useChartsData'
-import useJournalistClientVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useJournalistClientVisibility'
-import useJournalistVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useJournalistVisibility'
-import usePublicationClientVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/usePublicationClientVisibility'
-import usePublicationVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/usePublicationVisibility'
-import useReportingSubjectVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useSubjectClientVisiblity'
-import useSubjectVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useSubjectVisibility'
-import useVisibilityRanking from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useVisibilityRanking'
 
 // ** redux import
 import { useSelector } from 'react-redux'
@@ -33,6 +17,8 @@ import Link from 'next/link'
 // ** hooks
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import useChartPermission from 'src/hooks/useChartPermission'
+import useFetchReports from 'src/api/dashboard/useFetchReports'
+import { useRouter } from 'next/router'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -55,6 +41,8 @@ const VisibilityChartJS = () => {
 
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
+  const { query, asPath } = router
 
   // Vars
   const whiteColor = '#fff'
@@ -84,49 +72,97 @@ const VisibilityChartJS = () => {
     chartData: companyVisibility,
     loading: companyLoading,
     error: companyError
-  } = useChartsData({ media: selectedMedia, endpoint: '/companyVisibility/' })
+  } = useFetchReports({
+    media: selectedMedia,
+    endpoint: '/companyVisibility/',
+    idType: 'clientIds',
+    isMedia: true,
+    dataKey: 'companyVisibility'
+  })
 
   const {
     chartData: visibilityRanking,
     loading: rankingLoading,
     error: rankingError
-  } = useVisibilityRanking({ media: selectedMedia, endpoint: '/visibilityRanking/' })
+  } = useFetchReports({
+    media: selectedMedia,
+    endpoint: '/visibilityRanking/',
+    idType: 'clientIds',
+    isMedia: true,
+    dataKey: 'visibilityRanking'
+  })
 
   const {
     chartData: publicationVisibility,
     loading: visibilityLoading,
     error: visibilityError
-  } = usePublicationVisibility({ media: selectedMedia, endpoint: '/publicationsVisibility/' })
+  } = useFetchReports({
+    media: selectedMedia,
+    endpoint: '/publicationsVisibility/',
+    idType: 'clientIds',
+    isMedia: true,
+    dataKey: 'publicationsVisibility'
+  })
 
   const {
     chartData: publicationClientVisibility,
     loading: publicationClientLoading,
     error: publicationClientError
-  } = usePublicationClientVisibility({ media: selectedMedia, endpoint: '/publicationsClientVisibility/' })
+  } = useFetchReports({
+    media: selectedMedia,
+    endpoint: '/publicationsClientVisibility/',
+    idType: 'clientId',
+    isMedia: true,
+    dataKey: 'publicationsClientVisibility'
+  })
 
   const {
     chartData: subjectVisibility,
     loading: subjectLoading,
     error: subjectError
-  } = useSubjectVisibility({ media: selectedMedia, endpoint: '/reportingSubjectVisibility/' })
+  } = useFetchReports({
+    media: selectedMedia,
+    endpoint: '/reportingSubjectVisibility/',
+    idType: 'clientIds',
+    isMedia: true,
+    dataKey: 'reportingSubjectVisibility'
+  })
 
   const {
     chartData: subjectClientVisibility,
     loading: subjectClientLoading,
     error: subjectClientError
-  } = useReportingSubjectVisibility({ media: selectedMedia, endpoint: '/reportingSubjectClientVisibility/' })
+  } = useFetchReports({
+    media: selectedMedia,
+    endpoint: '/reportingSubjectClientVisibility/',
+    idType: 'clientId',
+    isMedia: true,
+    dataKey: 'reportingSubjectClientVisibility'
+  })
 
   const {
     chartData: journalistVisibility,
     loading: journalistLoading,
     error: journalistError
-  } = useJournalistVisibility({ media: selectedMedia, endpoint: '/journalistVisibility/' })
+  } = useFetchReports({
+    media: selectedMedia,
+    endpoint: '/journalistVisibility/',
+    idType: 'clientIds',
+    isMedia: true,
+    dataKey: 'journalistVisibility'
+  })
 
   const {
     chartData: journalistClientVisibility,
     loading: journalistClientLoading,
     error: journalistClientError
-  } = useJournalistClientVisibility({ media: selectedMedia, endpoint: '/journalistClientVisibility/' })
+  } = useFetchReports({
+    media: selectedMedia,
+    endpoint: '/journalistClientVisibility/',
+    idType: 'clientId',
+    isMedia: true,
+    dataKey: 'journalistClientVisibility'
+  })
 
   const screenPermissions = useScreenPermissions()
   const hasAccess = screenPermissions['visibilityImageQE']
@@ -144,6 +180,11 @@ const VisibilityChartJS = () => {
               chartData={companyVisibility}
               loading={companyLoading}
               error={companyError}
+              chartTitle='Company Visibility'
+              chartId='company-visibility'
+              dataAccessKey='companyName'
+              reportId='companyVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -172,10 +213,15 @@ const VisibilityChartJS = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {!!publicationsVisibilityPermission && (
-            <PublicationVisibility
+            <MultipleCharts
               chartData={publicationVisibility}
               loading={visibilityLoading}
               error={visibilityError}
+              chartTitle='Publications Visibility'
+              chartId='publications-visibility'
+              dataAccessKey='publicationGroupName'
+              reportId='publicationsVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -188,10 +234,15 @@ const VisibilityChartJS = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {!!publicationsClientVisibilityPermission && (
-            <AnalyticsPublicationClient
+            <MultipleCharts
               chartData={publicationClientVisibility}
               loading={publicationClientLoading}
               error={publicationClientError}
+              chartTitle='Publications Client Visibility'
+              chartId='publications-client-visibility'
+              dataAccessKey='publicationGroupName'
+              reportId='publicationsClientVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -204,10 +255,15 @@ const VisibilityChartJS = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {!!reportingSubjectVisibilityPermission && (
-            <AnalyticsSubject
+            <MultipleCharts
               chartData={subjectVisibility}
               loading={subjectLoading}
               error={subjectError}
+              chartTitle='Reporting Subject Visibility'
+              chartId='reporting-subject-visibility'
+              dataAccessKey='reportingSubject'
+              reportId='reportingSubjectVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -220,10 +276,15 @@ const VisibilityChartJS = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {!!reportingSubjectClientVisibilityPermission && (
-            <AnalyticsSubjectClient
+            <MultipleCharts
               chartData={subjectClientVisibility}
               loading={subjectClientLoading}
               error={subjectClientError}
+              chartTitle='Reporting Subject Client Visibility'
+              chartId='reporting-subject-client-visibility'
+              dataAccessKey='reportingSubject'
+              reportId='reportingSubjectClientVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -236,10 +297,15 @@ const VisibilityChartJS = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {!!journalistVisibilityPermission && (
-            <AnalyticsJournalist
+            <MultipleCharts
               chartData={journalistVisibility}
               loading={journalistLoading}
               error={journalistError}
+              chartTitle='Journalist Visibility'
+              chartId='journalist-visibility'
+              dataAccessKey='journalist'
+              reportId='journalistVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -252,10 +318,15 @@ const VisibilityChartJS = () => {
         </Grid>
         <Grid item xs={12} lg={6}>
           {!!journalistClientVisibilityPermission && (
-            <AnalyticsJournalistClient
+            <MultipleCharts
               chartData={journalistClientVisibility}
               loading={journalistClientLoading}
               error={journalistClientError}
+              chartTitle='Journalist Client Visibility'
+              chartId='journalist-client-visibility'
+              dataAccessKey='journalist'
+              reportId='journalistClientVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

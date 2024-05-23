@@ -47,30 +47,38 @@ const TonalityCharts = () => {
     loading: companyTonalityLoading,
     error: companyTonalityError
   } = useTonality({ media: selectedMedia, endpoint: '/companyTonality/', idType: 'clientIds', isCompanyIds: false })
+  console.log(companyTonalityData)
 
   const {
     chartData: tonalityVScoreData,
     loading: tonalityVScoreLoading,
     error: tonalityVScoreError
   } = useTonality({ media: selectedMedia, endpoint: '/tonalityVscore/', idType: 'clientIds', isCompanyIds: false })
+  console.log(tonalityVScoreData)
 
   const {
     chartData: clientTonality,
     loading: clientTonalityLoading,
     error: clientTonalityError
-  } = useTonality({ media: selectedMedia, endpoint: '/clientTonality/', idType: 'clientId', isCompanyIds: false })
+  } = useTonality({ media: selectedMedia, endpoint: '/clientTonality/', idType: 'clientIds', isCompanyIds: false })
+  console.log(clientTonality)
+  console.log(clientTonalityError)
 
   const {
     chartData: positiveTonality,
     loading: positiveTonalityLoading,
     error: positiveTonalityError
-  } = useTonality({ media: selectedMedia, endpoint: '/positiveTonality/', idType: 'clientId', isCompanyIds: false })
+  } = useTonality({ media: selectedMedia, endpoint: '/positiveTonality/', idType: 'clientIds', isCompanyIds: false })
+  console.log(positiveTonality)
+  console.log(positiveTonalityError)
 
   const {
     chartData: negativeTonality,
     loading: negativeTonalityLoading,
     error: negativeTonalityError
   } = useTonality({ media: selectedMedia, endpoint: '/negativeTonality/', idType: 'clientIds', isCompanyIds: false })
+  console.log(negativeTonality)
+  console.log(negativeTonalityError)
 
   // ** Hook
   const theme = useTheme()

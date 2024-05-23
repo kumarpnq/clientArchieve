@@ -51,7 +51,7 @@ const useFetchReports = props => {
 
         const key = dataKey.split("'").join('')
         const data = response.data[key]
-        setChartData(data)
+        setChartData(data || [])
       } catch (error) {
         setError(error)
       } finally {

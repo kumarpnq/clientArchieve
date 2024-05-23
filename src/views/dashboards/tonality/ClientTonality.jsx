@@ -156,16 +156,6 @@ const ClientTonality = props => {
   const data = {
     labels: chartData.map(data => data.tonality),
     datasets: [
-      // {
-      //   type: 'line',
-      //   label: 'Average',
-      //   borderColor: 'rgb(255, 99, 132)',
-      //   backgroundColor: 'rgb(255, 99, 132)',
-      //   borderWidth: 2,
-      //   fill: false,
-      //   tension: 0.4,
-      //   data: [...vscore, ...QE, ...iScore]
-      // },
       {
         label: 'vScore',
         backgroundColor: getRandomColor(),
@@ -183,14 +173,12 @@ const ClientTonality = props => {
           <TableHead>
             <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Tonality</TableCell>
-              <TableCell>vScore</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {chartData.map((company, index) => (
               <TableRow key={index}>
                 <TableCell>{company.tonality}</TableCell>
-                <TableCell>{company.vScore}</TableCell>
               </TableRow>
             ))}
           </TableBody>

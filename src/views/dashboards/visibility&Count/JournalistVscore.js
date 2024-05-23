@@ -26,10 +26,11 @@ import * as XLSX from 'xlsx'
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
 
 const JournalistVScore = props => {
   const { currentPath, asPath } = usePath()
-  const { JournalistVScoreData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+  const { JournalistVScoreData, loading, error, path, primary, yellow, warning, info, grey, green, legendColor } = props
   const journalists = JournalistVScoreData.map(i => i.journalist)
 
   const [selectedRegion, setSelectedRegion] = useState('')
@@ -44,6 +45,14 @@ const JournalistVScore = props => {
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
   const [checked, setChecked] = useState(false)
   const [activeType, setActiveType] = useState('chart')
+
+  useEffect(() => {
+    if (JournalistVScoreData.length) {
+      setSelectedRegion(journalists[0])
+      const data = JournalistVScoreData[0]
+      setChartData([data] || [])
+    }
+  }, [JournalistVScoreData])
 
   const handleChange = () => {
     setActiveChart('Bar')
@@ -237,6 +246,12 @@ const JournalistVScore = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(reportId)
+    deleteJournalistReport('My Dashboard', reportId)
+  }
 
   const dataForTable = chartData.flatMap(i => i.companies)
 
@@ -341,7 +356,7 @@ const JournalistVScore = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('JournalistVScore')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveCharts('journalistVscore')}>Remove from Custom</MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
@@ -416,7 +431,7 @@ const JournalistVScore = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={'journalistVscore'} path={path} />
     </>
   )
 }

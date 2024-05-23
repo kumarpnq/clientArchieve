@@ -25,6 +25,7 @@ import { Chart, registerables } from 'chart.js'
 import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 import * as XLSX from 'xlsx'
+import useRemove from 'src/hooks/useRemoveChart'
 
 Chart.register(...registerables)
 
@@ -38,7 +39,7 @@ const VolumeRanking = props => {
   const [checked, setChecked] = useState(false)
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
 
-  const { chartData, loading, error, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
+  const { chartData, loading, error, path, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
 
   useEffect(() => {
     setActiveChart('Line')
@@ -195,6 +196,12 @@ const VolumeRanking = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(reportId)
+    deleteJournalistReport('My Dashboard', reportId)
+  }
 
   const TableComp = () => {
     return (
@@ -293,7 +300,7 @@ const VolumeRanking = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('VolumeRanking')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveCharts(volumeRanking)}>Remove from Custom</MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
@@ -348,7 +355,7 @@ const VolumeRanking = props => {
             {renderMenuItems(['Top', 'Bottom'], 'filter')}
           </Menu>
         </Box>
-        <CardContent onClick={handleChartClick}>
+        <CardContent onClick={handleChartClick} id='volume-ranking'>
           {loading ? (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <CircularProgress />
@@ -370,7 +377,7 @@ const VolumeRanking = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={'volumeRanking'} path={path} />
     </>
   )
 }

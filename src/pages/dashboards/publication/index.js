@@ -17,6 +17,7 @@ import Link from 'next/link'
 import useFetchReports from 'src/api/dashboard/useFetchReports'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import useChartPermission from 'src/hooks/useChartPermission'
+import { useRouter } from 'next/router'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -26,6 +27,8 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const PublicationCharts = () => {
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
+  const { query, asPath } = router
 
   // * Vars
   const whiteColor = '#fff'
@@ -131,6 +134,8 @@ const PublicationCharts = () => {
               error={publicationPerformanceNDDataError}
               cardTitle='publicationND'
               chartId='publication-nd'
+              reportId='publicationPerformanceND'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -149,6 +154,8 @@ const PublicationCharts = () => {
               error={publicationPerformanceBDDataError}
               cardTitle='publicationBD'
               chartId='publication-bd'
+              reportId='publicationPerformanceBD'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -167,6 +174,8 @@ const PublicationCharts = () => {
               error={publicationPerformanceRDDataError}
               cardTitle='publicationRD'
               chartId='publication-rd'
+              reportId='publicationPerformanceRD'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -185,6 +194,8 @@ const PublicationCharts = () => {
               error={publicationPerformanceMagazineDataError}
               cardTitle='publicationMagazine'
               chartId='publication-mg'
+              reportId='publicationPerformanceMagazine'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -203,6 +214,8 @@ const PublicationCharts = () => {
               error={publicationPerformanceOnlineTop10DataError}
               cardTitle='publicationTop10'
               chartId='publication-top-10'
+              reportId='publicationPerformanceOnlineTop10'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

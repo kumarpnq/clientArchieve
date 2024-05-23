@@ -11,48 +11,31 @@ import { useSelector } from 'react-redux'
 import { selectSelectedMedia, customDashboardsScreensWithCharts } from 'src/store/apps/user/userSlice'
 
 // ** data fetch hooks
-import useChartsData from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useChartsData'
-import useVisibilityRanking from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useVisibilityRanking'
-import usePublicationVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/usePublicationVisibility'
-import usePublicationClientVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/usePublicationClientVisibility'
-import useSubjectVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useSubjectVisibility'
-import useReportingSubjectVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useSubjectClientVisiblity'
-import useJournalistVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useJournalistVisibility'
-import useJournalistClientVisibility from 'src/api/dashboard-visibilityImageQe/dashboard-analytics/useJournalistClientVisibility'
+import useFetchReports from 'src/api/dashboard/useFetchReports'
+import useConditionalFetchReports from 'src/api/custom/useConditionalFetchReports'
 import useVisibilityCount from 'src/api/dashboard-visibilityCount/useVisibilityCount'
 import useJournalistVscore from 'src/api/dashboard-visibilityCount/useJournalistVscore'
-import useTonality from 'src/api/dashboard-tonality/useCompanyTonality'
-
 import usePeersData from 'src/api/dashboard-peers/usePeersData'
 
+//**  components
 import MultipleCharts from 'src/views/dashboards/visibilityImageQe/AnalyticsMultipleCharts'
 import VisibilityRanking from 'src/views/dashboards/visibilityImageQe/AnalyticsVisibilityRanking'
-import PublicationVisibility from 'src/views/dashboards/visibilityImageQe/AnalyticsPublicationVisibility'
-import AnalyticsPublicationClient from 'src/views/dashboards/visibilityImageQe/AnalyticsPublicationClient'
-import AnalyticsSubject from 'src/views/dashboards/visibilityImageQe/AnalyticsSubject'
-import AnalyticsSubjectClient from 'src/views/dashboards/visibilityImageQe/AnalyticsSubjectClient'
-import AnalyticsJournalist from 'src/views/dashboards/visibilityImageQe/AnalyticsJournalist'
-import AnalyticsJournalistClient from 'src/views/dashboards/visibilityImageQe/AnalyticsJournalistClient'
 import VolumeRanking from 'src/views/dashboards/visibility&Count/VolumeRanking'
 import SubjectVscore from 'src/views/dashboards/visibility&Count/SubjectVscore'
 import JournalistVscore from 'src/views/dashboards/visibility&Count/JournalistVscore'
-
 import ReportPeers from 'src/views/dashboards/peers/ReportsPeers'
 import VisibilityPeers from 'src/views/dashboards/peers/VisibilityPeersData'
-import Region from 'src/views/dashboards/performance/Region'
-import Reportings from 'src/views/dashboards/performance/Reportings'
-import Publication from 'src/views/dashboards/performance/Publication'
-import Journalist from 'src/views/dashboards/performance/Journalist'
-import { Language } from '@mui/icons-material'
-import { useEffect, useState } from 'react'
-import useFetchReports from 'src/api/dashboard/useFetchReports'
 
-//**  components
+import { useEffect, useState } from 'react'
+import PerformanceShortChart from 'src/views/dashboards/performance/Region'
+import PerformanceLongCharts from 'src/views/dashboards/performance/Publication'
+
 const CustomDashboard = () => {
   const selectedMedia = useSelector(selectSelectedMedia)
   const chartList = useSelector(customDashboardsScreensWithCharts)
 
   const [charts, setCharts] = useState([])
+  console.log(chartList)
 
   useEffect(() => {
     const localV = chartList.length && chartList.map(i => i.id)
@@ -64,6 +47,7 @@ const CustomDashboard = () => {
 
   // ** Hook
   const theme = useTheme()
+  const { query, asPath } = router
 
   // Vars
   const whiteColor = '#fff'
@@ -88,55 +72,133 @@ const CustomDashboard = () => {
   const labelColor = theme.palette.text.disabled
   const legendColor = theme.palette.text.secondary
 
+  // ** chart access
+  const companyVisibilityAccess = charts.includes('companyVisibility')
+  const visibilityRankingAccess = charts.includes('VisibilityRanking')
+  const PublicationVisibilityAccess = charts.includes('publicationVisibility')
+  const PublicationClientVisibilityAccess = charts.includes('publicationClientVisibility')
+  const reportingSubjectVisibilityAccess = charts.includes('reportingSubjectVisibility')
+  const reportingSubjectClientVisibilityAccess = charts.includes('reportingSubjectClientVisibility')
+  const journalistVisibilityAccess = charts.includes('journalistVisibility')
+  const journalistClientVisibilityAccess = charts.includes('journalistVisibility')
+  const regionPerformanceAccess = charts.includes('regionPerformance')
+  const publicationPerformanceAccess = charts.includes('publicationPerformance')
+  const reportingPerformanceAccess = charts.includes('reportingPerformance')
+  const journalistPerformanceAccess = charts.includes('journalistPerformance')
+
   // ** data hooks
 
   const {
     chartData: companyVisibility,
     loading: companyLoading,
     error: companyError
-  } = useChartsData({ media: selectedMedia, endpoint: '/companyVisibility/' })
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    endpoint: '/companyVisibility/',
+    idType: 'clientIds',
+    isMedia: true,
+    isCompanyIds: false,
+    dataKey: 'companyVisibility',
+    isFetch: companyVisibilityAccess
+  })
 
   const {
     chartData: visibilityRanking,
     loading: rankingLoading,
     error: rankingError
-  } = useVisibilityRanking({ media: selectedMedia, endpoint: '/visibilityRanking/' })
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    endpoint: '/visibilityRanking/',
+    idType: 'clientIds',
+    isMedia: true,
+    isCompanyIds: false,
+    dataKey: 'visibilityRanking',
+    isFetch: visibilityRankingAccess
+  })
 
   const {
     chartData: publicationVisibility,
     loading: visibilityLoading,
     error: visibilityError
-  } = usePublicationVisibility({ media: selectedMedia, endpoint: '/publicationsVisibility/' })
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    endpoint: '/publicationsVisibility/',
+    idType: 'clientIds',
+    isMedia: true,
+    isCompanyIds: false,
+    dataKey: 'publicationsVisibility',
+    isFetch: PublicationVisibilityAccess
+  })
 
   const {
     chartData: publicationClientVisibility,
     loading: publicationClientLoading,
     error: publicationClientError
-  } = usePublicationClientVisibility({ media: selectedMedia, endpoint: '/publicationsClientVisibility/' })
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    endpoint: '/publicationsClientVisibility/',
+    idType: 'clientId',
+    isMedia: true,
+    isCompanyIds: false,
+    dataKey: 'publicationsClientVisibility',
+    isFetch: PublicationClientVisibilityAccess
+  })
 
   const {
     chartData: subjectVisibility,
     loading: subjectLoading,
     error: subjectError
-  } = useSubjectVisibility({ media: selectedMedia, endpoint: '/reportingSubjectVisibility/' })
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    endpoint: '/reportingSubjectVisibility/',
+    idType: 'clientIds',
+    isMedia: true,
+    isCompanyIds: false,
+    dataKey: 'reportingSubjectVisibility',
+    isFetch: reportingSubjectVisibilityAccess
+  })
 
   const {
     chartData: subjectClientVisibility,
     loading: subjectClientLoading,
     error: subjectClientError
-  } = useReportingSubjectVisibility({ media: selectedMedia, endpoint: '/reportingSubjectClientVisibility/' })
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    endpoint: '/reportingSubjectClientVisibility/',
+    idType: 'clientId',
+    isMedia: true,
+    isCompanyIds: false,
+    dataKey: 'reportingSubjectClientVisibility',
+    isFetch: reportingSubjectClientVisibilityAccess
+  })
 
   const {
     chartData: journalistVisibility,
     loading: journalistLoading,
     error: journalistError
-  } = useJournalistVisibility({ media: selectedMedia, endpoint: '/journalistVisibility/' })
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    endpoint: '/journalistVisibility/',
+    idType: 'clientIds',
+    isMedia: true,
+    isCompanyIds: false,
+    dataKey: 'journalistVisibility',
+    isFetch: journalistVisibilityAccess
+  })
 
   const {
     chartData: journalistClientVisibility,
     loading: journalistClientLoading,
     error: journalistClientError
-  } = useJournalistClientVisibility({ media: selectedMedia, endpoint: '/journalistClientVisibility/' })
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    endpoint: '/journalistClientVisibility/',
+    idType: 'clientId',
+    isMedia: true,
+    isCompanyIds: false,
+    dataKey: 'journalistClientVisibility',
+    isFetch: journalistClientVisibilityAccess
+  })
 
   const {
     chartData: volumeRankingData,
@@ -172,60 +234,69 @@ const CustomDashboard = () => {
     chartData: regionPerformanceData,
     loading: regionPerformanceDataLoading,
     error: regionPerformanceDataError
-  } = useFetchReports({
+  } = useConditionalFetchReports({
     media: selectedMedia,
     idType: 'clientIds',
+    isMedia: true,
+    isCompanyIds: false,
     endpoint: '/regionPerformance/',
     dataKey: 'regionPerformance',
-    isMedia: true
+    isFetch: regionPerformanceAccess
   })
 
   const {
     chartData: publicationPerformanceData,
     loading: publicationPerformanceDataLoading,
     error: publicationPerformanceDataError
-  } = useFetchReports({
+  } = useConditionalFetchReports({
     media: selectedMedia,
     idType: 'clientIds',
+    isMedia: true,
+    isCompanyIds: false,
     endpoint: '/publicationPerformance/',
     dataKey: 'publicationPerformance',
-    isMedia: true
+    isFetch: publicationPerformanceAccess
   })
 
   const {
     chartData: reporingPerformanceData,
     loading: reporingPerformanceDataLoading,
     error: reporingPerformanceDataError
-  } = useFetchReports({
+  } = useConditionalFetchReports({
     media: selectedMedia,
+    isMedia: true,
+    isCompanyIds: false,
     idType: 'clientIds',
-    endpoint: '/reporingPerformance/',
-    dataKey: 'reporingPerformance',
-    isMedia: true
+    endpoint: '/reportingPerformance/',
+    dataKey: 'reportingPerformance',
+    isFetch: reportingPerformanceAccess
   })
 
   const {
     chartData: journalistPerformanceData,
     loading: journalistPerformanceDataLoading,
     error: journalistPerformanceDataError
-  } = useFetchReports({
+  } = useConditionalFetchReports({
     media: selectedMedia,
     idType: 'clientIds',
+    isMedia: true,
+    isCompanyIds: false,
     endpoint: '/journalistPerformance/',
     dataKey: 'journalistPerformance',
-    isMedia: true
+    isFetch: reportingPerformanceAccess
   })
 
   const {
     chartData: languagePerformanceData,
     loading: languagePerformanceDataLoading,
     error: languagePerformanceDataError
-  } = useFetchReports({
+  } = useConditionalFetchReports({
     media: selectedMedia,
     idType: 'clientIds',
     endpoint: '/languagePerformance/',
     dataKey: 'languagePerformance',
-    isMedia: true
+    isMedia: true,
+    isFetch: journalistPerformanceAccess
   })
 
   return (
@@ -238,6 +309,11 @@ const CustomDashboard = () => {
               chartData={companyVisibility}
               loading={companyLoading}
               error={companyError}
+              chartTitle='Company Visibility'
+              chartId='company-visibility'
+              dataAccessKey='companyName'
+              reportId='companyVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -266,10 +342,15 @@ const CustomDashboard = () => {
         )}
         {charts.includes('PublicationVisibility') && (
           <Grid item xs={12} lg={6}>
-            <PublicationVisibility
+            <MultipleCharts
               chartData={publicationVisibility}
               loading={visibilityLoading}
               error={visibilityError}
+              chartTitle='Publications Visibility'
+              chartId='publications-visibility'
+              dataAccessKey='publicationGroupName'
+              reportId='publicationsVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -282,10 +363,15 @@ const CustomDashboard = () => {
         )}
         {charts.includes('AnalyticsPublicationClient') && (
           <Grid item xs={12} lg={6}>
-            <AnalyticsPublicationClient
+            <MultipleCharts
               chartData={publicationClientVisibility}
               loading={publicationClientLoading}
               error={publicationClientError}
+              chartTitle='Publications Client Visibility'
+              chartId='publications-client-visibility'
+              dataAccessKey='publicationGroupName'
+              reportId='publicationsClientVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -298,10 +384,15 @@ const CustomDashboard = () => {
         )}
         {charts.includes('AnalyticsSubject') && (
           <Grid item xs={12} lg={6}>
-            <AnalyticsSubject
+            <MultipleCharts
               chartData={subjectVisibility}
               loading={subjectLoading}
               error={subjectError}
+              chartTitle='Reporting Subject Visibility'
+              chartId='reporting-subject-visibility'
+              dataAccessKey='reportingSubject'
+              reportId='reportingSubjectVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -314,10 +405,15 @@ const CustomDashboard = () => {
         )}
         {charts.includes('AnalyticsSubjectClient') && (
           <Grid item xs={12} lg={6}>
-            <AnalyticsSubjectClient
+            <MultipleCharts
               chartData={subjectClientVisibility}
               loading={subjectClientLoading}
               error={subjectClientError}
+              chartTitle='Reporting Subject Client Visibility'
+              chartId='reporting-subject-client-visibility'
+              dataAccessKey='reportingSubject'
+              reportId='reportingSubjectClientVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -330,10 +426,15 @@ const CustomDashboard = () => {
         )}
         {charts.includes('AnalyticsJournalist') && (
           <Grid item xs={12} lg={6}>
-            <AnalyticsJournalist
+            <MultipleCharts
               chartData={journalistVisibility}
               loading={journalistLoading}
               error={journalistError}
+              chartTitle='Journalist Visibility'
+              chartId='journalist-visibility'
+              dataAccessKey='journalist'
+              reportId='journalistVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -346,10 +447,15 @@ const CustomDashboard = () => {
         )}
         {charts.includes('AnalyticsJournalistClient') && (
           <Grid item xs={12} lg={6}>
-            <AnalyticsJournalistClient
+            <MultipleCharts
               chartData={journalistClientVisibility}
               loading={journalistClientLoading}
               error={journalistClientError}
+              chartTitle='Journalist Client Visibility'
+              chartId='journalist-client-visibility'
+              dataAccessKey='journalist'
+              reportId='journalistClientVisibility'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -450,10 +556,14 @@ const CustomDashboard = () => {
         )}
         {charts.includes('Region') && (
           <Grid item xs={12} lg={6}>
-            <Region
+            <PerformanceShortChart
               regionData={regionPerformanceData}
               loading={regionPerformanceDataLoading}
               error={regionPerformanceDataError}
+              chartTitle='Region'
+              chartId='region-performance'
+              reportId='regionPerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -466,10 +576,14 @@ const CustomDashboard = () => {
         )}
         {charts.includes('Reportings') && (
           <Grid item xs={12} lg={6}>
-            <Reportings
-              reportingData={reporingPerformanceData}
-              loading={reporingPerformanceDataLoading}
-              error={reporingPerformanceDataError}
+            <PerformanceShortChart
+              regionData={reportingPerformanceData}
+              loading={reportingPerformanceDataLoading}
+              error={reportingPerformanceDataError}
+              chartTitle='Reporting'
+              chartId='reporting-performance'
+              reportId='reportingPerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -482,10 +596,14 @@ const CustomDashboard = () => {
         )}
         {charts.includes('Publication') && (
           <Grid item xs={12} lg={16}>
-            <Publication
+            <PerformanceLongCharts
               publicationData={publicationPerformanceData}
               loading={publicationPerformanceDataLoading}
               error={publicationPerformanceDataError}
+              chartTitle='Publication'
+              chartId='publication-performance'
+              reportId='publicationPerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -498,10 +616,14 @@ const CustomDashboard = () => {
         )}
         {charts.includes('Journalist') && (
           <Grid item xs={12} lg={16}>
-            <Journalist
-              journalistData={journalistPerformanceData}
+            <PerformanceLongCharts
+              publicationData={journalistPerformanceData}
               loading={journalistPerformanceDataLoading}
               error={journalistPerformanceDataError}
+              chartTitle='Journalist'
+              chartId='journalist-performance'
+              reportId='journalistPerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -514,10 +636,14 @@ const CustomDashboard = () => {
         )}
         {charts.includes('Language') && (
           <Grid item xs={12} lg={6}>
-            <Language
-              languageData={languagePerformanceData}
+            <PerformanceShortChart
+              regionData={languagePerformanceData}
               loading={languagePerformanceDataLoading}
               error={languagePerformanceDataError}
+              chartTitle='Language'
+              chartId='language-performance'
+              reportId='languagePerformance'
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

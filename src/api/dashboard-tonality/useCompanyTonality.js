@@ -49,6 +49,7 @@ const useTonality = props => {
           },
           params: requestParams
         })
+        console.log(response.data)
         setChartData(
           response.data.companyTonality ||
             response.data.tonalityVscore ||
@@ -57,6 +58,7 @@ const useTonality = props => {
             response.data.negativeTonality
         )
       } catch (error) {
+        console.log(error)
         setError(error)
       } finally {
         setLoading(false)

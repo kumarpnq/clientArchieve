@@ -8,13 +8,22 @@ import DialogTitle from '@mui/material/DialogTitle'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 
-// ** components import
+// ** third party import
+import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
 
-const AddScreen = ({ open, setOpen }) => {
-  const [title, setTitle] = useState()
+// ** redux
+import { useSelector } from 'react-redux'
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+
+const AddScreen = ({ open, setOpen, reportId, path }) => {
+  console.log(path)
+  const [title, setTitle] = useState('')
   const [selectedDashboard, setSelectedDashboard] = useState('')
   const [anchorEl, setAnchorEl] = useState(null)
   const openMenu = Boolean(anchorEl)
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -37,11 +46,34 @@ const AddScreen = ({ open, setOpen }) => {
       setTitle(value)
     }
   }
-  const DBTitles = ['Dashboard1', 'Dashboard2', 'Dashboard3']
+  const DBTitles = ['My Dashboard']
 
-  const handleSubmit = event => {
+  const handleSubmit = async event => {
     event.preventDefault()
+    try {
+      const storedToken = localStorage.getItem('accessToken')
 
+      const headers = {
+        Authorization: `Bearer ${storedToken}`
+      }
+      const actionType = DBTitles.includes(selectedDashboard) ? 'add' : 'create'
+      const isPath = DBTitles.includes(selectedDashboard)
+      const isDbId = DBTitles.includes(selectedDashboard) ? 'dashboardId' : 'dashBoardName'
+
+      const requestData = {
+        clientId,
+        [isDbId]: selectedDashboard || title,
+        reportId,
+        action: actionType
+      }
+      if (!isPath) {
+        requestData.path = path
+      }
+      const response = await axios.post(`${BASE_URL}/updateUserDashboards`, requestData, { headers })
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
     handleClose()
   }
 

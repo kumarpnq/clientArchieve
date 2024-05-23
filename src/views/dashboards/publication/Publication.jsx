@@ -26,12 +26,27 @@ import * as XLSX from 'xlsx'
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
 
 const PublicationPerformance = props => {
   const { currentPath, asPath } = usePath()
 
-  const { chartData, loading, error, chartId, cardTitle, primary, yellow, warning, info, grey, green, legendColor } =
-    props
+  const {
+    chartData,
+    loading,
+    error,
+    cardTitle,
+    reportId,
+    path,
+    chartId,
+    primary,
+    yellow,
+    warning,
+    info,
+    grey,
+    green,
+    legendColor
+  } = props
   const regions = (!!chartData && Object.keys(chartData)) || []
 
   const [selectedRegion, setSelectedRegion] = useState('English')
@@ -275,6 +290,12 @@ const PublicationPerformance = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(reportId)
+    deleteJournalistReport('My Dashboard', reportId)
+  }
 
   const TableComp = () => {
     return (
@@ -383,7 +404,7 @@ const PublicationPerformance = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('JournalistND')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>Remove from Custom</MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
@@ -452,7 +473,7 @@ const PublicationPerformance = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={reportId} path={path} />
     </>
   )
 }

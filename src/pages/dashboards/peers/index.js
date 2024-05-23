@@ -16,6 +16,7 @@ import ReportPeers from 'src/views/dashboards/peers/ReportsPeers'
 import VisibilityPeers from 'src/views/dashboards/peers/VisibilityPeersData'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import useChartPermission from 'src/hooks/useChartPermission'
+import { useRouter } from 'next/router'
 
 // ** hooks
 // import useScreenPermissions from 'src/hooks/useScreenPermissions'
@@ -50,6 +51,8 @@ const PeersCharts = () => {
 
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
+  const { query, asPath } = router
 
   // Vars
   const whiteColor = '#fff'
@@ -90,6 +93,7 @@ const PeersCharts = () => {
               chartData={reportPeersData}
               loading={reportPeersDataLoading}
               error={reportPeersDataError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -106,6 +110,7 @@ const PeersCharts = () => {
               chartData={visibilityPeersData}
               loading={visibilityPeersDataLoading}
               error={visibilityPeersDataError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

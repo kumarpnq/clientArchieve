@@ -25,6 +25,7 @@ import useVisibilityCount from 'src/api/dashboard-visibilityCount/useVisibilityC
 import useJournalistVscore from 'src/api/dashboard-visibilityCount/useJournalistVscore'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import useChartPermission from 'src/hooks/useChartPermission'
+import { useRouter } from 'next/router'
 
 const CountCharts = () => {
   const userDetails = useSelector(selectUserData)
@@ -32,6 +33,8 @@ const CountCharts = () => {
 
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
+  const { query, asPath } = router
 
   // Vars
   const whiteColor = '#fff'
@@ -96,6 +99,7 @@ const CountCharts = () => {
               chartData={volumeRankingData}
               loading={volumeRankingLoading}
               error={volumeRankingError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -112,6 +116,7 @@ const CountCharts = () => {
               JournalistVScoreData={journalistVscoreData}
               loading={journalistVscoreLoading}
               error={journalistVscoreError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -128,6 +133,7 @@ const CountCharts = () => {
               chartData={subjectVscoreData}
               loading={subjectVscoreLoading}
               error={subjectVscoreError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

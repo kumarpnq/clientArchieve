@@ -26,10 +26,27 @@ import * as XLSX from 'xlsx'
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
 
-const Publication = props => {
+const PerformanceLongCharts = props => {
   const { currentPath, asPath } = usePath()
-  const { publicationData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+
+  const {
+    publicationData,
+    loading,
+    error,
+    chartTitle,
+    chartId,
+    reportId,
+    path,
+    primary,
+    yellow,
+    warning,
+    info,
+    grey,
+    green,
+    legendColor
+  } = props
   const publications = Object.keys(publicationData || {})
 
   const [chartData, setChartData] = useState([])
@@ -117,7 +134,7 @@ const Publication = props => {
   }
 
   const data = {
-    labels: Object.keys(publicationData),
+    labels: Object.keys(publicationData).map(key => key.slice(0, 15)),
     datasets: [
       {
         type: 'line',
@@ -235,11 +252,11 @@ const Publication = props => {
         setActiveType('table')
         break
       case 'image':
-        toBlob(document.getElementById('publication')).then(function (blob) {
+        toBlob(document.getElementById(chartId)).then(function (blob) {
           const url = window.URL.createObjectURL(blob)
           const a = document.createElement('a')
           a.href = url
-          a.download = 'publication.png'
+          a.download = `${chartId}.png`
           document.body.appendChild(a)
           a.click()
           window.URL.revokeObjectURL(url)
@@ -247,12 +264,12 @@ const Publication = props => {
         break
       case 'pdf':
         const doc = new jsPDF()
-        toBlob(document.getElementById('publication')).then(function (blob) {
+        toBlob(document.getElementById(chartId)).then(function (blob) {
           const url = URL.createObjectURL(blob)
           const img = new Image()
           img.onload = function () {
             doc.addImage(this, 'PNG', 10, 10, 180, 100)
-            doc.save('publication.pdf')
+            doc.save(`${chartId}.pdf`)
             URL.revokeObjectURL(url)
           }
           img.src = url
@@ -262,8 +279,8 @@ const Publication = props => {
         if (publicationData) {
           const ws = XLSX.utils.json_to_sheet(flattenedData)
           const wb = XLSX.utils.book_new()
-          XLSX.utils.book_append_sheet(wb, ws, 'Publication Data')
-          XLSX.writeFile(wb, 'publication.xlsx')
+          XLSX.utils.book_append_sheet(wb, ws, `${chartId} Data`)
+          XLSX.writeFile(wb, `${chartId}.xlsx`)
         }
         break
       default:
@@ -277,6 +294,12 @@ const Publication = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(reportId)
+    deleteJournalistReport('My Dashboard', reportId)
+  }
 
   const TableComp = ({ data }) => {
     return (
@@ -313,7 +336,7 @@ const Publication = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title={`Publication`}
+            title={chartTitle}
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -335,7 +358,7 @@ const Publication = props => {
       </Dialog>
       <Card sx={{ height: '100%' }}>
         <CardHeader
-          title={`Publication`}
+          title={chartTitle}
           action={
             <Box>
               {chartIndexAxis === 'x' ? (
@@ -386,7 +409,7 @@ const Publication = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('Publication')}>Remove from Custom</MenuItem>
+                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>Remove from Custom</MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
@@ -453,9 +476,9 @@ const Publication = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={reportId} path={path} />
     </>
   )
 }
 
-export default Publication
+export default PerformanceLongCharts
