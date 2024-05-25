@@ -22,14 +22,35 @@ import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 import * as XLSX from 'xlsx'
 
+// ** redux
+import { useSelector } from 'react-redux'
+import { userDashboardId } from 'src/store/apps/user/userSlice'
+
+// * custom
+import DpMenu from '../components/DpMenu'
+import useRemove from 'src/hooks/useRemoveChart'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+import CardActions from '../components/CardActions'
+
 const NegativeTonality = props => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeChart, setActiveChart] = useState('Line')
   const [activeMenu, setActiveMenu] = useState('main')
   const [chartLoaded, setChartLoaded] = useState(false)
   const [activeType, setActiveType] = useState('chart')
+  const [chartIndexAxis, setChartIndexAxis] = useState('x')
+  const [checked, setChecked] = useState(false)
+  const [selectedFilter, setSelectedFilter] = useState('Top')
+  const [selectedCount, setSelectedCount] = useState(10)
+  const dbId = useSelector(userDashboardId)
 
-  const { chartData, loading, error, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
+  const handleChange = () => {
+    setActiveChart('Bar')
+    setChecked(prev => !prev)
+  }
+
+  const { chartData, loading, error, path, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
 
   useEffect(() => {
     setActiveChart('Line')
@@ -48,15 +69,13 @@ const NegativeTonality = props => {
   }
 
   const handleClick = (item, menu) => {
-    setActiveChart(item)
+    if (menu === 'count') {
+      setSelectedCount(item)
+    } else if (menu === 'filter') {
+      setSelectedFilter(item)
+    }
     setActiveMenu(menu)
     setAnchorEl(null)
-    if (menu === 'media') {
-      setMedia({
-        ...media,
-        visibilityRanking: item.toLowerCase()
-      })
-    }
   }
 
   const renderMenuItems = (items, menuType) => {
@@ -127,6 +146,7 @@ const NegativeTonality = props => {
   }
 
   const options = {
+    indexAxis: chartIndexAxis,
     responsive: true,
     maintainAspectRatio: false,
     animation: {
@@ -171,9 +191,22 @@ const NegativeTonality = props => {
         backgroundColor: getRandomColor(),
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
-        data: chartData.map(data => data.vScore)
+        data: chartData.map(data => data.vScore),
+        ...(checked && { stack: 'Stack 1' })
       }
     ]
+  }
+
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport, reportActionLoading } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(dbId, reportId)
+    deleteJournalistReport(dbId, reportId)
   }
 
   const TableComp = () => {
@@ -241,46 +274,35 @@ const NegativeTonality = props => {
         <CardHeader
           title='Negative Tonality'
           action={
-            <Box>
-              <IconButton aria-haspopup='true' onClick={handleIconClick}>
-                <IconifyIcon icon='tabler:dots-vertical' />
-              </IconButton>
-              <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                {/* <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem> */}
-                <MenuItem onClick={() => setActiveMenu('chart')}>Chart Types</MenuItem>
-                {activeType === 'chart' ? (
-                  <>
-                    {' '}
-                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('image')} disabled={!chartData.length}>
-                      Download Image
-                    </MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('pdf')} disabled={!chartData.length}>
-                      Download PDF
-                    </MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('xlsx')} disabled={!chartData.length}>
-                      Download Xlsx
-                    </MenuItem>
-                  </>
-                )}
-              </Menu>
-            </Box>
+            <CardActions
+              chartIndexAxis={chartIndexAxis}
+              activeChart={activeChart}
+              setActiveChart={setActiveChart}
+              setChartIndexAxis={setChartIndexAxis}
+              checked={checked}
+              handleChange={handleChange}
+              handleIconClick={handleIconClick}
+              anchorEl={anchorEl}
+              handleClose={handleClose}
+              asPath={path}
+              currentPath='/dashboards/tonality/'
+              handleRemoveCharts={handleRemoveCharts}
+              reportId={'negativeTonality'}
+              reportActionLoading={reportActionLoading}
+              setOpenAddPopup={setOpenAddPopup}
+              setActiveMenu={setActiveMenu}
+              activeType={activeType}
+              handleMenuClick={handleMenuClick}
+              chartData={chartData}
+            />
           }
         />
-        <Box>
-          <Menu
-            keepMounted
-            anchorEl={anchorEl}
-            onClose={handleClose}
-            open={Boolean(anchorEl) && activeMenu === 'chart'}
-          >
-            {renderMenuItems(chartItems, 'chart')}
-          </Menu>
-        </Box>
+        <DpMenu
+          activeMenu={activeMenu}
+          anchorEl={anchorEl}
+          handleClose={handleClose}
+          renderMenuItems={renderMenuItems}
+        />
         <CardContent onClick={handleChartClick} id='negative-tonality'>
           {loading ? (
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -302,6 +324,7 @@ const NegativeTonality = props => {
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={'negativeTonality'} path={path} />
     </>
   )
 }

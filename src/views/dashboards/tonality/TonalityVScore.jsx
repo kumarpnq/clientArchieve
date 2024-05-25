@@ -29,12 +29,35 @@ import * as XLSX from 'xlsx'
 import { Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 
+// ** redux
+import { useSelector } from 'react-redux'
+import { userDashboardId } from 'src/store/apps/user/userSlice'
+
+// * custom
+import DpMenu from '../components/DpMenu'
+import useRemove from 'src/hooks/useRemoveChart'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+import CardActions from '../components/CardActions'
+
 Chart.register(...registerables)
 
 const TonalityVScore = props => {
-  const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+  const { chartData, loading, error, path, primary, yellow, warning, info, grey, green, legendColor } = props
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeType, setActiveType] = useState('chart')
+  const [chartIndexAxis, setChartIndexAxis] = useState('x')
+  const [activeChart, setActiveChart] = useState('Line')
+  const [checked, setChecked] = useState(false)
+  const [activeMenu, setActiveMenu] = useState('main')
+  const [selectedFilter, setSelectedFilter] = useState('Top')
+  const [selectedCount, setSelectedCount] = useState(10)
+  const dbId = useSelector(userDashboardId)
+
+  const handleChange = () => {
+    setActiveChart('Bar')
+    setChecked(prev => !prev)
+  }
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
 
@@ -61,7 +84,7 @@ const TonalityVScore = props => {
   }
 
   const options = {
-    indexAxis: 'y',
+    indexAxis: chartIndexAxis,
     responsive: true,
     maintainAspectRatio: false,
     animation: {
@@ -98,7 +121,7 @@ const TonalityVScore = props => {
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
         data: chartData.map(data => data.negative),
-        stack: 'Stack 1'
+        ...(checked && { stack: 'Stack 1' })
       },
       {
         label: 'Neutral',
@@ -106,7 +129,7 @@ const TonalityVScore = props => {
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
         data: chartData.map(data => data.neutral),
-        stack: 'Stack 1'
+        ...(checked && { stack: 'Stack 1' })
       },
       {
         label: 'positive',
@@ -114,7 +137,7 @@ const TonalityVScore = props => {
         borderColor: 'rgba(0, 0, 0, 0.1)',
         borderWidth: 1,
         data: chartData.map(data => data.positive),
-        stack: 'Stack 1'
+        ...(checked && { stack: 'Stack 1' })
       }
     ]
   }
@@ -165,13 +188,34 @@ const TonalityVScore = props => {
     handleClose() // Close the menu after handling the selection
   }
 
+  // *
   const handleIconClick = event => {
     event.stopPropagation()
     setAnchorEl(event.currentTarget)
+    setActiveMenu('main')
   }
 
   const handleClose = () => {
     setAnchorEl(null)
+    setActiveMenu('main')
+  }
+
+  const handleClick = (item, menu) => {
+    if (menu === 'count') {
+      setSelectedCount(item)
+    } else if (menu === 'filter') {
+      setSelectedFilter(item)
+    }
+    setActiveMenu(menu)
+    setAnchorEl(null)
+  }
+
+  const renderMenuItems = (items, menuType) => {
+    return items.map(item => (
+      <MenuItem key={item} onClick={() => handleClick(item, menuType)} selected={activeChart === item}>
+        {item}
+      </MenuItem>
+    ))
   }
 
   // modal
@@ -191,6 +235,18 @@ const TonalityVScore = props => {
     }
 
     return {}
+  }
+
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport, reportActionLoading } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(dbId, reportId)
+    deleteJournalistReport(dbId, reportId)
   }
 
   const TableComp = () => {
@@ -241,36 +297,35 @@ const TonalityVScore = props => {
       <Card sx={{ height: '100%' }}>
         <CardHeader
           title='Tonality VScore'
-          sx={{ mb: 2.5 }}
           action={
-            <Box>
-              <IconButton aria-haspopup='true' onClick={handleIconClick}>
-                <IconifyIcon icon='tabler:dots-vertical' />
-              </IconButton>
-
-              <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                {activeType === 'chart' ? (
-                  <>
-                    {' '}
-                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('image')} disabled={!chartData.length}>
-                      Download Image
-                    </MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('pdf')} disabled={!chartData.length}>
-                      Download PDF
-                    </MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('xlsx')} disabled={!chartData.length}>
-                      Download Xlsx
-                    </MenuItem>
-                  </>
-                )}
-              </Menu>
-            </Box>
+            <CardActions
+              chartIndexAxis={chartIndexAxis}
+              activeChart={activeChart}
+              setActiveChart={setActiveChart}
+              setChartIndexAxis={setChartIndexAxis}
+              checked={checked}
+              handleChange={handleChange}
+              handleIconClick={handleIconClick}
+              anchorEl={anchorEl}
+              handleClose={handleClose}
+              asPath={path}
+              currentPath='/dashboards/tonality/'
+              handleRemoveCharts={handleRemoveCharts}
+              reportId={'tonalityVscore'}
+              reportActionLoading={reportActionLoading}
+              setOpenAddPopup={setOpenAddPopup}
+              setActiveMenu={setActiveMenu}
+              activeType={activeType}
+              handleMenuClick={handleMenuClick}
+              chartData={chartData}
+            />
           }
+        />
+        <DpMenu
+          activeMenu={activeMenu}
+          anchorEl={anchorEl}
+          handleClose={handleClose}
+          renderMenuItems={renderMenuItems}
         />
         <CardContent onClick={handleChartClick} id='tonality-vScore'>
           {loading ? (
@@ -282,6 +337,7 @@ const TonalityVScore = props => {
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={'tonalityVscore'} path={path} />
     </>
   )
 }

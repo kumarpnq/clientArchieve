@@ -24,6 +24,7 @@ import PositiveTonality from 'src/views/dashboards/tonality/PositiveTonality'
 import NegativeTonality from 'src/views/dashboards/tonality/NegativeTonality'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 import useChartPermission from 'src/hooks/useChartPermission'
+import { useRouter } from 'next/router'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -46,42 +47,36 @@ const TonalityCharts = () => {
     chartData: companyTonalityData,
     loading: companyTonalityLoading,
     error: companyTonalityError
-  } = useTonality({ media: selectedMedia, endpoint: '/companyTonality/', idType: 'clientIds', isCompanyIds: false })
-  console.log(companyTonalityData)
+  } = useTonality({ media: selectedMedia, endpoint: '/companyTonality/', idType: 'clientIds', isCompanyIds: true })
 
   const {
     chartData: tonalityVScoreData,
     loading: tonalityVScoreLoading,
     error: tonalityVScoreError
   } = useTonality({ media: selectedMedia, endpoint: '/tonalityVscore/', idType: 'clientIds', isCompanyIds: false })
-  console.log(tonalityVScoreData)
 
   const {
     chartData: clientTonality,
     loading: clientTonalityLoading,
     error: clientTonalityError
   } = useTonality({ media: selectedMedia, endpoint: '/clientTonality/', idType: 'clientIds', isCompanyIds: false })
-  console.log(clientTonality)
-  console.log(clientTonalityError)
 
   const {
     chartData: positiveTonality,
     loading: positiveTonalityLoading,
     error: positiveTonalityError
   } = useTonality({ media: selectedMedia, endpoint: '/positiveTonality/', idType: 'clientIds', isCompanyIds: false })
-  console.log(positiveTonality)
-  console.log(positiveTonalityError)
 
   const {
     chartData: negativeTonality,
     loading: negativeTonalityLoading,
     error: negativeTonalityError
   } = useTonality({ media: selectedMedia, endpoint: '/negativeTonality/', idType: 'clientIds', isCompanyIds: false })
-  console.log(negativeTonality)
-  console.log(negativeTonalityError)
 
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
+  const { query, asPath } = router
 
   // Vars
   const whiteColor = '#fff'
@@ -122,6 +117,7 @@ const TonalityCharts = () => {
               chartData={companyTonalityData}
               loading={companyTonalityLoading}
               error={companyTonalityError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -138,6 +134,7 @@ const TonalityCharts = () => {
               chartData={tonalityVScoreData}
               loading={tonalityVScoreLoading}
               error={tonalityVScoreError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -154,6 +151,7 @@ const TonalityCharts = () => {
               chartData={clientTonality}
               loading={clientTonalityLoading}
               error={clientTonalityError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -170,6 +168,7 @@ const TonalityCharts = () => {
               chartData={positiveTonality}
               loading={positiveTonalityLoading}
               error={positiveTonalityError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}
@@ -186,6 +185,7 @@ const TonalityCharts = () => {
               chartData={negativeTonality}
               loading={negativeTonalityLoading}
               error={negativeTonalityError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

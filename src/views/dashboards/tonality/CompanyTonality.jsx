@@ -3,7 +3,6 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
@@ -28,10 +27,33 @@ import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 import * as XLSX from 'xlsx'
 
+// ** custom imports
+import usePath from 'src/@core/utils/usePath'
+import useRemoveChart from 'src/@core/utils/useRemoveChart'
+import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
+
+// ** redux
+import { useSelector } from 'react-redux'
+import { userDashboardId } from 'src/store/apps/user/userSlice'
+import CardActions from '../components/CardActions'
+import DpMenu from '../components/DpMenu'
+
 const CompanyTonality = props => {
-  const { chartData, loading, error, primary, yellow, warning, info, grey, green, legendColor } = props
+  const { chartData, loading, error, path, primary, yellow, warning, info, grey, green, legendColor } = props
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeType, setActiveType] = useState('chart')
+  const [chartIndexAxis, setChartIndexAxis] = useState('x')
+  const [activeChart, setActiveChart] = useState('Line')
+  const [checked, setChecked] = useState(false)
+  const [activeMenu, setActiveMenu] = useState('main')
+  const [selectedFilter, setSelectedFilter] = useState('Top')
+  const [selectedCount, setSelectedCount] = useState(10)
+
+  const handleChange = () => {
+    setActiveChart('Bar')
+    setChecked(prev => !prev)
+  }
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
 
@@ -129,10 +151,29 @@ const CompanyTonality = props => {
   const handleIconClick = event => {
     event.stopPropagation()
     setAnchorEl(event.currentTarget)
+    setActiveMenu('main')
   }
 
   const handleClose = () => {
     setAnchorEl(null)
+  }
+
+  const handleClick = (item, menu) => {
+    if (menu === 'count') {
+      setSelectedCount(item)
+    } else if (menu === 'filter') {
+      setSelectedFilter(item)
+    }
+    setActiveMenu(menu)
+    setAnchorEl(null)
+  }
+
+  const renderMenuItems = (items, menuType) => {
+    return items.map(item => (
+      <MenuItem key={item} onClick={() => handleClick(item, menuType)} selected={activeChart === item}>
+        {item}
+      </MenuItem>
+    ))
   }
 
   // modal
@@ -144,6 +185,18 @@ const CompanyTonality = props => {
 
   const handleModalClose = () => {
     setIsChartClicked(false)
+  }
+
+  // ** add to custom dashboard
+  const [openAddPopup, setOpenAddPopup] = useState(false)
+
+  // ** removing from chart list
+  const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport, reportActionLoading } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(dbId, reportId)
+    deleteJournalistReport(dbId, reportId)
   }
 
   return (
@@ -189,34 +242,34 @@ const CompanyTonality = props => {
         <CardHeader
           title='Company Tonality'
           action={
-            <Box>
-              <IconButton aria-haspopup='true' onClick={handleIconClick}>
-                <IconifyIcon icon='tabler:dots-vertical' />
-              </IconButton>
-
-              <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                {activeType === 'chart' ? (
-                  <>
-                    {' '}
-                    <MenuItem onClick={() => handleMenuClick('table')}>Table</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('image')} disabled={!chartData.length}>
-                      Download Image
-                    </MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('pdf')} disabled={!chartData.length}>
-                      Download PDF
-                    </MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem onClick={() => handleMenuClick('chart')}>Chart</MenuItem>
-                    <MenuItem onClick={() => handleMenuClick('xlsx')} disabled={!chartData.length}>
-                      Download Xlsx
-                    </MenuItem>
-                  </>
-                )}
-              </Menu>
-            </Box>
+            <CardActions
+              chartIndexAxis={chartIndexAxis}
+              activeChart={activeChart}
+              setActiveChart={setActiveChart}
+              setChartIndexAxis={setChartIndexAxis}
+              checked={checked}
+              handleChange={handleChange}
+              handleIconClick={handleIconClick}
+              anchorEl={anchorEl}
+              handleClose={handleClose}
+              asPath={path}
+              currentPath='/dashboards/tonality/'
+              handleRemoveCharts={handleRemoveCharts}
+              reportId={'companyTonality'}
+              reportActionLoading={reportActionLoading}
+              setOpenAddPopup={setOpenAddPopup}
+              setActiveMenu={setActiveMenu}
+              activeType={activeType}
+              handleMenuClick={handleMenuClick}
+              chartData={chartData}
+            />
           }
+        />
+        <DpMenu
+          activeMenu={activeMenu}
+          anchorEl={anchorEl}
+          handleClose={handleClose}
+          renderMenuItems={renderMenuItems}
         />
         <CardContent onClick={handleChartClick} id='company-tonality'>
           {loading ? (
@@ -252,6 +305,7 @@ const CompanyTonality = props => {
           )}
         </CardContent>
       </Card>
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={'companyTonality'} path={path} />
     </>
   )
 }
