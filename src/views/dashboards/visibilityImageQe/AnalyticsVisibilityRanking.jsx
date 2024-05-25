@@ -26,6 +26,11 @@ import * as XLSX from 'xlsx'
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
+
+// ** redux
+import { useSelector } from 'react-redux'
+import { userDashboardId } from 'src/store/apps/user/userSlice'
 
 const VisibilityRanking = props => {
   const { currentPath, asPath } = usePath()
@@ -34,8 +39,9 @@ const VisibilityRanking = props => {
   const [activeMenu, setActiveMenu] = useState('main')
   const [chartLoaded, setChartLoaded] = useState(false)
   const [activeType, setActiveType] = useState('chart')
+  const dbId = useSelector(userDashboardId)
 
-  const { chartData, loading, error, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
+  const { chartData, loading, error, path, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
 
   useEffect(() => {
     setActiveChart('Line')
@@ -177,6 +183,12 @@ const VisibilityRanking = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport, reportActionLoading } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(dbId, reportId)
+    deleteJournalistReport(dbId, reportId)
+  }
 
   const TableComp = () => {
     return (
@@ -249,8 +261,10 @@ const VisibilityRanking = props => {
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
                 {/* <MenuItem onClick={() => setActiveMenu('media')}>Media</MenuItem> */}
-                {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('VisibilityRanking')}>Remove from Custom</MenuItem>
+                {asPath !== '/dashboards/visibility-image-qe/' ? (
+                  <MenuItem onClick={() => handleRemoveCharts('visibilityRanking')}>
+                    {reportActionLoading ? <CircularProgress /> : 'Remove from Custom'}
+                  </MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
@@ -310,7 +324,7 @@ const VisibilityRanking = props => {
           )}
         </CardContent>
       </Card>
-      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} />
+      <AddScreen open={openAddPopup} setOpen={setOpenAddPopup} reportId={'visibilityRanking'} path={path} />
     </>
   )
 }

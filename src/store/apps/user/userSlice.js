@@ -13,7 +13,9 @@ const userSlice = createSlice({
     selectedMedia: 'print',
     shotCutPrint: [],
     shortCutFlag: false,
-    customDashboardScreens: false
+    customDashboardScreens: false,
+    fetchAfterReportsChange: false,
+    userDashboardId: ''
   },
   reducers: {
     setShotCutPrint: (state, action) => {
@@ -54,7 +56,20 @@ const userSlice = createSlice({
       state.customDashboardScreens = action.payload
     },
     removeChart: (state, action) => {
-      state.customDashboardScreens = state.customDashboardScreens.filter(chart => chart.id !== action.payload)
+      const { DB, reportId } = action.payload
+
+      const dashboardIndex = state.customDashboardScreens.findIndex(dashboard => dashboard.userDashboardId === DB)
+      if (dashboardIndex !== -1) {
+        state.customDashboardScreens[dashboardIndex].reportList = state.customDashboardScreens[
+          dashboardIndex
+        ].reportList.filter(report => report.reportId !== reportId)
+      }
+    },
+    setFetchAfterReportsChange: (state, action) => {
+      state.fetchAfterReportsChange = action.payload
+    },
+    setUserDashboardId: (state, action) => {
+      state.userDashboardId = action.payload
     }
   }
 })
@@ -66,14 +81,16 @@ export const {
   setSelectedDateRange,
   setNotificationFlag,
   setSelectedMedia,
-  setFetchAutoStatusFlag, // Export the new action
+  setFetchAutoStatusFlag,
   clearUserData,
   shotCutPrint,
   setShotCutPrint,
   shortCutFlag,
   setShortCutFlag,
   setCustomDashboardScreens,
-  removeChart
+  removeChart,
+  setFetchAfterReportsChange,
+  setUserDashboardId
 } = userSlice.actions
 
 export const selectUserData = state => state.user.data
@@ -97,5 +114,9 @@ export const selectFetchAutoStatusFlag = state => state.user.fetchAutoStatusFlag
 export const selectSelectedMedia = state => state.user.selectedMedia
 
 export const customDashboardsScreensWithCharts = state => state.user.customDashboardScreens
+
+export const fetchAfterReportsChanges = state => state.user.fetchAfterReportsChange
+
+export const userDashboardId = state => state.user.userDashboardId
 
 export default userSlice.reducer

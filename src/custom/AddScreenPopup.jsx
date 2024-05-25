@@ -13,17 +13,36 @@ import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 
 // ** redux
-import { useSelector } from 'react-redux'
-import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  customDashboardsScreensWithCharts,
+  selectSelectedClient,
+  setFetchAfterReportsChange
+} from 'src/store/apps/user/userSlice'
 
 const AddScreen = ({ open, setOpen, reportId, path }) => {
-  console.log(path)
   const [title, setTitle] = useState('')
+  const [error, setError] = useState('')
   const [selectedDashboard, setSelectedDashboard] = useState('')
   const [anchorEl, setAnchorEl] = useState(null)
+  const [userDashboardIdForApi, setUserDashboardIdForApi] = useState('')
   const openMenu = Boolean(anchorEl)
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const chartList = useSelector(customDashboardsScreensWithCharts)
+  const dispatch = useDispatch()
+
+  const [DBConfig, setDBConfig] = useState({
+    userDashboardId: [],
+    userDashBoardName: []
+  })
+
+  useEffect(() => {
+    const userDashboardId = chartList?.map(dashboard => dashboard.userDashboardId)
+    const userDashBoardName = chartList?.map(dashboard => dashboard.userDashboardName)
+
+    setDBConfig({ userDashboardId, userDashBoardName })
+  }, [chartList])
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -44,25 +63,46 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
     } else {
       setSelectedDashboard(value)
       setTitle(value)
+      const dId = chartList.find(item => item.userDashboardName === value).userDashboardId
+      setUserDashboardIdForApi(dId)
     }
   }
-  const DBTitles = ['My Dashboard']
+
+  const validateTitle = title => {
+    const words = title.split(' ')
+    for (let word of words) {
+      if (word.charAt(0) !== word.charAt(0).toUpperCase()) {
+        return false
+      }
+    }
+
+    return true
+  }
 
   const handleSubmit = async event => {
     event.preventDefault()
+    if (!validateTitle(title)) {
+      setError("Each word's first letter should be uppercase.")
+
+      return
+    }
+
+    setError('')
+
     try {
       const storedToken = localStorage.getItem('accessToken')
 
       const headers = {
         Authorization: `Bearer ${storedToken}`
       }
-      const actionType = DBTitles.includes(selectedDashboard) ? 'add' : 'create'
-      const isPath = DBTitles.includes(selectedDashboard)
-      const isDbId = DBTitles.includes(selectedDashboard) ? 'dashboardId' : 'dashBoardName'
+      const actionType = DBConfig.userDashBoardName.includes(selectedDashboard) ? 'add' : 'create'
+      const isPath = DBConfig.userDashBoardName.includes(selectedDashboard)
+      const isDbId = DBConfig.userDashBoardName.includes(selectedDashboard) ? 'dashboardId' : 'dashBoardName'
+      const dbIdValue = isDbId === 'dashboardId' ? userDashboardIdForApi : title
 
       const requestData = {
         clientId,
-        [isDbId]: selectedDashboard || title,
+        dashboardName: dbIdValue,
         reportId,
         action: actionType
       }
@@ -70,7 +110,10 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
         requestData.path = path
       }
       const response = await axios.post(`${BASE_URL}/updateUserDashboards`, requestData, { headers })
-      console.log(response)
+
+      if (response.status === 200) {
+        dispatch(setFetchAfterReportsChange(true))
+      }
     } catch (error) {
       console.log(error)
     }
@@ -107,7 +150,7 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
               'aria-labelledby': 'basic-button'
             }}
           >
-            {DBTitles.map(i => (
+            {DBConfig.userDashBoardName.map(i => (
               <MenuItem onClick={() => handleMenuClick(i)} key={i} selected={selectedDashboard === i}>
                 {i}
               </MenuItem>
@@ -126,7 +169,9 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
           variant='outlined'
           value={title}
           onChange={e => setTitle(e.target.value)}
-          disabled={DBTitles.includes(title)}
+          disabled={DBConfig.userDashBoardName.includes(title)}
+          error={!!error} // Set error state
+          helperText={error}
         />
       </DialogContent>
       <DialogActions>

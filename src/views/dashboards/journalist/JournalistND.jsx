@@ -28,6 +28,10 @@ import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
 import useRemove from 'src/hooks/useRemoveChart'
 
+// ** redux
+import { useSelector } from 'react-redux'
+import { userDashboardId } from 'src/store/apps/user/userSlice'
+
 const JournalistPerformance = props => {
   const { currentPath, asPath } = usePath()
 
@@ -61,6 +65,7 @@ const JournalistPerformance = props => {
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
   const [checked, setChecked] = useState(false)
   const [activeType, setActiveType] = useState('chart')
+  const dbId = useSelector(userDashboardId)
 
   const handleChange = () => {
     setActiveChart('Bar')
@@ -286,11 +291,11 @@ const JournalistPerformance = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
-  const { deleteJournalistReport } = useRemove()
+  const { deleteJournalistReport, reportActionLoading } = useRemove()
 
   const handleRemoveCharts = reportId => {
-    handleRemoveFromChartList(reportId)
-    deleteJournalistReport('My Dashboard', reportId)
+    handleRemoveFromChartList(dbId, reportId)
+    deleteJournalistReport(dbId, reportId)
   }
 
   const TableComp = () => {
@@ -399,8 +404,10 @@ const JournalistPerformance = props => {
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>Remove from Custom</MenuItem>
+                {asPath !== '/dashboards/journalist/' ? (
+                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>
+                    {reportActionLoading ? <CircularProgress /> : 'Remove from Custom'}
+                  </MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}

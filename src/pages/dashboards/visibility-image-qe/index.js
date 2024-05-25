@@ -201,6 +201,7 @@ const VisibilityChartJS = () => {
               chartData={visibilityRanking}
               loading={rankingLoading}
               error={rankingError}
+              path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
               yellow={yellowColor}

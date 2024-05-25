@@ -26,17 +26,25 @@ import { BASE_URL } from 'src/api/base'
 
 // ** redux import
 import { useSelector, useDispatch } from 'react-redux'
-import { selectSelectedClient, setCustomDashboardScreens } from 'src/store/apps/user/userSlice'
+import {
+  fetchAfterReportsChanges,
+  selectSelectedClient,
+  setCustomDashboardScreens,
+  setFetchAfterReportsChange
+} from 'src/store/apps/user/userSlice'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
 
 const UserLayout = ({ children, contentHeightFixed }) => {
   // ** redux
   const selectedClient = useSelector(selectSelectedClient)
+  const fetchAfterChange = useSelector(fetchAfterReportsChanges)
   const clientId = selectedClient ? selectedClient.clientId : null
   const dispatch = useDispatch()
   const screenPermissions = useScreenPermissions()
 
   const [navItems, setNavItems] = useState([])
+  const [dynamicScreens, setDynamicScreens] = useState(null)
+  console.log(dynamicScreens)
 
   useEffect(() => {
     const newNavItems = [
@@ -45,10 +53,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
         icon: 'tabler:smart-home',
         badgeColor: 'error',
         children: [
-          {
-            title: 'My Dashboard',
-            path: '/dashboards/custom'
-          },
+          ...(dynamicScreens || []),
           {
             title: 'Clouds',
             path: '/dashboards/clouds',
@@ -127,7 +132,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
     ].filter(item => item)
 
     setNavItems(newNavItems)
-  }, [screenPermissions])
+  }, [screenPermissions, dynamicScreens])
 
   // ** Hooks
   const { settings, saveSettings } = useSettings()
@@ -167,14 +172,32 @@ const UserLayout = ({ children, contentHeightFixed }) => {
           params: request_data
         })
 
-        dispatch(setCustomDashboardScreens(response.data.userDashboardList))
+        const list = response.data.userDashboardList
+        const screens = list.map(i => i.userDashboardName) || []
+        setDynamicScreens(() => {
+          const dynamicScreensArray = []
+
+          screens?.forEach(name => {
+            const formattedName = name.toLowerCase().replace(/\s+/g, '-')
+
+            const screen = {
+              title: name,
+              path: `/dashboards/${formattedName}`
+            }
+            dynamicScreensArray.push(screen)
+          })
+
+          return dynamicScreensArray
+        })
+        dispatch(setCustomDashboardScreens(list))
+        dispatch(setFetchAfterReportsChange(false))
       } catch (error) {
         console.error('Error fetching user dashboard data:', error)
       }
     }
 
     fetchData()
-  }, [clientId, dispatch])
+  }, [clientId, dispatch, fetchAfterChange])
 
   return (
     <Layout

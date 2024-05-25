@@ -28,6 +28,10 @@ import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
 import useRemove from 'src/hooks/useRemoveChart'
 
+// ** redux
+import { useSelector } from 'react-redux'
+import { userDashboardId } from 'src/store/apps/user/userSlice'
+
 const PublicationPerformance = props => {
   const { currentPath, asPath } = usePath()
 
@@ -61,6 +65,7 @@ const PublicationPerformance = props => {
   const [chartIndexAxis, setChartIndexAxis] = useState('x')
   const [checked, setChecked] = useState(false)
   const [activeType, setActiveType] = useState('chart')
+  const dbId = useSelector(userDashboardId)
 
   const handleChange = () => {
     setActiveChart('Bar')
@@ -74,10 +79,6 @@ const PublicationPerformance = props => {
       setChartDataForMap(data)
     }
   }, [chartData])
-
-  // const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
-  // const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
-  // const dataForCharts = topData || bottomData
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
   let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
@@ -290,11 +291,11 @@ const PublicationPerformance = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
-  const { deleteJournalistReport } = useRemove()
+  const { deleteJournalistReport, reportActionLoading } = useRemove()
 
   const handleRemoveCharts = reportId => {
-    handleRemoveFromChartList(reportId)
-    deleteJournalistReport('My Dashboard', reportId)
+    handleRemoveFromChartList(dbId, reportId)
+    deleteJournalistReport(dbId, reportId)
   }
 
   const TableComp = () => {
@@ -403,8 +404,10 @@ const PublicationPerformance = props => {
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>Remove from Custom</MenuItem>
+                {asPath !== '/dashboards/publication/' ? (
+                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>
+                    {reportActionLoading ? <CircularProgress /> : 'Remove from Custom'}
+                  </MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}

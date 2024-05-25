@@ -25,6 +25,11 @@ import * as XLSX from 'xlsx'
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
+import useRemove from 'src/hooks/useRemoveChart'
+
+// ** redux
+import { useSelector } from 'react-redux'
+import { userDashboardId } from 'src/store/apps/user/userSlice'
 
 Chart.register(...registerables)
 
@@ -35,6 +40,7 @@ const MultipleCharts = props => {
   const [checked, setChecked] = useState(false)
   const [anchorEl, setAnchorEl] = useState(null)
   const [activeType, setActiveType] = useState('chart')
+  const dbId = useSelector(userDashboardId)
 
   const handleChange = () => {
     setActiveChart('Bar')
@@ -226,6 +232,12 @@ const MultipleCharts = props => {
 
   // ** removing from chart list
   const handleRemoveFromChartList = useRemoveChart()
+  const { deleteJournalistReport, reportActionLoading } = useRemove()
+
+  const handleRemoveCharts = reportId => {
+    handleRemoveFromChartList(dbId, reportId)
+    deleteJournalistReport(dbId, reportId)
+  }
 
   const TableComp = () => {
     return (
@@ -336,8 +348,10 @@ const MultipleCharts = props => {
               </IconButton>
 
               <Menu keepMounted anchorEl={anchorEl} onClose={handleClose} open={Boolean(anchorEl)}>
-                {asPath === '/dashboards/custom/' ? (
-                  <MenuItem onClick={() => handleRemoveFromChartList('CompanyVisibility')}>Remove from Custom</MenuItem>
+                {asPath !== '/dashboards/visibility-image-qe/' ? (
+                  <MenuItem onClick={() => handleRemoveCharts(reportId)}>
+                    {reportActionLoading ? <CircularProgress /> : 'Remove from Custom'}
+                  </MenuItem>
                 ) : (
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
