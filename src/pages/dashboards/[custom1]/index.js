@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
+import { useEffect, useState } from 'react'
 
 // ** MUI Import
 import Grid from '@mui/material/Grid'
@@ -18,9 +19,6 @@ import {
 
 // ** data fetch hooks
 import useConditionalFetchReports from 'src/api/custom/useConditionalFetchReports'
-import useVisibilityCount from 'src/api/dashboard-visibilityCount/useVisibilityCount'
-import useJournalistVscore from 'src/api/dashboard-visibilityCount/useJournalistVscore'
-import usePeersData from 'src/api/dashboard-peers/usePeersData'
 
 //**  components
 import MultipleCharts from 'src/views/dashboards/visibilityImageQe/AnalyticsMultipleCharts'
@@ -31,13 +29,17 @@ import JournalistVscore from 'src/views/dashboards/visibility&Count/JournalistVs
 import ReportPeers from 'src/views/dashboards/peers/ReportsPeers'
 import VisibilityPeers from 'src/views/dashboards/peers/VisibilityPeersData'
 
-import { useEffect, useState } from 'react'
 import PerformanceShortChart from 'src/views/dashboards/performance/Region'
 import PerformanceLongCharts from 'src/views/dashboards/performance/Publication'
 import RankingKpiPeersCharts from 'src/views/dashboards/kpi-peers/RankingKpiPeersWithVisibility'
 import PublicationPerformance from 'src/views/dashboards/publication/Publication'
 import JournalistPerformance from 'src/views/dashboards/journalist/JournalistND'
 import { useDispatch } from 'react-redux'
+import CompanyTonality from 'src/views/dashboards/tonality/CompanyTonality'
+import TonalityVScore from 'src/views/dashboards/tonality/TonalityVScore'
+import ClientTonality from 'src/views/dashboards/tonality/ClientTonality'
+import PositiveTonality from 'src/views/dashboards/tonality/PositiveTonality'
+import NegativeTonality from 'src/views/dashboards/tonality/NegativeTonality'
 
 const CustomDashboard = () => {
   // ** Hook
@@ -121,6 +123,13 @@ const CustomDashboard = () => {
   const journalistPerformanceNDPermission = charts.includes('journalistPerformanceND')
   const journalistPerformanceBDPermission = charts.includes('journalistPerformanceBD')
   const journalistPerformanceRDPermission = charts.includes('journalistPerformanceRD')
+
+  // * tonality
+  const companyTonalityPermission = charts.includes('companyTonality')
+  const tonalityVscorePermission = charts.includes('tonalityVscore')
+  const clientTonalityPermission = charts.includes('clientTonality')
+  const positiveTonalityPermission = charts.includes('positiveTonality')
+  const negativeTonalityPermission = charts.includes('negativeTonality')
 
   // ** data hooks
 
@@ -506,6 +515,72 @@ const CustomDashboard = () => {
     dataKey: 'journalistPerformanceRD',
     isMedia: false,
     isFetch: journalistPerformanceRDPermission
+  })
+
+  // * tonality
+  const {
+    chartData: companyTonalityData,
+    loading: companyTonalityLoading,
+    error: companyTonalityError
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    idType: 'clientIds',
+    endpoint: '/companyTonality/',
+    dataKey: 'companyTonality',
+    isMedia: true,
+    isFetch: companyTonalityPermission
+  })
+
+  const {
+    chartData: tonalityVScoreData,
+    loading: tonalityVScoreLoading,
+    error: tonalityVScoreError
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    idType: 'clientIds',
+    endpoint: '/tonalityVscore/',
+    dataKey: 'tonalityVscore',
+    isMedia: true,
+    isFetch: tonalityVscorePermission
+  })
+
+  const {
+    chartData: clientTonality,
+    loading: clientTonalityLoading,
+    error: clientTonalityError
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    idType: 'clientIds',
+    endpoint: '/clientTonality/',
+    dataKey: 'clientTonality',
+    isMedia: true,
+    isFetch: clientTonalityPermission
+  })
+
+  const {
+    chartData: positiveTonality,
+    loading: positiveTonalityLoading,
+    error: positiveTonalityError
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    idType: 'clientIds',
+    endpoint: '/positiveTonality/',
+    dataKey: 'positiveTonality',
+    isMedia: true,
+    isFetch: positiveTonalityPermission
+  })
+
+  const {
+    chartData: negativeTonality,
+    loading: negativeTonalityLoading,
+    error: negativeTonalityError
+  } = useConditionalFetchReports({
+    media: selectedMedia,
+    idType: 'clientIds',
+    endpoint: '/negativeTonality/',
+    dataKey: 'negativeTonality',
+    isMedia: true,
+    isFetch: negativeTonalityPermission
   })
 
   return (
@@ -1061,6 +1136,91 @@ const CustomDashboard = () => {
                   cardTitle='JournalistRD'
                   chartId='journalist-rd'
                   reportId='journalistPerformanceRD'
+                  path={asPath}
+                  legendColor={legendColor}
+                  primary={primaryColor}
+                  yellow={yellowColor}
+                  warning={lineChartWarning}
+                  info={polarChartInfo}
+                  grey={polarChartGrey}
+                  green={polarChartGreen}
+                />
+              </Grid>
+            )}
+            {companyTonalityPermission && (
+              <Grid item xs={12} lg={6}>
+                <CompanyTonality
+                  chartData={companyTonalityData}
+                  loading={companyTonalityLoading}
+                  error={companyTonalityError}
+                  path={asPath}
+                  legendColor={legendColor}
+                  primary={primaryColor}
+                  yellow={yellowColor}
+                  warning={lineChartWarning}
+                  info={polarChartInfo}
+                  grey={polarChartGrey}
+                  green={polarChartGreen}
+                />
+              </Grid>
+            )}
+            {tonalityVscorePermission && (
+              <Grid item xs={12} lg={6}>
+                <TonalityVScore
+                  chartData={tonalityVScoreData}
+                  loading={tonalityVScoreLoading}
+                  error={tonalityVScoreError}
+                  path={asPath}
+                  legendColor={legendColor}
+                  primary={primaryColor}
+                  yellow={yellowColor}
+                  warning={lineChartWarning}
+                  info={polarChartInfo}
+                  grey={polarChartGrey}
+                  green={polarChartGreen}
+                />
+              </Grid>
+            )}
+            {clientTonalityPermission && (
+              <Grid item xs={12} lg={6}>
+                <ClientTonality
+                  chartData={clientTonality}
+                  loading={clientTonalityLoading}
+                  error={clientTonalityError}
+                  path={asPath}
+                  legendColor={legendColor}
+                  primary={primaryColor}
+                  yellow={yellowColor}
+                  warning={lineChartWarning}
+                  info={polarChartInfo}
+                  grey={polarChartGrey}
+                  green={polarChartGreen}
+                />
+              </Grid>
+            )}
+            {positiveTonalityPermission && (
+              <Grid item xs={12} lg={6}>
+                <PositiveTonality
+                  chartData={positiveTonality}
+                  loading={positiveTonalityLoading}
+                  error={positiveTonalityError}
+                  path={asPath}
+                  legendColor={legendColor}
+                  primary={primaryColor}
+                  yellow={yellowColor}
+                  warning={lineChartWarning}
+                  info={polarChartInfo}
+                  grey={polarChartGrey}
+                  green={polarChartGreen}
+                />
+              </Grid>
+            )}
+            {negativeTonality && (
+              <Grid item xs={12} lg={6}>
+                <NegativeTonality
+                  chartData={negativeTonality}
+                  loading={negativeTonalityLoading}
+                  error={negativeTonalityError}
                   path={asPath}
                   legendColor={legendColor}
                   primary={primaryColor}
