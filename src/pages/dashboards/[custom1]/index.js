@@ -1215,7 +1215,7 @@ const CustomDashboard = () => {
                 />
               </Grid>
             )}
-            {negativeTonality && (
+            {negativeTonalityPermission && (
               <Grid item xs={12} lg={6}>
                 <NegativeTonality
                   chartData={negativeTonality}
