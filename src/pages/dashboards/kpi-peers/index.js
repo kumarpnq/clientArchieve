@@ -97,7 +97,7 @@ const KPIPeersCharts = () => {
               error={rankingKpiDataError}
               chartTitle={'Ranking KPI Peers'}
               chartId='ranking-kpi-peers'
-              reportId='rankingKpiPeers'
+              reportId='rankingKPIPeers'
               path={asPath}
               legendColor={legendColor}
               primary={primaryColor}
@@ -117,7 +117,7 @@ const KPIPeersCharts = () => {
               error={rankingKpiVisibilityDataError}
               chartTitle={'KPI Peers Visibility'}
               chartId='ranking-kpi-peers-visibility'
-              reportId='rankingKpiPeersWithVisibility'
+              reportId='rankingKPIPeersWithVisibility'
               path={asPath}
               legendColor={legendColor}
               primary={primaryColor}

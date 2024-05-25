@@ -44,7 +44,6 @@ const UserLayout = ({ children, contentHeightFixed }) => {
 
   const [navItems, setNavItems] = useState([])
   const [dynamicScreens, setDynamicScreens] = useState(null)
-  console.log(dynamicScreens)
 
   useEffect(() => {
     const newNavItems = [

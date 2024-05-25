@@ -49,6 +49,7 @@ const CompanyTonality = props => {
   const [activeMenu, setActiveMenu] = useState('main')
   const [selectedFilter, setSelectedFilter] = useState('Top')
   const [selectedCount, setSelectedCount] = useState(10)
+  const dbId = useSelector(userDashboardId)
 
   const handleChange = () => {
     setActiveChart('Bar')

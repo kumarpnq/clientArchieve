@@ -38,8 +38,8 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
   })
 
   useEffect(() => {
-    const userDashboardId = chartList?.map(dashboard => dashboard.userDashboardId)
-    const userDashBoardName = chartList?.map(dashboard => dashboard.userDashboardName)
+    const userDashboardId = chartList && chartList?.map(dashboard => dashboard.userDashboardId)
+    const userDashBoardName = chartList && chartList?.map(dashboard => dashboard.userDashboardName)
 
     setDBConfig({ userDashboardId, userDashBoardName })
   }, [chartList])
@@ -97,12 +97,12 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
       }
       const actionType = DBConfig.userDashBoardName.includes(selectedDashboard) ? 'add' : 'create'
       const isPath = DBConfig.userDashBoardName.includes(selectedDashboard)
-      const isDbId = DBConfig.userDashBoardName.includes(selectedDashboard) ? 'dashboardId' : 'dashBoardName'
+      const isDbId = DBConfig.userDashBoardName.includes(selectedDashboard) ? 'dashboardId' : 'dashboardName'
       const dbIdValue = isDbId === 'dashboardId' ? userDashboardIdForApi : title
 
       const requestData = {
         clientId,
-        dashboardName: dbIdValue,
+        [isDbId]: dbIdValue,
         reportId,
         action: actionType
       }
@@ -150,7 +150,7 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
               'aria-labelledby': 'basic-button'
             }}
           >
-            {DBConfig.userDashBoardName.map(i => (
+            {DBConfig?.userDashBoardName?.map(i => (
               <MenuItem onClick={() => handleMenuClick(i)} key={i} selected={selectedDashboard === i}>
                 {i}
               </MenuItem>

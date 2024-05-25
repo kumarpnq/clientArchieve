@@ -49,7 +49,7 @@ const CustomDashboard = () => {
 
   const reversedPath = asPath
     .split('/')
-    .filter(part => part !== 'dashboards') // Remove 'dashboards'
+    .filter(part => part !== 'dashboards')
     .map(part => part.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())) // Capitalize each word
     .join(' ')
     .trim()
@@ -109,8 +109,8 @@ const CustomDashboard = () => {
   const visibilityPeersPermission = charts.includes('visibilityPeers')
 
   // * kpi peers
-  const rankingKpiPeersPermission = charts.includes('rankingKpiPeers')
-  const rankingKpiPeersWithVisibilityPeersPermission = charts.includes('rankingKpiPeersWithVisibility')
+  const rankingKpiPeersPermission = charts.includes('rankingKPIPeers')
+  const rankingKpiPeersWithVisibilityPeersPermission = charts.includes('rankingKPiPeersWithVisibility')
 
   // * publication
   const publicationNDAccess = charts.includes('publicationPerformanceND')
@@ -953,7 +953,7 @@ const CustomDashboard = () => {
                   error={rankingKpiDataError}
                   chartTitle={'Ranking KPI Peers'}
                   chartId='ranking-kpi-peers'
-                  reportId='rankingKpiPeers'
+                  reportId='rankingKPIPeers'
                   path={asPath}
                   legendColor={legendColor}
                   primary={primaryColor}
@@ -973,7 +973,7 @@ const CustomDashboard = () => {
                   error={rankingKpiVisibilityDataError}
                   chartTitle={'KPI Peers Visibility'}
                   chartId='ranking-kpi-peers-visibility'
-                  reportId='rankingKpiPeersWithVisibility'
+                  reportId='rankingKPIPeersWithVisibility'
                   path={asPath}
                   legendColor={legendColor}
                   primary={primaryColor}
