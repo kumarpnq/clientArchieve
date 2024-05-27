@@ -38,8 +38,8 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
   })
 
   useEffect(() => {
-    const userDashboardId = chartList && chartList?.map(dashboard => dashboard.userDashboardId)
-    const userDashBoardName = chartList && chartList?.map(dashboard => dashboard.userDashboardName)
+    const userDashboardId = (chartList && chartList?.map(dashboard => dashboard.userDashboardId)) || []
+    const userDashBoardName = (chartList && chartList?.map(dashboard => dashboard.userDashboardName)) || []
 
     setDBConfig({ userDashboardId, userDashBoardName })
   }, [chartList])
