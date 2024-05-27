@@ -87,8 +87,8 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'ADFACTOR_G',
-  email: 'ADFACTOR_G'
+  password: 'HDFC_ERGO',
+  email: 'HDFC_ERGO'
 }
 
 const LoginPage = () => {

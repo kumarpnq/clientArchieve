@@ -34,8 +34,8 @@ const useJournalistVscore = props => {
         clientIds: clientId,
 
         // companyIds: selectedCompetitions,
-        fromDate: formattedStartDate, //'2024-02-26 00:00:00',
-        toDate: formattedEndDate //'2024-02-27 00:00:00'
+        fromDate: formattedStartDate,
+        toDate: formattedEndDate
       }
       try {
         const storedToken = localStorage.getItem('accessToken')
@@ -46,6 +46,7 @@ const useJournalistVscore = props => {
           },
           params: requestParams
         })
+
         setChartData(response.data.journalistVscore)
       } catch (error) {
         setError(error)

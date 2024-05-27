@@ -130,7 +130,7 @@ const CountCharts = () => {
         <Grid item xs={12} lg={6}>
           {!!reportingSubjectVScorePermission && (
             <SubjectVscore
-              chartData={subjectVscoreData}
+              JournalistVScoreData={subjectVscoreData}
               loading={subjectVscoreLoading}
               error={subjectVscoreError}
               path={asPath}
