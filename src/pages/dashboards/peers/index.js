@@ -41,13 +41,25 @@ const PeersCharts = () => {
     chartData: reportPeersData,
     loading: reportPeersDataLoading,
     error: reportPeersDataError
-  } = usePeersData({ media: selectedMedia, endpoint: '/reportPeers/', idType: 'clientIds', isCompanyIds: true })
+  } = usePeersData({
+    media: selectedMedia,
+    endpoint: '/reportPeers/',
+    idType: 'clientIds',
+    isCompanyIds: true,
+    isMedia: false
+  })
 
   const {
     chartData: visibilityPeersData,
     loading: visibilityPeersDataLoading,
     error: visibilityPeersDataError
-  } = usePeersData({ media: selectedMedia, endpoint: '/visibilityPeers/', idType: 'clientIds', isCompanyIds: true })
+  } = usePeersData({
+    media: selectedMedia,
+    endpoint: '/visibilityPeers/',
+    idType: 'clientIds',
+    isCompanyIds: true,
+    isMedia: true
+  })
 
   // ** Hook
   const theme = useTheme()

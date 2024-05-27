@@ -11,7 +11,7 @@ import {
 import { formatDateTime } from 'src/utils/formatDateTime'
 
 const usePeersData = props => {
-  const { media, endpoint, idType, isCompanyIds } = props
+  const { media, endpoint, idType, isCompanyIds, isMedia } = props
 
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedFromDate = useSelector(selectSelectedStartDate)
@@ -30,7 +30,6 @@ const usePeersData = props => {
   useEffect(() => {
     const fetchData = async () => {
       const requestParams = {
-        media: media,
         [idType]: clientId,
 
         // companyIds: selectedCompetitions,
@@ -39,6 +38,9 @@ const usePeersData = props => {
       }
       if (isCompanyIds) {
         requestParams.companyIds = selectedCompetitions
+      }
+      if (isMedia) {
+        requestParams.media = media
       }
       try {
         const storedToken = localStorage.getItem('accessToken')

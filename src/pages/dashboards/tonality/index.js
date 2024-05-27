@@ -59,7 +59,7 @@ const TonalityCharts = () => {
     chartData: clientTonality,
     loading: clientTonalityLoading,
     error: clientTonalityError
-  } = useTonality({ media: selectedMedia, endpoint: '/clientTonality/', idType: 'clientIds', isCompanyIds: false })
+  } = useTonality({ media: selectedMedia, endpoint: '/clientTonality/', idType: 'clientId', isCompanyIds: false })
 
   const {
     chartData: positiveTonality,

@@ -73,7 +73,7 @@ const PeersCharts = () => {
     media: selectedMedia,
     idType: 'clientIds',
     endpoint: '/reportingPerformance/',
-    dataKey: 'reportingPerformance',
+    dataKey: 'reporingPerformance',
     isMedia: true
   })
 

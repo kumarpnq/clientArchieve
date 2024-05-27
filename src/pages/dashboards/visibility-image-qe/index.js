@@ -101,7 +101,7 @@ const VisibilityChartJS = () => {
     endpoint: '/publicationsVisibility/',
     idType: 'clientIds',
     isMedia: true,
-    dataKey: 'publicationsVisibility'
+    dataKey: 'publicationVisibility'
   })
 
   const {
@@ -113,7 +113,7 @@ const VisibilityChartJS = () => {
     endpoint: '/publicationsClientVisibility/',
     idType: 'clientId',
     isMedia: true,
-    dataKey: 'publicationsClientVisibility'
+    dataKey: 'publicationVisibility'
   })
 
   const {
@@ -137,7 +137,7 @@ const VisibilityChartJS = () => {
     endpoint: '/reportingSubjectClientVisibility/',
     idType: 'clientId',
     isMedia: true,
-    dataKey: 'reportingSubjectClientVisibility'
+    dataKey: 'reportingSubjectVisibility'
   })
 
   const {
