@@ -14,17 +14,30 @@ const JournalistStepper = ({ articles, onCancel, handleClose }) => {
     journalist: articles.articleJournalist
   })
 
+  const [error, setError] = useState({
+    headline: '',
+    journalist: ''
+  })
+
   const handleSaveChanges = async () => {
     const { articleId } = articles
+    if (!articleData.headline.length || !articleData.journalist.length) {
+      setError({
+        headline: articleData.headline.length ? '' : 'Please enter a headline',
+        journalist: articleData.journalist.length ? '' : 'Please enter a journalist'
+      })
 
+      return
+    }
     try {
       const storedToken = localStorage.getItem('accessToken')
 
       const response = await axios.post(
-        `${BASE_URL}/updateArticleJournalist/`,
+        `${BASE_URL}/updateArticleJournalistAndHeadline/`,
         {
           articleId: Number(articleId),
-          newJournalistName: articleData.journalist
+          newJournalistName: articleData.journalist,
+          newHeadline: articleData.headline
         },
         {
           headers: {
@@ -32,6 +45,7 @@ const JournalistStepper = ({ articles, onCancel, handleClose }) => {
           }
         }
       )
+      toast.success(response.data.message)
 
       // handleClose()
     } catch (error) {
@@ -54,7 +68,8 @@ const JournalistStepper = ({ articles, onCancel, handleClose }) => {
             size='small'
             label='Headline'
             variant='outlined'
-            value={articleData.headline}
+            error={!!error.headline} // Convert string to boolean
+            helperText={error.headline}
             onChange={e => handleInputChange('headline', e.target.value)}
           />
         </Grid>
@@ -65,6 +80,8 @@ const JournalistStepper = ({ articles, onCancel, handleClose }) => {
             size='small'
             label='Journalist'
             variant='outlined'
+            error={!!error.journalist} // Convert string to boolean
+            helperText={error.journalist}
             value={articleData.journalist}
             onChange={e => handleInputChange('journalist', e.target.value)}
           />
