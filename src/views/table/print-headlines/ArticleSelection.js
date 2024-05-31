@@ -135,6 +135,7 @@ const TableSelection = () => {
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false)
   const [pdfSrc, setPdfSrc] = useState('')
   const [editDetailsDialogOpen, setEditDetailsDialogOpen] = useState(false)
+  const [articles, setArticles] = useState([])
 
   const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
 
@@ -192,35 +193,45 @@ const TableSelection = () => {
           iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
           options={[
             {
-              text: 'View HTML',
+              text: 'View Article',
               menuItemProps: {
                 onClick: () => {
-                  fetchReadArticleFile('htm', params.row)
-                  setHtmlDialogOpen(true)
-                  setSelectedArticle(params.row)
+                  const articleCode = params.row.link
+                  window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                 }
               }
             },
-            {
-              text: 'View JPG',
-              menuItemProps: {
-                onClick: () => {
-                  fetchReadArticleFile('jpg', params.row)
-                  setJpgDialogOpen(true)
-                  setSelectedArticle(params.row)
-                }
-              }
-            },
-            {
-              text: 'View PDF',
-              menuItemProps: {
-                onClick: () => {
-                  fetchReadArticleFile('pdf', params.row)
-                  setPdfDialogOpen(true)
-                  setSelectedArticle(params.row)
-                }
-              }
-            },
+
+            // {
+            //   text: 'View HTML',
+            //   menuItemProps: {
+            //     onClick: () => {
+            //       fetchReadArticleFile('htm', params.row)
+            //       setHtmlDialogOpen(true)
+            //       setSelectedArticle(params.row)
+            //     }
+            //   }
+            // },
+            // {
+            //   text: 'View JPG',
+            //   menuItemProps: {
+            //     onClick: () => {
+            //       fetchReadArticleFile('jpg', params.row)
+            //       setJpgDialogOpen(true)
+            //       setSelectedArticle(params.row)
+            //     }
+            //   }
+            // },
+            // {
+            //   text: 'View PDF',
+            //   menuItemProps: {
+            //     onClick: () => {
+            //       fetchReadArticleFile('pdf', params.row)
+            //       setPdfDialogOpen(true)
+            //       setSelectedArticle(params.row)
+            //     }
+            //   }
+            // },
             {
               text: 'Edit Detail',
               menuItemProps: {
@@ -242,7 +253,7 @@ const TableSelection = () => {
   const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
 
   // ** State
-  const [articles, setArticles] = useState([])
+
   const [tags, setTags] = useState([])
   const [fetchTagsFlag, setFetchTagsFlag] = useState([])
 
@@ -278,8 +289,6 @@ const TableSelection = () => {
   const [selectedEditionType, setSelectedEditionType] = useState([])
   const [selectedPublicationType, setSelectedPublicationType] = useState([])
 
-  console.log('valuecheck==>', selectedEditionType, selectedPublicationType)
-
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
@@ -313,8 +322,6 @@ const TableSelection = () => {
   const publicationtype = selectedPublicationType.map(i => {
     return i.publicationTypeId
   })
-
-  console.log('checkbutton==>', edition, publicationtype)
 
   const dataForExcelDump = [
     selectedCities.length && { geography: selectedCities },
@@ -492,22 +499,6 @@ const TableSelection = () => {
     setSelectedArticles([])
 
     const fetchArticlesApi = async () => {
-      console.log('checking', {
-        selectedEndDate,
-        selectedFromDate,
-        currentPage,
-        recordsPerPage,
-        selectedCompetitions,
-        selectedLanguages,
-        clientId,
-        selectedMedia,
-        selectedTag,
-        selectedCities,
-        searchParameters,
-        selectedEditionType,
-        selectedPublicationType,
-        selectedSortBy
-      })
       try {
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
@@ -541,7 +532,6 @@ const TableSelection = () => {
           })
 
           const result = selectedMediaWithoutLastDigit.join(', ')
-          console.log(result)
 
           const selectedTagString = selectedTag.join(', ')
 
@@ -564,7 +554,6 @@ const TableSelection = () => {
               return i.id
             })
             .join(', ')
-          console.log('checking==>', shortCutData?.searchCriteria?.tags)
 
           // if(shortCutData)
           const response = await fetchArticles({
@@ -595,8 +584,6 @@ const TableSelection = () => {
 
             publicationCategory: publicationtype
           })
-
-          console.log('selectedCompetitions==>', response)
 
           const totalRecords = response.totalRecords
           setArticles(response.articles)
@@ -680,7 +667,6 @@ const TableSelection = () => {
 
   const handleRowClick = params => {
     setSelectedArticle(params.row)
-    console.log('sdad', params)
 
     // currently hiding the click summary
     setPopupOpen(false)

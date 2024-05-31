@@ -124,7 +124,6 @@ const AppBarContent = props => {
   const auth = useAuth()
 
   useEffect(() => {
-    console.log('maindata==>')
     const storedToken = localStorage.getItem('accessToken')
 
     const fetchData = async () => {
@@ -134,7 +133,6 @@ const AppBarContent = props => {
             Authorization: `Bearer ${storedToken}`
           }
         })
-        console.log('userconfig', response.data) // yahan aap response ka use kar sakte hain
       } catch (error) {
         console.error('Error fetching data:', error)
       }

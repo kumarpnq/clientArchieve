@@ -1,10 +1,9 @@
 // PublicationInfo.js
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
-import Divider from '@mui/material/Divider'
 import Card from '@mui/material/Card'
 
 const PublicationInfo = ({ articles }) => {
@@ -31,7 +30,7 @@ const PublicationInfo = ({ articles }) => {
       <Paper elevation={0} sx={{ flexGrow: 1, textAlign: 'left', padding: '7px' }}>
         <Grid container justifyContent='space-between' alignItems='center'>
           {/* Left side heading */}
-          <Grid item xs={8}>
+          <Grid item>
             <Typography
               variant='h7'
               color='primary'
@@ -46,7 +45,7 @@ const PublicationInfo = ({ articles }) => {
                 }
               }}
             >
-              {articles.headline}
+              {articles.headlines}
             </Typography>
           </Grid>
           {/* Right side date */}
@@ -65,7 +64,7 @@ const PublicationInfo = ({ articles }) => {
             Media Type :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.mediaType}
+            {articles.mediaType}
           </Typography>
         </Grid>
 
@@ -74,7 +73,7 @@ const PublicationInfo = ({ articles }) => {
             Publication Type :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.publicationType}
+            {articles.publicationType}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -82,7 +81,7 @@ const PublicationInfo = ({ articles }) => {
             Publication :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.publication}
+            {articles.publication}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -90,7 +89,7 @@ const PublicationInfo = ({ articles }) => {
             Language :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.language}
+            {articles.language}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -98,7 +97,7 @@ const PublicationInfo = ({ articles }) => {
             Page Number :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.pageNumber}
+            {articles.pageNumber}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -106,7 +105,7 @@ const PublicationInfo = ({ articles }) => {
             Size :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.size}
+            {articles.size}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -114,7 +113,7 @@ const PublicationInfo = ({ articles }) => {
             Circulation :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.circulation}
+            {articles.circulation}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -122,7 +121,7 @@ const PublicationInfo = ({ articles }) => {
             Edition :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.edition}
+            {articles.edition}
           </Typography>
         </Grid>
       </Grid>

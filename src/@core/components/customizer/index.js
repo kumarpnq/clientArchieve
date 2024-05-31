@@ -96,7 +96,7 @@ const Customizer = () => {
 
   return (
     <div className='customizer'>
-      <Toggler className='customizer-toggler' onClick={() => setOpen(true)}>
+      <Toggler className='customizer-toggler' onClick={() => setOpen(false)}>
         <Icon icon='tabler:settings' />
       </Toggler>
       <Drawer open={open} hideBackdrop anchor='right' variant='persistent'>

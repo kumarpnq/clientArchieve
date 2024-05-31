@@ -1,15 +1,14 @@
 // EditJournalist.js
 import React, { useState } from 'react'
-import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
+import CustomTextField from 'src/@core/components/mui/text-field'
 
-const EditJournalist = ({ articles, onCancel, handleClose }) => {
+const JournalistStepper = ({ articles, onCancel, handleClose }) => {
   const [articleData, setArticleData] = useState({
     headline: articles.headline,
     journalist: articles.articleJournalist
@@ -25,7 +24,7 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
         `${BASE_URL}/updateArticleJournalist/`,
         {
           articleId: Number(articleId),
-          newJournalist: articleData.journalist
+          newJournalistName: articleData.journalist
         },
         {
           headers: {
@@ -34,8 +33,9 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
         }
       )
 
-      handleClose()
+      // handleClose()
     } catch (error) {
+      console.log(error)
       toast.error('Error:', error.message)
     }
   }
@@ -45,14 +45,11 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
   }
 
   return (
-    <Box sx={{ padding: '7px' }}>
-      <Typography variant='h6' align='left' sx={{ marginBottom: 2 }}>
-        Article Data
-      </Typography>
-      <Grid container spacing={2} sx={{ marginTop: 2 }}>
-        {/* Grid for Article Data */}
-        <Grid item xs={12} sm={8}>
-          <TextField
+    <Box width={'100%'} display='flex' flexDirection='column'>
+      <Grid container spacing={2}>
+        {/* Grid for Headline */}
+        <Grid item xs={12}>
+          <CustomTextField
             fullWidth
             size='small'
             label='Headline'
@@ -61,8 +58,9 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
             onChange={e => handleInputChange('headline', e.target.value)}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <TextField
+        {/* Grid for Journalist */}
+        <Grid item xs={12}>
+          <CustomTextField
             fullWidth
             size='small'
             label='Journalist'
@@ -71,19 +69,18 @@ const EditJournalist = ({ articles, onCancel, handleClose }) => {
             onChange={e => handleInputChange('journalist', e.target.value)}
           />
         </Grid>
-      </Grid>
-
-      {/* Save and Cancel Buttons */}
-      <Grid container justifyContent='flex-end' sx={{ marginTop: 2 }}>
-        <Button color='primary' onClick={handleSaveChanges}>
-          Save
-        </Button>
-        <Button color='primary' onClick={onCancel} sx={{ marginLeft: 2 }}>
-          Cancel
-        </Button>
+        {/* Save and Cancel Buttons */}
+        <Grid item xs={12} container justifyContent='flex-end'>
+          <Button color='primary' onClick={handleSaveChanges}>
+            Save
+          </Button>
+          <Button color='primary' onClick={onCancel} sx={{ marginLeft: 2 }}>
+            Close
+          </Button>
+        </Grid>
       </Grid>
     </Box>
   )
 }
 
-export default EditJournalist
+export default JournalistStepper

@@ -44,7 +44,6 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 const CardSelection = () => {
   const [isContainerOpen, setContainerOpen] = useState(false)
   const [companyData, setCompanyData] = useState([])
-  console.log('companydata==>', companyData)
   const [loading, setLoading] = useState(true)
   const [loadingArticleId, setLoadingArticleId] = useState(null)
   const selectedClient = useSelector(selectSelectedClient)
