@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router'
 
+import { useEffect, useState } from 'react'
+
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
@@ -18,18 +20,21 @@ import UserDropdown from 'src/@core/layouts/components/shared-components/UserDro
 import NotificationDropdown from 'src/@core/layouts/components/shared-components/NotificationDropdown'
 import ShortcutsDropdown from 'src/@core/layouts/components/shared-components/ShortcutsDropdown'
 import ClientDropdown from 'src/@core/layouts/components/shared-components/ClientDropdown'
-
-// ** Hook Import
-import { useAuth } from 'src/hooks/useAuth'
 import Competition from 'src/@core/layouts/components/shared-components/CompetitionDropdown'
 import DateBar from 'src/@core/layouts/components/shared-components/DatePicker'
 import DaysJumper from 'src/@core/layouts/components/shared-components/DaysJumper'
 import Media from 'src/@core/layouts/components/shared-components/MediaDropDown'
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+
+// ** Hook Import
+import { useAuth } from 'src/hooks/useAuth'
+
+// ** redux
 import { BASE_URL } from 'src/api/base'
 import { useSelector, useDispatch } from 'react-redux'
 import { setShotCutPrint, selectShortCut } from 'src/store/apps/user/userSlice'
+
+// * third party imports
+import axios from 'axios'
 
 const notifications = [
   {

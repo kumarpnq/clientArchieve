@@ -1,4 +1,3 @@
-// src/components/print-headlines/dialog/views/ArticleTagEdit.js
 import React, { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
@@ -16,9 +15,10 @@ import { BASE_URL } from 'src/api/base'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import useGetTagsForArticle from 'src/api/online-headline/tag/useGetTagsForArtcile'
+import CustomTextField from 'src/@core/components/mui/text-field'
+import { Box, Divider } from '@mui/material'
 
-const ArticleTagEdit = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsFlag }) => {
-  // const [tags, setTags] = useState(articles?.tags || [])
+const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsFlag }) => {
   const articleId = articles?.socialFeedId
   const clientId = articles?.clientId
   const companyId = articles?.companies.map(i => i.id).join()
@@ -111,28 +111,33 @@ const ArticleTagEdit = ({ articles, handleClose, token, fetchTagsFlag, setFetchT
   return (
     <Card>
       <TableContainer component={Paper}>
-        <Typography variant='h6' align='center' sx={{ marginTop: 3 }}>
-          Social Tag Edit
-        </Typography>
-        <Table>
-          <TableBody>
-            {articles?.companies.map((company, companyIndex) => (
-              <TableRow key={company.id}>
-                <TableCell>{company.name}</TableCell>
-                {[1, 2, 3, 4, 5].map(tagIndex => (
-                  <TableCell key={tagIndex}>
-                    <TextField
-                      size='small'
-                      label={`Tag ${tagIndex}`}
-                      value={tags[`tag${tagIndex}`]}
-                      onChange={e => handleAddTag(tagIndex, e.target.value)}
-                    />
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <Box>
+          {articles.companies.map((company, companyIndex) => {
+            const companyTagsData = tagsData.find(data => data.companyId === company.id) || { tags: [] }
+
+            return (
+              <Box key={company.id} mb={3}>
+                <Box mb={1} fontWeight='fontWeightBold'>
+                  {company.name}
+                </Box>
+                <Grid container spacing={2}>
+                  {[1, 2, 3, 4, 5].map(tagIndex => (
+                    <Grid item key={tagIndex} xs={12} sm={6} md={4} lg={2}>
+                      <CustomTextField
+                        size='small'
+                        label={`Tag ${tagIndex}`}
+                        value={tags[`tag${tagIndex}`]}
+                        onChange={e => handleAddTag(tagIndex, e.target.value)}
+                        fullWidth
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
+                {companyIndex < articles.companies.length - 1 && <Divider sx={{ mt: 1 }} />}
+              </Box>
+            )
+          })}
+        </Box>
         <Grid container justifyContent='flex-end' sx={{ marginTop: 2 }}>
           <Button color='primary' onClick={handleSaveDetails}>
             Save
@@ -146,4 +151,4 @@ const ArticleTagEdit = ({ articles, handleClose, token, fetchTagsFlag, setFetchT
   )
 }
 
-export default ArticleTagEdit
+export default TagStepper
