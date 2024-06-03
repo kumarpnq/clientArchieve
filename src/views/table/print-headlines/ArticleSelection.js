@@ -202,36 +202,6 @@ const TableSelection = () => {
               }
             },
 
-            // {
-            //   text: 'View HTML',
-            //   menuItemProps: {
-            //     onClick: () => {
-            //       fetchReadArticleFile('htm', params.row)
-            //       setHtmlDialogOpen(true)
-            //       setSelectedArticle(params.row)
-            //     }
-            //   }
-            // },
-            // {
-            //   text: 'View JPG',
-            //   menuItemProps: {
-            //     onClick: () => {
-            //       fetchReadArticleFile('jpg', params.row)
-            //       setJpgDialogOpen(true)
-            //       setSelectedArticle(params.row)
-            //     }
-            //   }
-            // },
-            // {
-            //   text: 'View PDF',
-            //   menuItemProps: {
-            //     onClick: () => {
-            //       fetchReadArticleFile('pdf', params.row)
-            //       setPdfDialogOpen(true)
-            //       setSelectedArticle(params.row)
-            //     }
-            //   }
-            // },
             {
               text: 'Edit Detail',
               menuItemProps: {

@@ -97,7 +97,6 @@ const TableSelection = () => {
   }
 
   const handleView = row => {
-    console.log('row', row.socialFeedlink)
     window.open(row.socialFeedlink, '_blank')
   }
 
@@ -197,14 +196,6 @@ const TableSelection = () => {
             <OptionsMenu
               iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
               options={[
-                // {
-                //   text: 'Edit Detail',
-                //   menuItemProps: {
-                //     onClick: () => {
-                //       handleEdit(params.row)
-                //     }
-                //   }
-                // },
                 {
                   text: 'View',
                   menuItemProps: {
@@ -223,32 +214,11 @@ const TableSelection = () => {
             iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
             options={[
               {
-                text: 'View HTML',
+                text: 'View Article',
                 menuItemProps: {
                   onClick: () => {
-                    fetchReadArticleFile('htm', params.row)
-                    setHtmlDialogOpen(true)
-                    setSelectedArticle(params.row)
-                  }
-                }
-              },
-              {
-                text: 'View JPG',
-                menuItemProps: {
-                  onClick: () => {
-                    fetchReadArticleFile('jpg', params.row)
-                    setJpgDialogOpen(true)
-                    setSelectedArticle(params.row)
-                  }
-                }
-              },
-              {
-                text: 'View PDF',
-                menuItemProps: {
-                  onClick: () => {
-                    fetchReadArticleFile('pdf', params.row)
-                    setPdfDialogOpen(true)
-                    setSelectedArticle(params.row)
+                    const articleCode = params.row.link
+                    window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                   }
                 }
               }
@@ -265,6 +235,7 @@ const TableSelection = () => {
 
   // ** State
   const [articles, setArticles] = useState([])
+
   const [selectedArticles, setSelectedArticles] = useState([])
   const [tags, setTags] = useState([])
   const [fetchTagsFlag, setFetchTagsFlag] = useState([])
@@ -285,7 +256,6 @@ const TableSelection = () => {
   const [selectedLanguages, setSelectedLanguages] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
 
-  console.log('selectedMedia', selectedMedia)
   const [selectedTags, setSelectedTags] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
@@ -317,16 +287,6 @@ const TableSelection = () => {
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
-
-  // const handleEdit = row => {
-  //   setSelectedArticle(row)
-  //   setEditDialogOpen(true)
-  // }
-
-  const handleSaveChanges = editedArticle => {
-    // Add logic to save changes to the article
-    console.log('Saving changes:', editedArticle)
-  }
 
   const edition = selectedEditionType?.map(i => {
     return i.editionTypeId
@@ -416,7 +376,6 @@ const TableSelection = () => {
             })
 
             const result = selectedMediaWithoutLastDigit.join(', ')
-            console.log('checnages--done==>')
             const selectedTagString = selectedTags.join(', ')
 
             const selectedCitiesString = selectedGeography.join(', ')
@@ -891,7 +850,7 @@ const TableSelection = () => {
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
       {/* Edit Dialog */}
-      {/* Render the FullScreenDialog component when open */}
+      {/* Render the FullScreenDialog component when open
       <FullScreenJPGDialog
         open={jpgDialogOpen}
         handleClose={handleJpgDialogClose}
@@ -899,24 +858,17 @@ const TableSelection = () => {
         articles={selectedArticle}
       />
       {/* Render the FullScreenHTMLDialog component when open */}
-      <FullScreenHTMLDialog
+      {/* <FullScreenHTMLDialog
         open={htmlDialogOpen}
         handleClose={handleHtmlDialogClose}
         fileContent={fileContent}
         articles={selectedArticle}
-      />
+      /> */}
       {/* Render the FullScreenPDFDialog component when open */}
-      <FullScreenPDFDialog
+      {/* <FullScreenPDFDialog
         open={pdfDialogOpen}
         handleClose={handlePdfDialogClose}
         pdfSrc={pdfSrc}
-        articles={selectedArticle}
-      />
-      {/* <ViewDialog
-        open={isEditDialogOpen}
-        handleClose={() => setEditDialogOpen(false)}
-        socialFeed={selectedArticle}
-        handleSave={handleSaveChanges}
         articles={selectedArticle}
       /> */}
     </Card>
