@@ -13,6 +13,7 @@ import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import StepperMain from '../editStep/StepperMain'
+import MultiViewNonProtected from 'src/pages/article-view'
 
 const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fetchTagsFlag, setFetchTagsFlag }) => {
   const [loading, setLoading] = useState(true)
@@ -46,15 +47,7 @@ const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fe
           </Grid>
 
           <Grid item xs={12}>
-            <Card mt={2}>
-              {loading ? (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                  <CircularProgress />
-                </div>
-              ) : (
-                <img src={imageSrc} alt='JPG Image' style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-              )}
-            </Card>
+            <MultiViewNonProtected articleCodeFromTab={articles?.link} />
           </Grid>
         </Grid>
       </DialogContent>

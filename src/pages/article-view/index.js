@@ -1,16 +1,8 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Fragment, useEffect, useState } from 'react'
-
-//* Mui
-import { Box, Card, CircularProgress } from '@mui/material'
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-
-// * third party imports
+import { Box, Card, CircularProgress, Tabs, Tab } from '@mui/material'
 import axios from 'axios'
-
-// * components
 import BlankLayout from 'src/@core/layouts/BlankLayout'
 import PublicationInfo from 'src/views/unprotected/PublicationInfo'
 import PublicationLogo from 'src/views/unprotected/PublicationLogo'
@@ -22,7 +14,7 @@ function a11yProps(index) {
   }
 }
 
-const MultiViewNonProtected = () => {
+const MultiViewNonProtected = ({ articleCodeFromTab }) => {
   const router = useRouter()
   const { articleCode } = router.query
   const [value, setValue] = useState(0)
@@ -30,6 +22,13 @@ const MultiViewNonProtected = () => {
   const [articleLoading, setArticleLoading] = useState(false)
   const [articleError, setArticleError] = useState(null)
   const [textContent, setTextContent] = useState('')
+
+  const [cachedContent, setCachedContent] = useState({
+    html: null,
+    jpg: null,
+    pdf: null,
+    text: null
+  })
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -43,6 +42,8 @@ const MultiViewNonProtected = () => {
         return 0
       case 'pdf':
         return 2
+      case 'txt':
+        return 3
       default:
         return 0
     }
@@ -53,64 +54,71 @@ const MultiViewNonProtected = () => {
       const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
       try {
         setArticleLoading(true)
-        const response = await axios.get(`${BASE_URL}/articleView/?articleCode=${articleCode}`)
+        const code = articleCodeFromTab ? articleCodeFromTab : articleCode
+        const response = await axios.get(`${BASE_URL}/articleView/?articleCode=${code}`)
         setArticleData(response.data)
-        const type = tabValue(response.data.defaultType)
-        setValue(type)
+        setValue(tabValue(response.data.defaultType))
       } catch (error) {
-        console.log(error)
         setArticleError(error)
       } finally {
         setArticleLoading(false)
       }
     }
-    fetchArticleViewData()
-  }, [articleCode])
+    if (articleCode || articleCodeFromTab) {
+      fetchArticleViewData()
+    }
+  }, [articleCode, articleCodeFromTab])
 
   useEffect(() => {
-    if (value === 3 && articleData?.TXTPATH) {
-      axios
-        .get(articleData.TXTPATH)
-        .then(response => {
-          setTextContent(response.data)
-        })
-        .catch(error => {
-          console.error('Error fetching text content:', error)
-        })
+    const fetchTextContent = async () => {
+      try {
+        const response = await axios.get(articleData.TXTPATH)
+        setTextContent(response.data)
+        setCachedContent(prev => ({ ...prev, text: response.data }))
+      } catch (error) {
+        console.error('Error fetching text content:', error)
+      }
     }
-  }, [value, articleData])
+
+    if (value === 3 && articleData?.TXTPATH && !cachedContent.text) {
+      fetchTextContent()
+    }
+  }, [value, articleData, cachedContent.text])
+
+  useEffect(() => {
+    const cacheData = () => {
+      setCachedContent(prev => ({
+        ...prev,
+        html: prev.html || articleData?.HTMLPATH,
+        jpg: prev.jpg || articleData?.JPGPATH,
+        pdf: prev.pdf || articleData?.PDFPATH
+      }))
+    }
+
+    if (articleData) {
+      cacheData()
+    }
+  }, [articleData])
 
   const renderContent = () => {
     if (articleLoading) {
       return <CircularProgress />
     }
+
+    if (articleError) {
+      return <div>Error loading article: {articleError.message}</div>
+    }
+
     if (value === 3) {
       return (
-        <div
-          style={{
-            minHeight: '800px',
-            backgroundColor: 'white',
-            color: 'black',
-            padding: '16px'
-          }}
-        >
-          <pre
-            style={{
-              minHeight: '800px',
-              backgroundColor: 'white',
-              color: 'black',
-              padding: '16px',
-              whiteSpace: 'pre-wrap'
-            }}
-          >
-            {textContent}
-          </pre>
-        </div>
+        <Box sx={{ minHeight: '800px', backgroundColor: 'white', color: 'black', p: 2 }}>
+          <pre style={{ whiteSpace: 'pre-wrap' }}>{cachedContent.text || textContent}</pre>
+        </Box>
       )
     }
 
     const src =
-      value === 0 ? articleData?.HTMLPATH : value === 1 ? articleData?.JPGPATH : value === 2 ? articleData?.PDFPATH : ''
+      value === 0 ? cachedContent.html : value === 1 ? cachedContent.jpg : value === 2 ? cachedContent.pdf : ''
 
     return (
       <iframe
@@ -129,7 +137,7 @@ const MultiViewNonProtected = () => {
       <Head>
         <title>{articleData?.headlines}</title>
       </Head>
-      <Card sx={{ position: 'sticky', top: 0 }}>
+      <Card sx={{ position: 'sticky', top: 0, zIndex: 10 }}>
         <PublicationLogo />
       </Card>
       <Card sx={{ mt: 1 }}>
@@ -154,6 +162,7 @@ const MultiViewNonProtected = () => {
     </Fragment>
   )
 }
+
 MultiViewNonProtected.getLayout = page => <BlankLayout>{page}</BlankLayout>
 MultiViewNonProtected.guestGuard = false
 

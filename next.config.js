@@ -3,8 +3,6 @@ const path = require('path')
 
 /** @type {import('next').NextConfig} */
 
-// Remove this if you're not using Fullcalendar features
-
 module.exports = {
   trailingSlash: true,
   reactStrictMode: false,
@@ -15,5 +13,8 @@ module.exports = {
     }
 
     return config
+  },
+  images: {
+    domains: ['perceptionandquant.com']
   }
 }

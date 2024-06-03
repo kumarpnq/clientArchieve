@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
+import Image from 'next/image'
 
 const PublicationLogo = ({ articles }) => {
   const [logoInfo, setLogoInfo] = useState({
@@ -14,36 +15,16 @@ const PublicationLogo = ({ articles }) => {
   })
 
   return (
-    <Card>
-      <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-        {/* Logo on the left */}
-        {logoInfo.leftLogo && (
-          <img
-            src={logoInfo.leftLogo}
-            alt='one'
-            style={{ width: '55px', height: '45px', marginRight: '388px', border: '1px solid #000' }}
-          />
-        )}
+    <Card sx={{ display: 'flex', justifyContent: 'space-between', py: 2 }}>
+      {/* Logo on the left */}
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo1' height={30} width={150} />
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo2' height={30} width={150} />
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo3' height={30} width={150} />
 
-        {/* Main publication logo in the middle */}
-        {logoInfo.mainLogo && (
-          <img src={logoInfo.mainLogo} alt='two' style={{ width: '250px', height: '80px', border: '1px solid #000' }} />
-        )}
-
-        {/* Logo on the right */}
-        {logoInfo.rightLogo && (
-          <img
-            src={logoInfo.rightLogo}
-            alt='three'
-            style={{ width: '55px', height: '45px', marginLeft: '388px', border: '1px solid #000' }}
-          />
-        )}
-
-        {/* Copyright text */}
+      {/* Copyright text
         <Typography variant='body2' color='textSecondary'>
           {logoInfo.copyrightText}
-        </Typography>
-      </div>
+        </Typography> */}
     </Card>
   )
 }
