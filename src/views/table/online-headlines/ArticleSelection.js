@@ -480,8 +480,6 @@ const TableSelection = () => {
             params: request_params
           })
 
-          console.log('API Response:', response.data) // Log the API response data
-
           const totalRecords = response.data.totalRecords || 0
 
           setSocialFeeds(response.data.socialFeeds)
@@ -797,14 +795,7 @@ const TableSelection = () => {
           </>
         )}
       </Box>
-      {/* Popup Window */}
-      {/* <SocialFeedFullScreenDialog
-        open={isPopupOpen}
-        handleClose={() => setPopupOpen(false)}
-        socialFeed={selectedArticle}
-        formattedDate={dayjs(selectedArticle?.feedDate).format('DD-MM-YYYY')}
-      />{' '} */}
-      {/* Edit Dialog */}
+
       <EditDialog
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}

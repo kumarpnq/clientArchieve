@@ -137,12 +137,17 @@ const MultiViewNonProtected = ({ articleCodeFromTab }) => {
       <Head>
         <title>{articleData?.headlines}</title>
       </Head>
-      <Card sx={{ position: 'sticky', top: 0, zIndex: 10 }}>
-        <PublicationLogo />
-      </Card>
-      <Card sx={{ mt: 1 }}>
-        <PublicationInfo articles={articleData} />
-      </Card>
+      {!articleCodeFromTab && (
+        <>
+          <Card sx={{ position: 'sticky', top: 0, zIndex: 10 }}>
+            <PublicationLogo />
+          </Card>
+          <Card sx={{ mt: 1 }}>
+            <PublicationInfo articles={articleData} />
+          </Card>
+        </>
+      )}
+
       <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label='basic tabs example'>

@@ -6,11 +6,16 @@ import DialogContent from '@mui/material/DialogContent'
 // ** third party imports
 import Iframe from 'react-iframe'
 import MainStepper from './editStepper/MainStepper'
+import { IconButton } from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
 
 const EditDialog = ({ open, handleClose, socialFeed, fetchTagsFlag, setFetchTagsFlag }) => {
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='md' fullWidth>
+    <Dialog open={open} onClose={handleClose} maxWidth='3xl' fullWidth>
       <DialogTitle color='primary'>Edit Social Feed</DialogTitle>
+      <IconButton aria-label='close' onClick={handleClose} style={{ position: 'absolute', right: 2, top: 2 }}>
+        <CloseIcon />
+      </IconButton>
       <DialogContent>
         <MainStepper socialFeed={socialFeed} fetchTagsFlag={fetchTagsFlag} setFetchTagsFlag={setFetchTagsFlag} />
 

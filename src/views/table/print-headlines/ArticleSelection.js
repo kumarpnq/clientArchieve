@@ -924,13 +924,6 @@ const TableSelection = () => {
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
       />
-      {/* Edit Dialog */}
-      {/* <ViewDialog
-        open={isEditDialogOpen}
-        handleClose={() => setEditDialogOpen(false)}
-        articles={selectedArticle}
-        handleSave={handleSaveChanges}
-      /> */}
       <style css>{`
         .css-1p6gmy3-MuiDataGrid-root .MuiDataGrid-cell:not(.MuiDataGrid-cellCheckbox):first-of-type {
           padding-left: 0.8rem;
