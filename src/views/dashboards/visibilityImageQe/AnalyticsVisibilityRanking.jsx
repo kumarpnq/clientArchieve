@@ -9,7 +9,7 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import CloseIcon from '@mui/icons-material/Close'
-import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
+import { Paper, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Switch } from '@mui/material'
 
 import { Line, Bar, Pie, Doughnut } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
@@ -39,7 +39,14 @@ const VisibilityRanking = props => {
   const [activeMenu, setActiveMenu] = useState('main')
   const [chartLoaded, setChartLoaded] = useState(false)
   const [activeType, setActiveType] = useState('chart')
+  const [chartIndexAxis, setChartIndexAxis] = useState('x')
+  const [checked, setChecked] = useState(false)
   const dbId = useSelector(userDashboardId)
+
+  const handleChange = () => {
+    setActiveChart('Bar')
+    setChecked(prev => !prev)
+  }
 
   const { chartData, loading, error, path, setMedia, primary, yellow, warning, info, grey, green, legendColor } = props
 
@@ -139,6 +146,7 @@ const VisibilityRanking = props => {
   }
 
   const options = {
+    indexAxis: chartIndexAxis,
     responsive: true,
     maintainAspectRatio: false,
     animation: {
@@ -148,6 +156,7 @@ const VisibilityRanking = props => {
     scales: {
       x: {
         grid: {
+          stacked: checked,
           display: true
         }
       },
@@ -256,6 +265,52 @@ const VisibilityRanking = props => {
           title='Visibility Ranking'
           action={
             <Box>
+              {chartIndexAxis === 'x' ? (
+                <IconButton
+                  onClick={() => {
+                    setActiveChart('Bar')
+                    setChartIndexAxis('y')
+                  }}
+                  sx={{
+                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main'
+                  }}
+                >
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
+                </IconButton>
+              ) : (
+                <IconButton
+                  onClick={() => {
+                    setActiveChart('Bar')
+                    setChartIndexAxis('x')
+                  }}
+                  sx={{
+                    backgroundColor: activeChart === 'Bar' ? 'primary.main' : '',
+                    color: activeChart === 'Bar' ? 'inherit' : 'primary.main',
+                    transform: 'rotate(90deg)'
+                  }}
+                >
+                  <IconifyIcon icon='ic:baseline-bar-chart' />
+                </IconButton>
+              )}
+              <IconButton
+                onClick={() => {
+                  setChartIndexAxis('x')
+                  setActiveChart('Line')
+                }}
+                sx={{
+                  backgroundColor: activeChart === 'Line' ? 'primary.main' : '',
+                  color: activeChart === 'Line' ? 'inherit' : 'primary.main'
+                }}
+              >
+                <IconifyIcon icon='lets-icons:line-up' />
+              </IconButton>
+              <Switch
+                checked={checked}
+                onChange={handleChange}
+                sx={{ color: activeChart === 'Line' ? 'inherit' : 'primary.main' }}
+                inputProps={{ 'aria-label': 'toggle button' }}
+              />
               <IconButton aria-haspopup='true' onClick={handleIconClick}>
                 <IconifyIcon icon='tabler:dots-vertical' />
               </IconButton>
