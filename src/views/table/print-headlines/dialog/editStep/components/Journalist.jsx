@@ -70,6 +70,7 @@ const JournalistStepper = ({ articles, onCancel, handleClose }) => {
             variant='outlined'
             error={!!error.headline} // Convert string to boolean
             helperText={error.headline}
+            value={articleData.headline}
             onChange={e => handleInputChange('headline', e.target.value)}
           />
         </Grid>
@@ -91,7 +92,7 @@ const JournalistStepper = ({ articles, onCancel, handleClose }) => {
           <Button color='primary' onClick={handleSaveChanges}>
             Save
           </Button>
-          <Button color='primary' onClick={onCancel} sx={{ marginLeft: 2 }}>
+          <Button color='primary' onClick={handleClose} sx={{ marginLeft: 2 }}>
             Close
           </Button>
         </Grid>

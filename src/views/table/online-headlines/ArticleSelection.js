@@ -798,9 +798,9 @@ const TableSelection = () => {
 
       <EditDialog
         fetchTagsFlag={fetchTagsFlag}
+        handleClose={() => setIsEditDialogOpen(false)}
         setFetchTagsFlag={setFetchTagsFlag}
         open={isEditDialogOpen}
-        handleClose={() => setIsEditDialogOpen(false)}
         socialFeed={selectedArticle}
       />
     </Card>

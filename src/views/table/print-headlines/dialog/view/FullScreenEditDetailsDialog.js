@@ -42,7 +42,12 @@ const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fe
           <Grid item xs={12}>
             {' '}
             <DatePickerWrapper>
-              <StepperMain articles={articles} fetchFlag={fetchTagsFlag} setFetchFlag={setFetchTagsFlag} />
+              <StepperMain
+                articles={articles}
+                fetchFlag={fetchTagsFlag}
+                setFetchFlag={setFetchTagsFlag}
+                handleClose={handleClose}
+              />
             </DatePickerWrapper>
           </Grid>
 

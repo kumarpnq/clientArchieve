@@ -21,12 +21,6 @@ export default function SocialFeedFullScreenDialog({ open, handleClose, socialFe
     <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
       <AppBar sx={{ position: 'relative' }}>
         <Toolbar>
-          {/* Company Logo on the Left */}
-          {/* <img
-            src='https://www.perceptionandquant.com/logo2.png'
-            alt='Company Logo'
-            style={{ height: '20px', marginRight: '16px' }}
-          /> */}
           <Typography variant='h6' color='inherit'>
             {socialFeed && socialFeed.article}
           </Typography>

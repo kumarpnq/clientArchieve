@@ -12,12 +12,17 @@ import CloseIcon from '@mui/icons-material/Close'
 const EditDialog = ({ open, handleClose, socialFeed, fetchTagsFlag, setFetchTagsFlag }) => {
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='3xl' fullWidth>
-      <DialogTitle color='primary'>Edit Social Feed</DialogTitle>
+      <DialogTitle color='primary'>Edit Social Feeds</DialogTitle>
       <IconButton aria-label='close' onClick={handleClose} style={{ position: 'absolute', right: 2, top: 2 }}>
         <CloseIcon />
       </IconButton>
       <DialogContent>
-        <MainStepper socialFeed={socialFeed} fetchTagsFlag={fetchTagsFlag} setFetchTagsFlag={setFetchTagsFlag} />
+        <MainStepper
+          socialFeed={socialFeed}
+          fetchTagsFlag={fetchTagsFlag}
+          setFetchTagsFlag={setFetchTagsFlag}
+          handleClose={handleClose}
+        />
 
         <Iframe
           url={socialFeed?.socialFeedlink || ''}

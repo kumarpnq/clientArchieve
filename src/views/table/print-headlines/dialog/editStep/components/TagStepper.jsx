@@ -32,7 +32,7 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
     fetchFlag
   })
 
-  const postData = useUpdateClientTagsToCompanyForArticles()
+  const { postData, errorMessage } = useUpdateClientTagsToCompanyForArticles()
 
   const [tags, setTags] = useState({
     tag1: '',
@@ -44,7 +44,7 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
 
   useEffect(() => {
     setFetchTagsFlag(prev => !prev)
-  }, [fetchFlag, value])
+  }, [fetchFlag, value, setFetchTagsFlag])
 
   useEffect(() => {
     // Use the first company's data in tagsData or default to an empty object
@@ -81,11 +81,15 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
         articleId
       })
       setFetchFlag(!fetchFlag)
-      setFetchTagsFlag(prev => !prev)
+
       setValue(value + 1)
       handleClose()
-
-      toast.success('updated')
+      if (errorMessage) {
+        toast.error(errorMessage)
+      } else {
+        toast.success('updated')
+        setFetchTagsFlag(prev => !prev)
+      }
     } catch (error) {
       console.log(error)
       toast.error('something wrong')
