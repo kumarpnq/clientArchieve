@@ -28,7 +28,8 @@ const CardActions = ({
   setActiveMenu,
   activeType,
   handleMenuClick,
-  chartData
+  chartData,
+  isCount
 }) => {
   return (
     <Box>
@@ -86,7 +87,8 @@ const CardActions = ({
         ) : (
           <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
         )}
-        <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
+        {isCount && <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>}
+
         <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
         {activeType === 'chart' ? (
           <>

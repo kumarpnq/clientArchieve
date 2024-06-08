@@ -21,6 +21,8 @@ import IconifyIcon from 'src/@core/components/icon'
 
 // ** apex charts
 import ReactApexCharts from 'react-apexcharts'
+import { Bar } from 'react-chartjs-2'
+import { Chart, registerables } from 'chart.js'
 
 // ** third party imports
 import { toBlob } from 'html-to-image'
@@ -38,6 +40,8 @@ import { useSelector } from 'react-redux'
 import { userDashboardId } from 'src/store/apps/user/userSlice'
 import CardActions from '../components/CardActions'
 import DpMenu from '../components/DpMenu'
+
+Chart.register(...registerables)
 
 const CompanyTonality = props => {
   const { chartData, loading, error, path, primary, yellow, warning, info, grey, green, legendColor } = props
@@ -60,48 +64,89 @@ const CompanyTonality = props => {
 
   const backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
 
-  const dataForChart = chartData.map((item, index) => ({
-    x: item.tonality,
-    y: [0, item.vScore],
-    fillColor: backgroundColors[index]
-  }))
+  // Function to generate a random hex color
+  function getRandomColor() {
+    const letters = '0123456789ABCDEF'
+    let color = '#'
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)]
+    }
 
-  const chartOptions = {
-    chart: {
-      type: 'rangeBar',
-      height: 350,
-      toolbar: {
-        show: false
-      },
-      animations: {
-        enabled: true
-      }
-    },
-    plotOptions: {
-      bar: {
-        horizontal: true
-      }
-    },
-    xaxis: {
-      type: 'category'
-    },
-    legend: {
-      position: 'right'
-    },
-    events: {
-      contextmenu: function (event, chartContext, config) {
-        event.preventDefault()
-      }
-    },
-    colors: additionalColors
+    return color
   }
 
-  const series = [
-    {
-      name: 'tonality',
-      data: dataForChart
+  // Function to generate an array of random colors
+  function generateRandomColors(numColors) {
+    const colors = []
+    for (let i = 0; i < numColors; i++) {
+      colors.push(getRandomColor())
     }
-  ]
+
+    return colors
+  }
+
+  const options = {
+    indexAxis: chartIndexAxis,
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: {
+      duration: 2000,
+      easing: 'easeInOutQuart'
+    },
+    scales: {
+      x: {
+        stacked: true,
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(0, 0, 0, 0.05)'
+        }
+      },
+      y: {
+        grid: {
+          display: true
+        }
+      }
+    },
+    plugins: {
+      legend: {
+        display: true
+      }
+    }
+  }
+
+  // Chart configuration object
+  const data = {
+    labels: chartData.map(data => data.tonality),
+    datasets: [
+      {
+        label: 'Negative',
+        backgroundColor: additionalColors[0],
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: chartData.filter(data => data.tonality === 'negative').map(data => data.vScore)
+
+        // ...(checked && { stack: 'Stack 1' })
+      },
+      {
+        label: 'Neutral',
+        backgroundColor: additionalColors[1],
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: chartData.filter(data => data.tonality === 'neutral').map(data => data.vScore)
+
+        // ...(checked && { stack: 'Stack 1' })
+      },
+      {
+        label: 'Positive',
+        backgroundColor: additionalColors[2],
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderWidth: 1,
+        data: chartData.filter(data => data.tonality === 'positive').map(data => data.vScore)
+
+        // ...(checked && { stack: 'Stack 1' })
+      }
+    ]
+  }
 
   const handleMenuClick = menuItem => {
     switch (menuItem) {
@@ -205,7 +250,7 @@ const CompanyTonality = props => {
       <Dialog open={isChartClicked} onClose={handleModalClose} maxWidth='lg' fullWidth>
         <Card>
           <CardHeader
-            title='Company Tonality'
+            title='Company Tonality Vscore'
             action={
               <IconButton onClick={handleModalClose} sx={{ color: 'primary.main' }}>
                 <CloseIcon />
@@ -213,9 +258,7 @@ const CompanyTonality = props => {
             }
           />
           <CardContent>
-            {activeType === 'chart' && (
-              <ReactApexCharts options={chartOptions} series={series} type='rangeBar' height={500} />
-            )}
+            {activeType === 'chart' && <Bar data={data} height={500} options={options} />}
             {activeType === 'table' && (
               <TableContainer component={Paper}>
                 <Table>
@@ -241,7 +284,7 @@ const CompanyTonality = props => {
       </Dialog>
       <Card sx={{ height: '100%' }}>
         <CardHeader
-          title='Company Tonality'
+          title='Company Tonality Vscore'
           action={
             <CardActions
               chartIndexAxis={chartIndexAxis}
@@ -263,6 +306,7 @@ const CompanyTonality = props => {
               activeType={activeType}
               handleMenuClick={handleMenuClick}
               chartData={chartData}
+              isCount={false}
             />
           }
         />
@@ -281,7 +325,7 @@ const CompanyTonality = props => {
             <>
               {' '}
               {activeType === 'chart' ? (
-                <ReactApexCharts options={chartOptions} series={series} type='rangeBar' height={350} />
+                <Bar data={data} height={350} options={options} />
               ) : (
                 <TableContainer component={Paper}>
                   <Table>
