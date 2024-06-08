@@ -76,6 +76,8 @@ const Step = styled(MuiStep)(({ theme }) => ({
 }))
 
 const StepperMain = ({ articles, fetchFlag, setFetchFlag, handleClose }) => {
+  console.log(fetchFlag)
+
   // ** States
   const [activeStep, setActiveStep] = useState(0)
 
@@ -85,7 +87,7 @@ const StepperMain = ({ articles, fetchFlag, setFetchFlag, handleClose }) => {
   const getStepContent = step => {
     switch (step) {
       case 0:
-        return <Journalist articles={articles} handleClose={handleClose} />
+        return <Journalist articles={articles} handleClose={handleClose} setFetchFlag={setFetchFlag} />
       case 1:
         return (
           <TagStepper

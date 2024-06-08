@@ -595,6 +595,7 @@ const TableSelection = () => {
         console.error('Error fetching articles:', error)
       } finally {
         setLoading(false)
+        setFetchTagsFlag(false)
       }
     }
     fetchArticlesApi()
@@ -612,7 +613,8 @@ const TableSelection = () => {
     searchParameters,
     selectedEditionType,
     selectedPublicationType,
-    selectedSortBy
+    selectedSortBy,
+    fetchTagsFlag
   ])
 
   // Divide social feeds into left and right columns
@@ -728,9 +730,6 @@ const TableSelection = () => {
   }
 
   const handleReset = () => {
-    //Toolbar
-    // const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : null
-    // setSelectedCompanyIds([priorityCompanyId])
     setSelectedMedia([])
     setSelectedCities([])
 
@@ -742,13 +741,6 @@ const TableSelection = () => {
     setSelectedPublicationType([])
     setSelectedSortBy(null)
     setClearAdvancedSearchField(true)
-
-    //Date
-    // const calculateDate = days => dayjs().subtract(days, 'day')
-    // const startDate = calculateDate(1)
-    // setSelectedStartDate(startDate)
-    // setSelectedEndDate(startDate)
-    // setSelectedFilter('1D')
 
     //selected Article
     setSelectedArticles([])

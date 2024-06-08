@@ -52,11 +52,11 @@ const PublicationLogo = ({ articles }) => {
 
   return (
     <Card sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 1 }}>
-      <Image src={logoInfo.leftLogo} alt='logo' height={20} width={20} />
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={30} width={150} />
 
-      <Image src={logoInfo.mainLogo} alt='logo' height={20} width={20} />
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={30} width={150} />
 
-      <Image src={logoInfo.rightLogo} alt='logo' height={20} width={20} />
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={30} width={150} />
 
       {/* Copyright text */}
       {/* <Typography variant='body2' color='textSecondary'>

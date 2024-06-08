@@ -8,7 +8,7 @@ import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
-const JournalistStepper = ({ articles, onCancel, handleClose }) => {
+const JournalistStepper = ({ articles, onCancel, handleClose, setFetchFlag }) => {
   const [articleData, setArticleData] = useState({
     headline: articles.headline,
     journalist: articles.articleJournalist
@@ -37,7 +37,7 @@ const JournalistStepper = ({ articles, onCancel, handleClose }) => {
         {
           articleId: Number(articleId),
           newJournalistName: articleData.journalist,
-          newHeadline: articleData.headline
+          headline: articleData.headline
         },
         {
           headers: {
@@ -45,9 +45,10 @@ const JournalistStepper = ({ articles, onCancel, handleClose }) => {
           }
         }
       )
+      setFetchFlag(prev => !prev)
       toast.success(response.data.message)
 
-      // handleClose()
+      handleClose()
     } catch (error) {
       console.log(error)
       toast.error('Error:', error.message)
