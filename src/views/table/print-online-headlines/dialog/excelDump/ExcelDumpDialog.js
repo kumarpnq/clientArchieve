@@ -26,8 +26,6 @@ import { formatDateTime } from 'src/utils/formatDateTime'
 import toast from 'react-hot-toast'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCheck }) => {
-  console.log('checkdata=>', dataForExcelDump)
-
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const clientId = selectedClient ? selectedClient.clientId : null
@@ -65,7 +63,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
 
   useEffect(() => {
     if (selectAll) {
-      setSelectedFields([...fields])
+      const allIds = fields.map(i => i.id)
+      setSelectedFields([...allIds])
     } else {
       setSelectedFields([])
     }
@@ -83,8 +82,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
 
   const handleSelectAllChange = () => {
     setSelectAll(prevSelectAll => !prevSelectAll)
-
-    setSelectedFields([])
   }
 
   const handleDownload = () => {

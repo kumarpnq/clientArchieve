@@ -8,13 +8,11 @@ const useExcelDump = () => {
   const [error, setError] = useState(null)
 
   const postData = async ({ clientId, articleIds, selectedFields, searchCriteria }) => {
-    console.log('article==>', articleIds, !articleIds === undefined)
     setLoading(true)
     try {
       const storedToken = localStorage.getItem('accessToken')
 
       const requestData = {
-        
         clientId,
         selectedFields,
         searchCriteria
