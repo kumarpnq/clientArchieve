@@ -386,13 +386,13 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
       </FormGroup>
 
       <DialogActions>
-        <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)}>
+        {/* <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)}>
           <MenuItem value='' disabled>
             All
           </MenuItem>
           <MenuItem value='all'>Select All</MenuItem>
           <MenuItem value='none'>Select None</MenuItem>
-        </Select>
+        </Select> */}
         <Button onClick={onClose} color='primary'>
           Cancel
         </Button>

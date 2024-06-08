@@ -55,8 +55,6 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
 
-  console.log("mailleist",mailList)
-
   const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
 
   const handleEmailTypeChange = (event, email) => {
@@ -390,13 +388,13 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
       </FormGroup>
 
       <DialogActions>
-        <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)}>
+        {/* <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)}>
           <MenuItem value='' disabled>
             All
           </MenuItem>
           <MenuItem value='all'>Select All</MenuItem>
           <MenuItem value='none'>Select None</MenuItem>
-        </Select>
+        </Select> */}
         <Button onClick={onClose} color='primary'>
           Cancel
         </Button>

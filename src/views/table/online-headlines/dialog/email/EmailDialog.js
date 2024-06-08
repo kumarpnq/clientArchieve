@@ -56,8 +56,6 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest()
 
-  console.log('dataForMail==>', mailList)
-
   const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')
 
   const handleEmailTypeChange = (event, email) => {
@@ -407,13 +405,13 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
       </FormGroup>
 
       <DialogActions>
-        <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)}>
+        {/* <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)} size='small'>
           <MenuItem value='' disabled>
             All
           </MenuItem>
           <MenuItem value='all'>Select All</MenuItem>
           <MenuItem value='none'>Select None</MenuItem>
-        </Select>
+        </Select> */}
         <Button onClick={onClose} color='primary'>
           Cancel
         </Button>
