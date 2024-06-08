@@ -85,7 +85,7 @@ const MainStepper = ({ socialFeed, fetchTagsFlag, setFetchTagsFlag, handleClose 
   const getStepContent = step => {
     switch (step) {
       case 0:
-        return <JournalistStepper socialFeed={socialFeed} handleClose={handleClose} />
+        return <JournalistStepper socialFeed={socialFeed} onCancel={handleClose} handleClose={handleClose} />
 
       case 1:
         return (

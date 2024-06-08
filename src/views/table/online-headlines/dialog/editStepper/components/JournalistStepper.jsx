@@ -73,7 +73,7 @@ const JournalistStepper = ({ socialFeed, onCancel, handleClose }) => {
   }
 
   const handleInputChange = (field, value) => {
-    setArticleData(prevData => ({ ...prevData, [field]: value }))
+    setEditedSocialFeed(prevData => ({ ...prevData, [field]: value }))
   }
 
   return (
@@ -102,7 +102,7 @@ const JournalistStepper = ({ socialFeed, onCancel, handleClose }) => {
             error={!!error.journalist} // Convert string to boolean
             helperText={error.journalist}
             value={editedSocialFeed.author}
-            onChange={e => handleInputChange('journalist', e.target.value)}
+            onChange={e => handleInputChange('author', e.target.value)}
           />
         </Grid>
         {/* Save and Cancel Buttons */}
