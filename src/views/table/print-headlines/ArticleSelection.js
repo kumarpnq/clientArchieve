@@ -15,6 +15,7 @@ import Button from '@mui/material/Button'
 import { FormControlLabel, FormGroup } from '@mui/material'
 
 // ** MUI icons
+import { Icon } from '@iconify/react'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
 
@@ -51,6 +52,7 @@ import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDial
 import Pagination from './Pagination'
 import { BASE_URL } from 'src/api/base'
 import axios from 'axios'
+import SelectBox from 'src/@core/components/select'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -159,6 +161,15 @@ const TableSelection = () => {
     setImageSrc('')
   }
 
+  // * temp
+  const [selectedItems, setSelectedItems] = useState([])
+
+  const publications = [
+    { publicationName: 'The Hindu', publicationId: 'hindu' },
+    { publicationName: 'The Muslim', publicationId: 'muslim' },
+    { publicationName: 'The Christian', publicationId: 'christian' }
+  ]
+
   const articleColumns = [
     {
       flex: 0.1,
@@ -172,6 +183,23 @@ const TableSelection = () => {
             handleSelect(params.row)
           }}
           checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
+        />
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 5,
+      headerName: 'Grp',
+      field: 'Grp',
+      renderCell: params => (
+        <SelectBox
+          icon={<Icon icon='ion:add' />}
+          iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
+          renderItem='publicationName'
+          renderKey='publicationId'
+          menuItems={publications}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
         />
       )
     },

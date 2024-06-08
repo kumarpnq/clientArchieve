@@ -52,9 +52,11 @@ const VisibilityPeers = props => {
 
   const { chartData, loading, error, path, primary, yellow, warning, info, grey, green, legendColor } = props
 
-  const topData = chartData.length > 0 ? chartData.slice(0, selectedCount) : []
-  const bottomData = chartData.length > 0 ? chartData.slice(-selectedCount) : []
-  const dataForCharts = topData || bottomData
+  const [chartDataForMap, setChartDataForMap] = useState([])
+
+  useEffect(() => {
+    setChartDataForMap(chartData)
+  }, [chartData])
 
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
   let backgroundColors = [primary, yellow, warning, info, grey, green, ...additionalColors]
@@ -107,13 +109,13 @@ const VisibilityPeers = props => {
       }
     }
   }
-  const visibility = chartData.map(data => data.visibility)
-  const volume = chartData.map(data => data.volume)
-  const volumeSov = chartData.map(data => data['volumeSOV(%)'])
-  const visibilitySov = chartData.map(data => data['visibilitySOV(%)'])
+  const visibility = Array.isArray(chartDataForMap) ? chartDataForMap.map(data => data.visibility) : []
+  const volume = Array.isArray(chartDataForMap) ? chartDataForMap.map(data => data.volume) : []
+  const volumeSov = Array.isArray(chartDataForMap) ? chartDataForMap.map(data => data['volumeSOV(%)']) : []
+  const visibilitySov = Array.isArray(chartDataForMap) ? chartDataForMap.map(data => data['visibilitySOV(%)']) : []
 
   const data = {
-    labels: dataForCharts.map(data => data.companyName.substring(0, 15)),
+    labels: chartDataForMap.map(data => data.companyName.substring(0, 15)),
     datasets: [
       {
         type: 'line',

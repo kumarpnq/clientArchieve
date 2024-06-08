@@ -53,6 +53,8 @@ import useFetchReadArticleFile from 'src/api/global/useFetchReadArticleFile'
 import FullScreenJPGDialog from './dialog/view/FullScreenJPGDialog'
 import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
 import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
+import SelectBox from 'src/@core/components/select'
+import { Icon } from '@iconify/react'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -161,6 +163,15 @@ const TableSelection = () => {
     )
   }
 
+  // * temp
+  const [selectedItems, setSelectedItems] = useState([])
+
+  const publications = [
+    { publicationName: 'The Hindu', publicationId: 'hindu' },
+    { publicationName: 'The Muslim', publicationId: 'muslim' },
+    { publicationName: 'The Christian', publicationId: 'christian' }
+  ]
+
   const articleColumns = [
     {
       flex: 0.1,
@@ -174,6 +185,23 @@ const TableSelection = () => {
             handleSelect(params.row)
           }}
           checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
+        />
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 5,
+      headerName: 'Grp',
+      field: 'Grp',
+      renderCell: params => (
+        <SelectBox
+          icon={<Icon icon='ion:add' />}
+          iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
+          renderItem='publicationName'
+          renderKey='publicationId'
+          menuItems={publications}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
         />
       )
     },

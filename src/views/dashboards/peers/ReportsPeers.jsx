@@ -109,12 +109,12 @@ const ReportPeers = props => {
       }
     }
   }
-  const visibility = chartData.map(data => data.visibility)
-  const volume = chartData.map(data => data.volume)
-  const volumeSov = chartData.map(data => data['volumeSOV(%)'])
-  const visibilitySov = chartData.map(data => data['visibilitySOV(%)'])
-  const visibilityRank = chartData.map(data => data.visibilityRank)
-  const volumeRank = chartData.map(data => data.volumeRank)
+  const visibility = Array.isArray(chartData) ? chartData.map(data => data.visibility) : []
+  const volume = Array.isArray(chartData) ? chartData.map(data => data.volume) : []
+  const volumeSov = Array.isArray(chartData) ? chartData.map(data => data['volumeSOV(%)']) : []
+  const visibilitySov = Array.isArray(chartData) ? chartData.map(data => data['visibilitySOV(%)']) : []
+  const visibilityRank = Array.isArray(chartData) ? chartData.map(data => data.visibilityRank) : []
+  const volumeRank = Array.isArray(chartData) ? chartData.map(data => data.volumeRank) : []
 
   const data = {
     labels: dataForCharts.map(data => data.companyName.substring(0, 15)),

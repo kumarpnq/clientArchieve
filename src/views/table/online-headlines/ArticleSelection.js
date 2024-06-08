@@ -1,5 +1,5 @@
 // ** React Import
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 // ** MUI Imports
@@ -17,12 +17,10 @@ import Button from '@mui/material/Button'
 import { FormControlLabel, FormGroup, List, ListItem, Menu, MenuItem } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
-import SocialFeedFullScreenDialog from './dialog/ArticleDialog'
 import EditDialog from './dialog/EditDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
 
 // ** MUI icons
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 // ** Article Database
 // import { articles } from './Db-Articles'
@@ -44,9 +42,10 @@ import {
   selectShortCutFlag,
   selectShortCut
 } from 'src/store/apps/user/userSlice'
-import { formatDateTime } from 'src/utils/formatDateTime'
 import OptionsMenu from 'src/@core/components/option-menu'
 import { BASE_URL } from 'src/api/base'
+import { Icon } from '@iconify/react'
+import SelectBox from 'src/@core/components/select'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -108,6 +107,15 @@ const renderSocialFeed = params => {
 }
 
 const TableSelection = () => {
+  // * temp
+  const [selectedItems, setSelectedItems] = useState([])
+
+  const publications = [
+    { publicationName: 'The Hindu', publicationId: 'hindu' },
+    { publicationName: 'The Muslim', publicationId: 'muslim' },
+    { publicationName: 'The Christian', publicationId: 'christian' }
+  ]
+
   const socialFeedColumns = [
     {
       flex: 0.1,
@@ -121,6 +129,23 @@ const TableSelection = () => {
             handleSelect(params.row)
           }}
           checked={selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === params.row.socialFeedId)}
+        />
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 5,
+      headerName: 'Grp',
+      field: 'Grp',
+      renderCell: params => (
+        <SelectBox
+          icon={<Icon icon='ion:add' />}
+          iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
+          renderItem='publicationName'
+          renderKey='publicationId'
+          menuItems={publications}
+          selectedItems={selectedItems}
+          setSelectedItems={setSelectedItems}
         />
       )
     },
@@ -169,7 +194,6 @@ const TableSelection = () => {
 
   // ** State
   const [selectedArticles, setSelectedArticles] = useState([])
-  console.log('selectdarticle==>', selectedArticles)
   const [socialFeeds, setSocialFeeds] = useState([])
   const [tags, setTags] = useState([])
   const [fetchTagsFlag, setFetchTagsFlag] = useState([])
@@ -279,13 +303,11 @@ const TableSelection = () => {
   ].filter(Boolean)
 
   const handleEdit = row => {
-    console.log('row', row)
     setSelectedArticle(row)
     setIsEditDialogOpen(true)
   }
 
   const handleView = row => {
-    console.log('row', row.socialFeedlink)
     window.open(row.socialFeedlink, '_blank')
   }
 
@@ -316,17 +338,6 @@ const TableSelection = () => {
             const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
             const selectedCompaniesString = selectedCompetitions.join(', ')
 
-            // const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
-            //   const lastChar = item.slice(-1)
-            //   if (!isNaN(parseInt(lastChar))) {
-            //     return item.slice(0, -1)
-            //   }
-
-            //   return item
-            // })
-
-            // const result = selectedMediaWithoutLastDigit.join(', ')
-
             const selectedTagString = selectedTags.join(', ')
 
             const selectedCitiesString = selectedGeography.join(', ')
@@ -348,8 +359,6 @@ const TableSelection = () => {
                 return i.id
               })
               .join(', ')
-
-            console.log('checnages--done==>')
 
             const headers = {
               'Content-Type': 'application/json',
@@ -738,12 +747,12 @@ const TableSelection = () => {
             {isNotResponsive ? (
               <Box display='flex'>
                 {isMobileView ? null : (
-                  <Box flex='1' p={2} pr={1}>
+                  <Box flex={1} p={2} pr={1}>
                     <DataGrid
                       autoHeight
                       rows={leftSocialFeeds}
                       columns={socialFeedColumns}
-                      pagination={false} // Remove pagination
+                      pagination={false}
                       onRowClick={params => handleRowClick(params)}
                       getRowId={getRowId}
                       hideFooter

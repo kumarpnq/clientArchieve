@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-
 import { useEffect, useState } from 'react'
 
 // ** MUI Imports
@@ -9,7 +8,7 @@ import Divider from '@mui/material/Divider'
 import Container from '@mui/material/Container'
 
 // ** Icon Imports
-import Icon from 'src/@core/components/icon'
+import IconifyIcon from 'src/@core/components/icon'
 
 // ** Components
 import Autocomplete from 'src/layouts/components/Autocomplete'
@@ -130,7 +129,7 @@ const AppBarContent = props => {
         <Box className='actions-left' sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
           {hidden && !settings.navHidden ? (
             <IconButton color='primary' sx={{ ml: -2.75 }} onClick={toggleNavVisibility}>
-              <Icon fontSize='1.5rem' icon='tabler:menu-2' />
+              <IconifyIcon fontSize='1.5rem' icon='tabler:menu-2' />
             </IconButton>
           ) : null}
           {auth.user && <Autocomplete hidden={hidden} settings={settings} />}

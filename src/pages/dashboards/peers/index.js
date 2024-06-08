@@ -60,6 +60,8 @@ const PeersCharts = () => {
     isCompanyIds: true,
     isMedia: true
   })
+  console.log(visibilityPeersData)
+  console.log(visibilityPeersDataError)
 
   // ** Hook
   const theme = useTheme()
