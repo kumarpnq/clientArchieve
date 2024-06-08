@@ -414,7 +414,6 @@ const PerformanceShortChart = props => {
                   <MenuItem onClick={() => setOpenAddPopup(true)}>Add To Custom</MenuItem>
                 )}
                 <MenuItem onClick={event => setAnchorE2(event.currentTarget)}>{chartTitle}</MenuItem>
-                <MenuItem onClick={() => setActiveMenu('count')}>Count</MenuItem>
                 <MenuItem onClick={() => setActiveMenu('filter')}>Filter</MenuItem>
 
                 {activeType === 'chart' ? (

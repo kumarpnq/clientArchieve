@@ -174,7 +174,7 @@ const NegativeTonality = props => {
   }
 
   const data = {
-    labels: chartData.map(data => data.companyName),
+    labels: chartData.map(data => data.companyName.slice(0, 15)),
     datasets: [
       // {
       //   type: 'line',
