@@ -206,12 +206,14 @@ const ClientTonality = props => {
           <TableHead>
             <TableRow sx={{ backgroundColor: 'primary.main' }}>
               <TableCell>Tonality</TableCell>
+              <TableCell>V-Score</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {chartData.map((company, index) => (
               <TableRow key={index}>
                 <TableCell>{company.tonality}</TableCell>
+                <TableCell>{company.vScore}</TableCell>
               </TableRow>
             ))}
           </TableBody>
