@@ -241,7 +241,6 @@ const ToolbarComponent = ({
             .filter(tag => shortCutData?.searchCriteria?.tags.split(',')?.includes(tag))
             .map(tag => tag)
           setSelectedTags(selectedTags)
-          console.log('valuecheck==>', selectedTags)
         }
       } catch (error) {
         console.error('Error fetching user tags:', error)
@@ -255,17 +254,6 @@ const ToolbarComponent = ({
       <Toolbar>
         {isMobile ? (
           <Grid container spacing={2}>
-            {/* <Grid item xs={6}>
-              <Button
-                endIcon={<ExpandMoreIcon />}
-                onClick={e => openDropdown(e, setCompetitionAnchor)}
-                color='inherit'
-                fullWidth
-              >
-                Competition
-              </Button>
-            </Grid> */}
-
             <Grid item xs={6}>
               <Button
                 endIcon={<ExpandMoreIcon />}
@@ -405,7 +393,6 @@ const ToolbarComponent = ({
           }
           {media.map((item, index) => (
             <div key={`${item.publicationId}-${index}`}>
-              {console.log('checing item==>', item)}
               <MenuItem
                 onClick={() => handleMediaSelect(item.publicationId, index)}
                 selected={

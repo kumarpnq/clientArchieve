@@ -10,6 +10,9 @@ import MenuItem from '@mui/material/MenuItem'
 
 // ** third party import
 import axios from 'axios'
+import toast from 'react-hot-toast'
+
+// * custom import
 import { BASE_URL } from 'src/api/base'
 
 // ** redux
@@ -113,9 +116,10 @@ const AddScreen = ({ open, setOpen, reportId, path }) => {
 
       if (response.status === 200) {
         dispatch(setFetchAfterReportsChange(true))
+        toast.success(`Chart successfully added to ${selectedDashboard || title}`)
       }
     } catch (error) {
-      console.log(error)
+      toast.error('Something went wrong')
     }
     handleClose()
   }

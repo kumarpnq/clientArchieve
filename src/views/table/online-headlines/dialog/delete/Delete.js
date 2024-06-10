@@ -17,10 +17,18 @@ import toast from 'react-hot-toast'
 // ** redux import
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import MessageDisplay from 'src/@core/components/Message-display'
 
 const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag, dataFetchFlag }) => {
   const [password, setPassword] = useState('')
   const { response, loading, error, deleteSocialFeeds } = useDelete()
+
+  const [helperText, setHelperText] = useState('')
+
+  const [displayMSG, setDisplayMSG] = useState({
+    message: '',
+    severity: ''
+  })
 
   //redux states
   const selectedClient = useSelector(selectSelectedClient)
@@ -29,7 +37,7 @@ const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag, dataF
   const handleConfirm = async () => {
     // Validate password input
     if (!password.trim()) {
-      toast.error('Please enter your password for confirmation.')
+      setHelperText('Please enter your password')
 
       return
     }
@@ -47,7 +55,6 @@ const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag, dataF
         toast.error('An error occurred while deleting articles')
       }
     } catch (error) {
-      console.error('Delete article error:', error)
       toast.error('An error occurred while deleting articles.')
     }
   }
@@ -82,9 +89,13 @@ const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag, dataF
           value={password}
           onChange={e => setPassword(e.target.value)}
           fullWidth
+          required
+          error={!!helperText}
+          helperText={helperText}
           margin='normal'
         />
       </DialogContent>
+      {/* <MessageDisplay message={displayMSG.message} severity={displayMSG.severity} /> */}
       <DialogActions>
         <Button onClick={onClose} color='primary'>
           Cancel
