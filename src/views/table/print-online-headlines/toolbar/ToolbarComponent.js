@@ -81,20 +81,6 @@ const ToolbarComponent = ({
     setSelectedGeography(allCityIds)
   }
 
-  const handleLanguageClick = languageCode => {
-    prevSelected => {
-      const isAlreadySelected = prevSelected.includes(languageCode)
-
-      if (isAlreadySelected) {
-        // If already selected, remove from the list
-        return Object.entries(languages).filter(([_, languageCode]) => languageCode !== languageCode)
-      } else {
-        // If not selected, add to the list
-        return [...prevSelected, languageCode]
-      }
-    }
-  }
-
   const handleSelectAllLanguage = () => {
     const allLangs = Object.entries(languages).map(([_, languageCode]) => languageCode)
     setSelectedLanguages(allLangs)
@@ -192,7 +178,7 @@ const ToolbarComponent = ({
           const selectedLanguageCodes = languageResponse.data.languages
             .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
             .map(languageCode => languageCode)
-          console.log('checkingshortcut==>', selectedLanguageCodes)
+
           setSelectedLanguages(selectedLanguageCodes)
         }
 
@@ -255,7 +241,6 @@ const ToolbarComponent = ({
             .filter(tag => shortCutData?.searchCriteria?.tags.split(',')?.includes(tag))
             .map(tag => tag)
           setSelectedTags(selectedTags)
-          console.log('valuecheck==>', selectedTags)
         }
       } catch (error) {
         console.error('Error fetching user tags:', error)
@@ -347,31 +332,13 @@ const ToolbarComponent = ({
             </Button>
           </>
         )}
-        {/*
-        <Menu
-          open={Boolean(competitionAnchor)}
-          anchorEl={competitionAnchor}
-          onClose={() => closeDropdown(setCompetitionAnchor)}
-        >
-          <ListItem sx={{ justifyContent: 'space-between' }}>
-            <Button onClick={handleSelectAllCompetitions}>Select All</Button>
-            <Button onClick={() => setSelectedCompanyId([])}>Deselect All</Button>
-          </ListItem>
-          {companies.map(company => (
-            <MenuItem
-              key={company.companyId}
-              onClick={() => handleCheckboxChange(company.companyId)}
-              selected={selectedCompanyId.includes(company.companyId) || company.companyName === priorityCompanyName}
-            >
-              {company.companyName}
-            </MenuItem>
-          ))}
-        </Menu> */}
+
         {/* Geography Dropdown Menu */}
         <Menu
           open={Boolean(geographyAnchor)}
           anchorEl={geographyAnchor}
           onClose={() => closeDropdown(setGeographyAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
         >
           {cities.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
@@ -394,7 +361,12 @@ const ToolbarComponent = ({
         </Menu>
 
         {/* Language Dropdown Menu */}
-        <Menu open={Boolean(languageAnchor)} anchorEl={languageAnchor} onClose={() => closeDropdown(setLanguageAnchor)}>
+        <Menu
+          open={Boolean(languageAnchor)}
+          anchorEl={languageAnchor}
+          onClose={() => closeDropdown(setLanguageAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {Object.entries(languages).length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllLanguage}>Select All</Button>
@@ -415,7 +387,12 @@ const ToolbarComponent = ({
           ))}
         </Menu>
         {/* Media Dropdown Menu */}
-        <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
+        <Menu
+          open={Boolean(mediaAnchor)}
+          anchorEl={mediaAnchor}
+          onClose={() => closeDropdown(setMediaAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
@@ -446,7 +423,12 @@ const ToolbarComponent = ({
         </Menu>
 
         {/* Tags Dropdown Menu */}
-        <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
+        <Menu
+          open={Boolean(tagsAnchor)}
+          anchorEl={tagsAnchor}
+          onClose={() => closeDropdown(setTagsAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>

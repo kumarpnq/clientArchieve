@@ -314,6 +314,7 @@ const ToolbarComponent = ({
           open={Boolean(geographyAnchor)}
           anchorEl={geographyAnchor}
           onClose={() => closeDropdown(setGeographyAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
         >
           {cities.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
@@ -335,7 +336,12 @@ const ToolbarComponent = ({
         </Menu>
 
         {/* Language Dropdown Menu */}
-        <Menu open={Boolean(languageAnchor)} anchorEl={languageAnchor} onClose={() => closeDropdown(setLanguageAnchor)}>
+        <Menu
+          open={Boolean(languageAnchor)}
+          anchorEl={languageAnchor}
+          onClose={() => closeDropdown(setLanguageAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {Object.entries(languages).length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllLanguage}>Select All</Button>
@@ -356,7 +362,12 @@ const ToolbarComponent = ({
           ))}
         </Menu>
         {/* Media Dropdown Menu */}
-        <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
+        <Menu
+          open={Boolean(mediaAnchor)}
+          anchorEl={mediaAnchor}
+          onClose={() => closeDropdown(setMediaAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
@@ -386,7 +397,12 @@ const ToolbarComponent = ({
         </Menu>
         {/* Tags Dropdown Menu */}
 
-        <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
+        <Menu
+          open={Boolean(tagsAnchor)}
+          anchorEl={tagsAnchor}
+          onClose={() => closeDropdown(setTagsAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>

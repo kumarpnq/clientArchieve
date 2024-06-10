@@ -19,6 +19,9 @@ import { BASE_URL } from 'src/api/base'
 // //**lodash
 import { debounce } from 'lodash'
 
+// * third party
+import PerfectScrollbar from 'react-perfect-scrollbar'
+
 const ToolbarComponent = ({
   selectedCompanyId,
   setSelectedCompanyId,
@@ -331,33 +334,12 @@ const ToolbarComponent = ({
           </>
         )}
 
-        {/* <Menu
-          open={Boolean(competitionAnchor)}
-          anchorEl={competitionAnchor}
-          onClose={() => closeDropdown(setCompetitionAnchor)}
-        >
-          {companies.length > 0 && (
-            <ListItem sx={{ justifyContent: 'space-between' }}>
-              <Button onClick={handleSelectAllCompetitions}>Select All</Button>
-              <Button onClick={() => setSelectedCompanyId([])}>Deselect All</Button>
-            </ListItem>
-          )}
-
-          {companies.map(company => (
-            <MenuItem
-              key={company.companyId}
-              onClick={() => handleDropdownItemClick(company.companyId)}
-              selected={selectedCompanyId.includes(company.companyId) || company.companyName === priorityCompanyName}
-            >
-              {company.companyName}
-            </MenuItem>
-          ))}
-        </Menu> */}
         {/* Geography Dropdown Menu */}
         <Menu
           open={Boolean(geographyAnchor)}
           anchorEl={geographyAnchor}
           onClose={() => closeDropdown(setGeographyAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
         >
           {cities.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
@@ -377,7 +359,12 @@ const ToolbarComponent = ({
         </Menu>
 
         {/* Language Dropdown Menu */}
-        <Menu open={Boolean(languageAnchor)} anchorEl={languageAnchor} onClose={() => closeDropdown(setLanguageAnchor)}>
+        <Menu
+          open={Boolean(languageAnchor)}
+          anchorEl={languageAnchor}
+          onClose={() => closeDropdown(setLanguageAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {Object.entries(languages).length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllLanguage}>Select All</Button>
@@ -398,7 +385,12 @@ const ToolbarComponent = ({
           ))}
         </Menu>
         {/* Media Dropdown Menu */}
-        <Menu open={Boolean(mediaAnchor)} anchorEl={mediaAnchor} onClose={() => closeDropdown(setMediaAnchor)}>
+        <Menu
+          open={Boolean(mediaAnchor)}
+          anchorEl={mediaAnchor}
+          onClose={() => closeDropdown(setMediaAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
@@ -428,7 +420,12 @@ const ToolbarComponent = ({
           {/* Add more items as needed */}
         </Menu>
 
-        <Menu open={Boolean(tagsAnchor)} anchorEl={tagsAnchor} onClose={() => closeDropdown(setTagsAnchor)}>
+        <Menu
+          open={Boolean(tagsAnchor)}
+          anchorEl={tagsAnchor}
+          onClose={() => closeDropdown(setTagsAnchor)}
+          PaperProps={{ style: { maxHeight: 300 } }}
+        >
           {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllTags}>Select All</Button>
