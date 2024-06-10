@@ -38,15 +38,17 @@ const DeleteDialog = ({ open, onClose, selectedArticles, setDataFetchFlag, dataF
 
     try {
       await deleteSocialFeeds({ clientId, password, socialFeedIds })
-      response.status.message ? toast.success('Record Deleted') : toast.error(error)
-      onClose()
-      response && setDataFetchFlag(!dataFetchFlag)
+      if (response) {
+        toast.success(response?.status?.message)
+        setPassword('')
+        setDataFetchFlag(!dataFetchFlag)
+        onClose()
+      } else {
+        toast.error('An error occurred while deleting articles')
+      }
     } catch (error) {
       console.error('Delete article error:', error)
       toast.error('An error occurred while deleting articles.')
-    } finally {
-      setDataFetchFlag(!dataFetchFlag)
-      setPassword('')
     }
   }
 
