@@ -46,22 +46,22 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
   // If selectedArticles is not null or empty, proceed with generating the XML or JSON content
   const generateXML = () => {
     const xmlOptions = { compact: true, ignoreComment: true, spaces: 4 }
-  
+
     const xmlContent = selectedArticles.map((article, index) => {
       // Remove unwanted elements from the article object
-      const { socialFeedId,clientId, ...filteredArticle } = article;
-  
+      const { socialFeedId, clientId, ...filteredArticle } = article
+
       const articleObj = {}
       Object.keys(filteredArticle).forEach(key => {
         articleObj[key] = { _text: filteredArticle[key] }
       })
-  
+
       const articleXmlString = xmlJs.js2xml({ article: articleObj }, xmlOptions)
-  
+
       // Add a divider if it's not the first article
       return index === 0 ? articleXmlString : `\n\n<!-- Divider between articles -->\n\n${articleXmlString}`
     })
-  
+
     // Combine all articles
     return `<?xml version="1.0" encoding="UTF-8" ?>
   ${xmlContent.join('\n\n')}`
@@ -70,21 +70,22 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
   const generateJSON = () => {
     if (selectedArticles.length === 1) {
       // Only one article, no need for dividers
-      const { socialFeedId,clientId, ...filteredArticle } = selectedArticles[0];
-      return JSON.stringify(filteredArticle, null, 2);
+      const { socialFeedId, clientId, ...filteredArticle } = selectedArticles[0]
+
+      return JSON.stringify(filteredArticle, null, 2)
     }
-  
+
     const jsonContent = selectedArticles.map((article, index) => {
-      const { articleId, ...filteredArticle } = article;
-      const articleJsonString = JSON.stringify(filteredArticle, null, 2);
-  
+      const { articleId, ...filteredArticle } = article
+      const articleJsonString = JSON.stringify(filteredArticle, null, 2)
+
       // Add a divider if it's not the first article
-      return index === 0 ? articleJsonString : `\n\n// Divider between articles\n\n${articleJsonString}`;
-    });
-  
+      return index === 0 ? articleJsonString : `\n\n// Divider between articles\n\n${articleJsonString}`
+    })
+
     // Combine all articles
-    return `[${jsonContent.join(',')}]`;
-  };
+    return `[${jsonContent.join(',')}]`
+  }
 
   const getContent = () => {
     return feedType === 'xml' ? generateXML() : generateJSON()

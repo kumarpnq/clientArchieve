@@ -42,6 +42,7 @@ const SelectBox = props => {
         }
       })
     }
+
     // setIsMenuSelected({ [itemrow]: true })
   }
 
@@ -61,6 +62,7 @@ const SelectBox = props => {
             key={item[renderKey]}
             onClick={(e, v) => {
               handelMenuSelected(item[renderKey])
+
               // e.target.setAttribute('checked', true)
               // handleItemSelect(item[renderKey])
             }}

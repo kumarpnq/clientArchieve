@@ -193,6 +193,7 @@ const TableSelection = () => {
       field: 'Grp',
       renderCell: params => {
         const publications = params.row.publications || []
+
         return (
           <SelectBox
             icon={<Icon icon='ion:add' />}
