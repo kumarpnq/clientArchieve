@@ -24,6 +24,8 @@ const useConditionalFetchReports = props => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  // console.log("error")
+
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 
