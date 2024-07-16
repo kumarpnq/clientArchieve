@@ -78,7 +78,7 @@ const OptionsMenu = props => {
         })}
         {...menuProps}
       >
-        {options.map((option, index) => {
+        {options?.map((option, index) => {
           if (typeof option === 'string') {
             return (
               <MenuItem key={index} onClick={handleClose}>

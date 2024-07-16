@@ -28,7 +28,7 @@ const ClientListDropdown = () => {
 
   // Automatically select the client with the minimum sortOrder on mount
   useEffect(() => {
-    if (clientList.length > 0 && !selectedClient) {
+    if (clientList?.length > 0 && !selectedClient) {
       const clientWithMinSortOrder = clientList.reduce(
         (minClient, currentClient) => (currentClient.sortOrder < minClient.sortOrder ? currentClient : minClient),
         clientList[0]

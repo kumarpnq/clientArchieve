@@ -83,7 +83,7 @@ const renderArticle = params => {
         </Typography>
       </CustomTooltip>
       <Typography noWrap variant='caption'>
-        {row.publication}
+        {row.publications[0].name}
         <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
       </Typography>
     </Box>
@@ -191,17 +191,20 @@ const TableSelection = () => {
       minWidth: 5,
       headerName: 'Grp',
       field: 'Grp',
-      renderCell: params => (
-        <SelectBox
-          icon={<Icon icon='ion:add' />}
-          iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
-          renderItem='publicationName'
-          renderKey='publicationId'
-          menuItems={publications}
-          selectedItems={selectedItems}
-          setSelectedItems={setSelectedItems}
-        />
-      )
+      renderCell: params => {
+        const publications = params.row.publications || []
+        return (
+          <SelectBox
+            icon={<Icon icon='ion:add' />}
+            iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
+            renderItem='name'
+            renderKey='id'
+            menuItems={publications}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
+        )
+      }
     },
     {
       flex: 0.6,
@@ -210,7 +213,6 @@ const TableSelection = () => {
       headerName: 'Article',
       renderCell: renderArticle
     },
-
     {
       flex: 0.1,
       minWidth: 5,
@@ -229,7 +231,6 @@ const TableSelection = () => {
                 }
               }
             },
-
             {
               text: 'Edit Detail',
               menuItemProps: {

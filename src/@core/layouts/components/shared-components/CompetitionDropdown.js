@@ -26,7 +26,7 @@ const Competition = props => {
   const shortCutData = useSelector(selectShortCut)
 
   const competitionSelection = userData.clientArchiveRoles
-    .filter(i => i.name === 'competition')
+    ?.filter(i => i.name === 'competition')
     .map(i => i.option)
     .join()
 
