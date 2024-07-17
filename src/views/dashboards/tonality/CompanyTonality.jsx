@@ -21,7 +21,7 @@ import Paper from '@mui/material/Paper'
 import IconifyIcon from 'src/@core/components/icon'
 
 // ** apex charts
-import ReactApexCharts from 'react-apexcharts'
+// import ReactApexCharts from 'react-apexcharts'
 import { Bar } from 'react-chartjs-2'
 import { Chart, registerables } from 'chart.js'
 

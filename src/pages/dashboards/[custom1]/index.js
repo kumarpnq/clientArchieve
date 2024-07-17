@@ -1,3 +1,4 @@
+'use client'
 import { useRouter } from 'next/router'
 import { Fragment } from 'react'
 import { useEffect, useState } from 'react'

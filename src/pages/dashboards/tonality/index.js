@@ -1,4 +1,4 @@
-// ** MUI Import
+'use client'
 import Grid from '@mui/material/Grid'
 
 // ** Custom Component Import
