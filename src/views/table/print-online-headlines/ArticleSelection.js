@@ -195,7 +195,7 @@ const TableSelection = () => {
       field: 'Grp',
       renderCell: params => (
         <SelectBox
-          icon={<Icon icon='ion:add' />}
+          icon={publications.length !== 1 ? <Icon icon='ion:add' /> : null}
           iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
           renderItem='publicationName'
           renderKey='publicationId'
