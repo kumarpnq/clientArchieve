@@ -30,7 +30,7 @@ import { toBlob } from 'html-to-image'
 import jsPDF from 'jspdf'
 import * as XLSX from 'xlsx'
 
-// ** custom imports
+
 import usePath from 'src/@core/utils/usePath'
 import useRemoveChart from 'src/@core/utils/useRemoveChart'
 import AddScreen from 'src/custom/AddScreenPopup'
