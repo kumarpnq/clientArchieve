@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable lines-around-comment */
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
