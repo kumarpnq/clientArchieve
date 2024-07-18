@@ -56,6 +56,9 @@ import 'src/iconify-bundle/icons-bundle-react'
 // ** Global css styles
 import '../../styles/globals.css'
 
+//hooks
+import useAutoLogout from '../hooks/useAutoLogout'
+
 const clientSideEmotionCache = createEmotionCache()
 
 // ** Pace Loader
@@ -84,6 +87,8 @@ const Guard = ({ children, authGuard, guestGuard }) => {
 // ** Configure JSS & ClassName
 const App = props => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+
+  useAutoLogout(60000)
 
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false
