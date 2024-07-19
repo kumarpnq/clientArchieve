@@ -88,7 +88,7 @@ const Guard = ({ children, authGuard, guestGuard }) => {
 const App = props => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
-  useAutoLogout(60000)
+  useAutoLogout(60000) // Invoke the hook here
 
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false
