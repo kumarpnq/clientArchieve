@@ -21,7 +21,7 @@ const useAutoLogout = (timeout = 60000) => {
         if (response?.status === 200) {
           window.localStorage.removeItem('userData')
           window.localStorage.removeItem('accessToken')
-          router.push('/login')
+          window.location.href = '/login'
         } else {
           console.error('Failed to logout:', response.status, response.statusText)
         }
