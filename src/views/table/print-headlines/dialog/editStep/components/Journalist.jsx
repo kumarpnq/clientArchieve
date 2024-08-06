@@ -50,7 +50,6 @@ const JournalistStepper = ({ articles, onCancel, handleClose, setFetchFlag }) =>
 
       handleClose()
     } catch (error) {
-      console.log(error)
       toast.error('Error:', error.message)
     }
   }
@@ -90,11 +89,11 @@ const JournalistStepper = ({ articles, onCancel, handleClose, setFetchFlag }) =>
         </Grid>
         {/* Save and Cancel Buttons */}
         <Grid item xs={12} container justifyContent='flex-end'>
-          <Button color='primary' onClick={handleSaveChanges}>
-            Save
-          </Button>
           <Button color='primary' onClick={handleClose} sx={{ marginLeft: 2 }}>
             Close
+          </Button>
+          <Button sx={{ ml: 1, bgcolor: 'primary.main', color: 'text.secondary' }} onClick={handleSaveChanges}>
+            Save
           </Button>
         </Grid>
       </Grid>

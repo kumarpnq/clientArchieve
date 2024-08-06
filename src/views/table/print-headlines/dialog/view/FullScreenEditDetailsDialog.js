@@ -7,9 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import PublicationInfo from './PublicationInfo'
 
-import CircularProgress from '@mui/material/CircularProgress'
 import PublicationLogo from './PublicationLogo'
-import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import StepperMain from '../editStep/StepperMain'
@@ -27,7 +25,7 @@ const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fe
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='4xl' fullWidth>
-      <IconButton aria-label='close' onClick={handleClose} style={{ position: 'absolute', right: 2, top: 2 }}>
+      <IconButton aria-label='close' onClick={handleClose} style={{ position: 'absolute', right: 4, top: 2 }}>
         <CloseIcon />
       </IconButton>
 

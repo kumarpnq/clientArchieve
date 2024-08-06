@@ -864,6 +864,7 @@ const TableSelection = () => {
                       pagination={false} // Remove pagination
                       onRowClick={params => handleRowClick(params)}
                       getRowId={getRowId}
+                      disableRowSelectionOnClick
                       hideFooter
                     />
                   </Box>
@@ -878,6 +879,7 @@ const TableSelection = () => {
                     pagination={false} // Remove pagination
                     onRowClick={params => handleRowClick(params)}
                     getRowId={getRowId}
+                    disableRowSelectionOnClick
                     hideFooter
                   />
                 </Box>
@@ -898,6 +900,7 @@ const TableSelection = () => {
                 pagination={false} // Remove pagination
                 onRowClick={params => handleRowClick(params)}
                 getRowId={getRowId}
+                disableRowSelectionOnClick
                 hideFooter
               />
             )}

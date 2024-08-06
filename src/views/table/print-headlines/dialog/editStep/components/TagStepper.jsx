@@ -1,7 +1,6 @@
 // ArticleTagEdit.js
 import React, { useEffect, useState } from 'react'
 import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
 import useUpdateClientTagsToCompanyForArticles from 'src/api/print-headlines/tags/useUpdateClientTagsToCompanyForArticles'
@@ -91,7 +90,6 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
         setFetchTagsFlag(prev => !prev)
       }
     } catch (error) {
-      console.log(error)
       toast.error('something wrong')
     }
   }
@@ -125,11 +123,15 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
         })}
       </Box>
       <Grid container justifyContent='flex-end' sx={{ marginTop: 2 }}>
-        <Button color='primary' onClick={handleSaveDetails}>
-          Save
-        </Button>
-        <Button color='primary' onClick={handleClose} sx={{ marginLeft: 2 }}>
+        <Button color='primary' onClick={handleClose} variant='outlined'>
           Cancel
+        </Button>
+        <Button
+          onClick={handleSaveDetails}
+          variant='outlined'
+          sx={{ ml: 1, bgcolor: 'primary.main', color: 'text.secondary' }}
+        >
+          Save
         </Button>
       </Grid>
     </Box>

@@ -26,6 +26,7 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
+import { Box } from '@mui/material'
 
 const steps = [
   {
@@ -76,8 +77,6 @@ const Step = styled(MuiStep)(({ theme }) => ({
 }))
 
 const StepperMain = ({ articles, fetchFlag, setFetchFlag, handleClose }) => {
-  console.log(fetchFlag)
-
   // ** States
   const [activeStep, setActiveStep] = useState(0)
 
@@ -151,7 +150,7 @@ const StepperMain = ({ articles, fetchFlag, setFetchFlag, handleClose }) => {
           </Stepper>
         </StepperWrapper>
       </StepperHeaderContainer>
-      <CardContent sx={{ pt: theme => `${theme.spacing(6)} !important` }}>{renderContent()}</CardContent>
+      <CardContent sx={{ pt: theme => `${theme.spacing(6)} !important`, width: '100%' }}>{renderContent()}</CardContent>
     </Card>
   )
 }

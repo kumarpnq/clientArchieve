@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 
-const useAutoLogout = (timeout = 60000) => {
+const useAutoLogout = (timeout = 20 * 60 * 1000) => {
   const router = useRouter()
   const timer = useRef(null)
 

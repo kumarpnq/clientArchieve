@@ -37,6 +37,7 @@ const PublicationInfo = ({ articles }) => {
               color='primary'
               component='div'
               sx={{
+                width: '70%',
                 whiteSpace: 'nowrap' /* Prevent text from wrapping */,
                 overflow: 'hidden' /* Hide overflow */,
                 animation: 'roll 10s linear infinite' /* Animation duration and timing */,

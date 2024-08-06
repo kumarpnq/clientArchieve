@@ -76,7 +76,7 @@ const MultiViewNonProtected = ({ articleCodeFromTab }) => {
         setTextContent(response.data)
         setCachedContent(prev => ({ ...prev, text: response.data }))
       } catch (error) {
-        console.error('Error fetching text content:', error)
+        console.error('Error fetching text content:', error.message)
       }
     }
 
