@@ -1,5 +1,5 @@
 // ** React Importu
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -164,6 +164,8 @@ const TableSelection = () => {
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
 
+  const MemoizedCheckbox = React.memo(({ onClick, checked }) => <Checkbox onClick={onClick} checked={checked} />)
+
   const articleColumns = [
     {
       flex: 0.1,
@@ -171,7 +173,7 @@ const TableSelection = () => {
       headerName: 'Select',
       field: 'select',
       renderCell: params => (
-        <Checkbox
+        <MemoizedCheckbox
           onClick={e => {
             e.stopPropagation()
             handleSelect(params.row)
@@ -261,8 +263,7 @@ const TableSelection = () => {
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
-  const [selectedDuration, setSelectedDuration] = useState(null)
-  const [isEditDialogOpen, setEditDialogOpen] = useState(false)
+
   const getRowId = row => row.articleId
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(100)
@@ -638,30 +639,26 @@ const TableSelection = () => {
     }
   }, [pageCheck, articles, allCheck])
 
-  const handleSelect = article => {
-    // Check if the article is already selected
-    const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
+  const handleSelect = useCallback(
+    article => {
+      setSelectedArticles(prevSelectedArticles => {
+        const isSelected = prevSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
 
-    // Update selectedArticles based on whether the article is already selected or not
-    setSelectedArticles(prevSelectedArticles => {
-      let updatedSelectedArticles = []
-      if (isSelected) {
-        updatedSelectedArticles = prevSelectedArticles.filter(
-          selectedArticle => selectedArticle.articleId !== article.articleId
-        )
-      } else {
-        updatedSelectedArticles = [...prevSelectedArticles, article]
-      }
+        const updatedSelectedArticles = new Set(prevSelectedArticles)
 
-      const isPageFullySelected = articles.every(article =>
-        updatedSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
-      )
+        if (isSelected) {
+          updatedSelectedArticles.delete(article)
+        } else {
+          updatedSelectedArticles.add(article)
+        }
 
-      setPageCheck(isPageFullySelected)
+        setPageCheck(articles.every(a => updatedSelectedArticles.has(a)))
 
-      return updatedSelectedArticles
-    })
-  }
+        return [...updatedSelectedArticles]
+      })
+    },
+    [articles]
+  )
 
   const handleLeftPagination = () => {
     if (currentPage > 1) {
@@ -800,6 +797,7 @@ const TableSelection = () => {
           <>
             {isNotResponsive ? (
               <Box display='flex'>
+                {/* left column */}
                 {isMobileView ? null : (
                   <Box flex='1' p={2} pr={1}>
                     <DataGrid
@@ -840,7 +838,7 @@ const TableSelection = () => {
 
                   return true
                 })}
-                pagination={false} // Remove pagination
+                pagination={false}
                 onRowClick={params => handleRowClick(params)}
                 getRowId={getRowId}
                 disableRowSelectionOnClick

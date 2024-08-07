@@ -24,6 +24,7 @@ import jsPDF from 'jspdf'
 
 // ** Third Party Imports
 import { Line } from 'react-chartjs-2'
+import { BASE_URL } from 'src/api/base'
 
 const ChartjsLineChart = props => {
   const [companies, setCompanies] = useState([])
@@ -36,13 +37,11 @@ const ChartjsLineChart = props => {
   const [loadingJPG, setLoadingJPG] = useState(false)
   const [loadingPDF, setLoadingPDF] = useState(false)
 
-  const BASE_URL = 'http://51.68.220.77:8001'
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const storedToken = localStorage.getItem('accessToken')
   const priorityCompanyId = selectedClient ? selectedClient.priorityCompanyId : ''
 
-  // let priorityCompanyName = 'TATA CONSTRUCTION & PROJECTS PROJECTS'
   useEffect(() => {
     if (companyListByClients.length > 0) {
       const counts = companyListByClients.map(item => Math.max(...item.dailyCounts.map(subItem => subItem.count)))
@@ -162,7 +161,7 @@ const ChartjsLineChart = props => {
       try {
         const storedToken = localStorage.getItem('accessToken')
         if (storedToken) {
-          const response = await axios.get('http://51.68.220.77:8001/companyListByClient/', {
+          const response = await axios.get(`${BASE_URL}/companyListByClient/`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
@@ -189,7 +188,7 @@ const ChartjsLineChart = props => {
     axios
       .get(URL, { headers })
       .then(response => setPriorityCompanyListByClients(response.data.mediaCoverageCounts))
-      .catch(err => console.log(err))
+      .catch(err => console.log(err.message))
   }
 
   useEffect(() => {
@@ -220,7 +219,7 @@ const ChartjsLineChart = props => {
         const response = await axios.get(URL, { headers })
         setCompanyListByClients(response.data.mediaCoverageCounts)
       } catch (error) {
-        console.error(error)
+        console.error(error.message)
       }
     }
     fetchPrintMediaCoverage()
@@ -299,7 +298,7 @@ const ChartjsLineChart = props => {
 
       setLoadingPDF(false)
     } catch (error) {
-      console.error('Error generating PDF:', error)
+      console.error('Error generating PDF:', error.message)
       setLoadingPDF(false)
     }
   }

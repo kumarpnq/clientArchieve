@@ -28,7 +28,7 @@ const ChartjsPolarAreaChart = props => {
   const [loadingPDF, setLoadingPDF] = useState(false)
 
   // ** Props
-  const { shareOfVoiceData, primary, yellow, warning, info, grey, green, legendColor } = props
+  const { shareOfVoiceData, tableLoading, primary, yellow, warning, info, grey, green, legendColor } = props
 
   // Define an array of colors
   const additionalColors = ['#ff5050', '#3399ff', '#ff6600', '#33cc33', '#9933ff', '#ffcc00']
@@ -193,18 +193,6 @@ const ChartjsPolarAreaChart = props => {
               <MenuItem onClick={() => handleClick('radar')} selected={activeChart === 'radar'}>
                 Radar
               </MenuItem>
-              {/* <MenuItem onClick={() => handleClick('doughnut')} selected={activeChart === 'Doughnut'}>
-                Doughnut
-              </MenuItem>
-              <MenuItem onClick={() => handleClick('bubble')} selected={activeChart === 'Bubble'}>
-                Bubble
-              </MenuItem>
-              <MenuItem onClick={() => handleClick('pie')} selected={activeChart === 'pie'}>
-                Pie
-              </MenuItem>
-              <MenuItem onClick={() => handleClick('scatter')} selected={activeChart === 'scatter'}>
-                Scatter
-              </MenuItem> */}
             </Menu>
           </Box>
         }
@@ -226,17 +214,16 @@ const ChartjsPolarAreaChart = props => {
         </MenuItem>
       </Menu>
       <CardContent id='chart-polar-container'>
-        {
+        {tableLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <CircularProgress />
+          </Box>
+        ) : (
           (activeChart === 'polar' && <PolarArea data={data} height={350} options={options} />) ||
-            (activeChart === 'bar' && <Bar data={data} height={350} options={options} />) ||
-            (activeChart === 'line' && <Line data={data} height={350} options={options} />) ||
-            (activeChart === 'radar' && <Radar data={data} height={350} options={options} />)
-
-          // (activeChart === 'doughnut' && <Doughnut data={data} height={350} options={options} />) ||
-          // (activeChart === 'bubble' && <Bubble data={data} height={350} options={options} />) ||
-          // (activeChart === 'pie' && <Pie data={data} height={350} options={options} />) ||
-          // (activeChart === 'scatter' && <Scatter data={data} height={350} options={options} />)}
-        }
+          (activeChart === 'bar' && <Bar data={data} height={350} options={options} />) ||
+          (activeChart === 'line' && <Line data={data} height={350} options={options} />) ||
+          (activeChart === 'radar' && <Radar data={data} height={350} options={options} />)
+        )}
       </CardContent>
     </Card>
   )

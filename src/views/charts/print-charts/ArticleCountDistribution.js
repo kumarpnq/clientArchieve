@@ -23,10 +23,10 @@ import * as XLSX from 'xlsx'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { BASE_URL } from 'src/api/base'
 
 const ArticleCountDistribution = () => {
   const [printArticleCountDistribution, setPrintArticleCountDistribution] = useState([])
-  const BASE_URL = 'http://51.68.220.77:8001'
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   useEffect(() => {
@@ -48,14 +48,14 @@ const ArticleCountDistribution = () => {
       axios
         .get(URL, { headers })
         .then(response => setPrintArticleCountDistribution(response.data.articleCounts))
-        .catch(error => console.log(error))
+        .catch(error => console.log(error.message))
     }
     fetchPrintArticleCountDistribution()
   }, [clientId])
 
   const sliderRef = useRef(null)
   const [currentPage, setCurrentPage] = useState(1)
-  const [slidesToShow, setSlidesToShow] = useState(2) // Change this to 2 for two columns
+  const [slidesToShow, setSlidesToShow] = useState(2)
   const totalTables = Math.ceil(printArticleCountDistribution.length / slidesToShow)
 
   const settings = {

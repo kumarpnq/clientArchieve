@@ -9,8 +9,9 @@ import axios from 'axios'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { BASE_URL } from 'src/api/base'
 
-const ChartsAppBar = ({ setSelectedDateRange, selectedCity, setSelectedCity }) => {
+const ChartsAppBar = ({ selectedDateRange, setSelectedDateRange, selectedCity, setSelectedCity }) => {
   const [dateMenuAnchorEl, setDateMenuAnchorEl] = useState(null)
   const [citiesMenuAnchorEl, setCitiesMenuAnchorEl] = useState(null)
   const [city, setCity] = useState([])
@@ -47,13 +48,14 @@ const ChartsAppBar = ({ setSelectedDateRange, selectedCity, setSelectedCity }) =
     const allCity = city.map(item => item.cityId)
     setSelectedCity(allCity)
   }
+
   useEffect(() => {
     const fetchCities = async () => {
       try {
         const storedToken = localStorage.getItem('accessToken')
         if (storedToken) {
           // Fetch cities
-          const citiesResponse = await axios.get('http://51.68.220.77:8001/citieslist/', {
+          const citiesResponse = await axios.get(`${BASE_URL}/citieslist/`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             }
@@ -110,10 +112,21 @@ const ChartsAppBar = ({ setSelectedDateRange, selectedCity, setSelectedCity }) =
           open={Boolean(dateMenuAnchorEl)}
           onClose={handleDateMenuClose}
         >
-          <MenuItem onClick={() => handleMenuItemClick('today')}>Today</MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick('lastWeek')}>Last Week</MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick('lastMonth')}>Last Month</MenuItem>
-          <MenuItem onClick={() => handleMenuItemClick('lastThreeMonth')}>Last 3 Months</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('today')} selected={selectedDateRange === 'today'}>
+            Today
+          </MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('lastWeek')} selected={selectedDateRange === 'lastWeek'}>
+            Last Week
+          </MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('lastMonth')} selected={selectedDateRange === 'lastMonth'}>
+            Last Month
+          </MenuItem>
+          <MenuItem
+            onClick={() => handleMenuItemClick('lastThreeMonth')}
+            selected={selectedDateRange === 'lastThreeMonth'}
+          >
+            Last 3 Months
+          </MenuItem>
         </Menu>
 
         {/* Cities menu */}

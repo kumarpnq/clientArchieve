@@ -12,6 +12,7 @@ import {
   selectSelectedClient,
   selectShortCut
 } from 'src/store/apps/user/userSlice'
+import IconifyIcon from 'src/@core/components/icon'
 
 const Competition = props => {
   const { settings } = props
@@ -87,7 +88,7 @@ const Competition = props => {
   return (
     <Fragment>
       <IconButton onClick={handleIconClick} color='primary' aria-haspopup='true'>
-        <BusinessIcon fontSize='1.625rem' />
+        <IconifyIcon fontSize='1.5rem' icon='icon-park-outline:list' />
       </IconButton>
       <Menu
         open={Boolean(anchorEl)}

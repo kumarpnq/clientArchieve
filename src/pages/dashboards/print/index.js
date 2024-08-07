@@ -44,12 +44,14 @@ const ChartJS = () => {
   const [selectedDateRange, setSelectedDateRange] = useState('')
   const [selectedCity, setSelectedCity] = useState([])
   const [shareOfVoiceData, setShareOfVoiceData] = useState([])
+  const [tableLoading, setTableLoading] = useState(false)
 
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 
   const fetchArticlesStatsForCompetition = async () => {
     try {
+      setTableLoading(true)
       const storedToken = localStorage.getItem('accessToken')
 
       let headers = {
@@ -66,6 +68,8 @@ const ChartJS = () => {
       setShareOfVoiceData(response?.data?.statistics || [])
     } catch (error) {
       console.log('Error in fetching article stats for competition', error)
+    } finally {
+      setTableLoading(false)
     }
   }
   useEffect(() => {
@@ -108,15 +112,7 @@ const ChartJS = () => {
   return (
     <DatePickerWrapper>
       <Grid container spacing={6} className='match-height'>
-        <PageHeader
-          title={
-            <Typography variant='h4'>
-              <LinkStyled href='https://github.com/reactchartjs/react-chartjs-2' target='_blank'>
-                Print Dashboard
-              </LinkStyled>
-            </Typography>
-          }
-        />
+        <PageHeader title={<Typography variant='h4'>Print Dashboard</Typography>} />
         <Grid item xs={12}>
           <ArticleCountDistribution />
         </Grid>
@@ -133,6 +129,7 @@ const ChartJS = () => {
         </Grid>
         <Grid item xs={12}>
           <ChartsAppBar
+            selectedDateRange={selectedDateRange}
             setSelectedDateRange={setSelectedDateRange}
             selectedCity={selectedCity}
             setSelectedCity={setSelectedCity}
@@ -143,6 +140,7 @@ const ChartJS = () => {
           {/* Pass color variables as props */}
           <ChartjsPolarAreaChart
             shareOfVoiceData={shareOfVoiceData}
+            tableLoading={tableLoading}
             legendColor={legendColor}
             primary={primaryColor}
             yellow={yellowColor}

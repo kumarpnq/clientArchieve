@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react'
 import DateRangeIcon from '@mui/icons-material/DateRange'
-import { IconButton, Popover, Stack, Box, Button } from '@mui/material'
+import { IconButton, Popover, Stack, Box, Button, Typography } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
@@ -8,11 +8,16 @@ import ClearIcon from '@mui/icons-material/Clear'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { selectSelectedStartDate, selectSelectedEndDate, setSelectedDateRange } from 'src/store/apps/user/userSlice'
+import dayjs from 'dayjs'
 
 const DateBar = () => {
   const dispatch = useDispatch()
   const selectedStartDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
+
+  const formattedStartDate = selectedStartDate ? dayjs(selectedStartDate).format('DD/MM/YYYY') : null
+  const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('DD/MM/YYYY') : null
+
   const [anchorEl, setAnchorEl] = useState(null)
 
   const handleIconClick = event => {
@@ -27,8 +32,19 @@ const DateBar = () => {
     dispatch(setSelectedDateRange({ startDate, endDate }))
   }
 
+  const DateRangeComponent = () => {
+    return (
+      <Typography
+        component={'span'}
+        fontSize={'0.8em'}
+        sx={{ color: 'primary.main', letterSpacing: '1px' }}
+      >{`${formattedStartDate} - ${formattedEndDate}`}</Typography>
+    )
+  }
+
   return (
     <Fragment>
+      <DateRangeComponent />
       <IconButton onClick={handleIconClick} color='primary' aria-haspopup='true'>
         <DateRangeIcon fontSize='1.625rem' />
       </IconButton>
