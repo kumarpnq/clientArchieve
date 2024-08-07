@@ -51,7 +51,7 @@ const useVisibilityCount = props => {
           (endpoint === '/reportingSubjectVscore/' && response.data.reportingSubjectVscore)
         setChartData(data)
       } catch (error) {
-        console.log(error)
+        console.log(error.message)
         setError(error)
       } finally {
         setLoading(false)

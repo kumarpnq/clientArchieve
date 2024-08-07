@@ -136,12 +136,10 @@ const ToolbarComponent = ({
   }
 
   const handleSearchChange = event => {
-    console.log('event==>', event.target.value)
     setSearchTerm(event.target.value)
   }
 
   const handleSearchChangeTags = event => {
-    console.log('event==>', event.target.value)
     setSearchTermtags(event.target.value)
   }
 
@@ -178,7 +176,6 @@ const ToolbarComponent = ({
           const selectedLanguageCodes = languageResponse.data.languages
             .filter(languageCode => shortCutData?.searchCriteria?.language?.includes(languageCode.id))
             .map(languageCode => languageCode)
-          console.log('checkingshortcut==>', selectedLanguageCodes)
           setSelectedLanguage(selectedLanguageCodes)
         }
 

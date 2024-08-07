@@ -88,8 +88,6 @@ const NotificationDropdown = () => {
   const clientId = selectedClient ? selectedClient.clientId : null
   const [clientData, setClientData] = useState(null)
 
-  console.log('checing=>', clientData)
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -104,7 +102,6 @@ const NotificationDropdown = () => {
           }
         })
         setClientData(response.data.jobList)
-        console.log('response==>', response.data.jobList)
       } catch (error) {
         console.error('Error fetching data:', error)
       }

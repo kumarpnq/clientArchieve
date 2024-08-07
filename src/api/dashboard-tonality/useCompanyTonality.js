@@ -59,7 +59,7 @@ const useTonality = props => {
         )
       } catch (error) {
         setError(error)
-        console.log(error)
+        console.log(error.message)
       } finally {
         setLoading(false)
       }

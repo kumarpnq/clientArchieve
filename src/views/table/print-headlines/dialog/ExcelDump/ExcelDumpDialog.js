@@ -298,8 +298,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     searchCriteria.fromDate = formattedStartDate
     searchCriteria.toDate = formattedEndDate
 
-    console.log('articleid==>', articleIds)
-
     const postDataParams = {
       clientId,
       selectedFields,

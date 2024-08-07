@@ -83,7 +83,7 @@ const renderArticle = params => {
         </Typography>
       </CustomTooltip>
       <Typography noWrap variant='caption'>
-        {row.publications[0].name}
+        {row.publication}
         <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
       </Typography>
     </Box>
@@ -164,12 +164,6 @@ const TableSelection = () => {
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
 
-  const publications = [
-    { publicationName: 'The Hindu', publicationId: 'hindu' },
-    { publicationName: 'The Muslim', publicationId: 'muslim' },
-    { publicationName: 'The Christian', publicationId: 'christian' }
-  ]
-
   const articleColumns = [
     {
       flex: 0.1,
@@ -192,17 +186,17 @@ const TableSelection = () => {
       headerName: 'Grp',
       field: 'Grp',
       renderCell: params => {
-        const publications = params.row.publications || []
+        const publications = params.row.children || []
 
         return (
           <SelectBox
             icon={<Icon icon='ion:add' />}
             iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
-            renderItem='name'
-            renderKey='id'
+            renderItem='publicationName'
+            renderKey='articleId'
             menuItems={publications}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
+            selectedItems={selectedArticles}
+            setSelectedItems={setSelectedArticles}
           />
         )
       }
@@ -264,8 +258,6 @@ const TableSelection = () => {
   })
   const [selectedFilter, setSelectedFilter] = useState('1D')
 
-  // const [selectedStartDate, setSelectedStartDate] = useState(null)
-  // const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
@@ -277,10 +269,7 @@ const TableSelection = () => {
 
   const shortCutData = useSelector(selectShortCut)
 
-  // const [selectedCompanyIds, setSelectedCompanyIds] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
-
-  // setSelectedMedia([shortCutData?.searchCriteria?.media])
 
   const [selectedTag, setSelectedTag] = useState([])
   const [selectedCities, setSelectedCities] = useState([])
@@ -370,7 +359,6 @@ const TableSelection = () => {
 
   const [clearAdvancedSearchField, setClearAdvancedSearchField] = useState(false)
 
-  //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const shortCutFlags = useSelector(selectShortCutFlag)
 
@@ -379,12 +367,9 @@ const TableSelection = () => {
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
 
-  // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
 
   const [loading, setLoading] = useState(true)
-
-  // Fetch social feeds based on the provided API
 
   //user shortcut
   useEffect(() => {
@@ -638,33 +623,6 @@ const TableSelection = () => {
     setIsSearchBarVisible(prev => !prev)
   }
 
-  const handleDelete = () => {
-    // Add your delete logic here
-    console.log('Delete action triggered')
-  }
-
-  const handleEmail = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
-  const handleRssFeed = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
-  const handleFilter1D = () => {
-    setSelectedDuration(1)
-  }
-
-  const handleFilter7D = () => {
-    setSelectedDuration(7)
-  }
-
-  const handleFilter1M = () => {
-    setSelectedDuration(30)
-  }
-
   const [isPopupOpen, setPopupOpen] = useState(false)
 
   const handleRowClick = params => {
@@ -688,21 +646,17 @@ const TableSelection = () => {
     setSelectedArticles(prevSelectedArticles => {
       let updatedSelectedArticles = []
       if (isSelected) {
-        // If article is already selected, remove it from the selection
         updatedSelectedArticles = prevSelectedArticles.filter(
           selectedArticle => selectedArticle.articleId !== article.articleId
         )
       } else {
-        // If article is not selected, add it to the selection
         updatedSelectedArticles = [...prevSelectedArticles, article]
       }
 
-      // Check if all articles on the page are selected or not
       const isPageFullySelected = articles.every(article =>
         updatedSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
       )
 
-      // Update the page check state based on the page selection status
       setPageCheck(isPageFullySelected)
 
       return updatedSelectedArticles
@@ -727,7 +681,7 @@ const TableSelection = () => {
 
     if (!isNaN(newRecordsPerPage) && newRecordsPerPage > 0) {
       setRecordsPerPage(newRecordsPerPage)
-      setCurrentPage(1) // Reset current page when changing records per page
+      setCurrentPage(1)
     }
   }
 
@@ -738,13 +692,11 @@ const TableSelection = () => {
     setSelectedTag([])
     setSelectedLanguages([])
 
-    //ArticleListToolbar
     setSelectedEditionType([])
     setSelectedPublicationType([])
     setSelectedSortBy(null)
     setClearAdvancedSearchField(true)
 
-    //selected Article
     setSelectedArticles([])
   }
 
@@ -798,13 +750,6 @@ const TableSelection = () => {
         setSearchQuery={setSearchQuery}
         isSearchBarVisible={isSearchBarVisible}
         toggleSearchBarVisibility={toggleSearchBarVisibility}
-        handleDelete={handleDelete}
-        handleEmail={handleEmail}
-        handleRssFeed={handleRssFeed}
-        openFilterPopover={openFilterPopover}
-        handleFilter1D={handleFilter1D}
-        handleFilter7D={handleFilter7D}
-        handleFilter1M={handleFilter1M}
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
         selectedStartDate={selectedFromDate}
@@ -889,8 +834,6 @@ const TableSelection = () => {
                 autoHeight
                 rows={articles}
                 columns={articleColumns.filter(column => {
-                  // Check if it's mobile view and exclude only the "Select" and "Edit" columns
-
                   column.field !== 'select' &&
                     column.field !== 'edit' &&
                     !(column.field === 'date' && isNarrowMobileView)

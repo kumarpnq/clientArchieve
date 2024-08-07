@@ -34,7 +34,7 @@ export const useDelete = () => {
       setLoading(false)
     } catch (error) {
       setError(error.message)
-      console.log(error)
+      console.log(error.message)
       setLoading(false)
     }
   }

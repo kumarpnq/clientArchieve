@@ -50,7 +50,6 @@ const DossierDownload = ({
   const [email, setEmail] = useState('')
   const [companyName, setCompanyName] = useState('')
   const [subject, setSubject] = useState('')
-  console.log('subject==>', subject)
   const [dossierType, setDossierType] = useState('word')
   const [selectedEmail, setSelectedEmail] = useState([])
   const [mailList, setMailList] = useState([])

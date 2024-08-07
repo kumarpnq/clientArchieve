@@ -5,7 +5,6 @@ const updateClientTagsToCompany = async (clientId, companyId, clientTags, stored
   try {
     const url = 'http://51.68.220.77:8001/updateClientTagsToCompany/'
     const requestData = { clientId, companyId, clientTags }
-    console.log(clientId, companyId, clientTags)
 
     const response = await axios.post(url, requestData, {
       headers: { Authorization: `Bearer ${storedToken}` }

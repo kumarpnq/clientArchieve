@@ -69,7 +69,6 @@ const ShortcutsDropdown = props => {
 
   // ** Props
   const { shortcuts, settings } = props
-  console.log('props==>', shortcuts)
 
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
@@ -89,7 +88,6 @@ const ShortcutsDropdown = props => {
   const handleDropdownClose = shortcut => {
     setAnchorEl(null)
     dispatch(setShotCutPrint(shortcut))
-    console.log('shortcut==?', shortcut)
     if (shortcut?.screenName === 'bothHeadlines') {
       router.push('/headlines/print-online/')
     } else if (shortcut?.screenName === 'printHeadlines') {

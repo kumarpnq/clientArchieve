@@ -6,13 +6,6 @@ import Card from '@mui/material/Card'
 const AnalyticsWordCloud = () => {
   const { clientWiseWordCloud, loading } = useClientWiseWordCloud()
 
-  // const callbacks = {
-  //   getWordColor: word => (word.value > 50 ? 'blue' : 'red'),
-  //   onWordClick: console.log,
-  //   onWordMouseOver: console.log,
-  //   getWordTooltip: word => `${word.text} (${word.value}) [${word.value > 50 ? 'good' : 'bad'}]`
-  // }
-
   const options = {
     rotations: 2,
     rotationAngles: [-90, 0],

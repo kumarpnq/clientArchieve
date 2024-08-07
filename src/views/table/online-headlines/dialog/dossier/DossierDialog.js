@@ -50,7 +50,6 @@ const DossierDialog = ({
   const [email, setEmail] = useState('')
   const [companyName, setCompanyName] = useState('')
   const [subject, setSubject] = useState('')
-  console.log('subject==>', dataForDossierDownload)
   const [dossierType, setDossierType] = useState('word')
   const [selectedEmail, setSelectedEmail] = useState([])
   const [mailList, setMailList] = useState([])

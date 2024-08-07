@@ -31,7 +31,7 @@ const useFetchCompetition = () => {
           setCompetitions(response.data.companies)
           setLoading(false)
         } catch (error) {
-          console.log(error)
+          console.log(error.message)
           setCompetitions([])
           setError(error)
           setLoading(false)

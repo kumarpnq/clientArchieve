@@ -32,7 +32,6 @@ const useAutoNotification = () => {
 
       const completeJobs = jobData.length && jobData.filter(item => item.jobStatus === 'Completed')
       const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing')
-      console.log('testcode==>', completeJobs)
       if (completeJobs.length) {
         completeJobs.forEach(item => {
           toast.success(

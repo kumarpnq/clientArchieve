@@ -134,7 +134,6 @@ const ToolbarComponent = ({
   }
 
   const handleSearchChangeTags = event => {
-    console.log('event==>', event.target.value)
     setSearchTermtags(event.target.value)
   }
 
@@ -144,7 +143,6 @@ const ToolbarComponent = ({
   }
 
   const handleSearchChange = event => {
-    console.log('event==>', event.target.value)
     setSearchTerm(event.target.value)
   }
 
@@ -407,7 +405,6 @@ const ToolbarComponent = ({
           }
           {media.map((item, index) => (
             <div key={`${item.publicationId}-${index}`}>
-              {console.log('checing item==>', item)}
               <MenuItem
                 onClick={() => handleMediaSelect(item.publicationId, index)}
                 selected={

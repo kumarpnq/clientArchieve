@@ -1,5 +1,5 @@
 import { Box, IconButton, Menu, MenuItem } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 const SelectBox = props => {
   const { icon, iconButtonProps, menuItems = [], selectedItems = [], setSelectedItems, renderItem, renderKey } = props
@@ -8,47 +8,23 @@ const SelectBox = props => {
   const [anchorE1, setAnchorE1] = useState(null)
   const [isMenuSelected, setIsMenuSelected] = useState({})
 
-  // Handle item select function
+  const handelMenuSelected = item => {
+    const itemKey = item[renderKey]
+    const isSelected = selectedItems.some(selectedItem => selectedItem[renderKey] === itemKey)
 
-  // const handleItemSelect = itemKey => {
-  //   const selectedIndex = selectedItems.indexOf(itemKey)
-  //   let newSelected = []
-
-  //   if (selectedIndex === -1) {
-  //     // Item not yet selected, add it to selectedItems
-  //     newSelected = [...selectedItems, itemKey]
-  //   } else {
-  //     // Item already selected, remove it from selectedItems
-  //     newSelected = selectedItems.filter(key => key !== itemKey)
-  //   }
-
-  //   // Update selectedItems state
-  //   setSelectedItems(newSelected)
-  // }
-
-  const handelMenuSelected = itemrow => {
-    if (isMenuSelected[itemrow]) {
-      setIsMenuSelected(prv => {
-        return {
-          ...prv,
-          [itemrow]: false
-        }
-      })
+    let updatedSelectedItems
+    if (isSelected) {
+      updatedSelectedItems = selectedItems.filter(selectedItem => selectedItem[renderKey] !== itemKey)
     } else {
-      setIsMenuSelected(prv => {
-        return {
-          ...prv,
-          [itemrow]: true
-        }
-      })
+      updatedSelectedItems = [...selectedItems, item]
     }
 
-    // setIsMenuSelected({ [itemrow]: true })
+    setSelectedItems(updatedSelectedItems)
+    setIsMenuSelected(prevState => ({
+      ...prevState,
+      [itemKey]: !isSelected
+    }))
   }
-
-  useEffect(() => {
-    console.log('menusle==>', isMenuSelected)
-  }, [isMenuSelected])
 
   return (
     <Box>
@@ -60,12 +36,7 @@ const SelectBox = props => {
         {menuItems.map(item => (
           <MenuItem
             key={item[renderKey]}
-            onClick={(e, v) => {
-              handelMenuSelected(item[renderKey])
-
-              // e.target.setAttribute('checked', true)
-              // handleItemSelect(item[renderKey])
-            }}
+            onClick={() => handelMenuSelected(item)}
             selected={isMenuSelected[item[renderKey]]}
           >
             {item[renderItem]}

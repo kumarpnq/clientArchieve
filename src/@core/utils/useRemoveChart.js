@@ -6,8 +6,6 @@ const useRemoveChart = () => {
   const dispatch = useDispatch()
 
   const handleRemoveFromChartList = (DB, chartId) => {
-    console.log(chartId)
-    console.log(DB)
     dispatch(removeChart(DB, chartId))
   }
 
