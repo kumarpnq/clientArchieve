@@ -33,6 +33,7 @@ import ArticleCountDistribution from 'src/views/charts/print-charts/ArticleCount
 import TopNewsToday from 'src/views/charts/print-charts/TopNewsToday'
 import TopNewsForCompetitors from 'src/views/charts/print-charts/TopNewsForCompetitors'
 import useScreenPermissions from 'src/hooks/useScreenPermissions'
+import { BASE_URL } from 'src/api/base'
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
@@ -44,7 +45,6 @@ const ChartJS = () => {
   const [selectedCity, setSelectedCity] = useState([])
   const [shareOfVoiceData, setShareOfVoiceData] = useState([])
 
-  const BASE_URL = 'http://51.68.220.77:8001'
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 

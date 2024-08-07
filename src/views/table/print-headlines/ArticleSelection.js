@@ -806,7 +806,7 @@ const TableSelection = () => {
                       autoHeight
                       rows={leftArticles}
                       columns={articleColumns}
-                      pagination={false} // Remove pagination
+                      pagination={false}
                       onRowClick={params => handleRowClick(params)}
                       getRowId={getRowId}
                       disableRowSelectionOnClick
@@ -821,7 +821,7 @@ const TableSelection = () => {
                     autoHeight
                     rows={rightArticles}
                     columns={articleColumns}
-                    pagination={false} // Remove pagination
+                    pagination={false}
                     onRowClick={params => handleRowClick(params)}
                     getRowId={getRowId}
                     disableRowSelectionOnClick

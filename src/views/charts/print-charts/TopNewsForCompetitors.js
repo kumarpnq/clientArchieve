@@ -22,6 +22,7 @@ import axios from 'axios'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { BASE_URL } from 'src/api/base'
 
 const TopNewsForCompetitors = () => {
   const [topNews, setTopNews] = useState([])
@@ -42,7 +43,7 @@ const TopNewsForCompetitors = () => {
       try {
         const storedToken = localStorage.getItem('accessToken')
         if (storedToken) {
-          const response = await axios.get('http://51.68.220.77:8001/companyListByClient/', {
+          const response = await axios.get(`${BASE_URL}/companyListByClient/`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
@@ -67,7 +68,7 @@ const TopNewsForCompetitors = () => {
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
         if (storedToken) {
-          const response = await axios.get('http://51.68.220.77:8001/latestArticlesForCompetition/', {
+          const response = await axios.get(`${BASE_URL}/latestArticlesForClientCompany/`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
