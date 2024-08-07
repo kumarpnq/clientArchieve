@@ -107,11 +107,15 @@ const JournalistStepper = ({ socialFeed, onCancel, handleClose }) => {
         </Grid>
         {/* Save and Cancel Buttons */}
         <Grid item xs={12} container justifyContent='flex-end'>
-          <Button color='primary' onClick={handleSaveChanges}>
-            Save
-          </Button>
-          <Button color='primary' onClick={onCancel} sx={{ marginLeft: 2 }}>
+          <Button color='primary' variant='outlined' onClick={onCancel} sx={{ marginLeft: 2 }}>
             Close
+          </Button>
+          <Button
+            variant='outlined'
+            sx={{ bgcolor: 'primary.main', color: 'text.primary', ml: 2 }}
+            onClick={handleSaveChanges}
+          >
+            Save
           </Button>
         </Grid>
       </Grid>

@@ -1,7 +1,6 @@
 // PublicationLogo.js
 
 import React, { useState, useEffect } from 'react'
-import Typography from '@mui/material/Typography'
 import axios from 'axios'
 import Card from '@mui/material/Card'
 import { BASE_URL } from 'src/api/base'
@@ -52,11 +51,11 @@ const PublicationLogo = ({ articles }) => {
 
   return (
     <Card sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 1 }}>
-      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={20} width={150} />
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={15} width={150} />
 
-      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={20} width={150} />
+      {/* <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={20} width={150} /> */}
 
-      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={20} width={150} />
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={15} width={150} />
     </Card>
   )
 }

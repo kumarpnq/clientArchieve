@@ -20,10 +20,7 @@ import ToolbarComponent from './toolbar/ToolbarComponent'
 import EditDialog from './dialog/EditDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
 
-// ** MUI icons
-
 // ** Article Database
-// import { articles } from './Db-Articles'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
@@ -33,7 +30,7 @@ import Pagination from './OnlineHeadlinePagination'
 import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import {
   selectSelectedClient,
   selectSelectedCompetitions,
@@ -46,6 +43,8 @@ import OptionsMenu from 'src/@core/components/option-menu'
 import { BASE_URL } from 'src/api/base'
 import { Icon } from '@iconify/react'
 import SelectBox from 'src/@core/components/select'
+import ArticleView from './dialog/article-view/view'
+import Grid from './table-grid/Grid'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -109,6 +108,7 @@ const renderSocialFeed = params => {
 const TableSelection = () => {
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
+  const [openArticleView, setOpenArticleView] = useState(false)
 
   const publications = [
     { publicationName: 'The Hindu', publicationId: 'hindu' },
@@ -140,7 +140,7 @@ const TableSelection = () => {
       renderCell: params => (
         <SelectBox
           icon={<Icon icon='ion:add' />}
-          iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
+          iconButtonProps={{ sx: { color: publications.length ? 'primary.main' : 'primary' } }}
           renderItem='publicationName'
           renderKey='publicationId'
           menuItems={publications}
@@ -181,6 +181,15 @@ const TableSelection = () => {
                   handleView(params.row)
                 }
               }
+            },
+            {
+              text: 'Article View',
+              menuItemProps: {
+                onClick: () => {
+                  setSelectedArticle(params.row)
+                  setOpenArticleView(true)
+                }
+              }
             }
           ]}
         />
@@ -213,8 +222,6 @@ const TableSelection = () => {
     ignoreThis: ''
   })
 
-  // const [selectedStartDate, setSelectedStartDate] = useState(null)
-  // const [selectedEndDate, setSelectedEndDate] = useState(null)
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
@@ -233,7 +240,6 @@ const TableSelection = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const getRowId = row => row.socialFeedId
 
-  // const [selectedCompanyId, setSelectedCompanyId] = useState([])
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState([])
   const [selectedMedia, setSelectedMedia] = useState('')
@@ -310,8 +316,6 @@ const TableSelection = () => {
   const handleView = row => {
     window.open(row.socialFeedlink, '_blank')
   }
-
-  // const shortCutFlags = useSelector(selectShortCutFlag)
 
   //user shortcut
   useEffect(() => {
@@ -543,37 +547,10 @@ const TableSelection = () => {
     setIsSearchBarVisible(prev => !prev)
   }
 
-  const handleDelete = () => {
-    // Add your delete logic here
-    console.log('Delete action triggered')
-  }
-
-  const handleEmail = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
-  const handleImage = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
-  const handleDownload = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
-  const handleRssFeed = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
   const [selectedArticle, setSelectedArticle] = useState(null)
-  const [isPopupOpen, setPopupOpen] = useState(false)
 
   const handleRowClick = params => {
     setSelectedArticle(params.row)
-    setPopupOpen(true)
   }
 
   useEffect(() => {
@@ -694,13 +671,8 @@ const TableSelection = () => {
         setSearchQuery={setSearchQuery}
         isSearchBarVisible={isSearchBarVisible}
         toggleSearchBarVisibility={toggleSearchBarVisibility}
-        handleDelete={handleDelete}
-        handleEmail={handleEmail}
-        handleImage={handleImage}
         setSelectedEditionType={setSelectedEditionType}
         selectedPublicationType={selectedPublicationType}
-        handleDownload={handleDownload}
-        handleRssFeed={handleRssFeed}
         openFilterPopover={openFilterPopover}
         filterPopoverAnchor={filterPopoverAnchor}
         closeFilterPopover={closeFilterPopover}
@@ -737,73 +709,29 @@ const TableSelection = () => {
         </Box>
       )}
       {/* DataGrid */}
-      <Box p={2}>
-        {loading ? (
-          <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            {isNotResponsive ? (
-              <Box display='flex'>
-                {isMobileView ? null : (
-                  <Box flex={1} p={2} pr={1}>
-                    <DataGrid
-                      autoHeight
-                      rows={leftSocialFeeds}
-                      columns={socialFeedColumns}
-                      pagination={false}
-                      onRowClick={params => handleRowClick(params)}
-                      getRowId={getRowId}
-                      hideFooter
-                    />
-                  </Box>
-                )}
-
-                {/* Right Column */}
-                <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
-                  <DataGrid
-                    autoHeight
-                    rows={rightSocialFeeds}
-                    columns={socialFeedColumns}
-                    pagination={false} // Remove pagination
-                    onRowClick={params => handleRowClick(params)}
-                    getRowId={getRowId}
-                    hideFooter
-                  />
-                </Box>
-              </Box>
-            ) : (
-              <DataGrid
-                autoHeight
-                rows={socialFeeds}
-                columns={socialFeedColumns.filter(column => {
-                  // Check if it's mobile view and exclude only the "Select" and "Edit" columns
-                  if (isMobileView) {
-                    return column.field !== 'select' && column.field !== 'edit' && !isNarrowMobileView
-                  }
-
-                  return true
-                })}
-                pagination={false} // Remove pagination
-                onRowClick={params => handleRowClick(params)}
-                getRowId={getRowId}
-                hideFooter
-              />
-            )}
-            {socialFeeds.length > 0 && ( // Only render pagination if there are articles
-              <Pagination
-                paginationModel={paginationModel}
-                currentPage={currentPage}
-                recordsPerPage={recordsPerPage}
-                handleLeftPagination={handleLeftPagination}
-                handleRightPagination={handleRightPagination}
-                handleRecordsPerPageUpdate={handleRecordsPerPageChange}
-              />
-            )}
-          </>
-        )}
-      </Box>
+      <Grid
+        loading={loading}
+        leftSocialFeeds={leftSocialFeeds}
+        rightSocialFeeds={rightSocialFeeds}
+        socialFeeds={socialFeeds}
+        getRowId={getRowId}
+        handleSelect={handleSelect}
+        handleEdit={handleEdit}
+        handleView={handleView}
+        setSelectedArticle={setSelectedArticle}
+        setOpenArticleView={setOpenArticleView}
+        selectedArticles={selectedArticles}
+        selectedItems={selectedItems}
+        setSelectedItems={setSelectedItems}
+        renderSocialFeed={renderSocialFeed}
+        paginationModel={paginationModel}
+        currentPage={currentPage}
+        recordsPerPage={recordsPerPage}
+        handleLeftPagination={handleLeftPagination}
+        handleRightPagination={handleRightPagination}
+        handleRecordsPerPageChange={handleRecordsPerPageChange}
+        handleRowClick={handleRowClick}
+      />
 
       <EditDialog
         fetchTagsFlag={fetchTagsFlag}
@@ -811,6 +739,12 @@ const TableSelection = () => {
         setFetchTagsFlag={setFetchTagsFlag}
         open={isEditDialogOpen}
         socialFeed={selectedArticle}
+      />
+      <ArticleView
+        open={openArticleView}
+        setOpen={setOpenArticleView}
+        article={selectedArticle}
+        setArticle={setSelectedArticle}
       />
     </Card>
   )

@@ -42,7 +42,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 // ** Demo Imports
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import { useDispatch } from 'react-redux'
-import { setShortCutFlag, shortCutFlag } from 'src/store/apps/user/userSlice'
+import { setShortCutFlag } from 'src/store/apps/user/userSlice'
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -212,7 +212,7 @@ const LoginPage = () => {
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      placeholder='admin@vuexy.com'
+                      placeholder='your@email.com'
                       error={Boolean(errors.email)}
                       {...(errors.email && { helperText: errors.email.message })}
                     />

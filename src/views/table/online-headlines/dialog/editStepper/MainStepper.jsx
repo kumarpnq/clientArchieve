@@ -150,7 +150,7 @@ const MainStepper = ({ socialFeed, fetchTagsFlag, setFetchTagsFlag, handleClose 
           </Stepper>
         </StepperWrapper>
       </StepperHeaderContainer>
-      <CardContent sx={{ pt: theme => `${theme.spacing(6)} !important` }}>{renderContent()}</CardContent>
+      <CardContent sx={{ pt: theme => `${theme.spacing(6)} !important`, width: '100%' }}>{renderContent()}</CardContent>
     </Card>
   )
 }

@@ -89,10 +89,14 @@ const JournalistStepper = ({ articles, onCancel, handleClose, setFetchFlag }) =>
         </Grid>
         {/* Save and Cancel Buttons */}
         <Grid item xs={12} container justifyContent='flex-end'>
-          <Button color='primary' onClick={handleClose} sx={{ marginLeft: 2 }}>
+          <Button color='primary' onClick={handleClose} sx={{ marginLeft: 2 }} variant='outlined'>
             Close
           </Button>
-          <Button sx={{ ml: 1, bgcolor: 'primary.main', color: 'text.secondary' }} onClick={handleSaveChanges}>
+          <Button
+            sx={{ ml: 1, bgcolor: 'primary.main', color: 'text.secondary' }}
+            variant='outlined'
+            onClick={handleSaveChanges}
+          >
             Save
           </Button>
         </Grid>

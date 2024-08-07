@@ -139,11 +139,15 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
           })}
         </Box>
         <Grid container justifyContent='flex-end' sx={{ marginTop: 2 }}>
-          <Button color='primary' onClick={handleSaveDetails}>
-            Save
-          </Button>
-          <Button color='primary' onClick={handleClose} sx={{ marginLeft: 2 }}>
+          <Button color='primary' variant='outlined' onClick={handleClose} sx={{ marginLeft: 2 }}>
             Cancel
+          </Button>
+          <Button
+            variant='outlined'
+            sx={{ bgcolor: 'primary.main', color: 'text.primary', ml: 2 }}
+            onClick={handleSaveDetails}
+          >
+            Save
           </Button>
         </Grid>
       </TableContainer>

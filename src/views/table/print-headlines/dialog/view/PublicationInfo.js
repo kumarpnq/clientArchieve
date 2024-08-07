@@ -29,34 +29,16 @@ const PublicationInfo = ({ articles }) => {
   return (
     <Card sx={{ padding: '7px' }}>
       <Paper elevation={0} sx={{ flexGrow: 1, textAlign: 'left', padding: '7px' }}>
-        <Grid container justifyContent='space-between' alignItems='center'>
-          {/* Left side heading */}
-          <Grid item xs={8}>
-            <Typography
-              variant='h7'
-              color='primary'
-              component='div'
-              sx={{
-                width: '70%',
-                whiteSpace: 'nowrap' /* Prevent text from wrapping */,
-                overflow: 'hidden' /* Hide overflow */,
-                animation: 'roll 10s linear infinite' /* Animation duration and timing */,
-                '@keyframes roll': {
-                  from: { transform: 'translateX(100%)' } /* Start from the right edge */,
-                  to: { transform: 'translateX(-100%)' } /* Move to the left edge */
-                }
-              }}
-            >
-              {articles.headline}
-            </Typography>
-          </Grid>
-          {/* Right side date */}
-          <Grid item>
-            <Typography variant='subtitle1' color='primary'>
-              {formattedDate}
-            </Typography>
-          </Grid>
-        </Grid>
+        <Typography
+          component={'div'}
+          display={'flex'}
+          alignItems={'center'}
+          justifyContent={'space-between'}
+          sx={{ bgcolor: 'primary.main', color: 'text.primary', borderRadius: '2px', px: 1 }}
+        >
+          <Typography variant='h7'>{articles.headline}</Typography>
+          <Typography variant='subtitle1'>{formattedDate}</Typography>
+        </Typography>
       </Paper>
       {/* <Divider sx={{ marginBottom: 2 }} /> */}
       <Grid container spacing={2} sx={{ paddingLeft: 2, paddingRight: 2 }}>

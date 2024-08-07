@@ -1,36 +1,17 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-
-// import IconButton from '@mui/material/IconButton'
-// import TextField from '@mui/material/TextField'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-
-// import SearchIcon from '@mui/icons-material/Search'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EmailIcon from '@mui/icons-material/Email'
 import DownloadIcon from '@mui/icons-material/Download'
-
-// import ImageIcon from '@mui/icons-material/Image'
-// import DownloadIcon from '@mui/icons-material/Download'
 import RssFeedIcon from '@mui/icons-material/RssFeed'
-
-// import DateRangeIcon from '@mui/icons-material/DateRange'
 import Button from '@mui/material/Button'
-
-// import Divider from '@mui/material/Divider'
-// import Popover from '@mui/material/Popover'
-// import Stack from '@mui/material/Stack'
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-// import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
-// import { DatePicker } from '@mui/x-date-pickers/DatePicker'
-// import ClearIcon from '@mui/icons-material/Clear'
-// import Box from '@mui/material/Box'
 import SvgIcon from '@mui/material/SvgIcon'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
-// import dayjs from 'dayjs'
+// * components
 import AdvancedSearchForm from '../dialog/advancedSearch/AdvancedSearchForm'
 import DeleteDialog from '../dialog/delete/Delete'
 import EmailDialog from '../dialog/email/EmailDialog'
@@ -141,57 +122,13 @@ const ExcelDumpIcon = () => (
   </SvgIcon>
 )
 
-// // 1D Icon
-// const OneDIcon = props => (
-//   <SvgIcon {...props}>
-//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-//       1D
-//     </text>
-//   </SvgIcon>
-// )
-
-// // 7D Icon
-// const SevenDIcon = props => (
-//   <SvgIcon {...props}>
-//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-//       7D
-//     </text>
-//   </SvgIcon>
-// )
-
-// // 1M Icon
-// const OneMIcon = props => (
-//   <SvgIcon {...props}>
-//     <text x='50%' y='50%' fontSize='14px' text-anchor='middle' alignment-baseline='middle'>
-//       1M
-//     </text>
-//   </SvgIcon>
-// )
-
 const ArticleListToolbar = ({
-  setSearchQuery,
-  isSearchBarVisible,
-  toggleSearchBarVisibility,
-  handleDelete,
-  handleEmail,
-  handleImage,
   selectedStartDate,
   selectedEndDate,
   selectedPublicationType,
   selectedEditionType,
   setSelectedEditionType,
   setSelectedPublicationType,
-
-  // handleDownload,
-  handleRssFeed,
-  openFilterPopover,
-  filterPopoverAnchor,
-  closeFilterPopover,
-
-  // selectedStartDate,
-  // setSelectedStartDate,
-  // selectedEndDate,
-  // setSelectedEndDate,
   primaryColor,
   setSearchParameters,
   selectedArticles,
@@ -208,44 +145,8 @@ const ArticleListToolbar = ({
 }) => {
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
 
-  console.log('articleheadline==?', dataForDump)
-
   // tools visibility
   const { isDossierVisible, isMailVisible, isExcelDumpVisible } = useToolPermission()
-
-  // const [selectedFilter, setSelectedFilter] = useState('1D')
-
-  // // Helper function to calculate date by subtracting days from the current date
-  // const calculateDate = days => dayjs().subtract(days, 'day')
-
-  // // Function to handle 1D filter
-  // const handleFilter1D = () => {
-  //   const startDate = calculateDate(1)
-  //   setSelectedStartDate(startDate)
-  //   setSelectedEndDate(startDate)
-  //   setSelectedFilter('1D')
-  // }
-
-  // // Function to handle 7D filter
-  // const handleFilter7D = () => {
-  //   const startDate = calculateDate(7)
-  //   setSelectedStartDate(startDate)
-  //   setSelectedEndDate(dayjs()) // Set end date to today
-  //   setSelectedFilter('7D')
-  // }
-
-  // // Function to handle 1M filter
-  // const handleFilter1M = () => {
-  //   const startDate = calculateDate(30)
-  //   setSelectedStartDate(startDate)
-  //   setSelectedEndDate(dayjs()) // Set end date to today
-  //   setSelectedFilter('1M')
-  // }
-
-  // // useEffect to set default date for 1D filter and highlight the icon when component mounts
-  // useEffect(() => {
-  //   handleFilter1D()
-  // }, []) // Empty dependency array to run the effect only once
 
   const [isAdvancedSearchOpen, setIsAdvancedSearchOpen] = useState(false)
 
@@ -388,14 +289,12 @@ const ArticleListToolbar = ({
         const data = await response.json()
         setEditionTypes(data.editionTypesList)
       } catch (error) {
-        console.error('Error fetching edition types:', error)
-
-        // Handle error appropriately, e.g., display an error message to the user
+        console.error('Error fetching edition types:', error, message)
       }
     }
 
     fetchEditionTypes()
-  }, []) // Fetch edition types only once on component mount
+  }, [])
 
   const handleEditionTypeClick = event => {
     setEditionTypeMenuOpen(event.currentTarget)
@@ -424,22 +323,22 @@ const ArticleListToolbar = ({
         // If not selected, add to the list
         return [...prevSelected, publicationType]
       }
-    })}
+    })
+  }
 
+  const handleEditionTypeSelection = editionType => {
+    setSelectedEditionType(prevSelected => {
+      const isAlreadySelected = prevSelected.includes(editionType)
 
-    const handleEditionTypeSelection = editionType => {
-      setSelectedEditionType(prevSelected => {
-        const isAlreadySelected = prevSelected.includes(editionType)
-  
-        if (isAlreadySelected) {
-          // If already selected, remove from the list
-          return prevSelected.filter(id => id !== editionType)
-        } else {
-          // If not selected, add to the list
-          return [...prevSelected, editionType]
-        }
-      })}
-      
+      if (isAlreadySelected) {
+        // If already selected, remove from the list
+        return prevSelected.filter(id => id !== editionType)
+      } else {
+        // If not selected, add to the list
+        return [...prevSelected, editionType]
+      }
+    })
+  }
 
   return (
     <Toolbar
@@ -453,17 +352,7 @@ const ArticleListToolbar = ({
           Feed List
         </Typography>
       )}
-      {/* {isSearchBarVisible && (
-        <TextField
-          label='Search Articles'
-          variant='outlined'
-          size='small'
-          onChange={e => setSearchQuery(e.target.value)}
-        />
-      )}
-      <Button onClick={toggleSearchBarVisibility} sx={{ color: primaryColor, mr: 0 }}>
-        <SearchIcon />
-      </Button> */}
+
       {/* advance search */}
       <CustomTooltip title='Advance Search'>
         <Button sx={{ color: primaryColor, mr: 0 }} onClick={handleAdvancedSearchOpen}>
@@ -497,12 +386,13 @@ const ArticleListToolbar = ({
               <EmailIcon />
             </Button>
           </CustomTooltip>
-          <EmailDialog 
-          pageCheck={pageCheck}
-          allCheck={allCheck}
-          open={isEmailDialogOpen}
-           onClose={handleEmailDialogClose} 
-           dataForMail={dataForDump} />{' '}
+          <EmailDialog
+            pageCheck={pageCheck}
+            allCheck={allCheck}
+            open={isEmailDialogOpen}
+            onClose={handleEmailDialogClose}
+            dataForMail={dataForDump}
+          />{' '}
         </Fragment>
       )}
       {/* dossier download */}

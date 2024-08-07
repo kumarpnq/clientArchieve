@@ -26,7 +26,6 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 // ** Styled Components
 import StepperWrapper from 'src/@core/styles/mui/stepper'
-import { Box } from '@mui/material'
 
 const steps = [
   {
