@@ -328,7 +328,12 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
       setSelectedEmails([])
     }
   }
-  if (!dataForMail || dataForMail.length === 0) {
+
+  const hasArticleIdOrPageOrAll = dataForMail.some(
+    item => (item.articleId && item.articleId.length > 0) || item.selectPageorAll
+  )
+
+  if (!hasArticleIdOrPageOrAll) {
     return (
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>

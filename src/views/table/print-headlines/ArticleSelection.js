@@ -45,10 +45,8 @@ import FullScreenJPGDialog from './dialog/view/FullScreenJPGDialog'
 import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
 import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDialog'
-import Pagination from './Pagination'
 import { BASE_URL } from 'src/api/base'
 import axios from 'axios'
-import SelectBox from 'src/@core/components/select'
 import TableGrid from './table-grid/TableGrid'
 
 // Your CustomTooltip component
@@ -259,7 +257,7 @@ const TableSelection = () => {
     },
     {
       selectPageorAll:
-        (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : 'A'
+        (pageCheck && currentPage) || (allCheck && 'A') ? (pageCheck && currentPage) || (allCheck && 'A') : false
     },
     {
       page: currentPage

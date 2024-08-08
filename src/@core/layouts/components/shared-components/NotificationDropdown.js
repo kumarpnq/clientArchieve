@@ -159,6 +159,11 @@ const NotificationDropdown = () => {
     }
   }
 
+  // * color variables
+  const red = '#FFB6C1' // Light Red
+  const green = '#90EE90' // Light Green
+  const yellow = '#FFFFE0' // Light Yellow
+
   return (
     <Fragment>
       <IconButton color='primary' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
@@ -230,9 +235,9 @@ const NotificationDropdown = () => {
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Box
                               component='span'
-                              bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                              bgcolor={job.jobStatus === 'Processing' ? yellow : green}
                               color='text.primary'
-                              borderRadius='20%'
+                              borderRadius='2px'
                               px={2}
                               ml={1}
                             >
@@ -273,9 +278,9 @@ const NotificationDropdown = () => {
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Box
                               component='span'
-                              bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                              bgcolor={job.jobStatus === 'Processing' ? yellow : green}
                               color='text.primary'
-                              borderRadius='20%'
+                              borderRadius='2px'
                               px={2}
                               ml={1}
                             >
@@ -319,9 +324,9 @@ const NotificationDropdown = () => {
                       </Typography> */}
                             <Box
                               component='span'
-                              bgcolor={job.jobStatus === 'Processing' ? 'yellow' : 'green'}
+                              bgcolor={job.jobStatus === 'Processing' ? yellow : green}
                               color='text.primary'
-                              borderRadius='20%'
+                              borderRadius='2px'
                               px={2}
                               ml={1}
                             >

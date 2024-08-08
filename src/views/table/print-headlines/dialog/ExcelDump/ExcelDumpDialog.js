@@ -419,7 +419,11 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     }
   }
 
-  if (!dataForExcelDump || dataForExcelDump.length === 0) {
+  const hasArticleIdOrPageOrAll = dataForExcelDump.some(
+    item => (item.articleId && item.articleId.length > 0) || item.selectPageorAll
+  )
+
+  if (!hasArticleIdOrPageOrAll) {
     return (
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
