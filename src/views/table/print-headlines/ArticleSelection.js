@@ -405,9 +405,7 @@ const TableSelection = () => {
           // Format start and end dates
           const formatDateTimes = (date, setTime, isEnd) => {
             let formattedDate = date
-            if (isEnd) {
-              formattedDate = date.add(1, 'day')
-            }
+
             const isoString = formattedDate.toISOString().slice(0, 10)
             const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
 

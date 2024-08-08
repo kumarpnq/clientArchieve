@@ -1,10 +1,8 @@
-// src/@core/layouts/components/shared-components/DaysJumper.js
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectShortCut, setSelectedDateRange } from 'src/store/apps/user/userSlice'
 import SvgIcon from '@mui/material/SvgIcon'
 import dayjs from 'dayjs'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 
 // Generic Icon component
@@ -47,8 +45,15 @@ const DaysJumper = ({ settings }) => {
   }
 
   const handleFilterChange = (days, label) => {
-    const startDate = calculateDate(days)
-    dispatch(setSelectedDateRange({ startDate, endDate: dayjs() }))
+    let startDate = calculateDate(days)
+
+    if (label === '1D' || label === '7D') {
+      startDate = startDate.add(1, 'day')
+    }
+
+    const endDate = dayjs()
+
+    dispatch(setSelectedDateRange({ startDate, endDate }))
     setSelectedDayFilter(label)
   }
 

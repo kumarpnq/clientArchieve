@@ -414,8 +414,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
 
     if (responseData) {
       toast.success(responseData.message)
-    } else if (responseData?.message) {
-      toast.success(responseData.message)
+    } else {
+      toast.success('Something went wrong.')
     }
   }
 

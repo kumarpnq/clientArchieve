@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectFetchAutoStatusFlag, selectSelectedClient, setFetchAutoStatusFlag } from 'src/store/apps/user/userSlice'
 import toast from 'react-hot-toast'
 
-// this hook (useAutoNotification) is using inside the NotificationDropdown.js
 const useAutoNotification = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const fetchAutoStatusFlag = useSelector(selectFetchAutoStatusFlag)
@@ -38,15 +37,7 @@ const useAutoNotification = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
               <span>Job: {item.jobName}</span>
               <span>Status: {item.jobStatus}</span>
-              {/* {`Job: ${item.jobName}. Status: ${item.jobStatus}.`}, */}
-              <a
-                className=''
-                key={item.jobId}
-                href={`example/link/${item.jobId}`}
-                target='_blank'
-                rel='noopener noreferrer'
-                style={{}}
-              >
+              <a className='' key={item.jobId} href={`example/link/${item.jobId}`} target='_blank' rel='noopener'>
                 {` DownloadLink`}
               </a>
             </div>,
@@ -55,7 +46,6 @@ const useAutoNotification = () => {
           )
         })
 
-        // Check if all jobs have a status of 'Completed'
         if (jobData.length && keepFetching) {
           dispatch(setFetchAutoStatusFlag(true))
         } else {

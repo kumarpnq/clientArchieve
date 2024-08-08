@@ -26,6 +26,7 @@ const useExcelDump = screenType => {
       const response = await axios.post(`${BASE_URL}/excelDumpRequest`, requestData, {
         headers: { Authorization: `Bearer ${storedToken}` }
       })
+      setError(null)
       setResponseData(response.data)
     } catch (error) {
       setError(error.message)

@@ -1,5 +1,15 @@
 import React, { useState, Fragment, useEffect } from 'react'
-import { IconButton, Badge, Typography, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+import {
+  IconButton,
+  Badge,
+  Typography,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Container
+} from '@mui/material'
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { useDispatch, useSelector } from 'react-redux'
 import Icon from 'src/@core/components/icon'
 import { styled } from '@mui/material/styles'
@@ -19,6 +29,7 @@ import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import { Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import CheckIcon from '@mui/icons-material/Check'
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
   '& .MuiMenu-paper': {
@@ -75,6 +86,17 @@ const MenuItemSubtitle = styled(Typography)({
   textOverflow: 'ellipsis'
 })
 
+const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      boxShadow: theme.shadows[1],
+      fontSize: 12
+    }
+  })
+)
+
 const NotificationDropdown = () => {
   useAutoNotification()
 
@@ -88,31 +110,32 @@ const NotificationDropdown = () => {
   const clientId = selectedClient ? selectedClient.clientId : null
   const [clientData, setClientData] = useState(null)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedToken = localStorage.getItem('accessToken')
+  const fetchData = async () => {
+    try {
+      const storedToken = localStorage.getItem('accessToken')
 
-        const response = await axios.get(`${BASE_URL}/clientArchiveNotificationList/`, {
-          headers: {
-            Authorization: `Bearer ${storedToken}`
-          },
-          params: {
-            clientId: clientId
-          }
-        })
-        setClientData(response.data.jobList)
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
+      const response = await axios.get(`${BASE_URL}/clientArchiveNotificationList/`, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`
+        },
+        params: {
+          clientId: clientId
+        }
+      })
+      setClientData(response.data.jobList)
+    } catch (error) {
+      console.error('Error fetching data:', error)
     }
-
+  }
+  useEffect(() => {
     if (clientId) {
       fetchData()
     }
   }, [anchorEl])
 
-  const handleNotificationDetails = jobId => {
+  const handleNotificationDetails = (jobId, status) => {
+    if (status) return
+    fetchData()
     updateReadClientNotification(jobId)
     dispatch(setNotificationFlag(!notificationFlag))
     if (error) {
@@ -212,48 +235,88 @@ const NotificationDropdown = () => {
           disableTouchRipple
           sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
         >
-          <div>
+          <>
             {clientData?.excelDump.length > 0 && (
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography variant='h5'>ExcelDump</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {clientData &&
-                    clientData.excelDump.map((job, index) => (
-                      <MenuItem
-                        key={index}
-                        disableRipple
-                        disableTouchRipple
-                        sx={{
-                          cursor: 'default',
-                          userSelect: 'auto',
-                          backgroundColor: 'transparent !important'
-                        }}
-                      >
-                        <Accordion style={{ width: '100%' }}>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Box
-                              component='span'
-                              bgcolor={job.jobStatus === 'Processing' ? yellow : green}
-                              color='text.primary'
-                              borderRadius='2px'
-                              px={2}
-                              ml={1}
+              <Box sx={{ maxWidth: '400px', pr: 12 }}>
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant='subtitle2'>ExcelDump</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails
+                    sx={{
+                      maxHeight: '300px',
+                      overflowY: 'scroll', // Keep vertical scrollbar
+                      overflowX: 'hidden', // Hide horizontal scrollbar
+                      maxWidth: '400px',
+
+                      // Hide horizontal scrollbar styling for WebKit browsers
+                      '&::-webkit-scrollbar': {
+                        display: 'none'
+                      },
+                      msOverflowStyle: 'none' /* IE and Edge */,
+                      scrollbarWidth: 'none' /* Firefox */
+                    }}
+                  >
+                    {clientData &&
+                      clientData.excelDump.map((job, index) => (
+                        <MenuItem
+                          key={index}
+                          disableRipple
+                          disableTouchRipple
+                          sx={{
+                            cursor: 'default',
+                            userSelect: 'auto',
+                            backgroundColor: 'transparent !important'
+                          }}
+                        >
+                          <Accordion sx={{ maxWidth: '300px' }}>
+                            <AccordionSummary
+                              content='test'
+                              expandIcon={<ExpandMoreIcon />}
+                              onClick={() => {
+                                handleNotificationDetails(job.jobId, job.readJobStatus)
+                              }}
                             >
-                              {job.jobName}
-                            </Box>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <Typography key={job.jobId}>{job.jobName}</Typography>
-                            <Typography>Status: {job.jobStatus}</Typography>
-                            <Typography>Download Link: {job.downloadLink}</Typography>
-                          </AccordionDetails>
-                        </Accordion>
-                      </MenuItem>
-                    ))}
-                </AccordionDetails>
-              </Accordion>
+                              <Container
+                                component={'span'}
+                                fontSize={'0.9em'}
+                                sx={{
+                                  bgcolor:
+                                    job.jobStatus === 'Processing'
+                                      ? yellow
+                                      : job.jobStatus === 'Completed'
+                                      ? green
+                                      : red,
+                                  color: 'text.primary',
+                                  borderRadius: '2px',
+                                  fontSize: '0.9em',
+                                  fontWeight: 100,
+                                  display: 'flex',
+                                  alignItems: 'center'
+                                }}
+                              >
+                                {job.readJobStatus && (
+                                  <CustomTooltip title='Allready read'>
+                                    <CheckIcon fontSize='small' />
+                                  </CustomTooltip>
+                                )}
+
+                                {job.jobName.substring(0, 30) + '...'}
+                              </Container>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <CustomTooltip title={job.jobName}>
+                                <Typography key={job.jobId}>{job.jobName.substring(0, 30) + '...'}</Typography>
+                              </CustomTooltip>
+                              <Typography>Status: {job.jobStatus}</Typography>
+                              <Typography>Download Link: {job.downloadLink}</Typography>
+                            </AccordionDetails>
+                          </Accordion>
+                        </MenuItem>
+                      ))}
+                  </AccordionDetails>
+                </Accordion>
+              </Box>
             )}
 
             {clientData?.dossier.length > 0 && (
@@ -281,8 +344,6 @@ const NotificationDropdown = () => {
                               bgcolor={job.jobStatus === 'Processing' ? yellow : green}
                               color='text.primary'
                               borderRadius='2px'
-                              px={2}
-                              ml={1}
                             >
                               {job.jobName}
                             </Box>
@@ -319,16 +380,11 @@ const NotificationDropdown = () => {
                       >
                         <Accordion style={{ width: '100%' }}>
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            {/* <Typography variant='h5' style={{ color: 'yellow' }}>
-                        {job.jobName}
-                      </Typography> */}
                             <Box
                               component='span'
                               bgcolor={job.jobStatus === 'Processing' ? yellow : green}
                               color='text.primary'
                               borderRadius='2px'
-                              px={2}
-                              ml={1}
                             >
                               {job.jobName}
                             </Box>
@@ -344,7 +400,7 @@ const NotificationDropdown = () => {
                 </AccordionDetails>
               </Accordion>
             )}
-          </div>
+          </>
         </MenuItem>
         <MenuItem
           disableRipple
