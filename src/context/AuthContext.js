@@ -134,7 +134,7 @@ const AuthProvider = ({ children }) => {
           console.error('Failed to logout:', response.status, response.statusText)
         }
       } catch (error) {
-        if (error.response.status === 500) {
+        if (error) {
           localStorage.removeItem('accessToken')
           localStorage.removeItem('userData')
           window.location.href = '/login'
