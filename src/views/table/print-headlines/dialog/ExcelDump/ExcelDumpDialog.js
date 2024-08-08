@@ -412,8 +412,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
     setSelectedFields([])
     setSelectAll(false)
 
-    if (error) {
-      toast.error('Something went wrong.')
+    if (responseData) {
+      toast.success(responseData.message)
     } else if (responseData?.message) {
       toast.success(responseData.message)
     }

@@ -28,8 +28,7 @@ const useExcelDump = screenType => {
       })
       setResponseData(response.data)
     } catch (error) {
-      console.error(error)
-      setError(error.message || 'An error occurred')
+      setError(error.message)
     } finally {
       setLoading(false)
     }
