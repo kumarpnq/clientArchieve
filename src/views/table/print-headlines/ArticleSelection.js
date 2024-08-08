@@ -6,7 +6,6 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import { DataGrid } from '@mui/x-data-grid'
 import Checkbox from '@mui/material/Checkbox'
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
@@ -15,17 +14,14 @@ import Button from '@mui/material/Button'
 import { FormControlLabel, FormGroup } from '@mui/material'
 
 // ** MUI icons
-import { Icon } from '@iconify/react'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
 
 //api call
 import { fetchArticles } from '../../../api/print-headlines/articleApi'
 
-import CircularProgress from '@mui/material/CircularProgress'
-
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import {
   selectSelectedClient,
   selectSelectedCompetitions,
@@ -53,6 +49,7 @@ import Pagination from './Pagination'
 import { BASE_URL } from 'src/api/base'
 import axios from 'axios'
 import SelectBox from 'src/@core/components/select'
+import TableGrid from './table-grid/TableGrid'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -160,89 +157,6 @@ const TableSelection = () => {
     setEditDetailsDialogOpen(false)
     setImageSrc('')
   }
-
-  // * temp
-  const [selectedItems, setSelectedItems] = useState([])
-
-  const MemoizedCheckbox = React.memo(({ onClick, checked }) => <Checkbox onClick={onClick} checked={checked} />)
-
-  const articleColumns = [
-    {
-      flex: 0.1,
-      minWidth: 5,
-      headerName: 'Select',
-      field: 'select',
-      renderCell: params => (
-        <MemoizedCheckbox
-          onClick={e => {
-            e.stopPropagation()
-            handleSelect(params.row)
-          }}
-          checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
-        />
-      )
-    },
-    {
-      flex: 0.1,
-      minWidth: 5,
-      headerName: 'Grp',
-      field: 'Grp',
-      renderCell: params => {
-        const publications = params.row.children || []
-
-        return (
-          <SelectBox
-            icon={<Icon icon='ion:add' />}
-            iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
-            renderItem='publicationName'
-            renderKey='articleId'
-            menuItems={publications}
-            selectedItems={selectedArticles}
-            setSelectedItems={setSelectedArticles}
-          />
-        )
-      }
-    },
-    {
-      flex: 0.6,
-      minWidth: 240,
-      field: 'article',
-      headerName: 'Article',
-      renderCell: renderArticle
-    },
-    {
-      flex: 0.1,
-      minWidth: 5,
-      field: 'more',
-      headerName: 'More',
-      renderCell: params => (
-        <OptionsMenu
-          iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-          options={[
-            {
-              text: 'View Article',
-              menuItemProps: {
-                onClick: () => {
-                  const articleCode = params.row.link
-                  window.open(`/article-view?articleCode=${articleCode}`, '_blank')
-                }
-              }
-            },
-            {
-              text: 'Edit Detail',
-              menuItemProps: {
-                onClick: () => {
-                  fetchReadArticleFile('jpg', params.row)
-                  setEditDetailsDialogOpen(true)
-                  setSelectedArticle(params.row)
-                }
-              }
-            }
-          ]}
-        />
-      )
-    }
-  ]
 
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
@@ -639,27 +553,6 @@ const TableSelection = () => {
     }
   }, [pageCheck, articles, allCheck])
 
-  const handleSelect = useCallback(
-    article => {
-      setSelectedArticles(prevSelectedArticles => {
-        const isSelected = prevSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
-
-        const updatedSelectedArticles = new Set(prevSelectedArticles)
-
-        if (isSelected) {
-          updatedSelectedArticles.delete(article)
-        } else {
-          updatedSelectedArticles.add(article)
-        }
-
-        setPageCheck(articles.every(a => updatedSelectedArticles.has(a)))
-
-        return [...updatedSelectedArticles]
-      })
-    },
-    [articles]
-  )
-
   const handleLeftPagination = () => {
     if (currentPage > 1) {
       setCurrentPage(prevPage => prevPage - 1)
@@ -788,77 +681,29 @@ const TableSelection = () => {
         </Box>
       )}
       {/* DataGrid */}
-      <Box p={2}>
-        {loading ? (
-          <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            {isNotResponsive ? (
-              <Box display='flex'>
-                {/* left column */}
-                {isMobileView ? null : (
-                  <Box flex='1' p={2} pr={1}>
-                    <DataGrid
-                      autoHeight
-                      rows={leftArticles}
-                      columns={articleColumns}
-                      pagination={false}
-                      onRowClick={params => handleRowClick(params)}
-                      getRowId={getRowId}
-                      disableRowSelectionOnClick
-                      hideFooter
-                    />
-                  </Box>
-                )}
-
-                {/* Right Column */}
-                <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
-                  <DataGrid
-                    autoHeight
-                    rows={rightArticles}
-                    columns={articleColumns}
-                    pagination={false}
-                    onRowClick={params => handleRowClick(params)}
-                    getRowId={getRowId}
-                    disableRowSelectionOnClick
-                    hideFooter
-                  />
-                </Box>
-              </Box>
-            ) : (
-              <DataGrid
-                autoHeight
-                rows={articles}
-                columns={articleColumns.filter(column => {
-                  column.field !== 'select' &&
-                    column.field !== 'edit' &&
-                    !(column.field === 'date' && isNarrowMobileView)
-
-                  return true
-                })}
-                pagination={false}
-                onRowClick={params => handleRowClick(params)}
-                getRowId={getRowId}
-                disableRowSelectionOnClick
-                hideFooter
-              />
-            )}
-
-            {articles.length > 0 && (
-              <Pagination
-                paginationModel={paginationModel}
-                currentPage={currentPage}
-                recordsPerPage={recordsPerPage}
-                handleLeftPagination={handleLeftPagination}
-                handleRightPagination={handleRightPagination}
-                handleRecordsPerPageUpdate={handleRecordsPerPageChange}
-              />
-            )}
-          </>
-        )}
-      </Box>
+      <TableGrid
+        loading={loading}
+        isNotResponsive={isNotResponsive}
+        isMobileView={isMobileView}
+        articles={articles}
+        leftArticles={leftArticles}
+        rightArticles={rightArticles}
+        selectedArticles={selectedArticles}
+        setSelectedArticles={setSelectedArticles}
+        handleRowClick={handleRowClick}
+        getRowId={getRowId}
+        renderArticle={renderArticle}
+        fetchReadArticleFile={fetchReadArticleFile}
+        setEditDetailsDialogOpen={setEditDetailsDialogOpen}
+        setSelectedArticle={setSelectedArticle}
+        paginationModel={paginationModel}
+        currentPage={currentPage}
+        recordsPerPage={recordsPerPage}
+        handleLeftPagination={handleLeftPagination}
+        handleRightPagination={handleRightPagination}
+        handleRecordsPerPageChange={handleRecordsPerPageChange}
+        setPageCheck={setPageCheck}
+      />
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
       {/* Render the FullScreenDialog component when open */}

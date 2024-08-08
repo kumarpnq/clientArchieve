@@ -2,7 +2,7 @@ import axios from 'axios'
 import { BASE_URL } from '../base'
 import { useState } from 'react'
 
-const useExcelDump = () => {
+const useExcelDump = screenType => {
   const [responseData, setResponseData] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -13,6 +13,7 @@ const useExcelDump = () => {
       const storedToken = localStorage.getItem('accessToken')
 
       const requestData = {
+        requestEntity: screenType,
         clientId,
         selectedFields,
         searchCriteria

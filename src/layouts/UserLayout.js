@@ -127,6 +127,11 @@ const UserLayout = ({ children, contentHeightFixed }) => {
         icon: 'material-symbols:article-shortcut-outline-rounded',
         path: '/headlines/print-online',
         hidden: !screenPermissions.bothHeadlines
+      },
+      {
+        title: 'Media Analysis',
+        icon: 'icon-park-outline:market-analysis',
+        path: '/media'
       }
     ].filter(item => item)
 

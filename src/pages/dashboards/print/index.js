@@ -41,7 +41,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 }))
 
 const ChartJS = () => {
-  const [selectedDateRange, setSelectedDateRange] = useState('')
+  const [selectedDateRange, setSelectedDateRange] = useState('lastThreeMonth')
   const [selectedCity, setSelectedCity] = useState([])
   const [shareOfVoiceData, setShareOfVoiceData] = useState([])
   const [tableLoading, setTableLoading] = useState(false)
@@ -155,7 +155,7 @@ const ChartJS = () => {
         </Grid>
         <Grid item xs={12}>
           <ChartjsBarChart
-            companyData={shareOfVoiceData} // Pass the company data to the bar chart
+            companyData={shareOfVoiceData}
             primary={primaryColor}
             labelColor={theme.palette.text.disabled}
             borderColor={theme.palette.divider}

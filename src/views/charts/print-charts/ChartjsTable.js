@@ -60,7 +60,7 @@ const ChartjsTable = ({ tableData }) => {
             </TableHead>
             <TableBody>
               {tableData.map(row => (
-                <TableRow key={row.companyId}>
+                <TableRow key={row.companyId} sx={{ bgcolor: row.articlesCount === 0 ? '' : '' }}>
                   <TableCell component='th' scope='row'>
                     {row.companyName}
                   </TableCell>

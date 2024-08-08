@@ -615,6 +615,11 @@ const Navigation = () => {
       path: '/headlines/print-online',
       hidden: !screenPermissions.bothHeadlines
     },
+    {
+      title: 'Media Analysis',
+      icon: 'icon-park-outline:market-analysis',
+      path: '/media'
+    },
 
     // {
     //   sectionTitle: 'Charts & Misc'

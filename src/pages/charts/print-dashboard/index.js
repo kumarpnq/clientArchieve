@@ -88,16 +88,7 @@ const ChartJS = () => {
   return (
     <DatePickerWrapper>
       <Grid container spacing={6} className='match-height'>
-        <PageHeader
-          title={
-            <Typography variant='h4'>
-              <LinkStyled href='https://github.com/reactchartjs/react-chartjs-2' target='_blank'>
-                Print Dashboard
-              </LinkStyled>
-            </Typography>
-          }
-          subtitle={<Typography sx={{ color: 'text.secondary' }}>React wrapper for Chart.js</Typography>}
-        />
+        <PageHeader title={<Typography variant='h4'>Print Dashboard</Typography>} />
         <Grid item xs={12}>
           <ArticleCountDistribution companyData={calculateArticleCountsByCompany(articles)} />
         </Grid>
