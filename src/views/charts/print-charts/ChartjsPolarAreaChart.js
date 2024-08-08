@@ -184,12 +184,12 @@ const ChartjsPolarAreaChart = props => {
               <MenuItem onClick={() => handleClick('polar')} selected={activeChart === 'polar'}>
                 Polar
               </MenuItem>
-              <MenuItem onClick={() => handleClick('bar')} selected={activeChart === 'bar'}>
+              {/* <MenuItem onClick={() => handleClick('bar')} selected={activeChart === 'bar'}>
                 Bar
               </MenuItem>
               <MenuItem onClick={() => handleClick('line')} selected={activeChart === 'line'}>
                 Line
-              </MenuItem>
+              </MenuItem> */}
               <MenuItem onClick={() => handleClick('radar')} selected={activeChart === 'radar'}>
                 Radar
               </MenuItem>
