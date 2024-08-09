@@ -17,7 +17,8 @@ const useUpdateClientNotification = () => {
 
   const updateReadClientNotification = async jobId => {
     const storedToken = localStorage.getItem('accessToken')
-    const url = `${BASE_URL}/updateReadClientNotification/`
+    const url = `${process.env.NEXT_PUBLIC_JOB_SERVER}/updateReadClientNotification/`
+    const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
 
     const headers = {
       Authorization: `Bearer ${storedToken}`,
@@ -26,7 +27,8 @@ const useUpdateClientNotification = () => {
 
     const params = {
       clientId: clientId,
-      jobId: jobId
+      jobId: jobId,
+      userId: getUserName
     }
 
     setLoading(true)

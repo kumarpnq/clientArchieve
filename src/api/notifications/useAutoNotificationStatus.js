@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import axios from 'axios'
-import { BASE_URL } from '../base'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectFetchAutoStatusFlag, selectSelectedClient, setFetchAutoStatusFlag } from 'src/store/apps/user/userSlice'
 import toast from 'react-hot-toast'
@@ -8,22 +7,21 @@ import toast from 'react-hot-toast'
 const useAutoNotification = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const fetchAutoStatusFlag = useSelector(selectFetchAutoStatusFlag)
+  const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
 
   const clientId = selectedClient ? selectedClient.clientId : null
   const dispatch = useDispatch()
   const storedToken = localStorage.getItem('accessToken')
-  const url = `${BASE_URL}/downloadStatusPopNotification`
+  const url = `${process.env.NEXT_PUBLIC_JOB_SERVER}/downloadStatusPopNotification`
 
   const fetchAutoNotificationStatus = async () => {
     dispatch(setFetchAutoStatusFlag(true))
 
     try {
       const res = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${storedToken}`
-        },
         params: {
-          clientId: clientId
+          clientId: clientId,
+          userId: getUserName
         }
       })
 

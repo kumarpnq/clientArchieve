@@ -30,6 +30,7 @@ import { BASE_URL } from 'src/api/base'
 import { Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CheckIcon from '@mui/icons-material/Check'
+import Link from 'next/link'
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
   '& .MuiMenu-paper': {
@@ -113,13 +114,15 @@ const NotificationDropdown = () => {
   const fetchData = async () => {
     try {
       const storedToken = localStorage.getItem('accessToken')
+      const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
 
-      const response = await axios.get(`${BASE_URL}/clientArchiveNotificationList/`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_JOB_SERVER}/clientArchiveNotificationList/`, {
         headers: {
           Authorization: `Bearer ${storedToken}`
         },
         params: {
-          clientId: clientId
+          clientId: clientId,
+          userId: getUserName
         }
       })
       setClientData(response.data.jobList)
@@ -187,13 +190,17 @@ const NotificationDropdown = () => {
   const green = '#90EE90' // Light Green
   const yellow = '#FFFFE0' // Light Yellow
 
+  const dataArray = notificationList?.excelDump || []
+  const unreadJobs = dataArray.filter(job => !job.readJobStatus)
+  const notificationListCount = unreadJobs?.length
+
   return (
     <Fragment>
       <IconButton color='primary' aria-haspopup='true' onClick={handleDropdownOpen} aria-controls='customized-menu'>
         <Badge
           color='error'
           variant='dot'
-          invisible={!notificationList.length}
+          invisible={!notificationListCount.length}
           sx={{
             '& .MuiBadge-badge': { top: 4, right: 4, boxShadow: theme => `0 0 0 2px ${theme.palette.background.paper}` }
           }}
@@ -222,9 +229,10 @@ const NotificationDropdown = () => {
               size='small'
               color='primary'
               label={`${
-                (clientData?.excelDump?.length || 0) +
-                (clientData?.email?.length || 0) +
-                (clientData?.dossier?.length || 0)
+                // (clientData?.excelDump?.length || 0) +
+                // (clientData?.email?.length || 0) +
+                // (clientData?.dossier?.length || 0)
+                notificationListCount
               } New`}
             />
           </Box>
@@ -306,10 +314,17 @@ const NotificationDropdown = () => {
                             </AccordionSummary>
                             <AccordionDetails>
                               <CustomTooltip title={job.jobName}>
-                                <Typography key={job.jobId}>{job.jobName.substring(0, 30) + '...'}</Typography>
+                                <Typography key={job.jobId} fontSize={'0.9em'}>
+                                  {job.jobName.substring(0, 30) + '...'}
+                                </Typography>
                               </CustomTooltip>
-                              <Typography>Status: {job.jobStatus}</Typography>
-                              <Typography>Download Link: {job.downloadLink}</Typography>
+                              <Typography fontSize={'0.9em'}>Status: {job.jobStatus}</Typography>
+                              <Typography fontSize={'0.9em'}>
+                                Download Link:{' '}
+                                <Link href={`${process.env.NEXT_PUBLIC_JOB_SERVER}/downloadFile/${job.downloadLink}`}>
+                                  link
+                                </Link>
+                              </Typography>
                             </AccordionDetails>
                           </Accordion>
                         </MenuItem>
