@@ -319,12 +319,14 @@ const NotificationDropdown = () => {
                                 </Typography>
                               </CustomTooltip>
                               <Typography fontSize={'0.9em'}>Status: {job.jobStatus}</Typography>
-                              <Typography fontSize={'0.9em'}>
-                                Download Link:{' '}
-                                <Link href={`${process.env.NEXT_PUBLIC_JOB_SERVER}/downloadFile/${job.downloadLink}`}>
-                                  link
-                                </Link>
-                              </Typography>
+                              {job.downloadLink !== null && (
+                                <Typography fontSize={'0.9em'}>
+                                  Download Link:{' '}
+                                  <Link href={`${process.env.NEXT_PUBLIC_JOB_SERVER}/downloadFile/${job.downloadLink}`}>
+                                    link
+                                  </Link>
+                                </Typography>
+                              )}
                             </AccordionDetails>
                           </Accordion>
                         </MenuItem>

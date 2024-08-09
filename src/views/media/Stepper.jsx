@@ -1,20 +1,31 @@
 import { Icon } from '@iconify/react'
-import { Box, Paper, Typography } from '@mui/material'
+import { Box, IconButton, Paper, Typography } from '@mui/material'
 import React from 'react'
+import XIcon from '@mui/icons-material/X'
+import FacebookIcon from '@mui/icons-material/Facebook'
+import YouTubeIcon from '@mui/icons-material/YouTube'
+import InstagramIcon from '@mui/icons-material/Instagram'
+import PinterestIcon from '@mui/icons-material/Pinterest'
 
 const Stepper = () => {
   return (
     <Box component={Paper}>
       <Box>
-        <Typography>
-          <Icon icon={'bpajamas:twitter'} width={50} style={{ color: 'blue', cursor: 'pointer' }} />
-        </Typography>
-        <Icon icon={'basil:twitter-outline'} width={50} style={{ color: 'blue' }} />
-        <Icon icon={'iconoir:facebook'} width={50} style={{ color: 'blue' }} />
-        <Icon icon={'arcticons:youtube-music'} width={50} style={{ color: 'blue' }} />
-        <Icon icon={'iconoir:instagram'} width={50} style={{ color: 'blue' }} />
-        <Icon icon={'ph:pinterest-logo-thin'} width={50} style={{ color: 'blue' }} />
-        <Icon icon={'ph:tiktok-logo-thin'} width={50} style={{ color: 'blue' }} />
+        <IconButton sx={{ color: 'primary.main' }}>
+          <XIcon fontSize='large' />
+        </IconButton>
+        <IconButton sx={{ color: 'primary.main' }}>
+          <FacebookIcon fontSize='large' />
+        </IconButton>
+        <IconButton sx={{ color: 'primary.main' }}>
+          <YouTubeIcon fontSize='large' />
+        </IconButton>
+        <IconButton sx={{ color: 'primary.main' }}>
+          <InstagramIcon fontSize='large' />
+        </IconButton>
+        <IconButton sx={{ color: 'primary.main', fontSize: 35 }}>
+          <PinterestIcon fontSize='large' />
+        </IconButton>
       </Box>
     </Box>
   )
