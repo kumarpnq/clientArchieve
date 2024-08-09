@@ -11,6 +11,7 @@ const Stepper = () => {
   return (
     <Box component={Paper}>
       <Box>
+        <IconButton sx={{ color: 'primary.main' }}>All</IconButton>
         <IconButton sx={{ color: 'primary.main' }}>
           <XIcon fontSize='large' />
         </IconButton>

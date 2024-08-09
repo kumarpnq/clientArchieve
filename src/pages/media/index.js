@@ -1,4 +1,5 @@
 import { Fragment } from 'react'
+import DataCard from 'src/views/media/DataCard'
 import Stepper from 'src/views/media/Stepper'
 
 const MediaAnalysis = () => {
@@ -6,6 +7,7 @@ const MediaAnalysis = () => {
     <Fragment>
       {/* stepper */}
       <Stepper />
+      <DataCard />
     </Fragment>
   )
 }
