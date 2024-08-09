@@ -643,6 +643,7 @@ const TableSelection = () => {
         selectedFilter={selectedFilter}
         setSelectedFilter={setSelectedFilter}
         selectedArticles={selectedArticles}
+        setSelectedArticles={setSelectedArticles}
         setSearchParameters={setSearchParameters}
         clearAdvancedSearchField={clearAdvancedSearchField}
         setClearAdvancedSearchField={setClearAdvancedSearchField}

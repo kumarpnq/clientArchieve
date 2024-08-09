@@ -132,6 +132,7 @@ const ArticleListToolbar = ({
 
   primaryColor,
   selectedArticles,
+  setSelectedArticles,
   setSearchParameters,
   selectedEditionType,
   setSelectedEditionType,
@@ -473,6 +474,7 @@ const ArticleListToolbar = ({
             dataForExcelDump={dataForExcelDump}
             pageCheck={pageCheck}
             allCheck={allCheck}
+            setSelectedArticles={setSelectedArticles}
           />
         </Fragment>
       )}

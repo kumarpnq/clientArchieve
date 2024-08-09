@@ -30,7 +30,15 @@ import WarningIcon from '@mui/icons-material/Warning'
 import toast from 'react-hot-toast'
 import { Box, DialogContentText } from '@mui/material'
 
-const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles, pageCheck, allCheck }) => {
+const ExcelDumpDialog = ({
+  open,
+  handleClose,
+  dataForExcelDump,
+  selectedArticles,
+  pageCheck,
+  allCheck,
+  setSelectedArticles
+}) => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
@@ -414,6 +422,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, selectedArticles
 
     if (responseData) {
       toast.success(responseData.message)
+      setSelectedArticles([])
     } else {
       toast.success('Something went wrong.')
     }
