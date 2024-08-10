@@ -197,7 +197,7 @@ const TableGrid = ({
         )
       }
     }, {
-      width: 150,
+      width: 300,
       editable: false,
       field: 'article',
       headerName: 'Article',
