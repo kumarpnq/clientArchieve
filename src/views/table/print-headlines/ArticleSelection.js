@@ -48,6 +48,7 @@ import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDial
 import { BASE_URL } from 'src/api/base'
 import axios from 'axios'
 import TableGrid from './table-grid/TableGrid'
+import { memo } from 'react'
 
 // Your CustomTooltip component
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
@@ -65,7 +66,7 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
   })
 )
 
-const renderArticle = params => {
+const renderArticle = React.memo(params => {
   const { row } = params
 
   const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
@@ -83,7 +84,7 @@ const renderArticle = params => {
       </Typography>
     </Box>
   )
-}
+})
 
 // Function to generate tooltip content using List
 const getTooltipContent = row => (
@@ -132,6 +133,7 @@ const TableSelection = () => {
   const [pdfDialogOpen, setPdfDialogOpen] = useState(false)
   const [pdfSrc, setPdfSrc] = useState('')
   const [editDetailsDialogOpen, setEditDetailsDialogOpen] = useState(false)
+  const [articleOptimizedObj, setArticleOptimizedObj] = useState({})
   const [articles, setArticles] = useState([])
 
   const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
@@ -178,7 +180,7 @@ const TableSelection = () => {
 
   const getRowId = row => row.articleId
   const [currentPage, setCurrentPage] = useState(1)
-  const [recordsPerPage, setRecordsPerPage] = useState(100)
+  const [recordsPerPage, setRecordsPerPage] = useState(50)
 
   const shortCutData = useSelector(selectShortCut)
 
@@ -395,7 +397,6 @@ const TableSelection = () => {
 
   useEffect(() => {
     setSelectedArticles([])
-
     const fetchArticlesApi = async () => {
       try {
         setLoading(true)
@@ -484,6 +485,12 @@ const TableSelection = () => {
           const totalRecords = response.totalRecords
           setArticles(response.articles)
 
+          let obj = {}
+          response.articles.map(item => {
+            obj[item?.articleId] = item
+          })
+          setArticleOptimizedObj(obj)
+
           setPaginationModel(prevPagination => ({
             ...prevPagination,
             totalRecords
@@ -516,8 +523,8 @@ const TableSelection = () => {
   ])
 
   // Divide social feeds into left and right columns
-  const leftArticles = articles.filter((_, index) => index % 2 === 0)
-  const rightArticles = articles.filter((_, index) => index % 2 !== 0)
+  // const leftArticles = articles.filter((_, index) => index % 2 === 0)
+  // const rightArticles = articles.filter((_, index) => index % 2 !== 0)
 
   // Open the date filter popover
   const openFilterPopover = event => {
@@ -536,12 +543,50 @@ const TableSelection = () => {
 
   const [isPopupOpen, setPopupOpen] = useState(false)
 
+  const handleRowCheck = (tablePosition, params) => {
+    if (tablePosition === 'center') {
+      localStorage.setItem('selectedRows', JSON.stringify(params))
+    }
+    if (tablePosition == 'left') {
+      localStorage.setItem('leftSelectedRows', JSON.stringify(params))
+    }
+
+    if (tablePosition == 'right') {
+      localStorage.setItem('rightSelectedRows', JSON.stringify(params))
+    }
+
+    if (tablePosition === 'left' || tablePosition === 'right') {
+      const prevLeft = JSON.parse(localStorage.getItem('leftSelectedRows'))
+      const prevRight = JSON.parse(localStorage.getItem('rightSelectedRows'))
+      let finalArr = []
+      if (prevLeft?.length > 0) {
+        finalArr.push(...prevLeft)
+      }
+      if (prevRight?.length > 0) {
+        finalArr.push(...prevRight)
+      }
+      localStorage.setItem('selectedRows', JSON.stringify(finalArr))
+    }
+
+    setTimeout(() => {
+      const params = JSON.parse(localStorage.getItem('selectedRows'))
+      let arr = []
+      params?.map(itm => {
+        arr.push(articleOptimizedObj[itm])
+      })
+      setSelectedArticles(arr)
+    }, 2000)
+  }
+
   const handleRowClick = params => {
     setSelectedArticle(params.row)
-
     // currently hiding the click summary
     setPopupOpen(false)
   }
+
+  useEffect(() => {
+    console.log('Selected', selectedArticles)
+  }, [selectedArticles])
 
   useEffect(() => {
     if (pageCheck || allCheck) {
@@ -683,8 +728,8 @@ const TableSelection = () => {
         isNotResponsive={isNotResponsive}
         isMobileView={isMobileView}
         articles={articles}
-        leftArticles={leftArticles}
-        rightArticles={rightArticles}
+        // leftArticles={leftArticles}
+        // rightArticles={rightArticles}
         selectedArticles={selectedArticles}
         setSelectedArticles={setSelectedArticles}
         handleRowClick={handleRowClick}
@@ -700,6 +745,7 @@ const TableSelection = () => {
         handleRightPagination={handleRightPagination}
         handleRecordsPerPageChange={handleRecordsPerPageChange}
         setPageCheck={setPageCheck}
+        handleRowCheck={handleRowCheck}
       />
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
