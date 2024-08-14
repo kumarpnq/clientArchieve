@@ -88,7 +88,7 @@ const Guard = ({ children, authGuard, guestGuard }) => {
 const App = props => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
-  useAutoLogout(20 * 60 * 1000) // Invoke the hook here
+  useAutoLogout(20 * 60 * 1000)
 
   // Variables
   const contentHeightFixed = Component.contentHeightFixed ?? false
@@ -104,12 +104,9 @@ const App = props => {
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>{`${themeConfig.templateName} - Material Design React Admin Template`}</title>
-          <meta
-            name='description'
-            content={`${themeConfig.templateName} – Material Design React Admin Dashboard Template – is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.`}
-          />
-          <meta name='keywords' content='Material Design, MUI, Admin Template, React Admin Template' />
+          <title>{`${themeConfig.templateName}`}</title>
+          <meta name='description' content={`${themeConfig.templateName} – Research.`} />
+          <meta name='keywords' content='Perception & Quant Media Research.' />
           <meta name='viewport' content='initial-scale=1, width=device-width' />
         </Head>
 

@@ -1,31 +1,48 @@
 import { Fragment, useEffect, useState } from 'react'
-import useFetchSocialMediaData from 'src/api/SHARED_DASHBOARD/fetchSocialMediaData'
+import { useRouter } from 'next/router'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
 import DataCard from 'src/views/media/DataCard'
 import Stepper from 'src/views/media/Stepper'
+import PNQCard from 'src/views/media/components/PNQCard'
+import useFetchSocialMediaData from 'src/api/SHARED_DASHBOARD/fetchSocialMediaData'
+import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
 import Pagination from '@mui/material/Pagination'
 import Box from '@mui/material/Box'
 
-const MediaAnalysis = () => {
-  const isSecure = true
-  const storedToken = localStorage.getItem('accessToken')
+const SharedDashboard = () => {
+  const router = useRouter()
+  const { id } = router.query
+  const idValue = id?.split('id=')[1]
 
-  const [value, setValue] = useState('all')
-
-  const { data, loading, error } = useFetchSocialMediaData({
-    mediaType: value,
-    encryptStr: '',
-    authToken: storedToken
-  })
-
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const [cardData, setCardData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(20)
 
   useEffect(() => {
-    if (data?.length) {
-      setCardData(data || [])
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+        const params = {
+          encryptStr: idValue
+        }
+
+        const response = await axios.get(`${BASE_URL}/socialMediaData`, {
+          params
+        })
+        setCardData(response.data.socialMediaData)
+      } catch (err) {
+        console.log(err.message)
+        setError(err)
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [data])
+
+    fetchData()
+  }, [idValue])
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page)
@@ -39,6 +56,7 @@ const MediaAnalysis = () => {
 
   return (
     <Fragment>
+      <PNQCard />
       {/* stepper */}
       <Stepper
         setCardData={setCardData}
@@ -46,15 +64,12 @@ const MediaAnalysis = () => {
         isSelectCard={isSelectCard}
         selectedCards={selectedCards}
         setSelectedCards={setSelectedCards}
-        isSecure={isSecure}
-        value={value}
-        setValue={setValue}
       />
       <DataCard
         isSelectCard={isSelectCard}
         selectedCards={selectedCards}
         setSelectedCards={setSelectedCards}
-        cardData={paginatedData} // Display paginated data
+        cardData={paginatedData}
         loading={loading}
       />
       <Box display='flex' justifyContent='center' my={2}>
@@ -69,4 +84,7 @@ const MediaAnalysis = () => {
   )
 }
 
-export default MediaAnalysis
+SharedDashboard.getLayout = page => <BlankLayout>{page}</BlankLayout>
+SharedDashboard.guestGuard = false
+
+export default SharedDashboard

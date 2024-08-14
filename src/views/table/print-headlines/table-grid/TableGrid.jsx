@@ -32,13 +32,10 @@ const TableGrid = ({
   isNotResponsive,
   isMobileView,
   articles,
-  // leftArticles,
-  // rightArticles,
+
   selectedArticles,
   setSelectedArticles,
   handleRowClick,
-  // getRowId,
-  // renderArticle,
   fetchReadArticleFile,
   setEditDetailsDialogOpen,
   setSelectedArticle,
@@ -48,10 +45,10 @@ const TableGrid = ({
   recordsPerPage,
   handleLeftPagination,
   handleRightPagination,
-  handleRecordsPerPageChange,
+  handleRecordsPerPageChange
+
   // setPageCheck
 }) => {
-
   const [tableSelect, setTableSelect] = useState({})
 
   // const handleSelect = useCallback(
@@ -75,12 +72,14 @@ const TableGrid = ({
   //   [articles]
   // )
 
-
-  useCallback(tableSelect => {
-    const arr = []
-    Object.keys(tableSelect)?.map(element => arr.push(tableSelect[element]))
-    setSelectedArticles(arr);
-  }, [tableSelect])
+  useCallback(
+    tableSelect => {
+      const arr = []
+      Object.keys(tableSelect)?.map(element => arr.push(tableSelect[element]))
+      setSelectedArticles(arr)
+    },
+    [tableSelect]
+  )
 
   // const MemoizedCheckbox = React.memo(({ onClick, checked }) => <Checkbox onClick={onClick} checked={checked} />)
 
@@ -120,7 +119,6 @@ const TableGrid = ({
     //   field: 'Grp',
     //   renderCell: params => {
     //     const publications = params.row.children || []
-
     //     return (
     //       <SelectBox
     //         icon={<Icon icon='ion:add' />}
@@ -179,7 +177,7 @@ const TableGrid = ({
     {
       field: 'Grp',
       headerName: 'Grp',
-      width: 150,
+      width: 70,
       editable: false,
       renderCell: params => {
         const publications = params.row.children || []
@@ -196,15 +194,16 @@ const TableGrid = ({
           />
         )
       }
-    }, {
-      width: 300,
+    },
+    {
+      width: 450,
       editable: false,
       field: 'article',
       headerName: 'Article',
       renderCell: renderArticle
     },
     {
-      width: 150,
+      width: 70,
       editable: false,
       field: 'more',
       headerName: 'More',
@@ -256,11 +255,11 @@ const TableGrid = ({
                     columns={customArticleHeader}
                     pagination={false}
                     onRowClick={params => handleRowClick(params)}
-                    onRowSelectionModelChange={(item) => handleRowCheck('left', item)}
+                    onRowSelectionModelChange={item => handleRowCheck('left', item)}
                     getRowId={row => row.articleId}
-                    // disableRowSelectionOnClick
                     hideFooter
                     checkboxSelection
+                    disableRowSelectionOnClick
                   />
                 </Box>
               )}
@@ -272,11 +271,11 @@ const TableGrid = ({
                   columns={customArticleHeader}
                   pagination={false}
                   onRowClick={params => handleRowClick(params)}
-                  onRowSelectionModelChange={(item) => handleRowCheck('right', item)}
+                  onRowSelectionModelChange={item => handleRowCheck('right', item)}
                   getRowId={row => row.articleId}
-                  // disableRowSelectionOnClick
                   hideFooter
                   checkboxSelection
+                  disableRowSelectionOnClick
                 />
               </Box>
             </Box>
@@ -293,7 +292,6 @@ const TableGrid = ({
               onRowClick={params => handleRowClick(params)}
               onRowSelectionModelChange={(item, params) => handleRowCheck('center', item)}
               getRowId={row => row.articleId}
-              // disableRowSelectionOnClick
               hideFooter
               checkboxSelection
             />

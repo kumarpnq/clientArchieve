@@ -99,14 +99,6 @@ const Grid = props => {
               }
             },
 
-            // {
-            //   text: 'View',
-            //   menuItemProps: {
-            //     onClick: () => {
-            //       handleView(params.row)
-            //     }
-            //   }
-            // },
             {
               text: 'Article View',
               menuItemProps: {

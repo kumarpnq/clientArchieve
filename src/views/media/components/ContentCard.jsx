@@ -2,22 +2,34 @@ import {
   Avatar,
   Badge,
   Box,
+  Checkbox,
   Divider,
   IconButton,
   Link,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Paper,
   Stack,
   Tooltip,
   tooltipClasses,
-  Typography,
-  useMediaQuery
+  Typography
 } from '@mui/material'
+import Accordion from '@mui/material/Accordion'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import XIcon from '@mui/icons-material/X'
 import styled from '@emotion/styled'
 import ShareIcon from '@mui/icons-material/Share'
 import InsertCommentIcon from '@mui/icons-material/InsertComment'
 import AnchorIcon from '@mui/icons-material/Anchor'
 import InsightsIcon from '@mui/icons-material/Insights'
+import YouTubeIcon from '@mui/icons-material/YouTube'
+import { useState } from 'react'
+import { Icon } from '@iconify/react'
+import dayjs from 'dayjs'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -33,7 +45,8 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 const SmallAvatar = styled(Avatar)(({ theme }) => ({
   width: 22,
   height: 22,
-  border: `2px solid ${theme.palette.background.paper}`
+  border: `2px solid ${theme.palette.background.paper}`,
+  background: theme.palette.primary.main
 }))
 
 const FlexBox = styled(Box)({
@@ -42,45 +55,190 @@ const FlexBox = styled(Box)({
   justifyContent: 'space-between'
 })
 
-const BadgeAvatars = () => {
+const BadgeAvatars = ({ img, mediaType }) => {
+  const link =
+    mediaType === 'twitter'
+      ? 'https://img.icons8.com/?size=100&id=ZNMifeqJbPRv&format=png&color=000000'
+      : 'https://img.icons8.com/?size=100&id=15979&format=png&color=000000'
+
   return (
     <Stack direction='row' spacing={2}>
       <Badge
         overlap='circular'
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        badgeContent={<SmallAvatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />}
+        badgeContent={<SmallAvatar alt='media' src={link} />}
       >
-        <Avatar alt='Travis Howard' src='/static/images/avatar/2.jpg' />
+        <Avatar alt='profile' src={img} />
       </Badge>
     </Stack>
   )
 }
 
-const ContentCard = () => {
-  // Use media query to determine if the screen width is below 1024px
-  const isSmallScreen = useMediaQuery('(max-width:1024px)')
+const formatDate = dateStr => {
+  return dayjs(dateStr).format('DD/MM/YY [at] HH:mm')
+}
+
+export const TestCard = ({ item, onCardSelect, isSelectCard }) => {
+  console.log(item)
+
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [isChecked, setIsChecked] = useState(false)
+  const [expand, setExpand] = useState(false)
+
+  const toggleAccordion = event => {
+    setExpand(prev => !prev)
+  }
+
+  const handleClick = event => {
+    event.stopPropagation()
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleCheckboxChange = event => {
+    event.stopPropagation()
+    const checked = event.target.checked
+    setIsChecked(checked)
+    onCardSelect(item, checked)
+  }
+
+  // * share posts
+  const handleLinkedInPost = link => {
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${link}`
+    window.open(linkedInUrl, '_blank', 'noopener,noreferrer')
+  }
+
+  const handleFacebookPost = link => {
+    const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`
+    window.open(facebookUrl, '_blank')
+  }
+
+  const handleXPost = link => {
+    const xUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(link)}`
+    window.open(xUrl, '_blank')
+  }
+
+  const handlePinterestPost = link => {
+    const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(link)}`
+    window.open(pinterestUrl, '_blank')
+  }
 
   return (
-    <Box component={Paper} width={'100%'} height={'auto'} py={2} px={2} my={1}>
-      <Box display='flex' flexDirection={isSmallScreen ? 'column' : 'row'} alignItems={'flex-start'} gap={2}>
-        {/* First Portion */}
-        <Box flex={isSmallScreen ? 'none' : 6} display='flex' alignItems='flex-start' gap={2}>
-          <BadgeAvatars />
-          <Box>
-            <Typography component={'div'} display={'flex'} alignItems={'center'} gap={1}>
-              <Link href={'https://www.youtube.com'} target='_blank' rel='noopener'>
-                TrakinTech
-              </Link>
-              <Link href={'https://www.youtube.com'} target='_blank' rel='noopener'>
-                @TrakinTech
-              </Link>
-              <span>shared an image</span>
-            </Typography>
-            <Box sx={{ display: 'flex', mt: 1, gap: 1 }}>
-              {/* Image */}
-              <Box
+    <Box component={Paper} sx={{ mt: 1 }}>
+      {/* header */}
+      <Accordion expanded={expand}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon onClick={toggleAccordion} />}
+          aria-controls='panel1-content'
+          id='panel1-header'
+        >
+          {' '}
+          {isSelectCard && (
+            <Checkbox checked={isChecked} onClick={e => e.stopPropagation()} onChange={handleCheckboxChange} />
+          )}
+          <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+            <Box sx={{ display: 'flex' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 1, py: 1 }}>
+                <BadgeAvatars img={item.publisherImage} mediaType={item.mediaType} />
+                <Link href={item.publisherLink} target='_blank' rel='noopener' fontSize={'0.8em'}>
+                  {item.publisherName?.substring(0, 10) + '...'}
+                </Link>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Typography variant='h2' fontSize={'0.9em'} fontWeight={'bold'} ml={2}>
+                  {item.title?.substring(0, 100) + '...'}
+                </Typography>
+                {/* second portion */}
+                <Typography component={'div'} display={'flex'} alignItems={'center'} width={'100%'} gap={2} ml={2}>
+                  <span style={{ color: 'text.secondary', fontSize: '0.8em' }}> {formatDate(item.date)}</span> |{' '}
+                  <span style={{ fontSize: '0.8em' }}>{item.publisherLocation}</span> |{' '}
+                  <Link href={item.link} sx={{ color: 'primary.main' }} target='_blank' rel='noopener'>
+                    {item.mediaType === 'twitter' ? (
+                      <XIcon fontSize='small' sx={{ pt: 1 }} />
+                    ) : (
+                      <YouTubeIcon fontSize='small' sx={{ pt: 1 }} />
+                    )}
+                  </Link>{' '}
+                  |
+                  <Typography variant='body2' ml={2}>
+                    {/* {item.company_name} */}
+                    company
+                  </Typography>{' '}
+                  |
+                  <Typography
+                    component={'div'}
+                    color='text.secondary'
+                    display='flex'
+                    alignItems='center'
+                    justifyContent={'space-between'}
+                  >
+                    <span style={{ fontSize: '15px' }}>🙂</span>
+                    <IconButton
+                      sx={{ color: 'primary.main' }}
+                      aria-haspopup='true'
+                      onClick={handleClick}
+                      aria-controls='customized-menu'
+                    >
+                      <ShareIcon />
+                    </IconButton>
+                    <Menu
+                      keepMounted
+                      elevation={0}
+                      anchorEl={anchorEl}
+                      id='customized-menu'
+                      onClose={handleClose}
+                      open={Boolean(anchorEl)}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center'
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center'
+                      }}
+                    >
+                      <MenuItem onClick={() => handleFacebookPost(item.link)}>
+                        <ListItemIcon>
+                          <Icon icon='bi:facebook' fontSize={20} />
+                        </ListItemIcon>
+                        <ListItemText primary='Share on Facebook' />
+                      </MenuItem>
+                      <MenuItem onClick={() => handleXPost(item.link)}>
+                        <ListItemIcon>
+                          <Icon icon='arcticons:x-twitter' fontSize={20} />
+                        </ListItemIcon>
+                        <ListItemText primary='Share on X' />
+                      </MenuItem>
+                      <MenuItem onClick={() => handleLinkedInPost(item.link)}>
+                        <ListItemIcon>
+                          <Icon icon='basil:linkedin-outline' fontSize={20} />
+                        </ListItemIcon>
+                        <ListItemText primary='Share on LinkedIn' />
+                      </MenuItem>
+                      <MenuItem onClick={() => handlePinterestPost(item.link)}>
+                        <ListItemIcon>
+                          <Icon icon='ant-design:pinterest-filled' fontSize={20} />
+                        </ListItemIcon>
+                        <ListItemText primary='Share on Pinterest' />
+                      </MenuItem>
+                    </Menu>
+                  </Typography>
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          {/* first section */}
+          <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+              {/* img */}
+              <Typography
                 sx={{
-                  width: 80,
+                  width: 250,
                   height: 65,
                   border: '1px solid lightgray',
                   borderRadius: '3px',
@@ -94,111 +252,77 @@ const ContentCard = () => {
                 }}
                 alt='thumbnail'
               >
-                thumbnail
-              </Box>
-              <Box>
-                <Typography variant='subtitle1' fontSize='0.9em' fontWeight={'bold'}>
-                  vivo T3 Unboxing & First Impressions ⚡Dimensity 7200, 50MP IMX882 OIS Camera & More @₹17,999*!?
-                </Typography>
-                <Link
-                  href='https://www.youtube.com/watch?v=lHC9QcimJqU'
-                  target='_blank'
-                  rel='noopener'
-                  fontSize={'0.8em'}
-                >
-                  https://www.youtube.com/watch?v=lHC9QcimJqU
-                </Link>
-              </Box>
-            </Box>
-            {/* Date & media link */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1 }}>
-              <Link
-                href='https://twitter.com'
-                target='_blank'
-                rel='noopener'
-                fontSize={'0.7em'}
-                color={'text.primary'}
-                sx={{ '&:hover': { textDecoration: 'underline' } }}
-              >
-                published on 21/03/24 12:24
-              </Link>
-              |<span style={{ fontSize: '0.7em' }}>India</span>|
-              <Link href='https://twitter.com' target='_blank' rel='noopener' sx={{ mt: 1 }}>
-                <XIcon fontSize='0.9em' />
-              </Link>
-            </Box>
-          </Box>
-        </Box>
-
-        {/* Divider */}
-        <Divider orientation={isSmallScreen ? 'horizontal' : 'vertical'} flexItem sx={{ flexGrow: 0 }} />
-
-        {/* Second Portion */}
-        <Box
-          flex={isSmallScreen ? 'none' : 4}
-          display='flex'
-          flexDirection={isSmallScreen ? 'row' : 'column'}
-          justifyContent='space-between'
-          alignItems={isSmallScreen ? 'center' : 'flex-start'}
-          gap={1}
-        >
-          <Typography
-            component={'div'}
-            color='text.secondary'
-            display='flex'
-            alignItems='center'
-            justifyContent={'space-between'}
-            width={'100%'}
-          >
-            <span style={{ fontSize: '22px' }}>😐 🙂</span>
-            <IconButton>
-              <ShareIcon />
-            </IconButton>
-          </Typography>
-
-          <FlexBox>
-            <Typography variant='body2' color='text.primary' width={'20%'} fontWeight={'bold'}>
-              MATCHES
-            </Typography>
-            <Typography variant='body2' width={'100%'}>
-              Vivo - Sample
-            </Typography>
-          </FlexBox>
-          <FlexBox>
-            <Typography variant='body2' color='text.primary' fontWeight={'bold'} width={'20%'}>
-              METRICS
-            </Typography>
-            <Box>
-              <FlexBox>
-                <Typography display='flex' alignItems='center' gap={0.5}>
-                  <CustomTooltip title='Engagement'>
-                    <InsertCommentIcon />
-                  </CustomTooltip>
-                  <span>259</span>
-                </Typography>
-                <Typography display='flex' alignItems='center' gap={0.5}>
-                  <CustomTooltip title='Potential Reach'>
-                    <AnchorIcon />
-                  </CustomTooltip>
-                  <span>533.9K</span>
-                </Typography>
-                <Typography display='flex' alignItems='center' gap={0.5}>
-                  <CustomTooltip title='Trending score'>
-                    <InsightsIcon />
-                  </CustomTooltip>
-                  <span>0/10</span>
-                </Typography>
-              </FlexBox>
-              <Typography variant='body2'>
-                <span>28 Retweets, 6 Twitter Replies, 225 Twitter Likes,</span>
-                <span>533.9K Twitter Followers, 5.6K Twitter Impressions</span>
+                <img alt='thumbnail' src={item.thumbnail} height={65} width={250} />
               </Typography>
             </Box>
-          </FlexBox>
-        </Box>
-      </Box>
+            <Divider orientation='vertical' sx={{ color: 'black' }} />
+            {/* <hr />   */}
+
+            <Divider orientation='vertical' sx={{ color: 'black' }} />
+            {item.mediaType === 'twitter' ? (
+              <Box display={'flex'} flexDirection={'column'}>
+                <FlexBox>
+                  <Typography display='flex' alignItems='center' gap={0.5}>
+                    <CustomTooltip title='Engagement'>
+                      <InsertCommentIcon />
+                    </CustomTooltip>
+                    <span>{item.comments}</span>
+                  </Typography>
+                  <Typography display='flex' alignItems='center' gap={0.5}>
+                    <CustomTooltip title='Potential Reach'>
+                      <AnchorIcon />
+                    </CustomTooltip>
+                    <span>{item.anchor}K</span>
+                  </Typography>
+                  <Typography display='flex' alignItems='center' gap={0.5}>
+                    <CustomTooltip title='Trending score'>
+                      <InsightsIcon />
+                    </CustomTooltip>
+                    <span>{item.insights}</span>
+                  </Typography>
+                </FlexBox>
+                <Typography variant='body2'>
+                  <span>
+                    {item.stats?.retweet_count} Retweets, {item.stats?.reply_count} Twitter Replies,{' '}
+                    {item.stats?.likeCount} Twitter Likes,
+                  </span>
+                  <span>
+                    {item.stats?.followersCount}K Twitter Followers, {item.stats?.impression_count} Twitter Impressions
+                  </span>
+                </Typography>
+              </Box>
+            ) : (
+              <Box display={'flex'} flexDirection={'column'} gap={4}>
+                <FlexBox>
+                  <Typography display='flex' alignItems='center' gap={0.5}>
+                    <CustomTooltip title='Engagement'>
+                      <InsertCommentIcon />
+                    </CustomTooltip>
+                    <span>{item.stats?.commentCount}</span>
+                  </Typography>
+                  <Typography display='flex' alignItems='center' gap={0.5}>
+                    <CustomTooltip title='Potential Reach'>
+                      <AnchorIcon />
+                    </CustomTooltip>
+                    <span>{item.stats?.viewCount}</span>
+                  </Typography>
+                  <Typography display='flex' alignItems='center' gap={0.5}>
+                    <CustomTooltip title='Trending score'>
+                      <InsightsIcon />
+                    </CustomTooltip>
+                    <span>{item.insights}</span>
+                  </Typography>
+                </FlexBox>
+                <Typography variant='body2'>
+                  <span>
+                    {item.stats?.likeCount} Likes, {item.stats?.viewCount}Views, {item.stats?.commentCount} Count,
+                  </span>
+                </Typography>
+              </Box>
+            )}
+          </Box>
+        </AccordionDetails>
+      </Accordion>
     </Box>
   )
 }
-
-export default ContentCard

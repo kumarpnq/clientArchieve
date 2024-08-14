@@ -397,6 +397,7 @@ const TableSelection = () => {
 
   useEffect(() => {
     setSelectedArticles([])
+
     const fetchArticlesApi = async () => {
       try {
         setLoading(true)
@@ -578,15 +579,34 @@ const TableSelection = () => {
     }, 2000)
   }
 
+  const handlePageCheckChange = event => {
+    if (allCheck && event.target.checked) {
+      setAllCheck(false)
+      setPageCheck(true)
+      setSelectedArticles([...articles])
+    } else {
+      setPageCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
+    }
+  }
+
+  const handleAllCheckChange = event => {
+    if (pageCheck && event.target.checked) {
+      setPageCheck(false)
+      setAllCheck(true)
+      setSelectedArticles([...articles])
+    } else {
+      setAllCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
+    }
+  }
+
   const handleRowClick = params => {
     setSelectedArticle(params.row)
+
     // currently hiding the click summary
     setPopupOpen(false)
   }
-
-  useEffect(() => {
-    console.log('Selected', selectedArticles)
-  }, [selectedArticles])
 
   useEffect(() => {
     if (pageCheck || allCheck) {
@@ -629,28 +649,6 @@ const TableSelection = () => {
     setClearAdvancedSearchField(true)
 
     setSelectedArticles([])
-  }
-
-  const handlePageCheckChange = event => {
-    if (allCheck && event.target.checked) {
-      setAllCheck(false)
-      setPageCheck(true)
-      setSelectedArticles([...articles])
-    } else {
-      setPageCheck(event.target.checked)
-      setSelectedArticles(event.target.checked ? [...articles] : [])
-    }
-  }
-
-  const handleAllCheckChange = event => {
-    if (pageCheck && event.target.checked) {
-      setPageCheck(false)
-      setAllCheck(true)
-      setSelectedArticles([...articles])
-    } else {
-      setAllCheck(event.target.checked)
-      setSelectedArticles(event.target.checked ? [...articles] : [])
-    }
   }
 
   return (
@@ -728,8 +726,6 @@ const TableSelection = () => {
         isNotResponsive={isNotResponsive}
         isMobileView={isMobileView}
         articles={articles}
-        // leftArticles={leftArticles}
-        // rightArticles={rightArticles}
         selectedArticles={selectedArticles}
         setSelectedArticles={setSelectedArticles}
         handleRowClick={handleRowClick}

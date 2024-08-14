@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { Box, IconButton, Menu, MenuItem, Select, FormControl, InputLabel } from '@mui/material'
+import { Box, IconButton, Menu, MenuItem } from '@mui/material'
 import IconifyIcon from 'src/@core/components/icon'
 
-const FilterBox = () => {
+const FilterBox = ({ setIsSelectCard, isSelectCard, setCardData, isSecure }) => {
   const [anchorEl, setAnchorEl] = useState(null)
+  const [sortAnchorEl, setSortAnchorEl] = useState(null)
+  const [viewAnchorEl, setViewAnchorEl] = useState(null)
   const [sortOption, setSortOption] = useState('')
   const [viewOption, setViewOption] = useState('')
 
@@ -13,54 +15,66 @@ const FilterBox = () => {
 
   const handleClose = () => {
     setAnchorEl(null)
+    setSortAnchorEl(null)
+    setViewAnchorEl(null)
   }
 
-  const handleSortChange = event => {
-    setSortOption(event.target.value)
+  const handleSortClick = event => {
+    setSortAnchorEl(event.currentTarget)
   }
 
-  const handleViewChange = event => {
-    setViewOption(event.target.value)
+  const handleViewClick = event => {
+    setViewAnchorEl(event.currentTarget)
+  }
+
+  const handleSortChange = (option, value) => {
+    setSortOption(option)
+    handleClose()
+    sortData(value)
+  }
+
+  const handleViewChange = option => {
+    setViewOption(option)
+    handleClose()
+  }
+
+  const sortData = option => {
+    setCardData(prevCardData => {
+      let sortedData = [...prevCardData]
+      if (option === 'likeCount' || option === 'followersCount' || option === 'impression_count') {
+        sortedData.sort((a, b) => b.stats[option] - a.stats[option])
+      }
+
+      return sortedData
+    })
   }
 
   return (
     <Box>
-      <IconButton onClick={handleClick}>
+      <IconButton onClick={handleClick} sx={{ color: 'primary.main' }}>
         <IconifyIcon icon='oui:filter' />
       </IconButton>
+
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-        <MenuItem>
-          <FormControl fullWidth>
-            <InputLabel id='sort-by' sx={{ mt: -2 }}>
-              Sort By
-            </InputLabel>
-            <Select
-              value={sortOption}
-              onChange={handleSortChange}
-              variant='outlined'
-              label={'Sort By'}
-              labelId='sort-by'
-              size='small'
-            >
-              <MenuItem value=''>None</MenuItem>
-              <MenuItem value='likes'>Likes</MenuItem>
-              <MenuItem value='followers'>Followers</MenuItem>
-              <MenuItem value='views'>Views</MenuItem>
-            </Select>
-          </FormControl>
-        </MenuItem>
-        <MenuItem>
-          <FormControl fullWidth>
-            <InputLabel id='view-by' sx={{ mt: -2 }}>
-              View By
-            </InputLabel>
-            <Select value={viewOption} onChange={handleViewChange} labelId='view-by' label='View By' size='small'>
-              <MenuItem value=''>None</MenuItem>
-              <MenuItem value='collapsed'>Collapsed</MenuItem>
-              <MenuItem value='normal'>Normal</MenuItem>
-            </Select>
-          </FormControl>
-        </MenuItem>
+        {isSecure && (
+          <MenuItem onClick={() => setIsSelectCard(prev => !prev)} selected={isSelectCard}>
+            Select
+          </MenuItem>
+        )}
+
+        <MenuItem onClick={handleSortClick}>Sort By: {sortOption || 'None'}</MenuItem>
+        <Menu anchorEl={sortAnchorEl} open={Boolean(sortAnchorEl)} onClose={handleClose}>
+          <MenuItem onClick={() => handleSortChange('')}>None</MenuItem>
+          <MenuItem onClick={() => handleSortChange('Likes', 'likeCount')}>Likes</MenuItem>
+          <MenuItem onClick={() => handleSortChange('Followers', 'followersCount')}>Followers</MenuItem>
+          <MenuItem onClick={() => handleSortChange('Views', 'impression_count')}>Views</MenuItem>
+        </Menu>
+        {/* <MenuItem onClick={handleViewClick}>View By: {viewOption || 'None'}</MenuItem>
+          <Menu anchorEl={viewAnchorEl} open={Boolean(viewAnchorEl)} onClose={handleClose}>
+            <MenuItem onClick={() => handleViewChange('')}>None</MenuItem>
+            <MenuItem onClick={() => handleViewChange('collapsed')}>Collapsed</MenuItem>
+            <MenuItem onClick={() => handleViewChange('normal')}>Normal</MenuItem>
+          </Menu> */}
       </Menu>
     </Box>
   )
