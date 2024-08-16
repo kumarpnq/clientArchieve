@@ -30,7 +30,7 @@ const useFetchSocialMediaData = ({ mediaType, encryptStr, authToken, screen }) =
       setLoading(true)
       try {
         const params = {
-          clientIds,
+          clientIds: 'BMW23',
           fromDate: formatDate(formattedStartDate),
           toDate: formatDate(formattedEndDate),
           mediaType

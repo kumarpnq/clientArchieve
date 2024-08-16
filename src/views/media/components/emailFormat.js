@@ -24,24 +24,28 @@ export const generateTableHtml = cards => {
   //   </a>{' '}
   //   to unsubscribe.
   // </p>
+
+  //  ;<div class='filter-card'>
+  //    <img alt='logo' src='${card.publisherImage}' height='15px' width='15px' />
+  //    <p>
+  //      <span class='filter-card-child'>ACTIVE WIDGET FILTERS:</span>
+  //      <span>channels : ${card.publisherName}</span>
+  //    </p>
+  //  </div>
+
   const cardItems = cards
     .map(card => {
       return `
       <div class="main-container">
 
-        <div class="filter-card">
-          <img alt="logo" src="${card.publisherImage}" height="15px" width="15px"/>
-          <p>
-            <span class="filter-card-child">ACTIVE WIDGET FILTERS:</span>
-            <span>channels : ${card.publisherName}</span>
-          </p>
-        </div>
-        <h1>
+
+        <h1 class="text-center">
         <img src=${
           card.mediaType === 'youtube'
             ? 'https://img.icons8.com/color/48/youtube--v1.png'
             : 'https://img.icons8.com/ios-glyphs/30/twitterx--v1.png'
         } alt="logo" height="15px" width="15px" class="media-logo"/>
+          <img alt='logo' src='${card.publisherImage}' height='15px' width='15px' />
           <a class="headline-user" href=${card.publisherLink}>@${card.publisherName}</a>
           <span class="headline-user-subtitle">${
             card.mediaType === 'twitter' ? 'retweeted an image' : 'shared video'
@@ -91,6 +95,9 @@ export const generateTableHtml = cards => {
             width: 100%;
             border-radius: 2px;
           }
+            .text-center{
+            text-align:center;
+            }
           .child {
             text-align: center;
           }

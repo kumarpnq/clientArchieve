@@ -37,7 +37,8 @@ import {
   selectSelectedStartDate,
   selectSelectedEndDate,
   selectShortCutFlag,
-  selectShortCut
+  selectShortCut,
+  selectedDateType
 } from 'src/store/apps/user/userSlice'
 import OptionsMenu from 'src/@core/components/option-menu'
 import { BASE_URL } from 'src/api/base'
@@ -227,6 +228,7 @@ const TableSelection = () => {
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedTypeOfDate = useSelector(selectedDateType)
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const shortCutFlags = useSelector(selectShortCutFlag)
@@ -462,6 +464,7 @@ const TableSelection = () => {
           const request_params = {
             clientIds: clientId,
             companyIds: selectedCompaniesString,
+            DateTye: selectedTypeOfDate,
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
             toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
             page: currentPage,
@@ -525,7 +528,8 @@ const TableSelection = () => {
     selectedSortBy,
     dataFetchFlag,
     selectedEditionType,
-    selectedPublicationType
+    selectedPublicationType,
+    selectedTypeOfDate
   ])
 
   // Divide social feeds into left and right columns

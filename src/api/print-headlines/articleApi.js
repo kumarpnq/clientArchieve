@@ -5,6 +5,7 @@ const base_url = process.env.NEXT_PUBLIC_BASE_URL
 export const fetchArticles = async ({
   clientIds,
   companyIds,
+  dateType,
   fromDate,
   toDate,
   page,
@@ -33,6 +34,8 @@ export const fetchArticles = async ({
     const request_params = {
       clientIds,
       companyIds,
+
+      dateType,
       fromDate,
       toDate,
       page,

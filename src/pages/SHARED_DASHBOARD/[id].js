@@ -4,7 +4,6 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import DataCard from 'src/views/media/DataCard'
 import Stepper from 'src/views/media/Stepper'
 import PNQCard from 'src/views/media/components/PNQCard'
-import useFetchSocialMediaData from 'src/api/SHARED_DASHBOARD/fetchSocialMediaData'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import Pagination from '@mui/material/Pagination'
@@ -16,10 +15,11 @@ const SharedDashboard = () => {
   const idValue = id?.split('id=')[1]
 
   const [loading, setLoading] = useState(false)
+  const [value, setValue] = useState('all')
   const [error, setError] = useState('')
   const [cardData, setCardData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(20)
+  const [itemsPerPage] = useState(40)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +35,7 @@ const SharedDashboard = () => {
         setCardData(response.data.socialMediaData)
       } catch (err) {
         console.log(err.message)
+        setCardData([])
         setError(err)
       } finally {
         setLoading(false)
@@ -42,7 +43,7 @@ const SharedDashboard = () => {
     }
 
     fetchData()
-  }, [idValue])
+  }, [idValue, value])
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page)
@@ -64,6 +65,8 @@ const SharedDashboard = () => {
         isSelectCard={isSelectCard}
         selectedCards={selectedCards}
         setSelectedCards={setSelectedCards}
+        value={value}
+        setValue={setValue}
       />
       <DataCard
         isSelectCard={isSelectCard}

@@ -34,6 +34,7 @@ import { setShotCutPrint, selectShortCut } from 'src/store/apps/user/userSlice'
 
 // * third party imports
 import axios from 'axios'
+import DateType from 'src/@core/layouts/components/shared-components/DateType'
 
 const notifications = [
   {
@@ -152,6 +153,7 @@ const AppBarContent = props => {
           <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <Box>
               <Competition settings={settings} />
+              <DateType settings={settings} />
               {isShowMedia && <Media settings={settings} />}
             </Box>
             <Box>

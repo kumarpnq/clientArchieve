@@ -308,6 +308,7 @@ const TableSelection = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedTypeOfDate = useSelector(selectedDateType)
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const shortCutFlags = useSelector(selectShortCutFlag)
@@ -523,6 +524,7 @@ const TableSelection = () => {
           const request_params = {
             clientIds: clientId,
             companyIds: selectedCompetitions.join(', '),
+            dateType: selectedTypeOfDate,
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
             toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
             page: currentPage,
@@ -574,7 +576,8 @@ const TableSelection = () => {
     dataFetchFlag,
     selectedSortBy,
     selectedEditionType,
-    selectedPublicationType
+    selectedPublicationType,
+    selectedTypeOfDate
   ])
 
   // Divide social feeds into left and right columns

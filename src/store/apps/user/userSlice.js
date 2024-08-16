@@ -15,7 +15,8 @@ const userSlice = createSlice({
     shortCutFlag: false,
     customDashboardScreens: false,
     fetchAfterReportsChange: false,
-    userDashboardId: ''
+    userDashboardId: '',
+    selectedDateType: 'AD'
   },
   reducers: {
     setShotCutPrint: (state, action) => {
@@ -32,6 +33,9 @@ const userSlice = createSlice({
     },
     setSelectedCompetitions: (state, action) => {
       state.selectedCompetitions = action.payload
+    },
+    setSelectedDateType: (state, action) => {
+      state.selectedDateType = action.payload
     },
     setSelectedDateRange: (state, action) => {
       state.selectedStartDate = action.payload.startDate
@@ -78,6 +82,7 @@ export const {
   setUserData,
   setSelectedClient,
   setSelectedCompetitions,
+  setSelectedDateType,
   setSelectedDateRange,
   setNotificationFlag,
   setSelectedMedia,
@@ -102,6 +107,8 @@ export const selectShortCutFlag = state => state.user.shortCutFlag
 export const selectSelectedClient = state => state.user.selectedClient
 
 export const selectSelectedCompetitions = state => state.user.selectedCompetitions
+
+export const selectedDateType = state => state.user.selectedDateType
 
 export const selectSelectedStartDate = state => state.user.selectedStartDate
 

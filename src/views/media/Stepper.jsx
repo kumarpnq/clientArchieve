@@ -62,13 +62,13 @@ const Stepper = ({
   const [menuAnchorEl, setMenuAnchorEl] = useState(null)
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'))
   const [copyLoading, setCopyLoading] = useState(false)
+  const [open, setOpen] = useState(false)
 
   // * redux
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
-  const [open, setOpen] = useState(false)
 
   const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
   const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
@@ -130,49 +130,48 @@ const Stepper = ({
 
   return (
     <StyledOuterBox>
-      {isSecure && (
-        <>
-          {' '}
-          {isMobile ? (
-            <>
-              <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
-                <MenuIcon />
-              </IconButton>
-              <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose} sx={{ mt: '45px' }}>
-                <MenuItem onClick={() => setValue('all')}>All</MenuItem>
-                <MenuItem onClick={() => setValue('twitter')}>X</MenuItem>
-                {/* <MenuItem onClick={() => setValue('facebook')}>Facebook</MenuItem> */}
-                <MenuItem onClick={() => setValue('youtube')}>YouTube</MenuItem>
-                {/* <MenuItem onClick={() => setValue('instagram')}>Instagram</MenuItem> */}
-                {/* <MenuItem onClick={() => setValue('pinterest')}>Pinterest</MenuItem> */}
-              </Menu>
-            </>
-          ) : (
-            <Box>
-              <TabContext value={value}>
-                <Box>
-                  <TabList onChange={handleChange} aria-label='lab API tabs example' variant='scrollable'>
-                    <Tab
-                      label={
-                        <IconButton
-                          sx={{ color: 'primary.main', fontSize: '1em', fontWeight: 'bold', letterSpacing: '1px' }}
-                        >
-                          All
-                        </IconButton>
-                      }
-                      value='all'
-                      sx={{ minWidth: 30 }}
-                    />
-                    <Tab
-                      label={
-                        <IconButton sx={{ color: 'primary.main' }}>
-                          <XIcon fontSize='1em' />
-                        </IconButton>
-                      }
-                      value='twitter'
-                      sx={{ minWidth: 30 }}
-                    />
-                    {/* <Tab
+      <>
+        {' '}
+        {isMobile ? (
+          <>
+            <IconButton onClick={handleMenuClick} sx={{ color: 'primary.main' }}>
+              <MenuIcon />
+            </IconButton>
+            <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose} sx={{ mt: '45px' }}>
+              <MenuItem onClick={() => setValue('all')}>All</MenuItem>
+              <MenuItem onClick={() => setValue('twitter')}>X</MenuItem>
+              {/* <MenuItem onClick={() => setValue('facebook')}>Facebook</MenuItem> */}
+              <MenuItem onClick={() => setValue('youtube')}>YouTube</MenuItem>
+              {/* <MenuItem onClick={() => setValue('instagram')}>Instagram</MenuItem> */}
+              {/* <MenuItem onClick={() => setValue('pinterest')}>Pinterest</MenuItem> */}
+            </Menu>
+          </>
+        ) : (
+          <Box>
+            <TabContext value={value}>
+              <Box>
+                <TabList onChange={handleChange} aria-label='lab API tabs example' variant='scrollable'>
+                  <Tab
+                    label={
+                      <IconButton
+                        sx={{ color: 'primary.main', fontSize: '1em', fontWeight: 'bold', letterSpacing: '1px' }}
+                      >
+                        All
+                      </IconButton>
+                    }
+                    value='all'
+                    sx={{ minWidth: 30 }}
+                  />
+                  <Tab
+                    label={
+                      <IconButton sx={{ color: 'primary.main' }}>
+                        <XIcon fontSize='1em' />
+                      </IconButton>
+                    }
+                    value='twitter'
+                    sx={{ minWidth: 30 }}
+                  />
+                  {/* <Tab
                   label={
                     <IconButton sx={{ color: 'primary.main' }}>
                       <FacebookIcon ontSize='1em' />
@@ -181,16 +180,16 @@ const Stepper = ({
                   value='facebook'
                   sx={{ minWidth: 30 }}
                 /> */}
-                    <Tab
-                      label={
-                        <IconButton sx={{ color: 'primary.main' }}>
-                          <YouTubeIcon ontSize='1em' />
-                        </IconButton>
-                      }
-                      value='youtube'
-                      sx={{ minWidth: 30 }}
-                    />
-                    {/* <Tab
+                  <Tab
+                    label={
+                      <IconButton sx={{ color: 'primary.main' }}>
+                        <YouTubeIcon ontSize='1em' />
+                      </IconButton>
+                    }
+                    value='youtube'
+                    sx={{ minWidth: 30 }}
+                  />
+                  {/* <Tab
                   label={
                     <IconButton sx={{ color: 'primary.main' }}>
                       <InstagramIcon ontSize='1em' />
@@ -199,7 +198,7 @@ const Stepper = ({
                   value='instagram'
                   sx={{ minWidth: 30 }}
                 /> */}
-                    {/* <Tab
+                  {/* <Tab
                   label={
                     <IconButton sx={{ color: 'primary.main', fontSize: 35 }}>
                       <PinterestIcon ontSize='1em' />
@@ -208,13 +207,12 @@ const Stepper = ({
                   value='pinterest'
                   sx={{ minWidth: 30 }}
                 /> */}
-                  </TabList>
-                </Box>
-              </TabContext>
-            </Box>
-          )}
-        </>
-      )}
+                </TabList>
+              </Box>
+            </TabContext>
+          </Box>
+        )}
+      </>
 
       <Box sx={{ display: 'flex' }}>
         {isSecure && (
@@ -240,7 +238,14 @@ const Stepper = ({
           isSecure={isSecure}
         />
       </Box>
-      <MailDialog open={open} setOpen={setOpen} selectedCards={selectedCards} setSelectedCards={setSelectedCards} />
+      <MailDialog
+        open={open}
+        setOpen={setOpen}
+        selectedCards={selectedCards}
+        setSelectedCards={setSelectedCards}
+        value={value}
+        setIsSelectCard={setIsSelectCard}
+      />
     </StyledOuterBox>
   )
 }

@@ -19,7 +19,7 @@ const MediaAnalysis = () => {
 
   const [cardData, setCardData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(20)
+  const [itemsPerPage] = useState(40)
 
   useEffect(() => {
     if (data?.length) {

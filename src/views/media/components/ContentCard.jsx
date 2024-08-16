@@ -79,8 +79,6 @@ const formatDate = dateStr => {
 }
 
 export const TestCard = ({ item, onCardSelect, isSelectCard }) => {
-  console.log(item)
-
   const [anchorEl, setAnchorEl] = useState(null)
   const [isChecked, setIsChecked] = useState(false)
   const [expand, setExpand] = useState(false)
@@ -143,13 +141,19 @@ export const TestCard = ({ item, onCardSelect, isSelectCard }) => {
             <Box sx={{ display: 'flex' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: 1, py: 1 }}>
                 <BadgeAvatars img={item.publisherImage} mediaType={item.mediaType} />
-                <Link href={item.publisherLink} target='_blank' rel='noopener' fontSize={'0.8em'}>
+                <Link
+                  href={item.publisherLink}
+                  target='_blank'
+                  rel='noopener'
+                  fontSize={'0.8em'}
+                  sx={{ whiteSpace: 'nowrap' }}
+                >
                   {item.publisherName?.substring(0, 10) + '...'}
                 </Link>
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='h2' fontSize={'0.9em'} fontWeight={'bold'} ml={2}>
-                  {item.title?.substring(0, 100) + '...'}
+                  {item.title?.substring(0, 130) + '...'}
                 </Typography>
                 {/* second portion */}
                 <Typography component={'div'} display={'flex'} alignItems={'center'} width={'100%'} gap={2} ml={2}>
