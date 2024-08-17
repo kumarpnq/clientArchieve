@@ -167,12 +167,6 @@ const TableSelection = () => {
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
 
-  const publications = [
-    { publicationName: 'The Hindu', publicationId: 'hindu' },
-    { publicationName: 'The Muslim', publicationId: 'muslim' },
-    { publicationName: 'The Christian', publicationId: 'christian' }
-  ]
-
   const articleColumns = [
     {
       flex: 0.1,
@@ -194,17 +188,21 @@ const TableSelection = () => {
       minWidth: 5,
       headerName: 'Grp',
       field: 'Grp',
-      renderCell: params => (
-        <SelectBox
-          icon={publications.length !== 1 ? <Icon icon='ion:add' /> : null}
-          iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
-          renderItem='publicationName'
-          renderKey='publicationId'
-          menuItems={publications}
-          selectedItems={selectedItems}
-          setSelectedItems={setSelectedItems}
-        />
-      )
+      renderCell: params => {
+        const publications = params.row.children || []
+
+        return (
+          <SelectBox
+            icon={publications.length !== 1 ? <Icon icon='ion:add' /> : null}
+            iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
+            renderItem='publicationName'
+            renderKey={'socialFeedId' || 'articleId'}
+            menuItems={publications}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
+        )
+      }
     },
     {
       flex: 0.6,

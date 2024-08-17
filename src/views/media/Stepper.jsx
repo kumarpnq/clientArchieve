@@ -92,7 +92,7 @@ const Stepper = ({
       const storedToken = localStorage.getItem('accessToken')
 
       const params = {
-        clientId,
+        clientIds: 'BMW23',
         fromDate: formatDate(formattedStartDate),
         toDate: formatDate(formattedEndDate),
         mediaType: value

@@ -36,7 +36,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
   const [fields, setFields] = useState([])
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
-  const { responseData, loading, error, postData } = useExcelDump()
+  const { responseData, loading, error, postData } = useExcelDump('both')
 
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
@@ -63,7 +63,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
 
   useEffect(() => {
     if (selectAll) {
-      const allIds = fields.map(i => i.id)
+      const allIds = fields.map(i => i.name)
       setSelectedFields([...allIds])
     } else {
       setSelectedFields([])
@@ -337,12 +337,15 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
           control={<Checkbox checked={selectAll} onChange={handleSelectAllChange} />}
           label='Select All'
         />
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           {fields.map(item => (
             <Grid item xs={6} key={item.id}>
               <FormControlLabel
                 control={
-                  <Checkbox checked={selectedFields.includes(item.id)} onChange={() => handleCheckboxChange(item.id)} />
+                  <Checkbox
+                    checked={selectedFields.includes(item.name)}
+                    onChange={() => handleCheckboxChange(item.name)}
+                  />
                 }
                 label={item.name}
               />

@@ -56,6 +56,7 @@ export const generateTableHtml = cards => {
 
         <h1 class="text-center">
         <img src=${iconUrl} alt="logo" height="15px" width="15px" class="media-logo"/>
+
           <img alt='logo' src='${card.publisherImage}' height='15px' width='15px' />
           <a class="headline-user" href=${card.publisherLink}>@${card.publisherName}</a>
           <span class="headline-user-subtitle">${

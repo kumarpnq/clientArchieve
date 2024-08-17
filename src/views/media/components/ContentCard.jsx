@@ -178,7 +178,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='h2' fontSize={'0.9em'} fontWeight={'bold'} ml={2}>
-                  {item.title?.substring(0, 130) + '...' || ''}
+                  {item.title?.substring(0, 115) + '...' || ''}
                 </Typography>
                 {/* second portion */}
                 <Typography component={'div'} display={'flex'} alignItems={'center'} width={'100%'} gap={2} ml={2}>
