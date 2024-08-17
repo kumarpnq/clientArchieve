@@ -33,18 +33,29 @@ export const generateTableHtml = cards => {
   //    </p>
   //  </div>
 
+  const getIconUrlByMediaType = mediaType => {
+    switch (mediaType) {
+      case 'youtube':
+        return 'https://img.icons8.com/color/48/youtube--v1.png'
+      case 'twitter':
+        return 'https://img.icons8.com/ios-glyphs/30/twitterx--v1.png'
+      case 'facebook':
+        return 'https://img.icons8.com/ios-glyphs/30/facebook--v1.png'
+      default:
+        return ''
+    }
+  }
+
   const cardItems = cards
     .map(card => {
+      const iconUrl = getIconUrlByMediaType(card.mediaType)
+
       return `
       <div class="main-container">
 
 
         <h1 class="text-center">
-        <img src=${
-          card.mediaType === 'youtube'
-            ? 'https://img.icons8.com/color/48/youtube--v1.png'
-            : 'https://img.icons8.com/ios-glyphs/30/twitterx--v1.png'
-        } alt="logo" height="15px" width="15px" class="media-logo"/>
+        <img src=${iconUrl} alt="logo" height="15px" width="15px" class="media-logo"/>
           <img alt='logo' src='${card.publisherImage}' height='15px' width='15px' />
           <a class="headline-user" href=${card.publisherLink}>@${card.publisherName}</a>
           <span class="headline-user-subtitle">${
@@ -55,12 +66,12 @@ export const generateTableHtml = cards => {
         <p class="date-location">
           published on ${new Date(card.date).toLocaleDateString()} at ${new Date(card.date).toLocaleTimeString()} | ${
         card.mediaType
-      } | ${card.publisherLocation} | ${card.link}
+      } | ${card.publisherLocation || ''} | ${card.link}
         </p>
 
-        <p class="metrics">METRICS ${card.stats.impression_count || card.stats.viewCount} Engagement, ${
-        card.stats.followersCount
-      } Potential Reach, ${card.stats.likeCount} Trending Score</p>
+        <p class="metrics">METRICS ${card.stats.impression_count || card.stats.viewCount || 0} Engagement, ${
+        card.stats.followersCount || 0
+      } Potential Reach, ${card.stats.likeCount || card.stats.reactionCount || 0} Trending Score</p>
         <hr/>
       </div>
     `

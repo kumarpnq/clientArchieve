@@ -20,6 +20,7 @@ import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import FacebookIcon from '@mui/icons-material/Facebook'
 import XIcon from '@mui/icons-material/X'
 import styled from '@emotion/styled'
 import ShareIcon from '@mui/icons-material/Share'
@@ -27,7 +28,7 @@ import InsertCommentIcon from '@mui/icons-material/InsertComment'
 import AnchorIcon from '@mui/icons-material/Anchor'
 import InsightsIcon from '@mui/icons-material/Insights'
 import YouTubeIcon from '@mui/icons-material/YouTube'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
 
@@ -55,11 +56,20 @@ const FlexBox = styled(Box)({
   justifyContent: 'space-between'
 })
 
+const links = [
+  { id: 1, mediaType: 'twitter', link: 'https://img.icons8.com/?size=100&id=ZNMifeqJbPRv&format=png&color=000000' },
+  { id: 2, mediaType: 'youtube', link: 'https://img.icons8.com/?size=100&id=15979&format=png&color=000000' },
+  { id: 3, mediaType: 'facebook', link: 'https://img.icons8.com/?size=100&id=118468&format=png&color=000000' }
+]
+
+const getLinkByMediaType = mediaType => {
+  const linkObject = links.find(link => link.mediaType === mediaType)
+
+  return linkObject ? linkObject.link : ''
+}
+
 const BadgeAvatars = ({ img, mediaType }) => {
-  const link =
-    mediaType === 'twitter'
-      ? 'https://img.icons8.com/?size=100&id=ZNMifeqJbPRv&format=png&color=000000'
-      : 'https://img.icons8.com/?size=100&id=15979&format=png&color=000000'
+  const link = getLinkByMediaType(mediaType)
 
   return (
     <Stack direction='row' spacing={2}>
@@ -78,9 +88,22 @@ const formatDate = dateStr => {
   return dayjs(dateStr).format('DD/MM/YY [at] HH:mm')
 }
 
-export const TestCard = ({ item, onCardSelect, isSelectCard }) => {
+// * get social media icons according to media type
+const getIconByMediaType = mediaType => {
+  switch (mediaType) {
+    case 'twitter':
+      return <XIcon fontSize='small' sx={{ pt: 1 }} />
+    case 'youtube':
+      return <YouTubeIcon fontSize='small' sx={{ pt: 1 }} />
+    case 'facebook':
+      return <FacebookIcon fontSize='small' sx={{ pt: 1 }} />
+    default:
+      return null
+  }
+}
+
+export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) => {
   const [anchorEl, setAnchorEl] = useState(null)
-  const [isChecked, setIsChecked] = useState(false)
   const [expand, setExpand] = useState(false)
 
   const toggleAccordion = event => {
@@ -99,7 +122,6 @@ export const TestCard = ({ item, onCardSelect, isSelectCard }) => {
   const handleCheckboxChange = event => {
     event.stopPropagation()
     const checked = event.target.checked
-    setIsChecked(checked)
     onCardSelect(item, checked)
   }
 
@@ -123,6 +145,9 @@ export const TestCard = ({ item, onCardSelect, isSelectCard }) => {
     const pinterestUrl = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(link)}`
     window.open(pinterestUrl, '_blank')
   }
+
+  // Check if the current item is selected
+  const isChecked = selectedCards.some(card => card._id === item._id)
 
   return (
     <Box component={Paper} sx={{ mt: 1 }}>
@@ -153,23 +178,18 @@ export const TestCard = ({ item, onCardSelect, isSelectCard }) => {
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant='h2' fontSize={'0.9em'} fontWeight={'bold'} ml={2}>
-                  {item.title?.substring(0, 130) + '...'}
+                  {item.title?.substring(0, 130) + '...' || ''}
                 </Typography>
                 {/* second portion */}
                 <Typography component={'div'} display={'flex'} alignItems={'center'} width={'100%'} gap={2} ml={2}>
                   <span style={{ color: 'text.secondary', fontSize: '0.8em' }}> {formatDate(item.date)}</span> |{' '}
                   <span style={{ fontSize: '0.8em' }}>{item.publisherLocation}</span> |{' '}
                   <Link href={item.link} sx={{ color: 'primary.main' }} target='_blank' rel='noopener'>
-                    {item.mediaType === 'twitter' ? (
-                      <XIcon fontSize='small' sx={{ pt: 1 }} />
-                    ) : (
-                      <YouTubeIcon fontSize='small' sx={{ pt: 1 }} />
-                    )}
+                    {getIconByMediaType(item.mediaType)}
                   </Link>{' '}
                   |
                   <Typography variant='body2' ml={2}>
-                    {/* {item.company_name} */}
-                    company
+                    {item.companyName}
                   </Typography>{' '}
                   |
                   <Typography
@@ -319,7 +339,8 @@ export const TestCard = ({ item, onCardSelect, isSelectCard }) => {
                 </FlexBox>
                 <Typography variant='body2'>
                   <span>
-                    {item.stats?.likeCount} Likes, {item.stats?.viewCount}Views, {item.stats?.commentCount} Count,
+                    {item.stats?.likeCount || item.stats?.reactionCount} Likes, {item.stats?.viewCount}Views,{' '}
+                    {item.stats?.commentCount} Count,
                   </span>
                 </Typography>
               </Box>

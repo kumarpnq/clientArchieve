@@ -23,7 +23,9 @@ const MediaAnalysis = () => {
 
   useEffect(() => {
     if (data?.length) {
-      setCardData(data || [])
+      setCardData(data)
+    } else {
+      setCardData([])
     }
   }, [data])
 
@@ -54,7 +56,7 @@ const MediaAnalysis = () => {
         isSelectCard={isSelectCard}
         selectedCards={selectedCards}
         setSelectedCards={setSelectedCards}
-        cardData={paginatedData} // Display paginated data
+        cardData={paginatedData}
         loading={loading}
       />
       <Box display='flex' justifyContent='center' my={2}>

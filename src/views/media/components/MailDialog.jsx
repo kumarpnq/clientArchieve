@@ -1,6 +1,5 @@
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogTitle,
@@ -33,7 +32,7 @@ import {
 import { formatDateTime } from 'src/utils/formatDateTime'
 import dayjs from 'dayjs'
 
-const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, setIsSelectCard }) => {
+const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, setIsSelectCard, setIsChecked }) => {
   //states
   const [emailType, setEmailType] = useState({})
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
@@ -97,6 +96,10 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
 
     if (MailerFormat === 'dbWithoutDetails') {
       let link = await generateWebURL()
+      if (!link) {
+        return toast.error('Getting error')
+      }
+
       const tableHtmlLink = generateTableHTML2(link, selectedUser.fullName)
       sendEmail(tableHtmlLink)
     } else {

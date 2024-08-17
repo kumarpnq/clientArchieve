@@ -27,7 +27,12 @@ const DataCard = ({ cardData, isSelectCard, selectedCards, setSelectedCards, loa
           {' '}
           {cardData.map(item => (
             <Grid item xs={12} md={6} key={item._id}>
-              <TestCard item={item} onCardSelect={handleCardSelect} isSelectCard={isSelectCard} />
+              <TestCard
+                item={item}
+                onCardSelect={handleCardSelect}
+                isSelectCard={isSelectCard}
+                selectedCards={selectedCards}
+              />
             </Grid>
           ))}
         </>

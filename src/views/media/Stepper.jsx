@@ -140,7 +140,7 @@ const Stepper = ({
             <Menu anchorEl={menuAnchorEl} open={Boolean(menuAnchorEl)} onClose={handleMenuClose} sx={{ mt: '45px' }}>
               <MenuItem onClick={() => setValue('all')}>All</MenuItem>
               <MenuItem onClick={() => setValue('twitter')}>X</MenuItem>
-              {/* <MenuItem onClick={() => setValue('facebook')}>Facebook</MenuItem> */}
+              <MenuItem onClick={() => setValue('facebook')}>Facebook</MenuItem>
               <MenuItem onClick={() => setValue('youtube')}>YouTube</MenuItem>
               {/* <MenuItem onClick={() => setValue('instagram')}>Instagram</MenuItem> */}
               {/* <MenuItem onClick={() => setValue('pinterest')}>Pinterest</MenuItem> */}
@@ -171,15 +171,15 @@ const Stepper = ({
                     value='twitter'
                     sx={{ minWidth: 30 }}
                   />
-                  {/* <Tab
-                  label={
-                    <IconButton sx={{ color: 'primary.main' }}>
-                      <FacebookIcon ontSize='1em' />
-                    </IconButton>
-                  }
-                  value='facebook'
-                  sx={{ minWidth: 30 }}
-                /> */}
+                  <Tab
+                    label={
+                      <IconButton sx={{ color: 'primary.main' }}>
+                        <FacebookIcon ontSize='1em' />
+                      </IconButton>
+                    }
+                    value='facebook'
+                    sx={{ minWidth: 30 }}
+                  />
                   <Tab
                     label={
                       <IconButton sx={{ color: 'primary.main' }}>
