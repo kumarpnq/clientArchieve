@@ -61,17 +61,21 @@ const Grid = props => {
       minWidth: 5,
       headerName: 'Grp',
       field: 'Grp',
-      renderCell: params => (
-        <SelectBox
-          icon={<Icon icon='ion:add' />}
-          iconButtonProps={{ sx: { color: publications.length ? 'primary.main' : 'primary' } }}
-          renderItem='publicationName'
-          renderKey='publicationId'
-          menuItems={publications}
-          selectedItems={selectedItems}
-          setSelectedItems={setSelectedItems}
-        />
-      )
+      renderCell: params => {
+        const publications = params.row.children || []
+
+        return (
+          <SelectBox
+            icon={<Icon icon='ion:add' />}
+            iconButtonProps={{ sx: { color: publications.length ? 'primary.main' : 'primary' } }}
+            renderItem='publicationName'
+            renderKey='socialFeedId'
+            menuItems={publications}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
+        )
+      }
     },
     {
       flex: 0.6,

@@ -3,18 +3,22 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 // ** MUI Imports
-import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-import IconButton from '@mui/material/IconButton'
-import { DataGrid } from '@mui/x-data-grid'
-import Checkbox from '@mui/material/Checkbox'
-import Tooltip from '@mui/material/Tooltip'
+
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
-import { FormControlLabel, FormGroup, List, ListItem, Menu, MenuItem } from '@mui/material'
+import {
+  FormControlLabel,
+  FormGroup,
+  List,
+  ListItem,
+  Tooltip,
+  Checkbox,
+  CardHeader,
+  Typography,
+  Card,
+  Box
+} from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import EditDialog from './dialog/EditDialog'
@@ -24,10 +28,6 @@ import ArticleListToolbar from './toolbar/ArticleListToolbar'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
-
-import Pagination from './OnlineHeadlinePagination'
-
-import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Redux
 import { useSelector } from 'react-redux'
@@ -110,97 +110,6 @@ const TableSelection = () => {
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
   const [openArticleView, setOpenArticleView] = useState(false)
-
-  const publications = [
-    { publicationName: 'The Hindu', publicationId: 'hindu' },
-    { publicationName: 'The Muslim', publicationId: 'muslim' },
-    { publicationName: 'The Christian', publicationId: 'christian' }
-  ]
-
-  const socialFeedColumns = [
-    {
-      flex: 0.1,
-      minWidth: 5,
-      headerName: 'Select',
-      field: 'select',
-      renderCell: params => (
-        <Checkbox
-          onClick={e => {
-            e.stopPropagation()
-            handleSelect(params.row)
-          }}
-          checked={selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === params.row.socialFeedId)}
-        />
-      )
-    },
-    {
-      flex: 0.1,
-      minWidth: 5,
-      headerName: 'Grp',
-      field: 'Grp',
-      renderCell: params => (
-        <SelectBox
-          icon={<Icon icon='ion:add' />}
-          iconButtonProps={{ sx: { color: publications.length ? 'primary.main' : 'primary' } }}
-          renderItem='publicationName'
-          renderKey='publicationId'
-          menuItems={publications}
-          selectedItems={selectedItems}
-          setSelectedItems={setSelectedItems}
-        />
-      )
-    },
-    {
-      flex: 0.6,
-      minWidth: 240,
-      field: 'socialFeed',
-      headerName: 'Social Feed',
-      renderCell: renderSocialFeed
-    },
-
-    {
-      flex: 0.1,
-      minWidth: 5,
-      field: 'edit',
-      headerName: 'Edit',
-      renderCell: params => (
-        <OptionsMenu
-          iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-          options={[
-            {
-              text: 'Edit Detail',
-              menuItemProps: {
-                onClick: () => {
-                  handleEdit(params.row)
-                }
-              }
-            },
-            {
-              text: 'View',
-              menuItemProps: {
-                onClick: () => {
-                  handleView(params.row)
-                }
-              }
-            },
-            {
-              text: 'Article View',
-              menuItemProps: {
-                onClick: () => {
-                  setSelectedArticle(params.row)
-                  setOpenArticleView(true)
-                }
-              }
-            }
-          ]}
-        />
-      )
-    }
-  ]
-
-  const isNotResponsive = useMediaQuery('(min-width: 1100px )')
-  const isMobileView = useMediaQuery('(max-width: 530px)')
-  const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
 
   // ** State
   const [selectedArticles, setSelectedArticles] = useState([])

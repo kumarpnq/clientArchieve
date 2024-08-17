@@ -40,7 +40,8 @@ import {
   selectSelectedStartDate,
   selectSelectedEndDate,
   selectShortCutFlag,
-  selectShortCut
+  selectShortCut,
+  selectedDateType
 } from 'src/store/apps/user/userSlice'
 
 // ** Tooltip

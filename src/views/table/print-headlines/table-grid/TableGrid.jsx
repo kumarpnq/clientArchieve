@@ -51,27 +51,6 @@ const TableGrid = ({
 }) => {
   const [tableSelect, setTableSelect] = useState({})
 
-  // const handleSelect = useCallback(
-  //   article => {
-  //     setSelectedArticles(prevSelectedArticles => {
-  //       const isSelected = prevSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
-
-  //       const updatedSelectedArticles = new Set(prevSelectedArticles)
-
-  //       if (isSelected) {
-  //         updatedSelectedArticles.delete(article)
-  //       } else {
-  //         updatedSelectedArticles.add(article)
-  //       }
-
-  //       setPageCheck(articles.every(a => updatedSelectedArticles.has(a)))
-
-  //       return [...updatedSelectedArticles]
-  //     })
-  //   },
-  //   [articles]
-  // )
-
   useCallback(
     tableSelect => {
       const arr = []
@@ -80,8 +59,6 @@ const TableGrid = ({
     },
     [tableSelect]
   )
-
-  // const MemoizedCheckbox = React.memo(({ onClick, checked }) => <Checkbox onClick={onClick} checked={checked} />)
 
   const articleColumns = [
     // {

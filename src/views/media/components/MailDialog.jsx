@@ -67,7 +67,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       let url
 
       const params = {
-        clientId: 'BMW23',
+        clientIds: 'BMW23',
         fromDate: formatDate(formattedStartDate),
         toDate: formatDate(formattedEndDate),
         mediaType: value
