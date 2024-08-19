@@ -93,19 +93,32 @@ const formatDate = dateStr => {
 const getIconByMediaType = mediaType => {
   switch (mediaType) {
     case 'twitter':
-      return <XIcon fontSize='small' sx={{ pt: 1 }} />
+      return {
+        icon: <XIcon fontSize='small' sx={{ pt: 1 }} />,
+        link: 'https://twitter.com'
+      }
     case 'youtube':
-      return <YouTubeIcon fontSize='small' sx={{ pt: 1 }} />
+      return {
+        icon: <YouTubeIcon fontSize='small' sx={{ pt: 1 }} />,
+        link: 'https://www.youtube.com'
+      }
     case 'facebook':
-      return <FacebookIcon fontSize='small' sx={{ pt: 1 }} />
+      return {
+        icon: <FacebookIcon fontSize='small' sx={{ pt: 1 }} />,
+        link: 'https://www.facebook.com'
+      }
     default:
-      return null
+      return {
+        icon: null,
+        link: ''
+      }
   }
 }
 
 export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [expand, setExpand] = useState(false)
+  const [selectedEmoji, setSelectedEmoji] = useState('😐')
 
   const toggleAccordion = event => {
     setExpand(prev => !prev)
@@ -147,6 +160,18 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
     window.open(pinterestUrl, '_blank')
   }
 
+  const handleEmailPost = link => {
+    const subject = encodeURIComponent('Check this out!')
+    const body = encodeURIComponent(`I found this interesting: ${link}`)
+    const mailtoUrl = `mailto:?subject=${subject}&body=${body}`
+    window.location.href = mailtoUrl
+  }
+
+  const handleWhatsappPost = link => {
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(link)}`
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
+  }
+
   // Check if the current item is selected
   const isChecked = selectedCards.some(card => card._id === item._id)
 
@@ -160,6 +185,33 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
   const open = Boolean(anchorE2)
   const id = open ? 'simple-popper' : undefined
 
+  const emojis = [
+    { emoji: '🙂', label: 'positive' },
+    { emoji: '😐', label: 'Neutral' },
+    { emoji: '☹️', label: 'negative' }
+  ]
+
+  const handleEmojiClick = async label => {
+    const selected = emojis.find(item => item.label === label)
+    if (selected) {
+      setSelectedEmoji(selected.emoji)
+      setAnchorE2(null)
+    }
+  }
+
+  const { icon, link } = getIconByMediaType(item.mediaType)
+
+  // * formats
+  const formatViewCount = count => {
+    if (count >= 1_000_000) {
+      return `${(count / 1_000_000).toFixed(1)}M`
+    } else if (count >= 1_000) {
+      return `${(count / 1_000).toFixed(1)}k`
+    } else {
+      return `${count}`
+    }
+  }
+
   return (
     <Box component={Paper} sx={{ mt: 1 }}>
       {/* header */}
@@ -168,6 +220,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
           expandIcon={<ExpandMoreIcon onClick={toggleAccordion} />}
           aria-controls='panel1-content'
           id='panel1-header'
+          sx={{ height: 110 }}
         >
           {' '}
           {isSelectCard && (
@@ -188,21 +241,25 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                 </Link>
               </Box>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <Typography variant='h2' fontSize={'0.9em'} fontWeight={'bold'} ml={2}>
-                  {item.title?.substring(0, 115) + '...' || ''}
-                </Typography>
+                <Link href={item?.link || ''} target='_blank' rel='noopener'>
+                  <Typography variant='h2' fontSize={'0.9em'} fontWeight={'bold'} ml={2}>
+                    {item.title?.substring(0, 100) + '...' || ''} - {item.companyName}
+                  </Typography>
+                </Link>
                 {/* second portion */}
                 <Typography component={'div'} display={'flex'} alignItems={'center'} width={'100%'} gap={2} ml={2}>
                   <span style={{ color: 'text.secondary', fontSize: '0.8em' }}> {formatDate(item.date)}</span> |{' '}
-                  <span style={{ fontSize: '0.8em' }}>{item.publisherLocation}</span> |{' '}
-                  <Link href={item.link} sx={{ color: 'primary.main' }} target='_blank' rel='noopener'>
-                    {getIconByMediaType(item.mediaType)}
+                  <span style={{ fontSize: '0.8em' }}>{item.publisherLocation || 'location'}</span> |{' '}
+                  <Link href={link} sx={{ color: 'primary.main' }} target='_blank' rel='noopener'>
+                    {icon}
                   </Link>{' '}
                   |
-                  <Typography variant='body2' ml={2}>
-                    {item.companyName}
-                  </Typography>{' '}
-                  |
+                  <span style={{ fontSize: '0.8em' }}>
+                    {formatViewCount(item.stats?.viewCount || 0)} Views,{' '}
+                    {formatViewCount(item.stats?.likeCount || item.stats?.reactionCount)}{' '}
+                    {item.mediaType === 'youtube' ? 'Likes' : 'Reactions'},{' '}
+                    {formatViewCount(item.stats?.commentCount || 0)} comments.
+                  </span>
                   <Typography
                     component={'div'}
                     color='text.secondary'
@@ -211,20 +268,24 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                     justifyContent={'space-between'}
                   >
                     <IconButton aria-describedby={id} type='button' onClick={handleClickPopper}>
-                      <span style={{ fontSize: '15px' }}>😐</span>
+                      <span style={{ fontSize: '15px' }}>{selectedEmoji}</span>
                     </IconButton>
                     <Popper id={id} open={open} anchorEl={anchorE2} placement='right'>
                       <Paper elevation={3}>
                         <Box sx={{ p: 2, display: 'flex', gap: 1 }}>
-                          <Typography variant='button' display='block'>
-                            🙂 <br /> Happy
-                          </Typography>
-                          <Typography variant='button' display='block'>
-                            😐 <br /> Neutral
-                          </Typography>
-                          <Typography variant='button' display='block'>
-                            😥 <br /> Sad
-                          </Typography>
+                          {emojis.map((item, index) => (
+                            <Typography
+                              key={index}
+                              variant='button'
+                              display='block'
+                              sx={{ cursor: 'pointer', border: 'none' }}
+                              fontSize={'1.5em'}
+                              component={'button'}
+                              onClick={() => handleEmojiClick(item.label)}
+                            >
+                              {item.emoji}
+                            </Typography>
+                          ))}
                         </Box>
                       </Paper>
                     </Popper>
@@ -276,6 +337,18 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                         </ListItemIcon>
                         <ListItemText primary='Share on Pinterest' />
                       </MenuItem>
+                      <MenuItem onClick={() => handleEmailPost(item.link)}>
+                        <ListItemIcon>
+                          <Icon icon='material-symbols:mail-outline' fontSize={20} />
+                        </ListItemIcon>
+                        <ListItemText primary='Share on Email' />
+                      </MenuItem>
+                      <MenuItem onClick={() => handleWhatsappPost(item.link)}>
+                        <ListItemIcon>
+                          <Icon icon='ic:round-whatsapp' fontSize={20} />
+                        </ListItemIcon>
+                        <ListItemText primary='Share on Whatsapp' />
+                      </MenuItem>
                     </Menu>
                   </Typography>
                 </Typography>
@@ -290,21 +363,35 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
               {/* img */}
               <Typography
                 sx={{
-                  width: 250,
-                  height: 65,
+                  width: 100,
+                  height: 100,
+                  padding: 2,
                   border: '1px solid lightgray',
-                  borderRadius: '3px',
-                  boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
-                  fontSize: '0.5em',
+                  borderRadius: '8px',
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                  fontSize: '0.75em',
                   textAlign: 'center',
-                  transition: 'transform 0.3s ease-in-out',
+                  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                   '&:hover': {
-                    transform: 'scale(1.1)'
+                    transform: 'scale(1.05)',
+                    boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)'
                   }
                 }}
-                alt='thumbnail'
               >
-                <img alt='thumbnail' src={item.thumbnail} height={65} width={250} />
+                <img
+                  alt='thumbnail'
+                  src={item.thumbnail}
+                  style={{
+                    borderRadius: '4px',
+                    width: 'auto',
+                    height: '100%',
+                    maxWidth: '100%',
+                    objectFit: 'contain'
+                  }}
+                />
               </Typography>
             </Box>
             <Divider orientation='vertical' sx={{ color: 'black' }} />
@@ -318,28 +405,29 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                     <CustomTooltip title='Engagement'>
                       <InsertCommentIcon />
                     </CustomTooltip>
-                    <span>{item.comments}</span>
+                    <span>{formatViewCount(item.comments || 0)}</span>
                   </Typography>
                   <Typography display='flex' alignItems='center' gap={0.5}>
                     <CustomTooltip title='Potential Reach'>
                       <AnchorIcon />
                     </CustomTooltip>
-                    <span>{item.anchor}K</span>
+                    <span>{formatViewCount(item.anchor || 0)}K</span>
                   </Typography>
                   <Typography display='flex' alignItems='center' gap={0.5}>
                     <CustomTooltip title='Trending score'>
                       <InsightsIcon />
                     </CustomTooltip>
-                    <span>{item.insights}</span>
+                    <span>{formatViewCount(0 || item.insights)}</span>
                   </Typography>
                 </FlexBox>
                 <Typography variant='body2'>
                   <span>
-                    {item.stats?.retweet_count} Retweets, {item.stats?.reply_count} Twitter Replies,{' '}
-                    {item.stats?.likeCount} Twitter Likes,
+                    {formatViewCount(item.stats?.retweet_count)} Retweets, {formatViewCount(item.stats?.reply_count)}{' '}
+                    Twitter Replies, {formatViewCount(item.stats?.likeCount)} Twitter Likes,
                   </span>
                   <span>
-                    {item.stats?.followersCount}K Twitter Followers, {item.stats?.impression_count} Twitter Impressions
+                    {formatViewCount(item.stats?.followersCount)}K Twitter Followers,{' '}
+                    {formatViewCount(item.stats?.impression_count)} Twitter Impressions
                   </span>
                 </Typography>
               </Box>
@@ -350,26 +438,32 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                     <CustomTooltip title='Engagement'>
                       <InsertCommentIcon />
                     </CustomTooltip>
-                    <span>{item.stats?.commentCount}</span>
+                    <span>{formatViewCount(item.stats?.commentCount || 0)}</span>
                   </Typography>
                   <Typography display='flex' alignItems='center' gap={0.5}>
                     <CustomTooltip title='Potential Reach'>
                       <AnchorIcon />
                     </CustomTooltip>
-                    <span>{item.stats?.viewCount}</span>
+                    <span>{formatViewCount(item.stats?.viewCount || 0)}</span>
                   </Typography>
                   <Typography display='flex' alignItems='center' gap={0.5}>
                     <CustomTooltip title='Trending score'>
                       <InsightsIcon />
                     </CustomTooltip>
-                    <span>{item.insights}</span>
+                    <span>{formatViewCount(item.insights || 0)}</span>
                   </Typography>
                 </FlexBox>
-                <Typography variant='body2'>
+                <Typography variant='body2' sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <span>
-                    {item.stats?.likeCount || item.stats?.reactionCount} Likes, {item.stats?.viewCount}Views,{' '}
-                    {item.stats?.commentCount} Count,
+                    {formatViewCount(item.stats?.likeCount || item.stats?.reactionCount)}{' '}
+                    {item.mediaType === 'facebook' ? 'Reactions' : 'Likes'},
                   </span>
+                  <span>
+                    {' '}
+                    {formatViewCount(item.stats?.viewCount)}
+                    Views,{' '}
+                  </span>
+                  <span>{formatViewCount(item.stats?.commentCount)} Count,</span>
                 </Typography>
               </Box>
             )}

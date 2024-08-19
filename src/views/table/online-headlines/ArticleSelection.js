@@ -108,6 +108,7 @@ const renderSocialFeed = params => {
 
 const TableSelection = () => {
   // * temp
+  const [articleOptimizedObj, setArticleOptimizedObj] = useState({})
   const [selectedItems, setSelectedItems] = useState([])
   const [openArticleView, setOpenArticleView] = useState(false)
 
@@ -193,7 +194,9 @@ const TableSelection = () => {
     searchParameters.ignoreThis && { ignoreWords: searchParameters.ignoreThis },
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
     selectedArticles.length &&
-      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.socialFeedId) },
+      selectedArticles.length !== recordsPerPage && {
+        articleId: selectedArticles && selectedArticles.map(i => i?.socialFeedId)
+      },
 
     {
       pageCheck: pageCheck
@@ -408,6 +411,11 @@ const TableSelection = () => {
           const totalRecords = response.data.totalRecords || 0
 
           setSocialFeeds(response.data.socialFeeds)
+          let obj = {}
+          response.articles.map(item => {
+            obj[item?.socialFeedId] = item
+          })
+          setArticleOptimizedObj(obj)
 
           // Update totalRecords in the state
           setPaginationModel(prevPagination => ({
@@ -472,27 +480,62 @@ const TableSelection = () => {
     }
   }, [pageCheck, socialFeeds, allCheck])
 
-  const handleSelect = article => {
-    const isSelected = selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
+  // const handleSelect = article => {
+  //   const isSelected = selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
 
-    setSelectedArticles(prevSelectedArticles => {
-      let updatedSelectedArticles
-      if (isSelected) {
-        updatedSelectedArticles = prevSelectedArticles.filter(
-          selectedArticle => selectedArticle.socialFeedId !== article.socialFeedId
-        )
-      } else {
-        updatedSelectedArticles = [...prevSelectedArticles, article]
+  //   setSelectedArticles(prevSelectedArticles => {
+  //     let updatedSelectedArticles
+  //     if (isSelected) {
+  //       updatedSelectedArticles = prevSelectedArticles.filter(
+  //         selectedArticle => selectedArticle.socialFeedId !== article.socialFeedId
+  //       )
+  //     } else {
+  //       updatedSelectedArticles = [...prevSelectedArticles, article]
+  //     }
+
+  //     const isPageFullySelected = socialFeeds.every(article =>
+  //       updatedSelectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
+  //     )
+
+  //     setPageCheck(isPageFullySelected)
+
+  //     return updatedSelectedArticles
+  //   })
+  // }
+
+  const handleRowCheck = (tablePosition, params) => {
+    if (tablePosition === 'center') {
+      localStorage.setItem('selectedRows', JSON.stringify(params))
+    }
+    if (tablePosition == 'left') {
+      localStorage.setItem('leftSelectedRows', JSON.stringify(params))
+    }
+
+    if (tablePosition == 'right') {
+      localStorage.setItem('rightSelectedRows', JSON.stringify(params))
+    }
+
+    if (tablePosition === 'left' || tablePosition === 'right') {
+      const prevLeft = JSON.parse(localStorage.getItem('leftSelectedRows'))
+      const prevRight = JSON.parse(localStorage.getItem('rightSelectedRows'))
+      let finalArr = []
+      if (prevLeft?.length > 0) {
+        finalArr.push(...prevLeft)
       }
+      if (prevRight?.length > 0) {
+        finalArr.push(...prevRight)
+      }
+      localStorage.setItem('selectedRows', JSON.stringify(finalArr))
+    }
 
-      const isPageFullySelected = socialFeeds.every(article =>
-        updatedSelectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.articleId)
-      )
-
-      setPageCheck(isPageFullySelected)
-
-      return updatedSelectedArticles
-    })
+    setTimeout(() => {
+      const params = JSON.parse(localStorage.getItem('selectedRows'))
+      let arr = []
+      params?.map(itm => {
+        arr.push(articleOptimizedObj[itm])
+      })
+      setSelectedArticles(arr)
+    }, 2000)
   }
 
   const handleLeftPagination = () => {
@@ -513,7 +556,7 @@ const TableSelection = () => {
 
     if (!isNaN(newRecordsPerPage) && newRecordsPerPage > 0) {
       setRecordsPerPage(newRecordsPerPage)
-      setCurrentPage(1) // Reset current page when changing records per page
+      setCurrentPage(1)
     }
   }
 
@@ -628,7 +671,6 @@ const TableSelection = () => {
         rightSocialFeeds={rightSocialFeeds}
         socialFeeds={socialFeeds}
         getRowId={getRowId}
-        handleSelect={handleSelect}
         handleEdit={handleEdit}
         handleView={handleView}
         setSelectedArticle={setSelectedArticle}
@@ -644,6 +686,7 @@ const TableSelection = () => {
         handleRightPagination={handleRightPagination}
         handleRecordsPerPageChange={handleRecordsPerPageChange}
         handleRowClick={handleRowClick}
+        handleRowCheck={handleRowCheck}
       />
 
       <EditDialog
