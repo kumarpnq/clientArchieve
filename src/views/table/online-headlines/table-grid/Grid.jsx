@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Checkbox, CircularProgress, useMediaQuery } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { Icon } from '@iconify/react'
@@ -13,7 +13,7 @@ const Grid = props => {
     rightSocialFeeds,
     socialFeeds,
     getRowId,
-
+    handleSelect,
     handleEdit,
     handleView,
     setSelectedArticle,
@@ -28,33 +28,37 @@ const Grid = props => {
     handleLeftPagination,
     handleRightPagination,
     handleRecordsPerPageChange,
-    handleRowClick,
-    handleRowCheck
+    handleRowClick
   } = props
-
   const isNotResponsive = useMediaQuery('(min-width: 1100px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
 
+  const publications = [
+    { publicationName: 'The Hindu', publicationId: 'hindu' },
+    { publicationName: 'The Muslim', publicationId: 'muslim' },
+    { publicationName: 'The Christian', publicationId: 'christian' }
+  ]
+
   const socialFeedColumns = [
-    // {
-    //   flex: 0.1,
-    //   minWidth: 5,
-    //   headerName: 'Select',
-    //   field: 'select',
-    //   renderCell: params => (
-    //     <Checkbox
-    //       onClick={e => {
-    //         e.stopPropagation()
-    //         handleSelect(params.row)
-    //       }}
-    //       checked={selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === params.row.socialFeedId)}
-    //     />
-    //   )
-    // },
     {
-      // flex: 0.1,
-      width: 50,
+      flex: 0.1,
+      minWidth: 5,
+      headerName: 'Select',
+      field: 'select',
+      renderCell: params => (
+        <Checkbox
+          onClick={e => {
+            e.stopPropagation()
+            handleSelect(params.row)
+          }}
+          checked={selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === params.row.socialFeedId)}
+        />
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 5,
       headerName: 'Grp',
       field: 'Grp',
       renderCell: params => {
@@ -74,16 +78,16 @@ const Grid = props => {
       }
     },
     {
-      // flex: 0.6,
-      width: 450,
+      flex: 0.6,
+      minWidth: 240,
       field: 'socialFeed',
       headerName: 'Social Feed',
       renderCell: renderSocialFeed
     },
 
     {
-      // flex: 0.1,
-      width: 70,
+      flex: 0.1,
+      minWidth: 5,
       field: 'edit',
       headerName: 'Edit',
       renderCell: params => (
@@ -125,34 +129,28 @@ const Grid = props => {
           {isNotResponsive ? (
             <Box display='flex'>
               {isMobileView ? null : (
-                <Box p={2} pr={1} width={'100%'}>
+                <Box flex={1} p={2} pr={1}>
                   <DataGrid
                     autoHeight
-                    rows={socialFeeds.slice(0, socialFeeds.length / 2)}
+                    rows={leftSocialFeeds}
                     columns={socialFeedColumns}
                     pagination={false}
                     onRowClick={params => handleRowClick(params)}
-                    onRowSelectionModelChange={item => handleRowCheck('left', item)}
-                    getRowId={row => row.socialFeedId}
-                    checkboxSelection
-                    disableRowSelectionOnClick
+                    getRowId={getRowId}
                     hideFooter
                   />
                 </Box>
               )}
 
               {/* Right Column */}
-              <Box p={2} pl={isMobileView ? 0 : 1} width={'100%'}>
+              <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
                 <DataGrid
                   autoHeight
-                  rows={socialFeeds.slice(socialFeeds.length / 2, socialFeeds.length)}
+                  rows={rightSocialFeeds}
                   columns={socialFeedColumns}
                   pagination={false} // Remove pagination
-                  onRowSelectionModelChange={item => handleRowCheck('left', item)}
                   onRowClick={params => handleRowClick(params)}
-                  getRowId={row => row.socialFeedId}
-                  checkboxSelection
-                  disableRowSelectionOnClick
+                  getRowId={getRowId}
                   hideFooter
                 />
               </Box>
@@ -169,10 +167,9 @@ const Grid = props => {
 
                 return true
               })}
-              checkboxSelection
               pagination={false} // Remove pagination
               onRowClick={params => handleRowClick(params)}
-              getRowId={row.socialFeedId}
+              getRowId={getRowId}
               hideFooter
             />
           )}
