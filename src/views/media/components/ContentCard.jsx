@@ -28,7 +28,8 @@ import InsertCommentIcon from '@mui/icons-material/InsertComment'
 import AnchorIcon from '@mui/icons-material/Anchor'
 import InsightsIcon from '@mui/icons-material/Insights'
 import YouTubeIcon from '@mui/icons-material/YouTube'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import Popper from '@mui/material/Popper'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
 
@@ -149,6 +150,16 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
   // Check if the current item is selected
   const isChecked = selectedCards.some(card => card._id === item._id)
 
+  // *
+  const [anchorE2, setAnchorE2] = useState(null)
+
+  const handleClickPopper = event => {
+    setAnchorE2(anchorE2 ? null : event.currentTarget)
+  }
+
+  const open = Boolean(anchorE2)
+  const id = open ? 'simple-popper' : undefined
+
   return (
     <Box component={Paper} sx={{ mt: 1 }}>
       {/* header */}
@@ -199,7 +210,24 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                     alignItems='center'
                     justifyContent={'space-between'}
                   >
-                    <span style={{ fontSize: '15px' }}>🙂</span>
+                    <IconButton aria-describedby={id} type='button' onClick={handleClickPopper}>
+                      <span style={{ fontSize: '15px' }}>😐</span>
+                    </IconButton>
+                    <Popper id={id} open={open} anchorEl={anchorE2} placement='right'>
+                      <Paper elevation={3}>
+                        <Box sx={{ p: 2, display: 'flex', gap: 1 }}>
+                          <Typography variant='button' display='block'>
+                            🙂 <br /> Happy
+                          </Typography>
+                          <Typography variant='button' display='block'>
+                            😐 <br /> Neutral
+                          </Typography>
+                          <Typography variant='button' display='block'>
+                            😥 <br /> Sad
+                          </Typography>
+                        </Box>
+                      </Paper>
+                    </Popper>
                     <IconButton
                       sx={{ color: 'primary.main' }}
                       aria-haspopup='true'
