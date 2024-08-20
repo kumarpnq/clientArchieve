@@ -79,7 +79,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       })
 
       const encryptedUrl = response.data.url
-      url = `http://localhost:3000/SHARED_DASHBOARD/id=${encryptedUrl}`
+      url = `${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/SHARED_DASHBOARD/id=${encryptedUrl}`
 
       return url
     } catch (error) {
