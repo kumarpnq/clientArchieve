@@ -2,6 +2,9 @@ import React, { Fragment, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { IconButton, Menu, MenuItem } from '@mui/material'
 import { selectedDateType, setSelectedDateType } from 'src/store/apps/user/userSlice'
+import IconifyIcon from 'src/@core/components/icon'
+import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload'
+import ArticleIcon from '@mui/icons-material/Article'
 
 const DateType = props => {
   const { settings } = props
@@ -26,6 +29,8 @@ const DateType = props => {
     handleClose() // Close the menu after selecting an item
   }
 
+  const displayValue = selectedDate === 'UD' ? <ArticleIcon /> : <DriveFolderUploadIcon />
+
   return (
     <Fragment>
       <IconButton
@@ -34,7 +39,7 @@ const DateType = props => {
         aria-haspopup='true'
         onClick={handleIconClick}
       >
-        {selectedDate}
+        {displayValue}
       </IconButton>
       <Menu
         open={Boolean(anchorEl)}

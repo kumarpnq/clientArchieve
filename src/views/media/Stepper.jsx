@@ -50,6 +50,7 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 )
 
 const Stepper = ({
+  cardData,
   setCardData,
   setIsSelectCard,
   isSelectCard,
@@ -105,7 +106,7 @@ const Stepper = ({
 
       const encryptedUrl = response.data.url
 
-      clipboardCopy(`http://localhost:3000/SHARED_DASHBOARD/id=${encryptedUrl}`)
+      clipboardCopy(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/SHARED_DASHBOARD/id=${encryptedUrl}`)
         .then(() => {
           toast.success('URL copied to clipboard!')
         })
@@ -232,6 +233,8 @@ const Stepper = ({
         )}
 
         <FilterBox
+          cardData={cardData}
+          setSelectedCards={setSelectedCards}
           setIsSelectCard={setIsSelectCard}
           isSelectCard={isSelectCard}
           setCardData={setCardData}

@@ -2,12 +2,13 @@ import React, { useState } from 'react'
 import { Box, IconButton, Menu, MenuItem } from '@mui/material'
 import IconifyIcon from 'src/@core/components/icon'
 
-const FilterBox = ({ setIsSelectCard, isSelectCard, setCardData, isSecure }) => {
+const FilterBox = ({ cardData, setSelectedCards, setIsSelectCard, isSelectCard, setCardData, isSecure }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [sortAnchorEl, setSortAnchorEl] = useState(null)
   const [viewAnchorEl, setViewAnchorEl] = useState(null)
   const [sortOption, setSortOption] = useState('')
   const [viewOption, setViewOption] = useState('')
+  const [isAllSelected, setIsAllSelected] = useState(false)
 
   const handleClick = event => {
     setAnchorEl(event.currentTarget)
@@ -49,6 +50,18 @@ const FilterBox = ({ setIsSelectCard, isSelectCard, setCardData, isSecure }) => 
     })
   }
 
+  const handleSelectAll = () => {
+    if (isSelectCard) {
+      setIsSelectCard(prev => !prev)
+      setSelectedCards([])
+      setIsAllSelected(false)
+    } else {
+      setIsSelectCard(prev => !prev)
+      setSelectedCards([...cardData])
+      setIsAllSelected(true)
+    }
+  }
+
   return (
     <Box>
       <IconButton onClick={handleClick} sx={{ color: 'primary.main' }}>
@@ -57,9 +70,14 @@ const FilterBox = ({ setIsSelectCard, isSelectCard, setCardData, isSecure }) => 
 
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
         {isSecure && (
-          <MenuItem onClick={() => setIsSelectCard(prev => !prev)} selected={isSelectCard}>
-            Select
-          </MenuItem>
+          <>
+            <MenuItem onClick={() => setIsSelectCard(prev => !prev)} selected={isSelectCard}>
+              Select
+            </MenuItem>
+            <MenuItem onClick={handleSelectAll} selected={isAllSelected}>
+              Select All
+            </MenuItem>
+          </>
         )}
 
         <MenuItem onClick={handleSortClick}>Sort By: {sortOption || 'None'}</MenuItem>

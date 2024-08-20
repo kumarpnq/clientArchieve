@@ -172,6 +172,11 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
   }
 
+  const handleInstagramDM = link => {
+    const instagramDMUrl = `https://www.instagram.com/direct/new/?text=${encodeURIComponent(link)}`
+    window.open(instagramDMUrl, '_blank', 'noopener,noreferrer')
+  }
+
   // Check if the current item is selected
   const isChecked = selectedCards.some(card => card._id === item._id)
 
@@ -211,6 +216,30 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
       return `${count}`
     }
   }
+
+  const viewCount = item.stats?.viewCount || 0
+  const likeCount = item.stats?.likeCount || item.stats?.reactionCount || 0
+  const commentCount = item.stats?.commentCount || 0
+
+  // Determine which parts to show based on available data
+  const showViewCount = viewCount > 0
+  const showLikeCount = likeCount > 0
+  const showCommentCount = commentCount > 0
+
+  // Create the segments based on available data
+  const segments = []
+  if (showLikeCount) {
+    segments.push(`${formatViewCount(likeCount)} ${item.mediaType === 'facebook' ? 'Reactions' : 'Likes'}`)
+  }
+  if (showViewCount) {
+    segments.push(`${formatViewCount(viewCount)} Views`)
+  }
+  if (showCommentCount) {
+    segments.push(`${formatViewCount(commentCount)} Comments`)
+  }
+
+  // Join the segments with commas
+  const displayText = segments.join(', ')
 
   return (
     <Box component={Paper} sx={{ mt: 1 }}>
@@ -254,12 +283,18 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                     {icon}
                   </Link>{' '}
                   |
-                  <span style={{ fontSize: '0.8em' }}>
-                    {formatViewCount(item.stats?.viewCount || 0)} Views,{' '}
-                    {formatViewCount(item.stats?.likeCount || item.stats?.reactionCount)}{' '}
-                    {item.mediaType === 'youtube' ? 'Likes' : 'Reactions'},{' '}
-                    {formatViewCount(item.stats?.commentCount || 0)} comments.
-                  </span>
+                  <>
+                    {(showViewCount || showLikeCount || showCommentCount) && (
+                      <span style={{ fontSize: '0.8em' }}>
+                        {showViewCount && `${formatViewCount(viewCount)} Views`}
+                        {showViewCount && (showLikeCount || showCommentCount) && ', '}
+                        {showLikeCount &&
+                          `${formatViewCount(likeCount)} ${item.mediaType === 'youtube' ? 'Likes' : 'Reactions'}`}
+                        {showLikeCount && showCommentCount && ', '}
+                        {showCommentCount && `${formatViewCount(commentCount)} comments`}
+                      </span>
+                    )}
+                  </>
                   <Typography
                     component={'div'}
                     color='text.secondary'
@@ -313,11 +348,11 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                         horizontal: 'center'
                       }}
                     >
-                      <MenuItem onClick={() => handleFacebookPost(item.link)}>
+                      <MenuItem onClick={() => handleWhatsappPost(item.link)}>
                         <ListItemIcon>
-                          <Icon icon='bi:facebook' fontSize={20} />
+                          <Icon icon='ic:round-whatsapp' fontSize={20} />
                         </ListItemIcon>
-                        <ListItemText primary='Share on Facebook' />
+                        <ListItemText primary='Share on Whatsapp' />
                       </MenuItem>
                       <MenuItem onClick={() => handleXPost(item.link)}>
                         <ListItemIcon>
@@ -325,6 +360,19 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                         </ListItemIcon>
                         <ListItemText primary='Share on X' />
                       </MenuItem>
+                      <MenuItem onClick={() => handleInstagramDM(item.link)}>
+                        <ListItemIcon>
+                          <Icon icon='hugeicons:instagram' fontSize={20} />
+                        </ListItemIcon>
+                        <ListItemText primary='Share on Instagram' />
+                      </MenuItem>
+                      <MenuItem onClick={() => handleFacebookPost(item.link)}>
+                        <ListItemIcon>
+                          <Icon icon='bi:facebook' fontSize={20} />
+                        </ListItemIcon>
+                        <ListItemText primary='Share on Facebook' />
+                      </MenuItem>
+
                       <MenuItem onClick={() => handleLinkedInPost(item.link)}>
                         <ListItemIcon>
                           <Icon icon='basil:linkedin-outline' fontSize={20} />
@@ -342,12 +390,6 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                           <Icon icon='material-symbols:mail-outline' fontSize={20} />
                         </ListItemIcon>
                         <ListItemText primary='Share on Email' />
-                      </MenuItem>
-                      <MenuItem onClick={() => handleWhatsappPost(item.link)}>
-                        <ListItemIcon>
-                          <Icon icon='ic:round-whatsapp' fontSize={20} />
-                        </ListItemIcon>
-                        <ListItemText primary='Share on Whatsapp' />
                       </MenuItem>
                     </Menu>
                   </Typography>
@@ -433,7 +475,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
               </Box>
             ) : (
               <Box display={'flex'} flexDirection={'column'} gap={4}>
-                <FlexBox>
+                <FlexBox sx={{ gap: 4 }}>
                   <Typography display='flex' alignItems='center' gap={0.5}>
                     <CustomTooltip title='Engagement'>
                       <InsertCommentIcon />
@@ -454,16 +496,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                   </Typography>
                 </FlexBox>
                 <Typography variant='body2' sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <span>
-                    {formatViewCount(item.stats?.likeCount || item.stats?.reactionCount)}{' '}
-                    {item.mediaType === 'facebook' ? 'Reactions' : 'Likes'},
-                  </span>
-                  <span>
-                    {' '}
-                    {formatViewCount(item.stats?.viewCount)}
-                    Views,{' '}
-                  </span>
-                  <span>{formatViewCount(item.stats?.commentCount)} Count,</span>
+                  {displayText}
                 </Typography>
               </Box>
             )}

@@ -153,12 +153,13 @@ const AppBarContent = props => {
           <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <Box>
               <Competition settings={settings} />
-              <DateType settings={settings} />
+
               {isShowMedia && <Media settings={settings} />}
             </Box>
             <Box>
               <DateBar />
               <DaysJumper settings={settings} />
+              <DateType settings={settings} />
             </Box>
           </Container>
         </>

@@ -17,9 +17,13 @@ import MuiDrawer from '@mui/material/Drawer'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import CloseIcon from '@mui/icons-material/Close'
 
 // ** Hook Import
 import { useSettings } from 'src/@core/hooks/useSettings'
+import { useRouter } from 'next/router'
+import { Tooltip } from 'chart.js'
+import { tooltipClasses } from '@mui/material'
 
 const Toggler = styled(Box)(({ theme }) => ({
   right: 0,
@@ -66,9 +70,21 @@ const ColorBox = styled(Box)(({ theme }) => ({
   }
 }))
 
+const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.common.white,
+      boxShadow: theme.shadows[1],
+      fontSize: 12
+    }
+  })
+)
+
 const ThemeSettings = () => {
   // ** State
   const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   // ** Hook
   const { settings, saveSettings } = useSettings()
@@ -96,17 +112,30 @@ const ThemeSettings = () => {
   return (
     <div className='customizer'>
       <Box
-        className='customizer-header'
         sx={{
-          position: 'relative',
-          p: theme => theme.spacing(3.5, 5),
-          borderBottom: theme => `1px solid ${theme.palette.divider}`
+          borderBottom: theme => `1px solid ${theme.palette.divider}`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
         }}
       >
-        <Typography variant='h6' sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
-          Theme Customizer
-        </Typography>
-        <Typography sx={{ color: 'text.secondary' }}>Customize & Preview in Real Time</Typography>
+        <Box
+          className='customizer-header'
+          sx={{
+            position: 'relative',
+            p: theme => theme.spacing(3.5, 5)
+          }}
+        >
+          <Typography variant='h6' sx={{ fontWeight: 600, textTransform: 'uppercase' }}>
+            Theme Customizer
+          </Typography>
+          <Typography sx={{ color: 'text.secondary' }}>Customize & Preview in Real Time</Typography>
+        </Box>
+        <IconButton onClick={() => router.push('/headlines/print')} sx={{ color: 'primary.main' }}>
+          {/* <CustomTooltip title='Close and Move.'> */}
+          <CloseIcon />
+          {/* </CustomTooltip> */}
+        </IconButton>
       </Box>
       <CustomizerSpacing className='customizer-body'>
         <Typography component='p' variant='caption' sx={{ mb: 5, color: 'text.disabled', textTransform: 'uppercase' }}>

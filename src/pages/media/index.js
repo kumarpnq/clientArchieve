@@ -43,6 +43,7 @@ const MediaAnalysis = () => {
     <Fragment>
       {/* stepper */}
       <Stepper
+        cardData={cardData}
         setCardData={setCardData}
         setIsSelectCard={setIsSelectCard}
         isSelectCard={isSelectCard}

@@ -129,7 +129,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
         hidden: !screenPermissions.bothHeadlines
       },
       {
-        title: 'Media Analysis',
+        title: 'Social Media',
         icon: 'icon-park-outline:market-analysis',
         path: '/media'
       }
