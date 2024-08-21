@@ -32,6 +32,8 @@ import { useState } from 'react'
 import Popper from '@mui/material/Popper'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
+import DirectMailDialog from './DirectMailDialog'
+import IconifyIcon from 'src/@core/components/icon'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -118,7 +120,9 @@ const getIconByMediaType = mediaType => {
 export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) => {
   const [anchorEl, setAnchorEl] = useState(null)
   const [expand, setExpand] = useState(false)
-  const [selectedEmoji, setSelectedEmoji] = useState('😐')
+  const [selectedEmoji, setSelectedEmoji] = useState(<IconifyIcon icon='ph:smiley-meh-fill' color='yellow' />)
+  const [directSendMailOpen, setDirectSendMailOpen] = useState(false)
+  const [linkForDirectMail, setLinkForDirectMail] = useState('')
 
   const toggleAccordion = event => {
     setExpand(prev => !prev)
@@ -161,10 +165,8 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
   }
 
   const handleEmailPost = link => {
-    const subject = encodeURIComponent('Check this out!')
-    const body = encodeURIComponent(`I found this interesting: ${link}`)
-    const mailtoUrl = `mailto:?subject=${subject}&body=${body}`
-    window.location.href = mailtoUrl
+    setLinkForDirectMail(link)
+    setDirectSendMailOpen(prev => !prev)
   }
 
   const handleWhatsappPost = link => {
@@ -191,9 +193,9 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
   const id = open ? 'simple-popper' : undefined
 
   const emojis = [
-    { emoji: '🙂', label: 'positive' },
-    { emoji: '😐', label: 'Neutral' },
-    { emoji: '☹️', label: 'negative' }
+    { emoji: <IconifyIcon icon='ph:smiley-fill' color='lightgreen' />, label: 'positive' },
+    { emoji: <IconifyIcon icon='ph:smiley-meh-fill' color='yellow' />, label: 'Neutral' },
+    { emoji: <IconifyIcon icon='ph:smiley-sad-fill' color='red' />, label: 'negative' }
   ]
 
   const handleEmojiClick = async label => {
@@ -278,7 +280,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                 {/* second portion */}
                 <Typography component={'div'} display={'flex'} alignItems={'center'} width={'100%'} gap={2} ml={2}>
                   <span style={{ color: 'text.secondary', fontSize: '0.8em' }}> {formatDate(item.date)}</span> |{' '}
-                  <span style={{ fontSize: '0.8em' }}>{item.publisherLocation || 'location'}</span> |{' '}
+                  {item.publisherLocation && <span style={{ fontSize: '0.8em' }}>{item.publisherLocation || '|'}</span>}
                   <Link href={link} sx={{ color: 'primary.main' }} target='_blank' rel='noopener'>
                     {icon}
                   </Link>{' '}
@@ -295,25 +297,27 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                       </span>
                     )}
                   </>
-                  <Typography
-                    component={'div'}
-                    color='text.secondary'
-                    display='flex'
-                    alignItems='center'
-                    justifyContent={'space-between'}
-                  >
+                  <Typography component={'div'} display='flex' alignItems='center' justifyContent={'space-between'}>
                     <IconButton aria-describedby={id} type='button' onClick={handleClickPopper}>
-                      <span style={{ fontSize: '15px' }}>{selectedEmoji}</span>
+                      <span style={{ fontSize: '25px', fontWeight: 'bolder' }}>{selectedEmoji}</span>
                     </IconButton>
                     <Popper id={id} open={open} anchorEl={anchorE2} placement='right'>
                       <Paper elevation={3}>
-                        <Box sx={{ p: 2, display: 'flex', gap: 1 }}>
+                        <Box
+                          sx={{
+                            p: 2,
+                            display: 'flex',
+                            gap: 1,
+                            borderRadius: '2px',
+                            backdropFilter: 'blur(5px)'
+                          }}
+                        >
                           {emojis.map((item, index) => (
                             <Typography
                               key={index}
                               variant='button'
                               display='block'
-                              sx={{ cursor: 'pointer', border: 'none' }}
+                              sx={{ cursor: 'pointer', border: 'none', borderRadius: '2px', background: 'none' }}
                               fontSize={'1.5em'}
                               component={'button'}
                               onClick={() => handleEmojiClick(item.label)}
@@ -372,7 +376,6 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                         </ListItemIcon>
                         <ListItemText primary='Share on Facebook' />
                       </MenuItem>
-
                       <MenuItem onClick={() => handleLinkedInPost(item.link)}>
                         <ListItemIcon>
                           <Icon icon='basil:linkedin-outline' fontSize={20} />
@@ -401,41 +404,44 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
         <AccordionDetails>
           {/* first section */}
           <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 4 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-              {/* img */}
-              <Typography
-                sx={{
-                  width: 100,
-                  height: 100,
-                  padding: 2,
-                  border: '1px solid lightgray',
-                  borderRadius: '8px',
-                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-                  fontSize: '0.75em',
-                  textAlign: 'center',
-                  transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  '&:hover': {
-                    transform: 'scale(1.05)',
-                    boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)'
-                  }
-                }}
-              >
-                <img
-                  alt='thumbnail'
-                  src={item.thumbnail}
-                  style={{
-                    borderRadius: '4px',
-                    width: 'auto',
-                    height: '100%',
-                    maxWidth: '100%',
-                    objectFit: 'contain'
+            {item.thumbnail && (
+              <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+                {/* img */}
+                <Typography
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    padding: 2,
+                    border: '1px solid lightgray',
+                    borderRadius: '8px',
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                    fontSize: '0.75em',
+                    textAlign: 'center',
+                    transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    '&:hover': {
+                      transform: 'scale(1.05)',
+                      boxShadow: '0px 6px 12px rgba(0, 0, 0, 0.2)'
+                    }
                   }}
-                />
-              </Typography>
-            </Box>
+                >
+                  <img
+                    alt='thumbnail'
+                    src={item.thumbnail}
+                    style={{
+                      borderRadius: '4px',
+                      width: 'auto',
+                      height: '100%',
+                      maxWidth: '100%',
+                      objectFit: 'contain'
+                    }}
+                  />
+                </Typography>
+              </Box>
+            )}
+
             <Divider orientation='vertical' sx={{ color: 'black' }} />
             {/* <hr />   */}
 
@@ -443,66 +449,95 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
             {item.mediaType === 'twitter' ? (
               <Box display={'flex'} flexDirection={'column'}>
                 <FlexBox>
-                  <Typography display='flex' alignItems='center' gap={0.5}>
-                    <CustomTooltip title='Engagement'>
-                      <InsertCommentIcon />
-                    </CustomTooltip>
-                    <span>{formatViewCount(item.comments || 0)}</span>
-                  </Typography>
-                  <Typography display='flex' alignItems='center' gap={0.5}>
-                    <CustomTooltip title='Potential Reach'>
-                      <AnchorIcon />
-                    </CustomTooltip>
-                    <span>{formatViewCount(item.anchor || 0)}K</span>
-                  </Typography>
-                  <Typography display='flex' alignItems='center' gap={0.5}>
-                    <CustomTooltip title='Trending score'>
-                      <InsightsIcon />
-                    </CustomTooltip>
-                    <span>{formatViewCount(0 || item.insights)}</span>
-                  </Typography>
+                  {item.comments && item.comments !== 0 && (
+                    <Typography display='flex' alignItems='center' gap={0.5}>
+                      <CustomTooltip title='Engagement'>
+                        <InsertCommentIcon />
+                      </CustomTooltip>
+                      <span>{formatViewCount(item.comments)}</span>
+                    </Typography>
+                  )}
+                  {item.anchor && item.anchor !== 0 && (
+                    <Typography display='flex' alignItems='center' gap={0.5}>
+                      <CustomTooltip title='Potential Reach'>
+                        <AnchorIcon />
+                      </CustomTooltip>
+                      <span>{formatViewCount(item.anchor)}K</span>
+                    </Typography>
+                  )}
+                  {item.insights && item.insights !== 0 && (
+                    <Typography display='flex' alignItems='center' gap={0.5}>
+                      <CustomTooltip title='Trending score'>
+                        <InsightsIcon />
+                      </CustomTooltip>
+                      <span>{formatViewCount(item.insights)}</span>
+                    </Typography>
+                  )}
                 </FlexBox>
                 <Typography variant='body2'>
-                  <span>
-                    {formatViewCount(item.stats?.retweet_count)} Retweets, {formatViewCount(item.stats?.reply_count)}{' '}
-                    Twitter Replies, {formatViewCount(item.stats?.likeCount)} Twitter Likes,
-                  </span>
-                  <span>
-                    {formatViewCount(item.stats?.followersCount)}K Twitter Followers,{' '}
-                    {formatViewCount(item.stats?.impression_count)} Twitter Impressions
-                  </span>
+                  {item.stats?.retweet_count && item.stats.retweet_count !== 0 && (
+                    <span>{formatViewCount(item.stats.retweet_count)} Retweets, </span>
+                  )}
+                  {item.stats?.reply_count && item.stats.reply_count !== 0 && (
+                    <span>{formatViewCount(item.stats.reply_count)} Twitter Replies, </span>
+                  )}
+                  {item.stats?.likeCount && item.stats.likeCount !== 0 && (
+                    <span>{formatViewCount(item.stats.likeCount)} Twitter Likes, </span>
+                  )}
+                  {item.stats?.followersCount && item.stats.followersCount !== 0 && (
+                    <span>{formatViewCount(item.stats.followersCount)}K Twitter Followers, </span>
+                  )}
+                  {item.stats?.impression_count && item.stats.impression_count !== 0 && (
+                    <span>{formatViewCount(item.stats.impression_count)} Twitter Impressions</span>
+                  )}
                 </Typography>
               </Box>
             ) : (
               <Box display={'flex'} flexDirection={'column'} gap={4}>
                 <FlexBox sx={{ gap: 4 }}>
-                  <Typography display='flex' alignItems='center' gap={0.5}>
-                    <CustomTooltip title='Engagement'>
-                      <InsertCommentIcon />
-                    </CustomTooltip>
-                    <span>{formatViewCount(item.stats?.commentCount || 0)}</span>
-                  </Typography>
-                  <Typography display='flex' alignItems='center' gap={0.5}>
-                    <CustomTooltip title='Potential Reach'>
-                      <AnchorIcon />
-                    </CustomTooltip>
-                    <span>{formatViewCount(item.stats?.viewCount || 0)}</span>
-                  </Typography>
-                  <Typography display='flex' alignItems='center' gap={0.5}>
-                    <CustomTooltip title='Trending score'>
-                      <InsightsIcon />
-                    </CustomTooltip>
-                    <span>{formatViewCount(item.insights || 0)}</span>
-                  </Typography>
+                  {item.stats?.commentCount && item.stats.commentCount !== 0 && (
+                    <Typography display='flex' alignItems='center' gap={0.5}>
+                      <CustomTooltip title='Engagement'>
+                        <InsertCommentIcon />
+                      </CustomTooltip>
+                      <span>{formatViewCount(item.stats.commentCount)}</span>
+                    </Typography>
+                  )}
+                  {item.stats?.viewCount && item.stats.viewCount !== 0 && (
+                    <Typography display='flex' alignItems='center' gap={0.5}>
+                      <CustomTooltip title='Potential Reach'>
+                        <AnchorIcon />
+                      </CustomTooltip>
+                      <span>{formatViewCount(item.stats.viewCount)}</span>
+                    </Typography>
+                  )}
+                  {item.insights && item.insights !== 0 && (
+                    <Typography display='flex' alignItems='center' gap={0.5}>
+                      <CustomTooltip title='Trending score'>
+                        <InsightsIcon />
+                      </CustomTooltip>
+                      <span>{formatViewCount(item.insights)}</span>
+                    </Typography>
+                  )}
                 </FlexBox>
-                <Typography variant='body2' sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  {displayText}
-                </Typography>
+                {displayText && (
+                  <Typography variant='body2' sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {displayText}
+                  </Typography>
+                )}
               </Box>
             )}
           </Box>
         </AccordionDetails>
       </Accordion>
+
+      {/* direct send mail */}
+      <DirectMailDialog
+        open={directSendMailOpen}
+        setOpen={setDirectSendMailOpen}
+        link={linkForDirectMail}
+        setLink={setLinkForDirectMail}
+      />
     </Box>
   )
 }

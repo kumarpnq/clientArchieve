@@ -50,29 +50,44 @@ export const generateTableHtml = cards => {
     .map(card => {
       const iconUrl = getIconUrlByMediaType(card.mediaType)
 
+      const publisherImage = card.publisherImage
+        ? `<img alt='logo' src='${card.publisherImage}' height='15px' width='15px' />`
+        : ''
+      const publisherLocation = card.publisherLocation || ''
+
+      // Calculate metric values, but do not default to 0
+      const impressionCount = card.stats?.impression_count || card.stats?.viewCount
+      const followersCount = card.stats?.followersCount
+      const likeCount = card.stats?.likeCount || card.stats?.reactionCount
+
+      // Construct metrics string based on non-zero values
+      const metricsParts = []
+      if (impressionCount > 0) metricsParts.push(`${impressionCount} Engagement`)
+      if (followersCount > 0) metricsParts.push(`${followersCount} Potential Reach`)
+      if (likeCount > 0) metricsParts.push(`${likeCount} Trending Score`)
+
+      // Join metrics with commas if there are any parts
+      const metricsString = metricsParts.length > 0 ? `METRICS ${metricsParts.join(', ')}` : ''
+
       return `
       <div class="main-container">
-
-
         <h1 class="text-center">
-        <img src=${iconUrl} alt="logo" height="15px" width="15px" class="media-logo"/>
-
-          <img alt='logo' src='${card.publisherImage}' height='15px' width='15px' />
-          <a class="headline-user" href=${card.publisherLink}>@${card.publisherName}</a>
-          <span class="headline-user-subtitle">${
-            card.mediaType === 'twitter' ? 'retweeted an image' : 'shared video'
-          }</span>
+          <img src="${iconUrl}" alt="logo" height="15px" width="15px" class="media-logo"/>
+          ${publisherImage}
+          <a class="headline-user" href="${card.publisherLink}">@${card.publisherName}</a>
+          <span class="headline-user-subtitle">
+            ${card.mediaType === 'twitter' ? 'retweeted an image' : 'shared video'}
+          </span>
         </h1>
         <p class="main-paragraph">${card.title}</p>
         <p class="date-location">
           published on ${new Date(card.date).toLocaleDateString()} at ${new Date(card.date).toLocaleTimeString()} | ${
         card.mediaType
-      } | ${card.publisherLocation || ''} | ${card.link}
+      } | ${publisherLocation} | ${card.link}
         </p>
-
-        <p class="metrics">METRICS ${card.stats.impression_count || card.stats.viewCount || 0} Engagement, ${
-        card.stats.followersCount || 0
-      } Potential Reach, ${card.stats.likeCount || card.stats.reactionCount || 0} Trending Score</p>
+        <p class="metrics">
+          ${metricsString}
+        </p>
         <hr/>
       </div>
     `
