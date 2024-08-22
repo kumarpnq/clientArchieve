@@ -100,8 +100,8 @@ const Stepper = ({
       const storedToken = localStorage.getItem('accessToken')
 
       const params = {
-        clientIds: 'MHADA11',
-        companyIds: 'DDA111',
+        clientIds: clientId,
+        companyIds: selectedCompaniesString,
         fromDate: formatDate(formattedStartDate),
         toDate: formatDate(formattedEndDate),
         mediaType: value
