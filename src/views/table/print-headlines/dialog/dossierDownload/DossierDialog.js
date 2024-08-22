@@ -33,6 +33,7 @@ import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest
 import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
+import useClientMailerList from 'src/api/global/useClientMailerList '
 
 const DossierDialog = ({
   open,
@@ -59,6 +60,13 @@ const DossierDialog = ({
   const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
   const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join('')
   const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
+  const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
+  const { mailList: mailerList, subject: mailerSubject } = useClientMailerList(fetchEmailFlag)
+
+  useEffect(() => {
+    setMailList(mailerList)
+    setSubject(mailerSubject)
+  }, [open])
 
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
@@ -348,27 +356,6 @@ const DossierDialog = ({
     }
   }
 
-  useEffect(() => {
-    const getClientMailerList = async () => {
-      const storedToken = localStorage.getItem('accessToken')
-      try {
-        const url = `${BASE_URL}/clientMailerList/`
-
-        const headers = {
-          Authorization: `Bearer ${storedToken}`
-        }
-
-        const requestData = { clientId }
-        const axiosConfig = { headers, params: requestData }
-        const axiosResponse = await axios.get(url, axiosConfig)
-        setMailList(axiosResponse.data.emails)
-      } catch (axiosError) {
-        console.log(axiosError)
-      }
-    }
-    getClientMailerList()
-  }, [clientId])
-
   if (!dataForDossierDownload || dataForDossierDownload.length === 0) {
     return (
       <Dialog open={open} onClose={handleClose}>
@@ -419,7 +406,7 @@ const DossierDialog = ({
                 multiple
                 onChange={handleSelectedEmailChange}
               >
-                {mailList.map(emailId => (
+                {mailList?.map(emailId => (
                   <MenuItem key={emailId} value={emailId}>
                     {emailId}
                   </MenuItem>

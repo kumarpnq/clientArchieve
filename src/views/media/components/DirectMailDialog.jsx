@@ -3,20 +3,42 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } 
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
+import useClientMailerList from 'src/api/global/useClientMailerList '
 
 const DirectMailDialog = ({ open, setOpen, link, setLink }) => {
+  const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
+  const { mailList, subject } = useClientMailerList(fetchEmailFlag)
+
+  const getArticleActivities = (mediaType, item) => {
+    switch (mediaType) {
+      case 'youtube':
+        return `Views : ${item?.stats?.viewCount} | Likes : ${item?.stats?.likeCount || 0} | Comments : ${
+          item?.stats?.commentCount
+        } | Favorite : ${item?.stats?.favoriteCount}`
+      case 'twitter':
+        return `Followers : ${item?.stats?.followersCount} | Likes : ${item?.stats?.likeCount} | Retweets : ${item?.stats?.retweet_count} | Replies : ${item?.stats?.reply_count} | Impressions : ${item?.stats?.impression_count}`
+      case 'facebook':
+        return `Reactions : ${item?.stats?.reactionCount}`
+      default:
+        return ''
+    }
+  }
+  const mediaType = link?.mediaType
+  const activities = getArticleActivities(mediaType, link)
+
   const [mailData, setMailData] = useState({
     subject: "P&Q NEWSLETTER THE DAY'S MOST PROMINENT NEWS",
     mailId: '',
-    mailBody: ''
+    mailBody: `${link?.title}\n ${activities}\n ${link?.link}`
   })
 
   useEffect(() => {
     setMailData(prevData => ({
       ...prevData,
-      mailBody: link
+      mailBody: `${link?.title}\n ${activities}\n ${link?.link}`,
+      subject: subject
     }))
-  }, [link])
+  }, [link, open, subject])
 
   const handleChange = e => {
     const { name, value } = e.target
@@ -32,6 +54,11 @@ const DirectMailDialog = ({ open, setOpen, link, setLink }) => {
 
   const handleSubmit = async e => {
     e.preventDefault()
+    const parts = mailData?.mailBody?.split('\n')
+    const title = parts[0]
+    const stats = parts[1]
+    const linkSend = parts[2]
+    const additionalContent = parts.slice(3).join('\n') || ''
 
     const htmlTemplate = `
    <html>
@@ -43,6 +70,12 @@ const DirectMailDialog = ({ open, setOpen, link, setLink }) => {
         padding: 0;
         background-color: #f4f4f4;
       }
+        p{
+        font-size:smaller;
+      }
+        h3{
+        font-size:smaller;
+        }
       .container {
         width: 100%;
         max-width: 600px;
@@ -112,7 +145,10 @@ const DirectMailDialog = ({ open, setOpen, link, setLink }) => {
         <div class="header-logo">PERCEPTION <span class="and">&</span> <span>QUANT</span></div>
       </div>
       <div class="title">
-        ${mailData.mailBody}
+        <h3>${title}</h3>
+        <p>${stats}</p>
+        <p>${additionalContent}</p>
+        <h3>${linkSend}</h3>
       </div>
       <div class="footer">
         <a href="https://www.cirrus.co.in/">Help center</a> |
@@ -181,7 +217,7 @@ const DirectMailDialog = ({ open, setOpen, link, setLink }) => {
             margin='dense'
             multiline
             required
-            rows={4}
+            rows={6}
             value={mailData.mailBody || link}
             onChange={handleChange}
           />

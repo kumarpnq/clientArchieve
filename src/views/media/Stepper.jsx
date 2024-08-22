@@ -20,7 +20,12 @@ import clipboardCopy from 'clipboard-copy'
 import toast from 'react-hot-toast'
 import { BASE_URL } from 'src/api/base'
 import { useSelector } from 'react-redux'
-import { selectSelectedClient, selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/user/userSlice'
+import {
+  selectSelectedClient,
+  selectSelectedCompetitions,
+  selectSelectedEndDate,
+  selectSelectedStartDate
+} from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 import axios from 'axios'
 import dayjs from 'dayjs'
@@ -70,6 +75,8 @@ const Stepper = ({
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
+  const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedCompaniesString = selectedCompetitions.join(', ')
 
   const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
   const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
@@ -93,7 +100,8 @@ const Stepper = ({
       const storedToken = localStorage.getItem('accessToken')
 
       const params = {
-        clientIds: 'BMW23',
+        clientIds: 'MHADA11',
+        companyIds: 'DDA111',
         fromDate: formatDate(formattedStartDate),
         toDate: formatDate(formattedEndDate),
         mediaType: value

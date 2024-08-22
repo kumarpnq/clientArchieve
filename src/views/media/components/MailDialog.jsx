@@ -15,7 +15,7 @@ import {
   Select,
   MenuItem
 } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useClientMailerList from 'src/api/global/useClientMailerList '
 import { generateTableHtml } from './emailFormat'
 import axios from 'axios'
@@ -25,6 +25,7 @@ import toast from 'react-hot-toast'
 import { useSelector } from 'react-redux'
 import {
   selectSelectedClient,
+  selectSelectedCompetitions,
   selectSelectedEndDate,
   selectSelectedStartDate,
   selectUserData
@@ -46,11 +47,17 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
+  const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedCompaniesString = selectedCompetitions.join(', ')
 
   const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
   const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
 
-  const { mailList } = useClientMailerList(fetchEmailFlag)
+  const { mailList, subject } = useClientMailerList(fetchEmailFlag)
+
+  useEffect(() => {
+    setMailSubject(subject)
+  }, [open, subject])
 
   const onClose = () => {
     setOpen(false)
@@ -67,7 +74,8 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       let url
 
       const params = {
-        clientIds: 'BMW23',
+        clientIds: 'MHADA11',
+        companyIds: 'DDA111',
         fromDate: formatDate(formattedStartDate),
         toDate: formatDate(formattedEndDate),
         mediaType: value

@@ -10,6 +10,7 @@ const useClientMailerList = ({ fetchEmailFlag }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const [mailList, setMailList] = useState([])
+  const [subject, setSubject] = useState('')
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -32,7 +33,9 @@ const useClientMailerList = ({ fetchEmailFlag }) => {
         }
 
         const axiosResponse = await axios.get(url, axiosConfig)
-        setMailList(axiosResponse.data.emails)
+
+        setSubject(axiosResponse.data.emails.subject || '')
+        setMailList(axiosResponse.data.emails.mailList || [])
       } catch (axiosError) {
         setError(axiosError)
       }
@@ -41,7 +44,7 @@ const useClientMailerList = ({ fetchEmailFlag }) => {
     getClientMailerList()
   }, [clientId, fetchEmailFlag])
 
-  return { mailList, error }
+  return { mailList, subject, error }
 }
 
 export default useClientMailerList

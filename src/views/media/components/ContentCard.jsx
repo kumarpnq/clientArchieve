@@ -34,6 +34,11 @@ import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
 import DirectMailDialog from './DirectMailDialog'
 import IconifyIcon from 'src/@core/components/icon'
+import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
+import { useSelector } from 'react-redux'
+import { selectSelectedClient, selectSelectedCompetitions } from 'src/store/apps/user/userSlice'
+import { getEmojis } from './utils/getEmojis'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -118,11 +123,19 @@ const getIconByMediaType = mediaType => {
 }
 
 export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) => {
+  console.log(item)
+
   const [anchorEl, setAnchorEl] = useState(null)
   const [expand, setExpand] = useState(false)
-  const [selectedEmoji, setSelectedEmoji] = useState(<IconifyIcon icon='ph:smiley-meh-fill' color='yellow' />)
+  const [selectedEmoji, setSelectedEmoji] = useState()
   const [directSendMailOpen, setDirectSendMailOpen] = useState(false)
-  const [linkForDirectMail, setLinkForDirectMail] = useState('')
+  const [linkForDirectMail, setLinkForDirectMail] = useState(null)
+  const [updateEmojiLoading, setUpdateEmojiLoading] = useState(false)
+
+  // * redux
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientIds = selectedClient ? selectedClient.clientId : null
+  const selectedCompetitions = useSelector(selectSelectedCompetitions)
 
   const toggleAccordion = event => {
     setExpand(prev => !prev)
@@ -164,13 +177,31 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
     window.open(pinterestUrl, '_blank')
   }
 
-  const handleEmailPost = link => {
-    setLinkForDirectMail(link)
+  const handleEmailPost = item => {
+    setLinkForDirectMail(item)
     setDirectSendMailOpen(prev => !prev)
   }
 
-  const handleWhatsappPost = link => {
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(link)}`
+  const getArticleActivities = (mediaType, item) => {
+    switch (mediaType) {
+      case 'youtube':
+        return `Views : ${item.stats.viewCount} | Likes : ${item.stats.likeCount} | Comments : ${item.stats.commentCount} | Favorite : ${item.stats.favoriteCount}`
+      case 'twitter':
+        return `Followers : ${item.stats.followersCount} | Likes : ${item.stats.likeCount} | Retweets : ${item.stats.retweet_count} | Replies : ${item.stats.reply_count} | Impressions : ${item.stats.impression_count}`
+      case 'facebook':
+        return `Reactions : ${item.stats.reactionCount}`
+      default:
+        return ''
+    }
+  }
+
+  const handleWhatsappPost = item => {
+    const activities = getArticleActivities(item.mediaType, item)
+
+    const message = `${item.title}\n ${item.publisherName + ' ' + item.publisherLocation}\n ${activities}\n ${
+      item.link
+    }`
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank', 'noopener,noreferrer')
   }
 
@@ -198,11 +229,40 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
     { emoji: <IconifyIcon icon='ph:smiley-sad-fill' color='red' />, label: 'negative' }
   ]
 
-  const handleEmojiClick = async label => {
-    const selected = emojis.find(item => item.label === label)
-    if (selected) {
-      setSelectedEmoji(selected.emoji)
-      setAnchorE2(null)
+  const handleEmojiClick = async (label, item) => {
+    // if (label === item.sentiment) {
+    //   setAnchorE2(null)
+
+    //   return
+    // }
+
+    setUpdateEmojiLoading(true)
+
+    const data = {
+      clientId: 'BMW23',
+      companyId: '',
+      mediaType: item.mediaType,
+      feedId: item._id,
+      sentiment: label
+    }
+
+    const userToken = localStorage.getItem('accessToken')
+
+    try {
+      const response = await axios.post(`${BASE_URL}/socialMediaSentiment/`, data, {
+        headers: { Authorization: `Bearer ${userToken}` }
+      })
+      console.log(response.data.message)
+
+      const selected = emojis.find(item => item.label === label)
+      if (selected) {
+        setSelectedEmoji(selected.emoji)
+        setAnchorE2(null)
+      }
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setUpdateEmojiLoading(false)
     }
   }
 
@@ -274,7 +334,16 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
               <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Link href={item?.link || ''} target='_blank' rel='noopener'>
                   <Typography variant='h2' fontSize={'0.9em'} fontWeight={'bold'} ml={2}>
-                    {item.title?.substring(0, 100) + '...' || ''} - {item.companyName}
+                    {item.title?.substring(0, 100) + '...' || ' '} -
+                    {item.taggedCompanies.map(i => (
+                      <Typography
+                        component={'span'}
+                        sx={{ color: 'text.secondary', fontSize: '0.8em', ml: 2 }}
+                        key={i.companyId}
+                      >
+                        {i.companyName}
+                      </Typography>
+                    ))}
                   </Typography>
                 </Link>
                 {/* second portion */}
@@ -299,7 +368,9 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                   </>
                   <Typography component={'div'} display='flex' alignItems='center' justifyContent={'space-between'}>
                     <IconButton aria-describedby={id} type='button' onClick={handleClickPopper}>
-                      <span style={{ fontSize: '25px', fontWeight: 'bolder' }}>{selectedEmoji}</span>
+                      <span style={{ fontSize: '25px', fontWeight: 'bolder' }}>
+                        {selectedEmoji ? selectedEmoji : getEmojis(item.sentiment)}
+                      </span>
                     </IconButton>
                     <Popper id={id} open={open} anchorEl={anchorE2} placement='right'>
                       <Paper elevation={3}>
@@ -312,7 +383,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                             backdropFilter: 'blur(5px)'
                           }}
                         >
-                          {emojis.map((item, index) => (
+                          {emojis.map((emoItem, index) => (
                             <Typography
                               key={index}
                               variant='button'
@@ -320,9 +391,9 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                               sx={{ cursor: 'pointer', border: 'none', borderRadius: '2px', background: 'none' }}
                               fontSize={'1.5em'}
                               component={'button'}
-                              onClick={() => handleEmojiClick(item.label)}
+                              onClick={() => handleEmojiClick(emoItem.label, item)}
                             >
-                              {item.emoji}
+                              {emoItem.emoji}
                             </Typography>
                           ))}
                         </Box>
@@ -352,7 +423,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                         horizontal: 'center'
                       }}
                     >
-                      <MenuItem onClick={() => handleWhatsappPost(item.link)}>
+                      <MenuItem onClick={() => handleWhatsappPost(item)}>
                         <ListItemIcon>
                           <Icon icon='ic:round-whatsapp' fontSize={20} />
                         </ListItemIcon>
@@ -388,7 +459,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                         </ListItemIcon>
                         <ListItemText primary='Share on Pinterest' />
                       </MenuItem>
-                      <MenuItem onClick={() => handleEmailPost(item.link)}>
+                      <MenuItem onClick={() => handleEmailPost(item)}>
                         <ListItemIcon>
                           <Icon icon='material-symbols:mail-outline' fontSize={20} />
                         </ListItemIcon>

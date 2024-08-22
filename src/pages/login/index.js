@@ -27,6 +27,7 @@ import Icon from 'src/@core/components/icon'
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import CryptoJS from 'crypto-js'
 
 // ** Hooks
 import { useAuth } from 'src/hooks/useAuth'
@@ -87,8 +88,8 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'PNQ_DEMO',
-  email: 'PNQ_DEMO'
+  password: '',
+  email: ''
 }
 
 const LoginPage = () => {
@@ -118,9 +119,22 @@ const LoginPage = () => {
 
   const dispatch = useDispatch()
 
+  const keyHex = process.env.NEXT_PUBLIC_ENCRYPT_KEY
+
+  // Function to encrypt password using CryptoJS
+  const encryptPassword = (password, key) => {
+    const iv = CryptoJS.lib.WordArray.random(16)
+    const encrypted = CryptoJS.AES.encrypt(password, CryptoJS.enc.Hex.parse(key), { iv })
+    const ivBase64 = CryptoJS.enc.Base64.stringify(iv)
+    const encryptedBase64 = encrypted.toString()
+
+    return ivBase64 + ':' + encryptedBase64
+  }
+
   const onSubmit = data => {
     const { email, password } = data
-    auth.login({ loginName: email, password, rememberMe }, () => {
+
+    auth.login({ loginName: email, password: encryptPassword(password, keyHex), rememberMe }, () => {
       setError('email', {
         type: 'manual',
         message: 'Email or Password is invalid'

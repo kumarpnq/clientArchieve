@@ -92,12 +92,14 @@ const AppBarContent = props => {
   const auth = useAuth()
   const router = useRouter()
   const currentRoute = router.pathname
+  console.log(currentRoute)
 
   const isOnAnalyticsPage = currentRoute === '/dashboards/analytics'
   const isOnVisibilityImageQePage = currentRoute === '/dashboards/visibility-image-qe'
   const isOnTonalityPage = currentRoute === '/dashboards/tonality'
   const isOnPeersPage = currentRoute === '/dashboards/peers'
   const isOnPerformancePage = currentRoute === '/dashboards/performance'
+  const isMedia = currentRoute === '/media'
 
   const isShowMedia =
     isOnAnalyticsPage || isOnVisibilityImageQePage || isOnTonalityPage || isOnPeersPage || isOnPerformancePage
@@ -159,7 +161,7 @@ const AppBarContent = props => {
             <Box>
               <DateBar />
               <DaysJumper settings={settings} />
-              <DateType settings={settings} />
+              {!isMedia && <DateType settings={settings} />}
             </Box>
           </Container>
         </>

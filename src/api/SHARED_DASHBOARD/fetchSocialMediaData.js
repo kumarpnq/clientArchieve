@@ -5,7 +5,12 @@ import dayjs from 'dayjs'
 
 // ** Redux
 import { useSelector } from 'react-redux'
-import { selectSelectedClient, selectSelectedStartDate, selectSelectedEndDate } from 'src/store/apps/user/userSlice'
+import {
+  selectSelectedClient,
+  selectSelectedStartDate,
+  selectSelectedEndDate,
+  selectSelectedCompetitions
+} from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 
 const useFetchSocialMediaData = ({ mediaType, encryptStr, authToken, screen }) => {
@@ -17,6 +22,8 @@ const useFetchSocialMediaData = ({ mediaType, encryptStr, authToken, screen }) =
   const clientIds = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
+  const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedCompaniesString = selectedCompetitions.join(', ')
 
   const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
   const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
@@ -30,7 +37,8 @@ const useFetchSocialMediaData = ({ mediaType, encryptStr, authToken, screen }) =
       setLoading(true)
       try {
         const params = {
-          clientIds: 'BMW23',
+          clientIds: 'MHADA11',
+          companyIds: 'DDA111',
           fromDate: formatDate(formattedStartDate),
           toDate: formatDate(formattedEndDate),
           mediaType
