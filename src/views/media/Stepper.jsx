@@ -30,6 +30,7 @@ import { formatDateTime } from 'src/utils/formatDateTime'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import MailDialog from './components/MailDialog'
+import IconifyIcon from 'src/@core/components/icon'
 
 // Styled outer Box component
 const StyledOuterBox = styled(Paper)(({ theme }) => ({
@@ -137,6 +138,17 @@ const Stepper = ({
     setMenuAnchorEl(null)
   }
 
+  const handleSelectAll = () => {
+    if (selectedCards.length) {
+      setSelectedCards([])
+      setIsSelectCard(false)
+    } else {
+      const allFeeds = cardData.flatMap(item => item.feeds)
+      setSelectedCards(allFeeds)
+      setIsSelectCard(true)
+    }
+  }
+
   return (
     <StyledOuterBox>
       <>
@@ -239,7 +251,20 @@ const Stepper = ({
             </IconButton>
           </CustomTooltip>
         )}
-
+        <CustomTooltip title='Select'>
+          <IconButton
+            color='primary'
+            onClick={() => setIsSelectCard(prev => !prev)}
+            sx={{ bgcolor: isSelectCard ? 'primary' : '' }}
+          >
+            <IconifyIcon icon='lets-icons:done-all-round-duotone' />
+          </IconButton>
+        </CustomTooltip>
+        <CustomTooltip title='Select All'>
+          <IconButton color='primary' onClick={handleSelectAll}>
+            <IconifyIcon icon='ic:twotone-done-all' />
+          </IconButton>
+        </CustomTooltip>
         <FilterBox
           cardData={cardData}
           setSelectedCards={setSelectedCards}

@@ -88,6 +88,6 @@ const SharedDashboard = () => {
 }
 
 SharedDashboard.getLayout = page => <BlankLayout>{page}</BlankLayout>
-SharedDashboard.guestGuard = false
+SharedDashboard.guestGuard = true
 
 export default SharedDashboard

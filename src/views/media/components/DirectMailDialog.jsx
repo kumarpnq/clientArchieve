@@ -4,10 +4,48 @@ import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
 import useClientMailerList from 'src/api/global/useClientMailerList '
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { useSelector } from 'react-redux'
 
 const DirectMailDialog = ({ open, setOpen, link, setLink }) => {
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
-  const { mailList, subject } = useClientMailerList(fetchEmailFlag)
+  const [emailList, setEmailList] = useState([])
+  const [subject, setSubject] = useState('')
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
+
+  const getClientMailerList = async () => {
+    const storedToken = localStorage.getItem('accessToken')
+    try {
+      const url = `${BASE_URL}/clientMailerList/`
+
+      const headers = {
+        Authorization: `Bearer ${storedToken}`
+      }
+
+      const requestData = {
+        clientId
+      }
+
+      const axiosConfig = {
+        headers,
+        params: requestData
+      }
+
+      const axiosResponse = await axios.get(url, axiosConfig)
+
+      setSubject(axiosResponse.data.emails.subject || '')
+      setEmailList(axiosResponse.data.emails.mailList || [])
+    } catch (axiosError) {
+      setError(axiosError)
+    }
+  }
+
+  useEffect(() => {
+    if (open && emailList.length === 0) {
+      getClientMailerList()
+    }
+  }, [open, clientId])
 
   const getArticleActivities = (mediaType, item) => {
     switch (mediaType) {

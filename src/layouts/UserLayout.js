@@ -49,7 +49,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
         badgeColor: 'error',
         children: [
           ...(dynamicScreens || []),
-          {
+          screenPermissions.wordClouds && {
             title: 'Clouds',
             path: '/dashboards/clouds',
             icon: 'clarity:analytics-line'

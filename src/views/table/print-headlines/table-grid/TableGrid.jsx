@@ -183,6 +183,7 @@ const TableGrid = ({
       width: 70,
       editable: false,
       field: 'more',
+
       headerName: 'More',
       renderCell: params => (
         <OptionsMenu
@@ -235,6 +236,7 @@ const TableGrid = ({
                     onRowSelectionModelChange={item => handleRowCheck('left', item)}
                     getRowId={row => row.articleId}
                     hideFooter
+                    disableColumnMenu
                     checkboxSelection
                     disableRowSelectionOnClick
                   />
@@ -250,6 +252,7 @@ const TableGrid = ({
                   onRowClick={params => handleRowClick(params)}
                   onRowSelectionModelChange={item => handleRowCheck('right', item)}
                   getRowId={row => row.articleId}
+                  disableColumnMenu
                   hideFooter
                   checkboxSelection
                   disableRowSelectionOnClick
@@ -259,6 +262,7 @@ const TableGrid = ({
           ) : (
             <DataGrid
               autoHeight
+              disableColumnMenu
               rows={articles}
               columns={customArticleHeader.filter(column => {
                 column.field !== 'select' && column.field !== 'edit' && !(column.field === 'date' && isNarrowMobileView)

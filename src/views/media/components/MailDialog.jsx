@@ -53,11 +53,11 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
   const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
   const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
 
-  const { mailList, subject } = useClientMailerList(fetchEmailFlag)
+  const { mailList, subject } = useClientMailerList(open)
 
   useEffect(() => {
     setMailSubject(subject)
-  }, [open, subject])
+  }, [open])
 
   const onClose = () => {
     setOpen(false)

@@ -123,8 +123,6 @@ const getIconByMediaType = mediaType => {
 }
 
 export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) => {
-  console.log(item)
-
   const [anchorEl, setAnchorEl] = useState(null)
   const [expand, setExpand] = useState(false)
   const [selectedEmoji, setSelectedEmoji] = useState()
@@ -230,17 +228,13 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
   ]
 
   const handleEmojiClick = async (label, item) => {
-    // if (label === item.sentiment) {
-    //   setAnchorE2(null)
-
-    //   return
-    // }
+    console.log(item)
 
     setUpdateEmojiLoading(true)
 
     const data = {
-      clientId: 'BMW23',
-      companyId: '',
+      clientId: clientIds,
+      companyId: selectedCompetitions.join(','),
       mediaType: item.mediaType,
       feedId: item._id,
       sentiment: label
@@ -335,7 +329,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                 <Link href={item?.link || ''} target='_blank' rel='noopener'>
                   <Typography variant='h2' fontSize={'0.9em'} fontWeight={'bold'} ml={2}>
                     {item.title?.substring(0, 100) + '...' || ' '} -
-                    {item.taggedCompanies.map(i => (
+                    {item?.taggedCompanies?.map(i => (
                       <Typography
                         component={'span'}
                         sx={{ color: 'text.secondary', fontSize: '0.8em', ml: 2 }}

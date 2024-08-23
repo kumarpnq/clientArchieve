@@ -22,26 +22,32 @@ const MediaAnalysis = () => {
   const [itemsPerPage] = useState(40)
 
   useEffect(() => {
+    if (error) {
+      setCardData([])
+    }
     if (data?.length) {
       setCardData(data)
     } else {
       setCardData([])
     }
-  }, [data])
+  }, [data, error])
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page)
   }
 
-  // Calculate data to display for current page
-  const paginatedData = cardData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  // Slice data for the current page
+  const paginatedData = cardData.map(company => ({
+    ...company,
+    feeds: company.feeds.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  }))
 
   const [isSelectCard, setIsSelectCard] = useState(false)
   const [selectedCards, setSelectedCards] = useState([])
 
   return (
     <Fragment>
-      {/* stepper */}
+      {/* Stepper */}
       <Stepper
         cardData={cardData}
         setCardData={setCardData}
@@ -53,16 +59,20 @@ const MediaAnalysis = () => {
         value={value}
         setValue={setValue}
       />
+
+      {/* DataCard with paginated feeds */}
       <DataCard
         isSelectCard={isSelectCard}
         selectedCards={selectedCards}
         setSelectedCards={setSelectedCards}
         cardData={paginatedData}
+        setCardData={setCardData}
         loading={loading}
       />
+
       <Box display='flex' justifyContent='center' my={2}>
         <Pagination
-          count={Math.ceil(cardData.length / itemsPerPage)}
+          count={Math.ceil(cardData[0]?.feeds.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           color='primary'

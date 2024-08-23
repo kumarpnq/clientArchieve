@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from '../base'
 
