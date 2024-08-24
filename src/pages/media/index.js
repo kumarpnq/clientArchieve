@@ -39,7 +39,7 @@ const MediaAnalysis = () => {
   // Slice data for the current page
   const paginatedData = cardData.map(company => ({
     ...company,
-    feeds: company.feeds.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+    feeds: company?.feeds?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
   }))
 
   const [isSelectCard, setIsSelectCard] = useState(false)

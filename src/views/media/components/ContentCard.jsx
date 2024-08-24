@@ -544,16 +544,29 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                     <span>{formatViewCount(item.stats.retweet_count)} Retweets, </span>
                   )}
                   {item.stats?.reply_count && item.stats.reply_count !== 0 && (
-                    <span>{formatViewCount(item.stats.reply_count)} Twitter Replies, </span>
+                    <span>{formatViewCount(item.stats.reply_count)} Replies, </span>
                   )}
                   {item.stats?.likeCount && item.stats.likeCount !== 0 && (
-                    <span>{formatViewCount(item.stats.likeCount)} Twitter Likes, </span>
+                    <span>{formatViewCount(item.stats.likeCount)} Likes, </span>
                   )}
                   {item.stats?.followersCount && item.stats.followersCount !== 0 && (
-                    <span>{formatViewCount(item.stats.followersCount)}K Twitter Followers, </span>
+                    <span>{formatViewCount(item.stats.followersCount)} Followers, </span>
+                  )}
+                  {item.stats?.followingCount && item.stats.followingCount !== 0 && (
+                    <span>{formatViewCount(item.stats.followingCount)} Following, </span>
                   )}
                   {item.stats?.impression_count && item.stats.impression_count !== 0 && (
-                    <span>{formatViewCount(item.stats.impression_count)} Twitter Impressions</span>
+                    <span>{formatViewCount(item.stats.impression_count)} Impressions</span>
+                  )}
+
+                  {item.stats?.listedCount && item.stats.listedCount !== 0 && (
+                    <span>{formatViewCount(item.stats.listedCount)} Listed</span>
+                  )}
+                  {item.stats?.bookmark_count && item.stats.bookmark_count !== 0 && (
+                    <span>{formatViewCount(item.stats.bookmark_count)} Bookmarks</span>
+                  )}
+                  {item.stats?.quote_count && item.stats.quote_count !== 0 && (
+                    <span>{formatViewCount(item.stats.quote_count)} Quotes</span>
                   )}
                 </Typography>
               </Box>
