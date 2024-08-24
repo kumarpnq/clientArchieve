@@ -343,7 +343,9 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                 {/* second portion */}
                 <Typography component={'div'} display={'flex'} alignItems={'center'} width={'100%'} gap={2} ml={2}>
                   <span style={{ color: 'text.secondary', fontSize: '0.8em' }}> {formatDate(item.date)}</span> |{' '}
-                  {item.publisherLocation && <span style={{ fontSize: '0.8em' }}>{item.publisherLocation || '|'}</span>}
+                  {item.publisherLocation && item.publisherLocation !== 'No location available' && (
+                    <span style={{ fontSize: '0.8em' }}>{item.publisherLocation || '|'}</span>
+                  )}
                   <Link href={link} sx={{ color: 'primary.main' }} target='_blank' rel='noopener'>
                     {icon}
                   </Link>{' '}
@@ -540,40 +542,29 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                   )} */}
                 </FlexBox>
                 <Typography variant='body2'>
-                  {item.stats?.retweet_count && item.stats.retweet_count !== 0 && (
-                    <span>{formatViewCount(item.stats.retweet_count)} Retweets, </span>
-                  )}
-                  {item.stats?.reply_count && item.stats.reply_count !== 0 && (
-                    <span>{formatViewCount(item.stats.reply_count)} Replies, </span>
-                  )}
-                  {item.stats?.likeCount && item.stats.likeCount !== 0 && (
-                    <span>{formatViewCount(item.stats.likeCount)} Likes, </span>
-                  )}
-                  {item.stats?.followersCount && item.stats.followersCount !== 0 && (
+                  {item.stats?.retweet_count > 0 && <span>{formatViewCount(item.stats.retweet_count)} Retweets, </span>}
+                  {item.stats?.reply_count > 0 && <span>{formatViewCount(item.stats.reply_count)} Replies, </span>}
+                  {item.stats?.likeCount > 0 && <span>{formatViewCount(item.stats.likeCount)} Likes, </span>}
+                  {item.stats?.followersCount > 0 && (
                     <span>{formatViewCount(item.stats.followersCount)} Followers, </span>
                   )}
-                  {item.stats?.followingCount && item.stats.followingCount !== 0 && (
+                  {item.stats?.followingCount > 0 && (
                     <span>{formatViewCount(item.stats.followingCount)} Following, </span>
                   )}
-                  {item.stats?.impression_count && item.stats.impression_count !== 0 && (
+                  {item.stats?.impression_count > 0 && (
                     <span>{formatViewCount(item.stats.impression_count)} Impressions</span>
                   )}
-
-                  {item.stats?.listedCount && item.stats.listedCount !== 0 && (
-                    <span>{formatViewCount(item.stats.listedCount)} Listed</span>
-                  )}
-                  {item.stats?.bookmark_count && item.stats.bookmark_count !== 0 && (
+                  {item.stats?.listedCount > 0 && <span>{formatViewCount(item.stats.listedCount)} Listed</span>}
+                  {item.stats?.bookmark_count > 0 && (
                     <span>{formatViewCount(item.stats.bookmark_count)} Bookmarks</span>
                   )}
-                  {item.stats?.quote_count && item.stats.quote_count !== 0 && (
-                    <span>{formatViewCount(item.stats.quote_count)} Quotes</span>
-                  )}
+                  {item.stats?.quote_count > 0 && <span>{formatViewCount(item.stats.quote_count)} Quotes</span>}
                 </Typography>
               </Box>
             ) : (
               <Box display={'flex'} flexDirection={'column'} gap={4}>
                 <FlexBox sx={{ gap: 4 }}>
-                  {item.stats?.commentCount && item.stats.commentCount !== 0 && (
+                  {item.stats?.commentCount > 0 && (
                     <Typography display='flex' alignItems='center' gap={0.5}>
                       <CustomTooltip title='Engagement'>
                         <InsertCommentIcon />
@@ -581,7 +572,7 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                       <span>{formatViewCount(item.stats.commentCount)}</span>
                     </Typography>
                   )}
-                  {item.stats?.viewCount && item.stats.viewCount !== 0 && (
+                  {item.stats?.viewCount > 0 && (
                     <Typography display='flex' alignItems='center' gap={0.5}>
                       <CustomTooltip title='Potential Reach'>
                         <AnchorIcon />
@@ -589,15 +580,16 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                       <span>{formatViewCount(item.stats.viewCount)}</span>
                     </Typography>
                   )}
-                  {item.insights && item.insights !== 0 && (
+                  {item.stats?.insights > 0 && (
                     <Typography display='flex' alignItems='center' gap={0.5}>
                       <CustomTooltip title='Trending score'>
                         <InsightsIcon />
                       </CustomTooltip>
-                      <span>{formatViewCount(item.insights)}</span>
+                      <span>{formatViewCount(item.stats.insights)}</span>
                     </Typography>
                   )}
                 </FlexBox>
+
                 {displayText && (
                   <Typography variant='body2' sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     {displayText}
