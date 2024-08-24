@@ -76,7 +76,7 @@ const DaysJumper = ({ settings }) => {
   }, [shortCutData])
 
   useEffect(() => {
-    handleFilter(1, '1D')
+    handleFilterChange(1, '1D')
   }, [])
 
   return (

@@ -92,7 +92,6 @@ const AppBarContent = props => {
   const auth = useAuth()
   const router = useRouter()
   const currentRoute = router.pathname
-  console.log(currentRoute)
 
   const isOnAnalyticsPage = currentRoute === '/dashboards/analytics'
   const isOnVisibilityImageQePage = currentRoute === '/dashboards/visibility-image-qe'
