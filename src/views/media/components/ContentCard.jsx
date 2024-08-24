@@ -514,15 +514,15 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
             {item.mediaType === 'twitter' ? (
               <Box display={'flex'} flexDirection={'column'}>
                 <FlexBox>
-                  {item.comments && item.comments !== 0 && (
+                  {/* {item?.stats.commentCount && item?.stats?.commentCount !== 0 && (
                     <Typography display='flex' alignItems='center' gap={0.5}>
                       <CustomTooltip title='Engagement'>
                         <InsertCommentIcon />
                       </CustomTooltip>
-                      <span>{formatViewCount(item.comments)}</span>
+                      <span>{formatViewCount(item.stats.comments)}</span>
                     </Typography>
-                  )}
-                  {item.anchor && item.anchor !== 0 && (
+                  )} */}
+                  {/* {!!item.anchor && item.anchor !== 0 && (
                     <Typography display='flex' alignItems='center' gap={0.5}>
                       <CustomTooltip title='Potential Reach'>
                         <AnchorIcon />
@@ -530,14 +530,14 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
                       <span>{formatViewCount(item.anchor)}K</span>
                     </Typography>
                   )}
-                  {item.insights && item.insights !== 0 && (
+                  {!!item.insights && item.insights !== 0 && (
                     <Typography display='flex' alignItems='center' gap={0.5}>
                       <CustomTooltip title='Trending score'>
                         <InsightsIcon />
                       </CustomTooltip>
                       <span>{formatViewCount(item.insights)}</span>
                     </Typography>
-                  )}
+                  )} */}
                 </FlexBox>
                 <Typography variant='body2'>
                   {item.stats?.retweet_count && item.stats.retweet_count !== 0 && (
