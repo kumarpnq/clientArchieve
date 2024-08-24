@@ -72,7 +72,7 @@ const MediaAnalysis = () => {
 
       <Box display='flex' justifyContent='center' my={2}>
         <Pagination
-          count={Math.ceil(cardData[0]?.feeds.length / itemsPerPage)}
+          count={Math.ceil(cardData[0]?.feeds?.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           color='primary'
