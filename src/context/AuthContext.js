@@ -99,7 +99,7 @@ const AuthProvider = ({ children }) => {
         } else if (defaultScreen.option === 'visibilityImageQe') {
           router.replace('/dashboards/visibility-image-qe/')
         } else {
-          router.replace('/dashboards/clouds/')
+          router.replace('/media')
         }
       })
       .catch(err => {
