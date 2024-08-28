@@ -34,7 +34,6 @@ const SharedDashboard = () => {
         })
         setCardData(response.data.socialMediaData)
       } catch (err) {
-        console.log(err.message)
         setCardData([])
         setError(err)
       } finally {

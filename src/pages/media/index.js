@@ -1,36 +1,76 @@
 import { Fragment, useEffect, useState } from 'react'
-import useFetchSocialMediaData from 'src/api/SHARED_DASHBOARD/fetchSocialMediaData'
 import DataCard from 'src/views/media/DataCard'
 import Stepper from 'src/views/media/Stepper'
 import Pagination from '@mui/material/Pagination'
 import Box from '@mui/material/Box'
+import { useSelector } from 'react-redux'
+import {
+  selectSelectedClient,
+  selectSelectedCompetitions,
+  selectSelectedEndDate,
+  selectSelectedStartDate
+} from 'src/store/apps/user/userSlice'
+import { formatDateTime } from 'src/utils/formatDateTime'
+import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
+import dayjs from 'dayjs'
 
 const MediaAnalysis = () => {
   const isSecure = true
-  const storedToken = localStorage.getItem('accessToken')
 
-  const [value, setValue] = useState('all')
-
-  const { data, loading, error } = useFetchSocialMediaData({
-    mediaType: value,
-    encryptStr: '',
-    authToken: storedToken
-  })
-
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
   const [cardData, setCardData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(40)
 
+  const [value, setValue] = useState('all')
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientIds = selectedClient ? selectedClient.clientId : null
+  const selectedFromDate = useSelector(selectSelectedStartDate)
+  const selectedEndDate = useSelector(selectSelectedEndDate)
+  const selectedCompetitions = useSelector(selectSelectedCompetitions)
+  const selectedCompaniesString = selectedCompetitions.join(', ')
+
+  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
+  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+
+  const formatDate = dateTimeString => {
+    return dayjs(dateTimeString).format('YYYY-MM-DD H:mm:ss')
+  }
+
   useEffect(() => {
-    if (error) {
-      setCardData([])
+    const fetchData = async () => {
+      setLoading(true)
+      try {
+        const params = {
+          clientIds,
+          companyIds: selectedCompaniesString,
+          fromDate: formatDate(formattedStartDate),
+          toDate: formatDate(formattedEndDate),
+          mediaType: value
+        }
+
+        const authToken = localStorage.getItem('accessToken')
+
+        const response = await axios.get(`${BASE_URL}/socialMediaData`, {
+          params,
+          headers: {
+            Authorization: `Bearer ${authToken}`
+          }
+        })
+
+        setCardData(response.data.socialMediaData)
+      } catch (err) {
+        setError(err)
+        setCardData([])
+      } finally {
+        setLoading(false)
+      }
     }
-    if (data?.length) {
-      setCardData(data)
-    } else {
-      setCardData([])
-    }
-  }, [data, error])
+
+    fetchData()
+  }, [value, formattedStartDate, formattedEndDate, clientIds, selectedCompaniesString])
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page)
