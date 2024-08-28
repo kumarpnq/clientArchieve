@@ -143,7 +143,10 @@ const LoginPage = () => {
 
     dispatch(setShortCutFlag(false))
   }
+
   const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
+
+  // const imageSource = skin === 'bordered' ? 'bulb' : 'bulb'
 
   return (
     <Box className='content-right' sx={{ backgroundColor: 'background.paper' }}>
@@ -160,7 +163,8 @@ const LoginPage = () => {
             margin: theme => theme.spacing(8, 0, 8, 8)
           }}
         >
-          <LoginIllustration alt='login-illustration' src={`/images/pages/${imageSource}-${theme.palette.mode}.png`} />
+          {/* <LoginIllustration alt='Perception and quant' src={`/images/pages/${'401'}-${theme.palette.mode}.png`} /> */}
+          <LoginIllustration alt='Perception and quant' src={`/images/pages/perceptionandquant.png`} />
           <FooterIllustrationsV2 />
         </Box>
       ) : null}
@@ -203,6 +207,7 @@ const LoginPage = () => {
                 d='M7.77295 16.3566L23.6563 0H32V6.88383C32 6.88383 31.8262 9.17836 30.6591 10.4057L19.7824 22H13.6938L7.77295 16.3566Z'
               />
             </svg>
+
             <Box sx={{ my: 8 }}>
               <Typography variant='h3' sx={{ mb: 1.5 }}>
                 {`Welcome to ${themeConfig.templateName}! `}

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 
-const useMailRequest = () => {
+const useMailRequest = requestEntity => {
   const [response, setResponse] = useState(null)
   const [error, setError] = useState(null)
 
@@ -18,11 +18,14 @@ const useMailRequest = () => {
       }
 
       const requestData = {
+        requestEntity,
         articleIds,
         clientId,
         recipients,
         searchCriteria
       }
+
+      console.log(requestData)
 
       const axiosConfig = {
         headers

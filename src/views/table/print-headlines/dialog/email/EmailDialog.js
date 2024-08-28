@@ -11,8 +11,6 @@ import FormGroup from '@mui/material/FormGroup'
 import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 import Box from '@mui/material/Box'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 
 // import FormControl from '@mui/material/FormControl'
 import useClientMailerList from 'src/api/global/useClientMailerList '
@@ -53,9 +51,9 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
 
   const { mailList } = useClientMailerList(fetchEmailFlag)
-  const { response, error, sendMailRequest } = useMailRequest()
+  const { response, error, sendMailRequest } = useMailRequest('print')
 
-  const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'print' })))
+  const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'p' })))
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -80,7 +78,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   const handleSendEmail = () => {
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
-    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'to' }))
+    const recipients = selectedEmails.map(id => ({ id, recipientType: emailType[id] || 'to' }))
 
     function convertPageOrAll(value) {
       if (typeof value === 'number') {
@@ -393,13 +391,6 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
       </FormGroup>
 
       <DialogActions>
-        {/* <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)}>
-          <MenuItem value='' disabled>
-            All
-          </MenuItem>
-          <MenuItem value='all'>Select All</MenuItem>
-          <MenuItem value='none'>Select None</MenuItem>
-        </Select> */}
         <Button onClick={onClose} color='primary'>
           Cancel
         </Button>
