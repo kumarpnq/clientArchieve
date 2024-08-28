@@ -44,6 +44,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
 import { useDispatch } from 'react-redux'
 import { setShortCutFlag } from 'src/store/apps/user/userSlice'
+import Image from 'next/image'
 
 // ** Styled Components
 const LoginIllustration = styled('img')(({ theme }) => ({
@@ -179,10 +180,7 @@ const LoginPage = () => {
           }}
         >
           <Box sx={{ width: '100%', maxWidth: 400 }}>
-            <div>
-              <span style={{ fontSize: '2rem', fontWeight: 'bolder', color: theme.palette.text.primary }}>P</span>
-              <span style={{ fontSize: '1.5rem', color: theme.palette.primary.main }}>q</span>
-            </div>
+            <Image src={'/images/pq.png'} alt='logo' height={30} width={50} />
             <Box sx={{ my: 8 }}>
               <Typography variant='h3' sx={{ mb: 1.5 }}>
                 {`Welcome to ${themeConfig.templateName}! `}

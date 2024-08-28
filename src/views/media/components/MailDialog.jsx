@@ -27,8 +27,7 @@ import {
   selectSelectedClient,
   selectSelectedCompetitions,
   selectSelectedEndDate,
-  selectSelectedStartDate,
-  selectUserData
+  selectSelectedStartDate
 } from 'src/store/apps/user/userSlice'
 import { formatDateTime } from 'src/utils/formatDateTime'
 import dayjs from 'dayjs'
@@ -43,7 +42,6 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
 
   // * redux
   const selectedClient = useSelector(selectSelectedClient)
-  const selectedUser = useSelector(selectUserData)
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
@@ -108,7 +106,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
         return toast.error('Getting error')
       }
 
-      const tableHtmlLink = generateTableHTML2(link, selectedUser.fullName)
+      const tableHtmlLink = generateTableHTML2(link, selectedClient?.clientName)
       sendEmail(tableHtmlLink)
     } else {
       const tableHtml = generateTableHtml(selectedCards)
@@ -208,8 +206,8 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
         <FormControl size='small' variant='outlined' sx={{ width: 200, mr: 2 }}>
           <InputLabel id='select-label'>Select Option</InputLabel>
           <Select labelId='select-label' value={MailerFormat} onChange={handleChange} label='Select Option'>
-            <MenuItem value='dbWithDetails'>DB with Details</MenuItem>
-            <MenuItem value='dbWithoutDetails'>DB without Detail</MenuItem>
+            <MenuItem value='dbWithDetails'>Mail without DB</MenuItem>
+            <MenuItem value='dbWithoutDetails'>Mail with DB</MenuItem>
           </Select>
         </FormControl>
         <Button onClick={onClose} color='primary' variant='outlined'>

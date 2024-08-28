@@ -3,7 +3,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button } 
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
-import useClientMailerList from 'src/api/global/useClientMailerList '
+
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { useSelector } from 'react-redux'
 

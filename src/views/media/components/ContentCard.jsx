@@ -233,8 +233,8 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
     setUpdateEmojiLoading(true)
 
     const data = {
-      clientId: clientIds,
-      companyId: selectedCompetitions.join(','),
+      // clientId: clientIds,
+      // companyId: selectedCompetitions.join(','),
       mediaType: item.mediaType,
       feedId: item._id,
       sentiment: label
