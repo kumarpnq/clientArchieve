@@ -104,8 +104,9 @@ const Stepper = ({
         clientIds: clientId,
         companyIds: selectedCompaniesString,
         fromDate: formatDate(formattedStartDate),
-        toDate: formatDate(formattedEndDate),
-        mediaType: value
+        toDate: formatDate(formattedEndDate)
+
+        // mediaType: value
       }
 
       const response = await axios.get(`${BASE_URL}/encryptSocialMediaUrl`, {

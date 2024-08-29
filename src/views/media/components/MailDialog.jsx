@@ -38,7 +38,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
   const [mailSubject, setMailSubject] = useState('')
   const [showHelperText, setShowHelperText] = useState(false)
-  const [MailerFormat, setMailerFormat] = useState('')
+  const [MailerFormat, setMailerFormat] = useState('dbWithoutDetails')
 
   // * redux
   const selectedClient = useSelector(selectSelectedClient)
@@ -75,8 +75,9 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
         clientIds: clientId,
         companyIds: selectedCompaniesString,
         fromDate: formatDate(formattedStartDate),
-        toDate: formatDate(formattedEndDate),
-        mediaType: value
+        toDate: formatDate(formattedEndDate)
+
+        // mediaType: value
       }
 
       const response = await axios.get(`${BASE_URL}/encryptSocialMediaUrl`, {
@@ -108,10 +109,12 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
 
       const tableHtmlLink = generateTableHTML2(link, selectedClient?.clientName)
       sendEmail(tableHtmlLink)
-    } else {
-      const tableHtml = generateTableHtml(selectedCards)
-      sendEmail(tableHtml)
     }
+
+    // else {
+    //   const tableHtml = generateTableHtml(selectedCards)
+    //   sendEmail(tableHtml)
+    // }
   }
 
   const sendEmail = async htmlContent => {
@@ -206,7 +209,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
         <FormControl size='small' variant='outlined' sx={{ width: 200, mr: 2 }}>
           <InputLabel id='select-label'>Select Option</InputLabel>
           <Select labelId='select-label' value={MailerFormat} onChange={handleChange} label='Select Option'>
-            <MenuItem value='dbWithDetails'>Mail without DB</MenuItem>
+            {/* <MenuItem value='dbWithDetails'>Mail without DB</MenuItem> */}
             <MenuItem value='dbWithoutDetails'>Mail with DB</MenuItem>
           </Select>
         </FormControl>

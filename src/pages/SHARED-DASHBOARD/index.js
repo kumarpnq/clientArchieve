@@ -32,7 +32,8 @@ const SharedDashboard = () => {
       setLoading(true)
       try {
         const params = {
-          encryptStr: id
+          encryptStr: id,
+          mediaType: value
         }
 
         const response = await axios.get(`${BASE_URL}/socialMediaData`, {
