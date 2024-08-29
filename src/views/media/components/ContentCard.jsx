@@ -228,8 +228,6 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
   ]
 
   const handleEmojiClick = async (label, item) => {
-    console.log(item)
-
     setUpdateEmojiLoading(true)
 
     const data = {

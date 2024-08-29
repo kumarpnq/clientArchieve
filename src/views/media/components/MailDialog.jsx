@@ -63,7 +63,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
 
   // * function to format date time to date only
   const formatDate = dateTimeString => {
-    return dayjs(dateTimeString).format('YYYY-MM-DD')
+    return dayjs(dateTimeString).format('YYYY-MM-DD H:mm:ss')
   }
 
   const generateWebURL = async () => {
@@ -85,7 +85,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       })
 
       const encryptedUrl = response.data.url
-      url = `${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/SHARED_DASHBOARD/id=${encryptedUrl}`
+      url = `${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/SHARED-DASHBOARD/?id=${encryptedUrl}`
 
       return url
     } catch (error) {

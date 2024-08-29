@@ -92,7 +92,7 @@ const Stepper = ({
 
   // * function to format date time to date only
   const formatDate = dateTimeString => {
-    return dayjs(dateTimeString).format('YYYY-MM-DD')
+    return dayjs(dateTimeString).format('YYYY-MM-DD H:mm:ss')
   }
 
   const generateWebURL = async () => {
@@ -115,7 +115,7 @@ const Stepper = ({
 
       const encryptedUrl = response.data.url
 
-      clipboardCopy(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/SHARED_DASHBOARD/id=${encryptedUrl}`)
+      clipboardCopy(`${process.env.NEXT_PUBLIC_SERVER_ADDRESS}/SHARED-DASHBOARD/?id=${encryptedUrl}`)
         .then(() => {
           toast.success('URL copied to clipboard!')
         })
@@ -251,20 +251,26 @@ const Stepper = ({
             </IconButton>
           </CustomTooltip>
         )}
-        <CustomTooltip title='Select'>
-          <IconButton
-            color='primary'
-            onClick={() => setIsSelectCard(prev => !prev)}
-            sx={{ bgcolor: isSelectCard ? 'primary' : '' }}
-          >
-            <IconifyIcon icon='lets-icons:done-all-round-duotone' />
-          </IconButton>
-        </CustomTooltip>
-        <CustomTooltip title='Select All'>
-          <IconButton color='primary' onClick={handleSelectAll}>
-            <IconifyIcon icon='ic:twotone-done-all' />
-          </IconButton>
-        </CustomTooltip>
+
+        {isSecure && (
+          <>
+            <CustomTooltip title='Select'>
+              <IconButton
+                color='primary'
+                onClick={() => setIsSelectCard(prev => !prev)}
+                sx={{ bgcolor: isSelectCard ? 'primary' : '' }}
+              >
+                <IconifyIcon icon='lets-icons:done-all-round-duotone' />
+              </IconButton>
+            </CustomTooltip>
+            <CustomTooltip title='Select All'>
+              <IconButton color='primary' onClick={handleSelectAll}>
+                <IconifyIcon icon='ic:twotone-done-all' />
+              </IconButton>
+            </CustomTooltip>
+          </>
+        )}
+
         <FilterBox
           cardData={cardData}
           setSelectedCards={setSelectedCards}

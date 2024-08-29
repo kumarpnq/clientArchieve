@@ -20,7 +20,7 @@ const DateBar = () => {
   const selectedStartDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
 
-  const dateFormat = currentRoute === '/media' ? 'DD/MM/YYYY HH:mm:ss' : 'DD/MM/YYYY'
+  const dateFormat = currentRoute === '/media' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'
   const formattedStartDate = selectedStartDate ? dayjs(selectedStartDate).format(dateFormat) : null
   const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format(dateFormat) : null
 

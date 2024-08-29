@@ -10,12 +10,19 @@ import { useAuth } from 'src/hooks/useAuth'
 const GuestGuard = props => {
   const { children, fallback } = props
   const auth = useAuth()
+
   const router = useRouter()
   useEffect(() => {
+    console.log('i am rendering')
+
     if (!router.isReady) {
+      console.log('no ready')
+
       return
     }
     if (window.localStorage.getItem('userData')) {
+      console.log('storage')
+
       router.replace('/')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

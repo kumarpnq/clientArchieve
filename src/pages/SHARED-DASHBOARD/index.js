@@ -1,18 +1,24 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import BlankLayout from 'src/@core/layouts/BlankLayout'
-import DataCard from 'src/views/media/DataCard'
+
+// import DataCard from 'src/views/media/DataCard'
 import Stepper from 'src/views/media/Stepper'
 import PNQCard from 'src/views/media/components/PNQCard'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import Pagination from '@mui/material/Pagination'
 import Box from '@mui/material/Box'
+import { CircularProgress } from '@mui/material'
+import dynamic from 'next/dynamic'
+
+const DataCard = dynamic(() => import('src/views/media/DataCard'), {
+  loading: () => <CircularProgress />
+})
 
 const SharedDashboard = () => {
   const router = useRouter()
   const { id } = router.query
-  const idValue = id?.split('id=')[1]
 
   const [loading, setLoading] = useState(false)
   const [value, setValue] = useState('all')
@@ -26,7 +32,7 @@ const SharedDashboard = () => {
       setLoading(true)
       try {
         const params = {
-          encryptStr: idValue
+          encryptStr: id
         }
 
         const response = await axios.get(`${BASE_URL}/socialMediaData`, {
@@ -42,14 +48,17 @@ const SharedDashboard = () => {
     }
 
     fetchData()
-  }, [idValue, value])
+  }, [id, value])
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page)
   }
 
-  // Calculate data to display for current page
-  const paginatedData = cardData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  // Slice data for the current page
+  const paginatedData = cardData.map(company => ({
+    ...company,
+    feeds: company?.feeds?.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  }))
 
   const [isSelectCard, setIsSelectCard] = useState(false)
   const [selectedCards, setSelectedCards] = useState([])
@@ -76,7 +85,7 @@ const SharedDashboard = () => {
       />
       <Box display='flex' justifyContent='center' my={2}>
         <Pagination
-          count={Math.ceil(cardData.length / itemsPerPage)}
+          count={Math.ceil(cardData[0]?.feeds?.length / itemsPerPage)}
           page={currentPage}
           onChange={handlePageChange}
           color='primary'
@@ -86,7 +95,12 @@ const SharedDashboard = () => {
   )
 }
 
+let isAuthenticated = false
+if (typeof window !== 'undefined') {
+  isAuthenticated = Boolean(window.localStorage.getItem('userData'))
+}
+
 SharedDashboard.getLayout = page => <BlankLayout>{page}</BlankLayout>
-SharedDashboard.guestGuard = true
+SharedDashboard.guestGuard = !isAuthenticated
 
 export default SharedDashboard
