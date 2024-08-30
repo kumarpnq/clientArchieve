@@ -82,6 +82,7 @@ const SharedDashboard = () => {
         selectedCards={selectedCards}
         setSelectedCards={setSelectedCards}
         cardData={paginatedData}
+        setCardData={setCardData}
         loading={loading}
       />
       <Box display='flex' justifyContent='center' my={2}>

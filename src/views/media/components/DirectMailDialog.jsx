@@ -36,8 +36,8 @@ const DirectMailDialog = ({ open, setOpen, link, setLink }) => {
 
       setSubject(axiosResponse.data.emails.subject || '')
       setEmailList(axiosResponse.data.emails.mailList || [])
-    } catch (axiosError) {
-      setError(axiosError)
+    } catch (error) {
+      console.log(error.message)
     }
   }
 
