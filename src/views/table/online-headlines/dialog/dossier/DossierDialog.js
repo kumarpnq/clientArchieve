@@ -361,7 +361,8 @@ const DossierDialog = ({
         const requestData = { clientId }
         const axiosConfig = { headers, params: requestData }
         const axiosResponse = await axios.get(url, axiosConfig)
-        setMailList(axiosResponse.data.emails)
+
+        setMailList(axiosResponse.data.mailList || [])
       } catch (axiosError) {
         console.log(axiosError)
       }

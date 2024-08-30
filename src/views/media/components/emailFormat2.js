@@ -30,8 +30,9 @@ export const generateTableHTML2 = (link, user) => {
         font-size: 20px;
         letter-spacing: 1px;
       }
-      .header-logo .and {
+       .and {
         color: red;
+        font-size:16px
       }
       .report-link {
         text-align: center;
@@ -45,20 +46,36 @@ export const generateTableHTML2 = (link, user) => {
         display: inline-flex;
         align-items: center;
       }
+      .report-button {
+        color: #ffffff;
+        background-color: lightgray;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 15px;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+      .report-button:hover {
+        background-color: #ffffff;
+        color:dark
+      }
       .report-link a:hover {
         text-decoration: underline;
       }
       .report-link .link-icon {
         margin-right: 5px;
         font-size: 16px;
+        letter-spacing:1px
       }
       .title {
         background-color: #f7f7f7;
-        padding: 20px;
+        padding: 25px;
         text-align: center;
-        font-size: 18px;
-        font-weight: bold;
-        color: #444;
+        font-size: 14px;
+        font-weight: 300;
+        color: #4f4d4d;
       }
       .footer {
         background: #eef2f3;
@@ -87,8 +104,8 @@ export const generateTableHTML2 = (link, user) => {
       <div class="header">
         <div class="header-logo">PERCEPTION <span class="and">&</span> <span style="color:darkgray">QUANT</span></div>
         <div class="report-link">
-          <a href="${link}">
-            <span class="link-icon">🔗</span>Open report
+          <a href="${link}" class="report-button">
+            <span class="link-icon">Open report 🔗</span>
           </a>
         </div>
       </div>
