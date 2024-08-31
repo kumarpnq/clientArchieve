@@ -181,16 +181,33 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
   }
 
   const getArticleActivities = (mediaType, item) => {
+    const activities = []
+
     switch (mediaType) {
       case 'youtube':
-        return `Views : ${item.stats.viewCount} | Likes : ${item.stats.likeCount} | Comments : ${item.stats.commentCount} | Favorite : ${item.stats.favoriteCount}`
+        if (item.stats.viewCount > 0) activities.push(`Views: ${item.stats.viewCount}`)
+        if (item.stats.likeCount > 0) activities.push(`Likes: ${item.stats.likeCount}`)
+        if (item.stats.commentCount > 0) activities.push(`Comments: ${item.stats.commentCount}`)
+        if (item.stats.favoriteCount > 0) activities.push(`Favorite: ${item.stats.favoriteCount}`)
+        break
+
       case 'twitter':
-        return `Followers : ${item.stats.followersCount} | Likes : ${item.stats.likeCount} | Retweets : ${item.stats.retweet_count} | Replies : ${item.stats.reply_count} | Impressions : ${item.stats.impression_count}`
+        if (item.stats.followersCount > 0) activities.push(`Followers: ${item.stats.followersCount}`)
+        if (item.stats.likeCount > 0) activities.push(`Likes: ${item.stats.likeCount}`)
+        if (item.stats.retweet_count > 0) activities.push(`Retweets: ${item.stats.retweet_count}`)
+        if (item.stats.reply_count > 0) activities.push(`Replies: ${item.stats.reply_count}`)
+        if (item.stats.impression_count > 0) activities.push(`Impressions: ${item.stats.impression_count}`)
+        break
+
       case 'facebook':
-        return `Reactions : ${item.stats.reactionCount}`
+        if (item.stats.reactionCount > 0) activities.push(`Reactions: ${item.stats.reactionCount}`)
+        break
+
       default:
         return ''
     }
+
+    return activities.join(' | ')
   }
 
   const handleWhatsappPost = item => {
