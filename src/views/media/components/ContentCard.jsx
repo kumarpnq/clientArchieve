@@ -239,8 +239,8 @@ export const TestCard = ({ item, onCardSelect, isSelectCard, selectedCards }) =>
   const id = open ? 'simple-popper' : undefined
 
   const emojis = [
-    { emoji: <IconifyIcon icon='ph:smiley-fill' color='lightgreen' />, label: 'positive' },
-    { emoji: <IconifyIcon icon='ph:smiley-meh-fill' color='yellow' />, label: 'Neutral' },
+    { emoji: <IconifyIcon icon='ph:smiley-fill' color='#76fa46' />, label: 'positive' },
+    { emoji: <IconifyIcon icon='ph:smiley-meh-fill' color='#fadf46' />, label: 'Neutral' },
     { emoji: <IconifyIcon icon='ph:smiley-sad-fill' color='red' />, label: 'negative' }
   ]
 
