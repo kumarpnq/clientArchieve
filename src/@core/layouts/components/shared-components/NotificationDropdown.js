@@ -228,12 +228,8 @@ const NotificationDropdown = () => {
               skin='light'
               size='small'
               color='primary'
-              label={`${
-                // (clientData?.excelDump?.length || 0) +
-                // (clientData?.email?.length || 0) +
-                // (clientData?.dossier?.length || 0)
-                notificationListCount
-              } New`}
+              label={`
+                ${notificationListCount} New`}
             />
           </Box>
         </MenuItem>
