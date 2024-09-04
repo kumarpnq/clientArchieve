@@ -61,7 +61,7 @@ const DossierDialog = ({
   const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join('')
   const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
-  const { mailList: mailerList, subject: mailerSubject } = useClientMailerList(fetchEmailFlag)
+  const { mailList: mailerList, subject: mailerSubject } = useClientMailerList()
 
   useEffect(() => {
     setMailList(mailerList)

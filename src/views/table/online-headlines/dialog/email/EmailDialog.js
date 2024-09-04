@@ -53,7 +53,7 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   // customs
   const articleIds = dataForMail.length && dataForMail.map(i => i.articleId).flat()
   const pageLimit = dataForMail.length && dataForMail.map(i => i.pageLimit).join('')
-  const { mailList } = useClientMailerList(fetchEmailFlag)
+  const { mailList } = useClientMailerList()
   const { response, error, sendMailRequest } = useMailRequest('online')
 
   const selectPageOrAll = dataForMail.length && dataForMail.map(i => i.selectPageorAll).join('')

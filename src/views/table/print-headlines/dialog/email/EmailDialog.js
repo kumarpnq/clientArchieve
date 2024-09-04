@@ -48,9 +48,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   const [emailType, setEmailType] = useState({})
   const [selectAll, setSelectAll] = useState(false)
   const [selectedEmails, setSelectedEmails] = useState([])
-  const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
 
-  const { mailList } = useClientMailerList(fetchEmailFlag)
+  const { mailList } = useClientMailerList()
   const { response, error, sendMailRequest } = useMailRequest('print')
 
   const articleIds = dataForMail.length && dataForMail?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'p' })))

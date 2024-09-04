@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from '../base'
 
-const useClientMailerList = ({ fetchEmailFlag }) => {
+const useClientMailerList = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const [mailList, setMailList] = useState([])
@@ -42,7 +42,7 @@ const useClientMailerList = ({ fetchEmailFlag }) => {
     }
 
     getClientMailerList()
-  }, [clientId, fetchEmailFlag])
+  }, [clientId])
 
   return { mailList, subject, error }
 }
