@@ -200,11 +200,11 @@ const LoginPage = () => {
                     <CustomTextField
                       fullWidth
                       autoFocus
-                      label='Email'
+                      label='User'
                       value={value}
                       onBlur={onBlur}
                       onChange={onChange}
-                      placeholder='your@email.com'
+                      placeholder='Your Username'
                       error={Boolean(errors.email)}
                       {...(errors.email && { helperText: errors.email.message })}
                     />

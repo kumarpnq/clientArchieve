@@ -49,12 +49,16 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
     const xmlOptions = { compact: true, ignoreComment: true, spaces: 4 }
 
     const xmlContent = selectedArticles.map((article, index) => {
+      console.log('checkingxml==>', article)
       // Remove unwanted elements from the article object
       const { articleId, clientId, ...filteredArticle } = article
 
       const articleObj = {}
       Object.keys(filteredArticle).forEach(key => {
-        articleObj[key] = { _text: filteredArticle[key] }
+        if (filteredArticle[key] !== undefined) {
+          // Check if the value is not undefined
+          articleObj[key] = { _text: filteredArticle[key] }
+        }
       })
 
       const articleXmlString = xmlJs.js2xml({ article: articleObj }, xmlOptions)

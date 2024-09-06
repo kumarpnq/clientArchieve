@@ -249,8 +249,8 @@ const TableSelection = () => {
     searchParameters.anyOfWords && { anyWord: searchParameters.anyOfWords },
     searchParameters.ignoreThis && { ignoreWords: searchParameters.ignoreThis },
     searchParameters.exactPhrase && { phrase: searchParameters.exactPhrase },
-    selectedArticles.length &&
-      selectedArticles.length !== recordsPerPage && { articleId: selectedArticles.map(i => i.articleId) },
+    selectedArticles?.length &&
+      selectedArticles?.length !== recordsPerPage && { articleId: selectedArticles?.map(i => i?.articleId) },
     {
       pageCheck: pageCheck
     },

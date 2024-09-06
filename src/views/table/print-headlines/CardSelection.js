@@ -151,6 +151,14 @@ const CardSelection = () => {
     return `${month} ${day},${year}`
   }
 
+  const truncateText = (text, wordLimit) => {
+    const words = text.split(' ')
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(' ') + '...'
+    }
+    return text
+  }
+
   return (
     <Card>
       <Toolbar>
@@ -182,7 +190,7 @@ const CardSelection = () => {
                             <TableBody>
                               {company.articles.map(article => (
                                 <TableRow key={article.articleId}>
-                                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                  <TableCell sx={{ whiteSpace: '' }}>
                                     <CustomTooltip
                                       title={article.headline}
                                       arrow
@@ -195,10 +203,12 @@ const CardSelection = () => {
                                         style={{ textDecoration: 'none', color: '#86838b' }}
                                       >
                                         <span
-                                          style={{ cursor: 'pointer' }}
+                                          style={{
+                                            cursor: 'pointer'
+                                          }}
                                           onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
                                         >
-                                          {article.headline}
+                                          {truncateText(article.headline, 10)} {/* Truncate to 30 words */}
                                         </span>
                                       </a>
                                     </CustomTooltip>

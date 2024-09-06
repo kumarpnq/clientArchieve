@@ -150,6 +150,14 @@ const CardSelection = () => {
     return `${month} ${day},${year}`
   }
 
+  const truncateText = (text, wordLimit) => {
+    const words = text.split(' ')
+    if (words.length > wordLimit) {
+      return words.slice(0, wordLimit).join(' ') + '...'
+    }
+    return text
+  }
+
   return (
     <Card>
       <Toolbar>
@@ -172,8 +180,7 @@ const CardSelection = () => {
               {companyData.length > 0 && (
                 <>
                   {companyData
-                    .filter(company => company.socialFeeds
-                      .length > 0) // Filter out companies with no articles
+                    .filter(company => company.socialFeeds.length > 0) // Filter out companies with no articles
                     .map(company => (
                       <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                         <Card sx={{ width: '100%', textAlign: 'center' }}>
@@ -182,7 +189,7 @@ const CardSelection = () => {
                             <TableBody>
                               {company.socialFeeds.map(article => (
                                 <TableRow key={article.socialFeedId}>
-                                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                  <TableCell sx={{ whiteSpace: '' }}>
                                     <CustomTooltip
                                       title={article.headline}
                                       arrow
@@ -195,10 +202,12 @@ const CardSelection = () => {
                                         style={{ textDecoration: 'none', color: '#86838b' }}
                                       >
                                         <span
-                                          style={{ cursor: 'pointer' }}
+                                          style={{
+                                            cursor: 'pointer'
+                                          }}
                                           onClick={() => fetchReadArticleFile(article.articleId, 'pdf')}
                                         >
-                                          {article.headline}
+                                          {truncateText(article.headline, 10)} {/* Truncate to 30 words */}
                                         </span>
                                       </a>
                                     </CustomTooltip>
