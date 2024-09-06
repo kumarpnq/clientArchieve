@@ -30,15 +30,16 @@ const DaysJumper = ({ settings }) => {
   const [selectedDayFilter, setSelectedDayFilter] = useState('1D')
 
   const calculateDate = (days, startDate = null) =>
-    startDate ? dayjs(startDate).subtract(days, 'day') : dayjs().subtract(days, 'day')
+    startDate ? dayjs(startDate).subtract(0, 'day') : dayjs().subtract(days, 'day')
 
   const handleFilter = (days, label) => {
     const start = calculateDate(days, shortCutData?.searchCriteria?.fromDate)
+    const end = calculateDate(0, shortCutData?.searchCriteria?.toDate) // End date is same as the current end date
 
     dispatch(
       setSelectedDateRange({
         startDate: start || shortCutData?.searchCriteria?.fromDate,
-        endDate: start || shortCutData?.searchCriteria?.toDate
+        endDate: end || shortCutData?.searchCriteria?.toDate
       })
     )
     setSelectedDayFilter(label)
@@ -47,8 +48,9 @@ const DaysJumper = ({ settings }) => {
   const handleFilterChange = (days, label) => {
     let startDate = calculateDate(days)
 
+    // Adjust startDate to be the same time on the previous day
     if (label === '1D' || label === '7D') {
-      startDate = startDate.add(1, 'day')
+      startDate = startDate.startOf('day').subtract(0, 'day').startOf('day')
     }
 
     const endDate = dayjs()
