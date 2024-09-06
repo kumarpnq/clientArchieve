@@ -366,6 +366,12 @@ const ExcelDumpDialog = ({
           .flat()
           .filter(id => id !== undefined)
       : []
+
+    const articleIdsWithType = articleIds.map(i => ({
+      id: i,
+      type: 'p'
+    }))
+
     const recordsPerPage = extractField('recordsPerPage')
     const media = extractField('media')
     const geography = extractField('geography')
@@ -409,7 +415,8 @@ const ExcelDumpDialog = ({
       clientId,
       selectedFields,
       notificationFlag,
-      ...(pageCheck || allCheck ? { searchCriteria } : { articleIds })
+
+      ...(pageCheck || allCheck ? { searchCriteria } : { articleIdsWithType })
     }
 
     postData(postDataParams)

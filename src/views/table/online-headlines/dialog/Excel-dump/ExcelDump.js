@@ -46,7 +46,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
 
-  const { responseData, loading, error, postData } = useExcelDump()
+  const { responseData, loading, error, postData } = useExcelDump('online')
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const articleIds = dataForExcelDump.length > 0 && dataForExcelDump.flatMap(item => item.articleId)
@@ -70,7 +70,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
 
   useEffect(() => {
     if (selectAll) {
-      setSelectedFields([...fields.map(field => field.id)])
+      setSelectedFields([...fields.map(field => field.name)])
     } else {
       setSelectedFields([])
     }
@@ -104,9 +104,12 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     const selectPageOrAll =
       dataForExcelDump.length && dataForExcelDump.map(i => convertPageOrAll(i.selectPageorAll)).join('')
     const requestEntity = 'online'
+
     const page = dataForExcelDump.length && dataForExcelDump.map(i => i.page).join('')
 
-    const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
+    const articleIds = dataForExcelDump
+      .map(i => i?.articleId) // Map to get the articleId (it can return undefined if not present)
+      .filter(id => id !== undefined)
 
     const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
 
@@ -314,7 +317,10 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     if (pageCheck === true || allCheck === true) {
       postDataParams.searchCriteria = searchCriteria
     } else {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+      const flattenIds = articleIds.flatMap(i => i)
+      const articleIdsWithType = flattenIds.map(i => ({ id: i, type: 'o' }))
+
+      postDataParams.articleIdsWithType = articleIdsWithType
     }
 
     if (
@@ -339,7 +345,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     if (responseData.message) {
       responseData.message && toast.success(responseData.message)
     }
-    if (error) return toast.error('something wrong.')
   }
 
   if (!dataForExcelDump || dataForExcelDump.length === 0) {
@@ -376,7 +381,10 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
             <Grid item xs={6} key={item.id}>
               <FormControlLabel
                 control={
-                  <Checkbox checked={selectedFields.includes(item.id)} onChange={() => handleCheckboxChange(item.id)} />
+                  <Checkbox
+                    checked={selectedFields.includes(item.name)}
+                    onChange={() => handleCheckboxChange(item.name)}
+                  />
                 }
                 label={item.name}
               />

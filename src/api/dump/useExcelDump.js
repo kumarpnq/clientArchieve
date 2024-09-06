@@ -7,7 +7,7 @@ const useExcelDump = screenType => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const postData = async ({ clientId, articleIds, selectedFields, searchCriteria }) => {
+  const postData = async ({ clientId, articleIdsWithType, selectedFields, searchCriteria }) => {
     setLoading(true)
     try {
       const storedToken = localStorage.getItem('accessToken')
@@ -19,8 +19,8 @@ const useExcelDump = screenType => {
         searchCriteria
       }
 
-      if (Array.isArray(articleIds) && articleIds.length > 0 && articleIds !== undefined) {
-        requestData.articleIds = articleIds
+      if (Array.isArray(articleIdsWithType) && articleIdsWithType.length > 0 && articleIdsWithType !== undefined) {
+        requestData.articleIds = articleIdsWithType
       }
 
       const response = await axios.post(`${BASE_URL}/excelDumpRequest`, requestData, {

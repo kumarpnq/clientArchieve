@@ -301,7 +301,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     if (pageCheck === true || allCheck === true) {
       postDataParams.searchCriteria = searchCriteria
     } else {
-      postDataParams.articleIds = articleIds.filter(id => id !== undefined)
+      const articleIdsWithType = articleIds.map(i => ({ id: i, type: 'po' }))
+      postDataParams.articleIdsWithType = articleIdsWithType
     }
 
     if (
