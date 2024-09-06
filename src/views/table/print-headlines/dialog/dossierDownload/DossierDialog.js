@@ -349,11 +349,8 @@ const DossierDialog = ({
     handleClose()
     setEmail('')
     setSelectedEmail([])
-    if (error) {
-      toast.error('something wrong')
-    } else {
-      toast.success(response?.message ?? 'Success!')
-    }
+
+    toast.success(response?.message)
   }
 
   if (!dataForDossierDownload || dataForDossierDownload.length === 0) {

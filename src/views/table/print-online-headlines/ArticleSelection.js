@@ -324,6 +324,8 @@ const TableSelection = () => {
     return i.publicationTypeId
   })
 
+  console.log(selectedArticles)
+
   const dataForDump = [
     selectedGeography.length && { geography: selectedGeography },
     selectedMedia.length && { media: selectedMedia },
