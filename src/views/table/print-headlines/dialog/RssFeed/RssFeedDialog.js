@@ -48,24 +48,26 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
   const generateXML = () => {
     const xmlOptions = { compact: true, ignoreComment: true, spaces: 4 }
 
-    const xmlContent = selectedArticles.map((article, index) => {
-      console.log('checkingxml==>', article)
-      // Remove unwanted elements from the article object
-      const { articleId, clientId, ...filteredArticle } = article
+    const xmlContent = selectedArticles
+      .filter(item => item !== undefined)
+      .map((article, index) => {
+        console.log('checkingxml==>', article)
+        // Remove unwanted elements from the article object
+        const { articleId, clientId, ...filteredArticle } = article
 
-      const articleObj = {}
-      Object.keys(filteredArticle).forEach(key => {
-        if (filteredArticle[key] !== undefined) {
-          // Check if the value is not undefined
-          articleObj[key] = { _text: filteredArticle[key] }
-        }
+        const articleObj = {}
+        Object.keys(filteredArticle).forEach(key => {
+          if (filteredArticle[key] !== undefined) {
+            // Check if the value is not undefined
+            articleObj[key] = { _text: filteredArticle[key] }
+          }
+        })
+
+        const articleXmlString = xmlJs.js2xml({ article: articleObj }, xmlOptions)
+
+        // Add a divider if it's not the first article
+        return index === 0 ? articleXmlString : `\n\n<!-- Divider between articles -->\n\n${articleXmlString}`
       })
-
-      const articleXmlString = xmlJs.js2xml({ article: articleObj }, xmlOptions)
-
-      // Add a divider if it's not the first article
-      return index === 0 ? articleXmlString : `\n\n<!-- Divider between articles -->\n\n${articleXmlString}`
-    })
 
     // Combine all articles
     return `<?xml version="1.0" encoding="UTF-8" ?>
@@ -80,13 +82,15 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
       return JSON.stringify(filteredArticle, null, 2)
     }
 
-    const jsonContent = selectedArticles.map((article, index) => {
-      const { articleId, clientId, ...filteredArticle } = article
-      const articleJsonString = JSON.stringify(filteredArticle, null, 2)
+    const jsonContent = selectedArticles
+      .filter(item => item !== undefined)
+      .map((article, index) => {
+        const { articleId, clientId, ...filteredArticle } = article
+        const articleJsonString = JSON.stringify(filteredArticle, null, 2)
 
-      // Add a divider if it's not the first article
-      return index === 0 ? articleJsonString : `\n\n// Divider between articles\n\n${articleJsonString}`
-    })
+        // Add a divider if it's not the first article
+        return index === 0 ? articleJsonString : `\n\n// Divider between articles\n\n${articleJsonString}`
+      })
 
     // Combine all articles
     return `[${jsonContent.join(',')}]`

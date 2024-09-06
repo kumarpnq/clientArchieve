@@ -27,10 +27,12 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
 
-  const article = selectedArticles.map(({ articleId, companies }) => ({
-    articleId,
-    companyIds: companies?.map(company => company.id) || []
-  }))
+  const article = selectedArticles
+    .filter(item => item !== undefined)
+    .map(({ articleId, companies }) => ({
+      articleId,
+      companyIds: companies?.map(company => company.id) || []
+    }))
 
   const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleArticles({
     clientId: clientId,
