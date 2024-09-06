@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { BASE_URL } from '../base'
+import { BASE_URL, JOB_SERVER } from '../base'
 
 // ** Redux
 import { useSelector } from 'react-redux'
@@ -21,7 +21,7 @@ const useFetchNotifications = () => {
         if (notificationFlag || clientId) {
           setLoading(true)
 
-          const response = await axios.get(`${BASE_URL}/clientArchiveNotificationList`, {
+          const response = await axios.get(`${JOB_SERVER}/clientArchiveNotificationList`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },

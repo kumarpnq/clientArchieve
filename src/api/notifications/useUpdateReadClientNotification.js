@@ -1,7 +1,7 @@
 // useUpdateClientNotification.js
 import { useState } from 'react'
 import axios from 'axios'
-import { BASE_URL } from '../base'
+import { BASE_URL, JOB_SERVER } from '../base'
 
 // ** Redux
 import { useSelector } from 'react-redux'
@@ -17,7 +17,7 @@ const useUpdateClientNotification = () => {
 
   const updateReadClientNotification = async jobId => {
     const storedToken = localStorage.getItem('accessToken')
-    const url = `${process.env.NEXT_PUBLIC_JOB_SERVER}/updateReadClientNotification/`
+    const url = `${JOB_SERVER}/updateReadClientNotification/`
     const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
 
     const headers = {
