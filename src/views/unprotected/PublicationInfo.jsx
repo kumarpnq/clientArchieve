@@ -37,12 +37,12 @@ const PublicationInfo = ({ articles }) => {
               component='div'
               sx={{
                 whiteSpace: 'nowrap' /* Prevent text from wrapping */,
-                overflow: 'hidden' /* Hide overflow */,
-                animation: 'roll 10s linear infinite' /* Animation duration and timing */,
-                '@keyframes roll': {
-                  from: { transform: 'translateX(100%)' } /* Start from the right edge */,
-                  to: { transform: 'translateX(-100%)' } /* Move to the left edge */
-                }
+                overflow: 'hidden' /* Hide overflow */
+                // animation: 'roll 10s linear infinite' /* Animation duration and timing */,
+                // '@keyframes roll': {
+                //   from: { transform: 'translateX(100%)' } /* Start from the right edge */,
+                //   to: { transform: 'translateX(-100%)' } /* Move to the left edge */
+                // }
               }}
             >
               {articles.headlines}

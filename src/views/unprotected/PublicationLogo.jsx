@@ -15,16 +15,24 @@ const PublicationLogo = ({ articles }) => {
   })
 
   return (
-    <Card sx={{ display: 'flex', justifyContent: 'space-between', py: 2 }}>
-      {/* Logo on the left */}
-      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo1' height={30} width={150} />
-      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo2' height={30} width={150} />
-      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo3' height={30} width={150} />
+    // <Card sx={{ display: 'flex', justifyContent: 'space-between', py: 2 }}>
+    //   {/* Logo on the left */}
+    //   <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo1' height={30} width={60} />
+    //   <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo2' height={30} width={60} />
+    //   <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo3' height={30} width={60} />
 
-      {/* Copyright text
-        <Typography variant='body2' color='textSecondary'>
-          {logoInfo.copyrightText}
-        </Typography> */}
+    //   {/* Copyright text
+    //     <Typography variant='body2' color='textSecondary'>
+    //       {logoInfo.copyrightText}
+    //     </Typography> */}
+    // </Card>
+
+    <Card sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', px: 1, py: 2 }}>
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={15} width={150} />
+
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={15} width={150} />
+
+      <Image src={'https://perceptionandquant.com/logo2.png'} alt='logo' height={15} width={150} />
     </Card>
   )
 }

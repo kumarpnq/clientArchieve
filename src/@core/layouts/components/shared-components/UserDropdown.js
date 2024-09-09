@@ -88,7 +88,7 @@ const UserDropdown = props => {
     setTimeout(() => {
       logout()
       handleDropdownClose()
-    }, 3000)
+    }, 1000)
   }
 
   return (

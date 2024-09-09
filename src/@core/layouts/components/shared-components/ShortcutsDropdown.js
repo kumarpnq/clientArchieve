@@ -70,6 +70,8 @@ const ShortcutsDropdown = props => {
   // ** Props
   const { shortcuts, settings } = props
 
+  console.log('checkingshortcut->', shortcuts)
+
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
 
