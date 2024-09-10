@@ -165,7 +165,7 @@ const ToolbarComponent = ({
         const storedToken = localStorage.getItem('accessToken')
 
         // Fetch languages
-        const languageResponse = await axios.get('http://51.68.220.77:8001/languagelist/', {
+        const languageResponse = await axios.get(`${BASE_URL}/languagelist/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           }
@@ -180,7 +180,7 @@ const ToolbarComponent = ({
         }
 
         // Fetch cities
-        const citiesResponse = await axios.get('http://51.68.220.77:8001/citieslist/', {
+        const citiesResponse = await axios.get(`${BASE_URL}/citieslist/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           }
