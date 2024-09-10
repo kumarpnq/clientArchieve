@@ -269,8 +269,8 @@ const TableSelection = () => {
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize: 0, // Default pageSize
-    totalRecords: 0 // New state for totalRecords
+    pageSize: 0,
+    totalRecords: 0
   })
 
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
@@ -278,7 +278,9 @@ const TableSelection = () => {
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
   const [selectedDuration, setSelectedDuration] = useState(null)
   const [isEditDialogOpen, setEditDialogOpen] = useState(false)
+
   const getRowId = row => row.articleId
+
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
@@ -323,8 +325,6 @@ const TableSelection = () => {
   const publicationtype = selectedPublicationType?.map(i => {
     return i.publicationTypeId
   })
-
-  console.log(selectedArticles)
 
   const dataForDump = [
     selectedGeography.length && { geography: selectedGeography },
@@ -547,7 +547,7 @@ const TableSelection = () => {
             params: request_params
           })
 
-          const totalRecords = response.data.totalAllArticles
+          const totalRecords = response.data.totalCount
 
           setArticles(response.data.articles)
 
@@ -823,7 +823,7 @@ const TableSelection = () => {
                       autoHeight
                       rows={leftArticles}
                       columns={articleColumns}
-                      pagination={false} // Remove pagination
+                      pagination={false}
                       onRowClick={params => handleRowClick(params)}
                       getRowId={getRowId}
                       hideFooter
@@ -837,7 +837,7 @@ const TableSelection = () => {
                     autoHeight
                     rows={rightArticles}
                     columns={articleColumns}
-                    pagination={false} // Remove pagination
+                    pagination={false}
                     onRowClick={params => handleRowClick(params)}
                     getRowId={getRowId}
                     hideFooter
@@ -849,7 +849,6 @@ const TableSelection = () => {
                 autoHeight
                 rows={articles}
                 columns={articleColumns.filter(column => {
-                  // Check if it's mobile view and exclude only the "Select" and "Edit" columns
                   if (isMobileView) {
                     return (
                       column.field !== 'select' &&
@@ -866,7 +865,7 @@ const TableSelection = () => {
                 hideFooter
               />
             )}
-            {articles.length > 0 && ( // Only render pagination if there are articles
+            {articles.length > 0 && (
               <Pagination
                 paginationModel={paginationModel}
                 currentPage={currentPage}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { BASE_URL, JOB_SERVER } from '../base'
+import { JOB_SERVER } from '../base'
 
 // ** Redux
 import { useSelector } from 'react-redux'
@@ -21,12 +21,15 @@ const useFetchNotifications = () => {
         if (notificationFlag || clientId) {
           setLoading(true)
 
+          const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
+
           const response = await axios.get(`${JOB_SERVER}/clientArchiveNotificationList`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
             params: {
               clientId: clientId,
+              userId: getUserName,
               days: 10
             }
           })
