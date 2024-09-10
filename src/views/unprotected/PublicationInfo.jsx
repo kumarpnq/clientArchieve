@@ -27,7 +27,7 @@ const PublicationInfo = ({ articles }) => {
 
   return (
     <Card sx={{ padding: '7px' }}>
-      <Paper elevation={0} sx={{ flexGrow: 1, textAlign: 'left', padding: '7px' }}>
+      <Paper elevation={0} sx={{ flexGrow: 1, textAlign: 'left', padding: '7px', bgcolor: 'primary.main' }}>
         <Grid container justifyContent='space-between' alignItems='center'>
           {/* Left side heading */}
           <Grid item>
@@ -35,14 +35,11 @@ const PublicationInfo = ({ articles }) => {
               variant='h7'
               color='primary'
               component='div'
+              width='100%'
               sx={{
-                whiteSpace: 'nowrap' /* Prevent text from wrapping */,
-                overflow: 'hidden' /* Hide overflow */
-                // animation: 'roll 10s linear infinite' /* Animation duration and timing */,
-                // '@keyframes roll': {
-                //   from: { transform: 'translateX(100%)' } /* Start from the right edge */,
-                //   to: { transform: 'translateX(-100%)' } /* Move to the left edge */
-                // }
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                color: 'text.primary'
               }}
             >
               {articles.headlines}
@@ -50,7 +47,7 @@ const PublicationInfo = ({ articles }) => {
           </Grid>
           {/* Right side date */}
           <Grid item>
-            <Typography variant='subtitle1' color='primary'>
+            <Typography variant='subtitle1' sx={{ color: 'text.primary' }}>
               {formattedDate}
             </Typography>
           </Grid>
