@@ -336,7 +336,6 @@ const TableSelection = () => {
   }, [shortCutFlags])
 
   useEffect(() => {
-    console.log('chekingmedi==>', selectedMedia)
     const fetchSocialFeeds = async () => {
       try {
         setLoading(true)
