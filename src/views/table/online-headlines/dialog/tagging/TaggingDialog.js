@@ -25,7 +25,7 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
   const clientId = selectedClient ? selectedClient.clientId : null
 
   const article = selectedArticles.map(({ socialFeedId, companies }) => ({
-    socialFeedId,
+    socialFeedId: Number(socialFeedId),
     companyIds: companies.map(company => company.id)
   }))
 

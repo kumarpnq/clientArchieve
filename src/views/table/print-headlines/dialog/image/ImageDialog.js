@@ -92,7 +92,7 @@ const ImageDialog = ({ open, handleClose, selectedArticles }) => {
         setLoading(false)
       })
     } catch (error) {
-      console.error('Error creating zip file:', error)
+      console.error('Error creating zip file:', error.message)
       setLoading(false)
     }
   }

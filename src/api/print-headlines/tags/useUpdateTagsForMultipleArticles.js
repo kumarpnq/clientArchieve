@@ -25,7 +25,9 @@ const useUpdateTagForMultipleArticles = props => {
         'Content-Type': 'application/json'
       }
 
-      const response = await axios.post(`${BASE_URL}/updateTagForMultipleArticles/`, requestData, { headers })
+      const response = await axios.post(`${BASE_URL}/updateTagForMultiplePrintAndOnlineArticles/`, requestData, {
+        headers
+      })
 
       setResponseData(response.data)
       setLoading(false)
