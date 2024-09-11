@@ -153,7 +153,7 @@ const TableSelection = () => {
 
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState([])
-  const [selectedMedia, setSelectedMedia] = useState('')
+  const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTags, setSelectedTags] = useState([])
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -380,7 +380,7 @@ const TableSelection = () => {
             recordsPerPage: recordsPerPage,
 
             geography: selectedCitiesString,
-            media: selectedMedia,
+            media: selectedMedia.join(','),
             tags: shortCutData?.searchCriteria?.tags || selectedTagString,
             language: selectedLanguagesString,
 
@@ -394,7 +394,8 @@ const TableSelection = () => {
 
             // sort by
             sortby: selectedSortBy,
-            editionType: edition,
+
+            // editionType: edition,
             publicationCategory: publicationtype
           }
 
