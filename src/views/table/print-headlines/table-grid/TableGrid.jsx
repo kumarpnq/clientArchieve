@@ -1,4 +1,4 @@
-import { Box, Checkbox, CircularProgress, Fab, Typography } from '@mui/material'
+import { Box, Checkbox, CircularProgress, Fab, ListItem, Tooltip, tooltipClasses, Typography } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useCallback, useEffect, useState } from 'react'
 import Pagination from '../Pagination'
@@ -6,26 +6,8 @@ import OptionsMenu from 'src/@core/components/option-menu'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
-
-const renderArticle = params => {
-  const { row } = params
-
-  const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
-
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      {/* <CustomTooltip title={getTooltipContent(row)} arrow> */}
-      <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
-        {row.headline}
-      </Typography>
-      {/* </CustomTooltip> */}
-      <Typography noWrap variant='caption'>
-        {row.publication}
-        <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
-      </Typography>
-    </Box>
-  )
-}
+import { List } from 'immutable'
+import styled from '@emotion/styled'
 
 const TableGrid = ({
   loading,
@@ -149,6 +131,72 @@ const TableGrid = ({
     //   )
     // }
   ]
+
+  const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+    ({ theme }) => ({
+      [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: theme.palette.background.default, // Use default background color for dark theme
+        color: theme.palette.text.primary, // Use primary text color for dark theme
+        boxShadow: theme.shadows[1],
+        fontSize: 11,
+        maxWidth: '300px', // Set the maximum width for better readability
+        '& .MuiTooltip-arrow': {
+          color: theme.palette.background.default // Use default background color for the arrow in dark theme
+        }
+      }
+    })
+  )
+
+  // const getTooltipContent = row => {
+  //   console.log(row)
+
+  //   const companies = Array.isArray(row.companies) ? row.companies : []
+
+  //   return (
+  //     <List>
+  //       <ListItem>
+  //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+  //           Summary :{' '}
+  //           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+  //             {row.summary}
+  //           </Typography>
+  //         </Typography>
+  //       </ListItem>
+
+  //       <ListItem>
+  //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+  //           Companies :{' '}
+  //           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+  //             {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
+  //           </Typography>
+  //         </Typography>
+  //       </ListItem>
+  //     </List>
+  //   )
+  // }
+
+  const renderArticle = params => {
+    const { row } = params
+
+    const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
+
+    return (
+      // <CustomTooltip title={} arrow>
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        {/* <CustomTooltip title={getTooltipContent(row)} arrow> */}
+        <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
+          {row.headline}
+        </Typography>
+        {/* </CustomTooltip> */}
+        <Typography noWrap variant='caption'>
+          {row.publication}
+          <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
+        </Typography>
+      </Box>
+
+      // </CustomTooltip>
+    )
+  }
 
   const customArticleHeader = [
     {

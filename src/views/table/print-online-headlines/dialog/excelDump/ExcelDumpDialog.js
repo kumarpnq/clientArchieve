@@ -331,7 +331,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='xs'>
+    <Dialog open={open} onClose={handleClose} maxWidth='sm'>
       <DialogTitle color='primary'>Excel Dump</DialogTitle>
       <DialogContent>
         <FormControlLabel

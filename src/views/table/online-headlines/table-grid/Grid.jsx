@@ -34,12 +34,6 @@ const Grid = props => {
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
 
-  const publications = [
-    { publicationName: 'The Hindu', publicationId: 'hindu' },
-    { publicationName: 'The Muslim', publicationId: 'muslim' },
-    { publicationName: 'The Christian', publicationId: 'christian' }
-  ]
-
   const socialFeedColumns = [
     {
       flex: 0.1,
