@@ -143,16 +143,15 @@ const ToolbarComponent = ({
     setSearchTermtags(event.target.value)
   }
 
-  const handleMediaSelect = (publicationId, itemIndex) => {
+  const handleMediaSelect = publicationId => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
+      const isAlreadySelected = prevSelected.includes(publicationId)
 
       if (isAlreadySelected) {
-        // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationId + itemIndex)
+        return prevSelected.filter(id => id !== publicationId)
       } else {
         // If not selected, add to the list
-        return [...prevSelected, publicationId + itemIndex]
+        return [...prevSelected, publicationId]
       }
     })
   }
@@ -391,9 +390,9 @@ const ToolbarComponent = ({
           {media.map((item, index) => (
             <div key={`${item.publicationId}-${index}`}>
               <MenuItem
-                onClick={() => handleMediaSelect(item.publicationId, index)}
+                onClick={() => handleMediaSelect(item.publicationId)}
                 selected={
-                  selectedMedia?.includes(item.publicationId + index) ||
+                  selectedMedia?.includes(item.publicationId) ||
                   shortCutData?.searchCriteria?.media?.includes(item.publicationId)
                 }
               >
