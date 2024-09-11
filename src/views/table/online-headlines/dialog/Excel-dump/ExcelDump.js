@@ -342,8 +342,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     handleClose()
     setSelectedFields([])
     setSelectAll(false)
-    if (responseData.message) {
-      responseData.message && toast.success(responseData.message)
+    if (responseData) {
+      toast.success(responseData.message || 'ExcelDump request recieved successully.')
     }
   }
 

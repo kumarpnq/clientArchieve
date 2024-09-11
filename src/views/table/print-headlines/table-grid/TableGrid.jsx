@@ -33,6 +33,7 @@ const TableGrid = ({
 }) => {
   const [tableSelect, setTableSelect] = useState({})
 
+  // console.log('checkingartcile=>', selectedArticles)
   useCallback(
     tableSelect => {
       const arr = []
@@ -287,6 +288,7 @@ const TableGrid = ({
                     disableColumnMenu
                     checkboxSelection
                     disableRowSelectionOnClick
+                    rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle.articleId)}
                   />
                 </Box>
               )}
@@ -304,6 +306,7 @@ const TableGrid = ({
                   hideFooter
                   checkboxSelection
                   disableRowSelectionOnClick
+                  rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle.articleId)}
                 />
               </Box>
             </Box>

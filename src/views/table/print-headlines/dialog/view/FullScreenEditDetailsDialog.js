@@ -13,7 +13,16 @@ import DatePickerWrapper from 'src/@core/styles/libs/react-datepicker'
 import StepperMain from '../editStep/StepperMain'
 import MultiViewNonProtected from 'src/pages/article-view'
 
-const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fetchTagsFlag, setFetchTagsFlag }) => {
+const FullScreenEditDetailsDialog = ({
+  open,
+  fetchTags,
+  handleClose,
+  imageSrc,
+  articles,
+  fetchTagsFlag,
+  setFetchTagsFlag,
+  setFetchTags
+}) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -45,6 +54,8 @@ const FullScreenEditDetailsDialog = ({ open, handleClose, imageSrc, articles, fe
                 fetchFlag={fetchTagsFlag}
                 setFetchFlag={setFetchTagsFlag}
                 handleClose={handleClose}
+                fetchTags={fetchTags}
+                setFetchTags={setFetchTags}
               />
             </DatePickerWrapper>
           </Grid>

@@ -445,7 +445,7 @@ const TableSelection = () => {
                 page: currentPage,
                 recordsPerPage: recordsPerPage,
 
-                // media: result,
+                media: result,
                 tags: selectedTagString,
                 geography: selectedCitiesString,
                 language: selectedLanguagesString,

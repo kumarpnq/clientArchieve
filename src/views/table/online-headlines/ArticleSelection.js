@@ -153,7 +153,9 @@ const TableSelection = () => {
 
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState([])
-  const [selectedMedia, setSelectedMedia] = useState('')
+  const [selectedMedia, setSelectedMedia] = useState([])
+
+  console.log('checking media==>', selectedMedia)
   const [selectedTags, setSelectedTags] = useState([])
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -173,9 +175,19 @@ const TableSelection = () => {
     return i.publicationTypeId
   })
 
+  const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+    const lastChar = item.slice(-1)
+    if (!isNaN(parseInt(lastChar))) {
+      return item.slice(0, -1)
+    }
+
+    return item
+  })
+  const result = selectedMediaWithoutLastDigit.join(', ')
+
   const dataForDump = [
     selectedGeography.length && { geography: selectedGeography },
-    selectedMedia.length && { media: selectedMedia },
+    selectedMedia.length && { media: result },
     selectedTags.length && { tags: selectedTags },
     selectedLanguage.length && {
       language: selectedLanguage.map(i => {
@@ -326,6 +338,7 @@ const TableSelection = () => {
   }, [shortCutFlags])
 
   useEffect(() => {
+    console.log('chekingmedi==>', selectedMedia)
     const fetchSocialFeeds = async () => {
       try {
         setLoading(true)
@@ -348,6 +361,17 @@ const TableSelection = () => {
           const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
           const selectedCompaniesString = selectedCompetitions.join(', ')
+
+          const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+            const lastChar = item.slice(-1)
+            if (!isNaN(parseInt(lastChar))) {
+              return item.slice(0, -1)
+            }
+
+            return item
+          })
+
+          const result = selectedMediaWithoutLastDigit.join(', ')
 
           const selectedTagString = selectedTags.join(', ')
           const selectedCitiesString = selectedGeography.join(', ')
@@ -380,7 +404,7 @@ const TableSelection = () => {
             recordsPerPage: recordsPerPage,
 
             geography: selectedCitiesString,
-            media: selectedMedia,
+            media: result,
             tags: shortCutData?.searchCriteria?.tags || selectedTagString,
             language: selectedLanguagesString,
 
@@ -521,7 +545,7 @@ const TableSelection = () => {
     // setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguage([])
-    setSelectedMedia('')
+    setSelectedMedia([])
     setSelectedTags([])
     setSearchParameters({
       searchHeadline: '',

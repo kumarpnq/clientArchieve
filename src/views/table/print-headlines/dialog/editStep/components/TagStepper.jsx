@@ -12,7 +12,7 @@ import useGetTagsForArticle from 'src/api/print-headlines/tags/useGetTagsForArti
 import toast from 'react-hot-toast'
 import CustomTextField from 'src/@core/components/mui/text-field'
 
-const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsFlag }) => {
+const TagStepper = ({ articles, handleClose, fetchTags, setFetchTags, token, fetchTagsFlag, setFetchTagsFlag }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const companyId = articles?.companies.map(i => i.id).join()
@@ -83,6 +83,7 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
 
       setValue(value + 1)
       handleClose()
+      setFetchTags(fetchTags + 1)
       if (errorMessage) {
         toast.error(errorMessage)
       } else {

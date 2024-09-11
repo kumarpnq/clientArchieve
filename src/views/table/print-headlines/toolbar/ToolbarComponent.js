@@ -28,7 +28,8 @@ const ToolbarComponent = ({
   setSelectedLanguages,
   tags,
   setTags,
-  fetchTagsFlag
+  fetchTagsFlag,
+  fetchTags
 }) => {
   const [geographyAnchor, setGeographyAnchor] = useState(null)
   const [languageAnchor, setLanguageAnchor] = useState(null)
@@ -236,7 +237,7 @@ const ToolbarComponent = ({
       }
     }
     fetchData()
-  }, [clientId, selectedClient, setTags, fetchTagsFlag, searchTermtags])
+  }, [clientId, selectedClient, setTags, fetchTagsFlag, searchTermtags, fetchTags])
 
   return (
     <AppBar sx={{ position: 'static' }}>

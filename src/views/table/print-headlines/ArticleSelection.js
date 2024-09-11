@@ -136,6 +136,8 @@ const TableSelection = () => {
   const [articleOptimizedObj, setArticleOptimizedObj] = useState({})
   const [articles, setArticles] = useState([])
 
+  const [fetchTags, setFetchTags] = useState(0)
+
   const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
 
   const handleJpgDialogClose = () => {
@@ -208,6 +210,8 @@ const TableSelection = () => {
     journalist: ''
   })
   const [selectedArticles, setSelectedArticles] = useState([])
+
+  // console.log('checkingpages==>', pageCheck, 'articleselect==>', selectedArticles, 'allcheck==>', selectedMedia)
 
   const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
     const lastChar = item.slice(-1)
@@ -483,6 +487,9 @@ const TableSelection = () => {
     } else {
       setPageCheck(event.target.checked)
       setSelectedArticles(event.target.checked ? [...articles] : [])
+      localStorage.setItem('selectedRows', JSON.stringify([]))
+      localStorage.setItem('rightSelectedRows', JSON.stringify([]))
+      localStorage.setItem('leftSelectedRows', JSON.stringify([]))
     }
   }
 
@@ -494,6 +501,9 @@ const TableSelection = () => {
     } else {
       setAllCheck(event.target.checked)
       setSelectedArticles(event.target.checked ? [...articles] : [])
+      localStorage.setItem('selectedRows', JSON.stringify([]))
+      localStorage.setItem('rightSelectedRows', JSON.stringify([]))
+      localStorage.setItem('leftSelectedRows', JSON.stringify([]))
     }
   }
 
@@ -569,6 +579,7 @@ const TableSelection = () => {
         tags={tags}
         setTags={setTags}
         fetchTagsFlag={fetchTagsFlag}
+        fetchTags={fetchTags}
       />{' '}
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
@@ -638,6 +649,8 @@ const TableSelection = () => {
         handleRecordsPerPageChange={handleRecordsPerPageChange}
         setPageCheck={setPageCheck}
         handleRowCheck={handleRowCheck}
+        fetchTags={fetchTags}
+        setFetchTags={setFetchTags}
       />
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
@@ -669,6 +682,8 @@ const TableSelection = () => {
         imageSrc={imageSrc}
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
+        fetchTags={fetchTags}
+        setFetchTags={setFetchTags}
       />
       <style css>{`
         .css-1p6gmy3-MuiDataGrid-root .MuiDataGrid-cell:not(.MuiDataGrid-cellCheckbox):first-of-type {

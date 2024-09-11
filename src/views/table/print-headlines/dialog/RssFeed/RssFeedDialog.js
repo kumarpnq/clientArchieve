@@ -51,7 +51,7 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
     const xmlContent = selectedArticles
       .filter(item => item !== undefined)
       .map((article, index) => {
-        console.log('checkingxml==>', article)
+        // console.log('checkingxml==>', article)
         // Remove unwanted elements from the article object
         const { articleId, clientId, ...filteredArticle } = article
 
