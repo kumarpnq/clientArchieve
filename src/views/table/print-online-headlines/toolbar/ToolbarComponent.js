@@ -195,7 +195,7 @@ const ToolbarComponent = ({
           setSelectedGeography(selectedCityIds)
         }
 
-        const mediaResponse = await axios.get(`${BASE_URL}`, {
+        const mediaResponse = await axios.get(`${BASE_URL}/printOnlineMediaList/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
@@ -408,7 +408,7 @@ const ToolbarComponent = ({
               <MenuItem
                 onClick={() => handleMediaSelect(item.publicationId, index)}
                 selected={
-                  selectedMedia?.includes(item.publicationId + index) ||
+                  selectedMedia?.includes(item.publicationId) ||
                   shortCutData?.searchCriteria?.media?.includes(item.publicationId)
                 }
               >

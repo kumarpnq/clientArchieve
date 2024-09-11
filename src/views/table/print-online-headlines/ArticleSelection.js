@@ -536,7 +536,7 @@ const TableSelection = () => {
 
             geography: selectedCitiesString,
             language: selectedLanguagesString,
-            media: selectedMedia,
+            media: selectedMedia.join(','),
             tags: shortCutData?.searchCriteria?.tags || selectedTagString
           }
 
