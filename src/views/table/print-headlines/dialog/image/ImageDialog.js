@@ -9,11 +9,9 @@ import axios from 'axios'
 import JSZip from 'jszip'
 import * as XLSX from 'xlsx'
 import CircularProgress from '@mui/material/CircularProgress'
+import { BASE_URL } from 'src/api/base'
 
 const ImageDialog = ({ open, handleClose, selectedArticles }) => {
-  const [imageSrc, setImageSrc] = useState('')
-  const [pdfSrc, setPdfSrc] = useState('')
-  const [loadingExcel, setLoadingExcel] = useState(false)
   const [loadingJPG, setLoadingJPG] = useState(false)
   const [loadingPDF, setLoadingPDF] = useState(false)
 
@@ -22,48 +20,37 @@ const ImageDialog = ({ open, handleClose, selectedArticles }) => {
       const storedToken = localStorage.getItem('accessToken')
 
       if (storedToken) {
-        const base_url = 'http://51.68.220.77:8001'
-
         const request_params = {
           articleId: articleId,
           fileType: fileType
         }
 
-        console.log(articleId)
-
-        const response = await axios.get(`${base_url}/readArticleFile/`, {
+        const response = await axios.get(`${BASE_URL}/readArticleFile/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
           },
           params: request_params,
-          responseType: 'json'
+          responseType: 'arraybuffer'
         })
 
-        if (response.data && response.data.fileContent) {
-          return response.data.fileContent // Return file content directly
-        } else {
-          console.log('Empty or invalid content in the response.')
-        }
+        return response.data
       }
     } catch (error) {
       console.error('Error fetching read Article File:', error)
     }
   }
 
-  // ... (previous code)
-
   const handleDownload = async (fileType, setLoading) => {
     setLoading(true)
     try {
       const zip = new JSZip()
 
-      // Add Excel file to zip only if fileType is 'jpg' or 'pdf'
       if (fileType === 'jpg' || fileType === 'pdf') {
         const dataToExport = selectedArticles.map(article => ({
           ArticleId: article.articleId,
           Publication: article.publication,
           ArticleDate: new Date(article.articleDate).toLocaleDateString('en-GB'),
-          Companies: article.companies.map(company => company.name).join(', '), // Concatenate company names
+          Companies: article.companies.map(company => company.name).join(', '),
           PageNumber: article.pageNumber,
           Language: article.language
         }))
@@ -105,33 +92,9 @@ const ImageDialog = ({ open, handleClose, selectedArticles }) => {
         setLoading(false)
       })
     } catch (error) {
-      console.error('Error creating zip file:', error)
+      console.error('Error creating zip file:', error.message)
       setLoading(false)
     }
-  }
-
-  // ... (rest of the code remains unchanged)
-
-  const handleDownloadExcel = () => {
-    // Extract only the desired fields from each article
-    const dataToExport = selectedArticles.map(article => ({
-      ArticleId: article.articleId,
-      Publication: article.publication,
-      ArticleDate: new Date(article.articleDate).toLocaleDateString('en-GB'),
-      Companies: article.companies.map(company => company.name).join(', '), // Concatenate company names
-      PageNumber: article.pageNumber,
-      Language: article.language
-    }))
-
-    // Create a new workbook
-    const wb = XLSX.utils.book_new()
-    const ws = XLSX.utils.json_to_sheet(dataToExport)
-
-    // Add the worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-
-    // Save the workbook as an Excel file
-    XLSX.writeFile(wb, 'articles.xlsx')
   }
 
   const handleDownloadJPG = () => {
@@ -154,9 +117,6 @@ const ImageDialog = ({ open, handleClose, selectedArticles }) => {
       </DialogTitle>
 
       <DialogActions>
-        {/* <Button color='primary' onClick={handleDownloadExcel} disabled={isDownloadDisabled}>
-          Download Excel
-        </Button> */}
         <Button color='primary' onClick={handleDownloadJPG} disabled={isDownloadDisabled || loadingJPG}>
           {loadingJPG ? <CircularProgress size={24} color='primary' /> : 'Download JPG'}
         </Button>

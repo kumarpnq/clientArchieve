@@ -154,8 +154,6 @@ const TableSelection = () => {
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
-
-  console.log('checking media==>', selectedMedia)
   const [selectedTags, setSelectedTags] = useState([])
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -418,7 +416,8 @@ const TableSelection = () => {
 
             // sort by
             sortby: selectedSortBy,
-            editionType: edition,
+
+            // editionType: edition,
             publicationCategory: publicationtype
           }
 
