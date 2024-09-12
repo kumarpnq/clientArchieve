@@ -71,7 +71,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
   const handleSendEmail = () => {
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
-    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'To' }))
+    const recipients = selectedEmails.map(email => ({ id: email, recipientType: emailType[email] || 'to' }))
 
     function convertPageOrAll(value) {
       if (typeof value === 'number') {
@@ -87,7 +87,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
     const page = dataForMailDump.length && dataForMailDump.map(i => i.page).join('')
 
     const articleIds =
-      dataForMailDump.length && dataForMailDump?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'online' })))
+      dataForMailDump.length && dataForMailDump?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'both' })))
 
     const recordsPerPage = dataForMailDump.length && dataForMailDump.map(i => i.recordsPerPage).join('')
 

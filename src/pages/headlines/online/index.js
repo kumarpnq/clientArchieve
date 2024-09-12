@@ -22,7 +22,7 @@ const DataGrid = () => {
           <Grid container alignItems='center' justifyContent='space-between'>
             <Grid item>
               <Typography variant='h4' sx={{ color: 'primary.main' }}>
-                Online Headlines
+                Online News
               </Typography>
             </Grid>
             <Grid item>

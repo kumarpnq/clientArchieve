@@ -51,7 +51,13 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
 
   // customs
-  const articleIds = dataForMail.length && dataForMail.map(i => i.articleId).flat()
+  const articleIdsPlain = dataForMail.length
+    ? dataForMail
+        .map(i => i.articleId)
+        .flat()
+        .filter(Boolean)
+    : []
+
   const pageLimit = dataForMail.length && dataForMail.map(i => i.pageLimit).join('')
   const { mailList } = useClientMailerList()
   const { response, error, sendMailRequest } = useMailRequest('online')
@@ -82,7 +88,7 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
 
-    const recipients = selectedEmails.map(email => ({ email, sendType: emailType[email] || 'to' }))
+    const recipients = selectedEmails.map(email => ({ id: email, recipientType: emailType[email] || 'to' }))
 
     function convertPageOrAll(value) {
       if (typeof value === 'number') {
@@ -96,8 +102,7 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
     const requestEntity = 'online'
     const page = dataForMail.length && dataForMail.map(i => i.page).join('')
 
-    const articleIds =
-      dataForMail.length && dataForMail?.flatMap(i => i?.socialFeedId?.map(id => ({ id, type: 'online' })))
+    const articleIds = articleIdsPlain.map(id => ({ id: Number(id), type: 'o' }))
     const recordsPerPage = dataForMail.length && dataForMail.map(i => i.recordsPerPage).join('')
 
     const media =
@@ -396,9 +401,9 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
               onChange={e => handleEmailTypeChange(e, email)}
               style={{ marginLeft: '10px' }}
             >
-              <FormControlLabel value='To' control={<Radio />} label='To' />
-              <FormControlLabel value='Cc' control={<Radio />} label='Cc' />
-              <FormControlLabel value='Bcc' control={<Radio />} label='Bcc' />
+              <FormControlLabel value='to' control={<Radio />} label='To' />
+              <FormControlLabel value='cc' control={<Radio />} label='Cc' />
+              <FormControlLabel value='bcc' control={<Radio />} label='Bcc' />
             </RadioGroup>
           </div>
         ))}
