@@ -77,7 +77,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
   }, [selectAll, fields])
 
   const handleCheckboxChange = fieldId => {
-    // Toggle individual checkbox
     setSelectedFields(prevSelectedFields =>
       prevSelectedFields.includes(fieldId)
         ? prevSelectedFields.filter(field => field !== fieldId)
@@ -107,9 +106,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
 
     const page = dataForExcelDump.length && dataForExcelDump.map(i => i.page).join('')
 
-    const articleIds = dataForExcelDump
-      .map(i => i?.articleId) // Map to get the articleId (it can return undefined if not present)
-      .filter(id => id !== undefined)
+    const articleIds = dataForExcelDump.map(i => i?.articleId).filter(id => id !== undefined)
 
     const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
 
@@ -318,7 +315,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
       postDataParams.searchCriteria = searchCriteria
     } else {
       const flattenIds = articleIds.flatMap(i => i)
-      const articleIdsWithType = flattenIds.map(i => ({ id: i, type: 'o' }))
+      const articleIdsWithType = flattenIds.map(i => ({ id: Number(i), type: 'o' }))
 
       postDataParams.articleIdsWithType = articleIdsWithType
     }
