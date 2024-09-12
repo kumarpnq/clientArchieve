@@ -16,10 +16,10 @@ import DialogContentText from '@mui/material/DialogContentText'
 // ** Redux
 import { useSelector } from 'react-redux' // Import useSelector from react-redux
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
-import useUpdateTagForMultipleArticles from 'src/api/print-headlines/tags/useUpdateTagsForMultipleArticles'
 
 // ** third party imports
 import toast from 'react-hot-toast'
+import useUpdateTagForMultipleOnlineArticles from 'src/api/print-online-headlines/tags/useUpdateTagForMultiplePOHArticles'
 
 const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, setFetchTagsFlag }) => {
   const [tag, setTag] = useState('')
@@ -33,7 +33,7 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
     companyIds: companies.map(company => company.id)
   }))
 
-  const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleArticles({
+  const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleOnlineArticles({
     clientId: clientId,
     article: article,
     tag: tag || selectedTag
