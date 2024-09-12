@@ -41,7 +41,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
-  const articleIds = dataForExcelDump.length > 0 && dataForExcelDump.flatMap(item => item.articleId)
 
   useEffect(() => {
     const fetchFieldList = async () => {
@@ -100,7 +99,10 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     const requestEntity = 'both'
     const page = dataForExcelDump.length && dataForExcelDump.map(i => i.page).join('')
 
-    const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
+    const articleIds = dataForExcelDump
+      .filter(item => item.articleId)
+      .flatMap(item => item.articleId)
+      .filter(article => article.articleId)
     const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
 
     const media =
@@ -301,7 +303,10 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     if (pageCheck === true || allCheck === true) {
       postDataParams.searchCriteria = searchCriteria
     } else {
-      const articleIdsWithType = articleIds.map(i => ({ id: i, type: 'po' }))
+      const articleIdsWithType = articleIds.map(i => ({
+        id: Number(i?.articleId),
+        type: i?.articleType === 'online' ? 'o' : 'p'
+      }))
       postDataParams.articleIdsWithType = articleIdsWithType
     }
 

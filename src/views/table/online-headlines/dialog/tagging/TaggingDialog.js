@@ -14,7 +14,7 @@ import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import useUpdateTagForMultipleOnlineArticles from 'src/api/online-headline/tag/useUpdateTagForMultipleOnlineArticle'
 
