@@ -14,7 +14,6 @@ import Button from '@mui/material/Button'
 import { FormControlLabel, FormGroup } from '@mui/material'
 
 // ** MUI icons
-import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
 
 //api call
@@ -159,10 +158,6 @@ const TableSelection = () => {
     setEditDetailsDialogOpen(false)
     setImageSrc('')
   }
-
-  const isNotResponsive = useMediaQuery('(min-width: 1000px )')
-  const isMobileView = useMediaQuery('(max-width: 530px)')
-  const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
 
   // ** State
 
@@ -630,8 +625,6 @@ const TableSelection = () => {
       {/* DataGrid */}
       <TableGrid
         loading={loading}
-        isNotResponsive={isNotResponsive}
-        isMobileView={isMobileView}
         articles={articles}
         selectedArticles={selectedArticles}
         setSelectedArticles={setSelectedArticles}

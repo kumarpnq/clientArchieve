@@ -1,4 +1,15 @@
-import { Box, Checkbox, CircularProgress, Fab, ListItem, Tooltip, tooltipClasses, Typography } from '@mui/material'
+import {
+  Box,
+  Checkbox,
+  CircularProgress,
+  Fab,
+  List,
+  ListItem,
+  Tooltip,
+  tooltipClasses,
+  Typography,
+  useMediaQuery
+} from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import React, { useCallback, useEffect, useState } from 'react'
 import Pagination from '../Pagination'
@@ -6,13 +17,10 @@ import OptionsMenu from 'src/@core/components/option-menu'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
-import { List } from 'immutable'
 import styled from '@emotion/styled'
 
 const TableGrid = ({
   loading,
-  isNotResponsive,
-  isMobileView,
   articles,
 
   selectedArticles,
@@ -32,8 +40,9 @@ const TableGrid = ({
   // setPageCheck
 }) => {
   const [tableSelect, setTableSelect] = useState({})
+  const isNotResponsive = useMediaQuery('(min-width: 1000px )')
+  const isMobileView = useMediaQuery('(max-width: 530px)')
 
-  // console.log('checkingartcile=>', selectedArticles)
   useCallback(
     tableSelect => {
       const arr = []
@@ -148,33 +157,33 @@ const TableGrid = ({
     })
   )
 
-  // const getTooltipContent = row => {
-  //   console.log(row)
+  const getTooltipContent = row => {
+    console.log(row)
 
-  //   const companies = Array.isArray(row.companies) ? row.companies : []
+    const companies = Array.isArray(row.companies) ? row.companies : []
 
-  //   return (
-  //     <List>
-  //       <ListItem>
-  //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-  //           Summary :{' '}
-  //           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-  //             {row.summary}
-  //           </Typography>
-  //         </Typography>
-  //       </ListItem>
+    return (
+      <List>
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Summary :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+              {row.summary}
+            </Typography>
+          </Typography>
+        </ListItem>
 
-  //       <ListItem>
-  //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-  //           Companies :{' '}
-  //           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-  //             {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
-  //           </Typography>
-  //         </Typography>
-  //       </ListItem>
-  //     </List>
-  //   )
-  // }
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Companies :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+              {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
+            </Typography>
+          </Typography>
+        </ListItem>
+      </List>
+    )
+  }
 
   const renderArticle = params => {
     const { row } = params
@@ -182,20 +191,19 @@ const TableGrid = ({
     const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
 
     return (
-      // <CustomTooltip title={} arrow>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        {/* <CustomTooltip title={getTooltipContent(row)} arrow> */}
-        <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
-          {row.headline}
-        </Typography>
-        {/* </CustomTooltip> */}
-        <Typography noWrap variant='caption'>
-          {row.publication}
-          <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
-        </Typography>
-      </Box>
-
-      // </CustomTooltip>
+      <CustomTooltip title={getTooltipContent(row)} arrow>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          {/* <CustomTooltip title={getTooltipContent(row)} arrow> */}
+          <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
+            {row.headline}
+          </Typography>
+          {/* </CustomTooltip> */}
+          <Typography noWrap variant='caption'>
+            {row.publication}
+            <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
+          </Typography>
+        </Box>
+      </CustomTooltip>
     )
   }
 
@@ -222,14 +230,14 @@ const TableGrid = ({
       }
     },
     {
-      width: 450,
+      width: 370,
       editable: false,
       field: 'article',
       headerName: 'Article',
       renderCell: renderArticle
     },
     {
-      width: 70,
+      width: 100,
       editable: false,
       field: 'more',
 
@@ -275,7 +283,7 @@ const TableGrid = ({
             <Box display='flex'>
               {/* left column */}
               {isMobileView ? null : (
-                <Box flex='1' p={2} pr={1}>
+                <Box flex={1} p={2} pr={1}>
                   <DataGrid
                     autoHeight
                     rows={articles.slice(0, articles.length / 2)}
