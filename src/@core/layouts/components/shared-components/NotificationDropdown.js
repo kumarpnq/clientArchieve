@@ -144,7 +144,8 @@ const NotificationDropdown = () => {
     if (error) {
       toast.error('something wrong.')
     } else {
-      toast.success(data?.message || 'Successfully read.')
+      // toast.success(data?.message || 'Successfully read.')
+      console.log('Success')
     }
   }
 
@@ -154,7 +155,8 @@ const NotificationDropdown = () => {
     if (error) {
       toast.error('something wrong.')
     } else {
-      toast.success(data?.message || 'Successfully read.')
+      // toast.success(data?.message || 'Successfully read.')
+      console.log('Success')
     }
   }
 
