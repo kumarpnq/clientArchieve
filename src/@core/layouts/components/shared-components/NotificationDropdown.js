@@ -376,44 +376,87 @@ const NotificationDropdown = () => {
             )}
 
             {clientData?.mail.length > 0 && (
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography variant='h5'>Mail</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {clientData &&
-                    clientData.mail.map((job, index) => (
-                      <MenuItem
-                        key={index}
-                        disableRipple
-                        disableTouchRipple
-                        sx={{
-                          cursor: 'default',
-                          userSelect: 'auto',
-                          backgroundColor: 'transparent !important'
-                        }}
-                      >
-                        <Accordion style={{ width: '100%' }}>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Box
-                              component='span'
-                              bgcolor={job.jobStatus === 'Processing' ? yellow : green}
-                              color='text.primary'
-                              borderRadius='2px'
+              <Box sx={{ maxWidth: '400px', pr: 12 }}>
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant='subtitle2'>Mail</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails
+                    sx={{
+                      maxHeight: '300px',
+                      overflowY: 'scroll', // Keep vertical scrollbar
+                      overflowX: 'hidden', // Hide horizontal scrollbar
+                      maxWidth: '400px',
+
+                      // Hide horizontal scrollbar styling for WebKit browsers
+                      '&::-webkit-scrollbar': {
+                        display: 'none'
+                      },
+                      msOverflowStyle: 'none' /* IE and Edge */,
+                      scrollbarWidth: 'none' /* Firefox */
+                    }}
+                  >
+                    {clientData &&
+                      clientData.mail.map((job, index) => (
+                        <MenuItem
+                          key={index}
+                          disableRipple
+                          disableTouchRipple
+                          sx={{
+                            cursor: 'default',
+                            userSelect: 'auto',
+                            backgroundColor: 'transparent !important'
+                          }}
+                        >
+                          <Accordion sx={{ maxWidth: '300px' }}>
+                            <AccordionSummary
+                              content='test'
+                              expandIcon={<ExpandMoreIcon />}
+                              onClick={() => {
+                                handleNotificationDetails(job.jobId, job.readJobStatus)
+                              }}
                             >
-                              {job.jobName}
-                            </Box>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <Typography key={job.jobId}>{job.jobName}</Typography>
-                            <Typography>Status: {job.jobStatus}</Typography>
-                            <Typography>Download Link: {job.downloadLink}</Typography>
-                          </AccordionDetails>
-                        </Accordion>
-                      </MenuItem>
-                    ))}
-                </AccordionDetails>
-              </Accordion>
+                              <Container
+                                component={'span'}
+                                fontSize={'0.9em'}
+                                sx={{
+                                  bgcolor:
+                                    job.jobStatus === 'Processing'
+                                      ? yellow
+                                      : job.jobStatus === 'Completed'
+                                      ? green
+                                      : red,
+                                  color: 'text.primary',
+                                  borderRadius: '2px',
+                                  fontSize: '0.9em',
+                                  fontWeight: 100,
+                                  display: 'flex',
+                                  alignItems: 'center'
+                                }}
+                              >
+                                {job.readJobStatus && (
+                                  <CustomTooltip title='Allready read'>
+                                    <CheckIcon fontSize='small' />
+                                  </CustomTooltip>
+                                )}
+
+                                {job.jobName.substring(0, 30) + '...'}
+                              </Container>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <CustomTooltip title={job.jobName}>
+                                <Typography key={job.jobId} fontSize={'0.9em'}>
+                                  {job.jobName.substring(0, 30) + '...'}
+                                </Typography>
+                              </CustomTooltip>
+                              <Typography fontSize={'0.9em'}>Status: {job.jobStatus}</Typography>
+                            </AccordionDetails>
+                          </Accordion>
+                        </MenuItem>
+                      ))}
+                  </AccordionDetails>
+                </Accordion>
+              </Box>
             )}
           </>
         </MenuItem>
