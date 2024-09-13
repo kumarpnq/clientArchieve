@@ -795,20 +795,32 @@ const TableSelection = () => {
         allCheck={allCheck}
       />
       {/* multiple selection */}
-      {articles.length > 0 && (
-        <Box pl={3}>
-          <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
-            <FormControlLabel
-              control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
-              label='Page'
-            />
-            <FormControlLabel
-              control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
-              label='All Articles'
-            />
-          </FormGroup>
-        </Box>
-      )}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {articles.length > 0 && (
+          <Pagination
+            paginationModel={paginationModel}
+            currentPage={currentPage}
+            recordsPerPage={recordsPerPage}
+            handleLeftPagination={handleLeftPagination}
+            handleRightPagination={handleRightPagination}
+            handleRecordsPerPageUpdate={handleRecordsPerPageChange}
+          />
+        )}
+        {articles.length > 0 && (
+          <Box>
+            <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+              <FormControlLabel
+                control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+                label='Page'
+              />
+              <FormControlLabel
+                control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+                label='All Articles'
+              />
+            </FormGroup>
+          </Box>
+        )}
+      </Box>
       {/* DataGrid */}
       <Box p={2}>
         {loading ? (
@@ -867,7 +879,7 @@ const TableSelection = () => {
                 hideFooter
               />
             )}
-            {articles.length > 0 && (
+            {/* {articles.length > 0 && (
               <Pagination
                 paginationModel={paginationModel}
                 currentPage={currentPage}
@@ -876,7 +888,7 @@ const TableSelection = () => {
                 handleRightPagination={handleRightPagination}
                 handleRecordsPerPageUpdate={handleRecordsPerPageChange}
               />
-            )}
+            )} */}
           </>
         )}
       </Box>

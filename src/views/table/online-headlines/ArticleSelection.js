@@ -579,6 +579,20 @@ const TableSelection = () => {
     }
   }
 
+  const SelectAllModel = () => {
+    return (
+      <Box>
+        <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+          <FormControlLabel control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />} label='Page' />
+          <FormControlLabel
+            control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+            label='All Articles'
+          />
+        </FormGroup>
+      </Box>
+    )
+  }
+
   return (
     <Card>
       <CardHeader
@@ -629,6 +643,7 @@ const TableSelection = () => {
         allCheck={allCheck}
       />
       {/* multiple selection */}
+
       {socialFeeds.length > 0 && (
         <Box pl={3}>
           <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
@@ -666,6 +681,7 @@ const TableSelection = () => {
         handleRightPagination={handleRightPagination}
         handleRecordsPerPageChange={handleRecordsPerPageChange}
         handleRowClick={handleRowClick}
+        Multi
       />
 
       <EditDialog

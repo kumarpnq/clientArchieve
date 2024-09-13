@@ -217,8 +217,8 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
     const searchCriteria = {
       selectPageOrAll,
       requestEntity,
-      ...(selectPageOrAll !== 'A' && { page }),
-      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
+      ...(selectPageOrAll !== 'A' && { page: Number(page) }),
+      ...(selectPageOrAll !== 'A' && { recordsPerPage: Number(recordsPerPage) }),
       clientIds: clientId
     }
 

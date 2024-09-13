@@ -240,8 +240,8 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
       fromDate: formattedFromDate,
       toDate: formattedToDate,
       selectPageOrAll,
-      ...(selectPageOrAll !== 'A' && { page }),
-      ...(selectPageOrAll !== 'A' && { recordsPerPage }),
+      ...(selectPageOrAll !== 'A' && { page: Number(page) }),
+      ...(selectPageOrAll !== 'A' && { recordsPerPage: Number(recordsPerPage) }),
       requestEntity,
       clientIds: clientId
     }
