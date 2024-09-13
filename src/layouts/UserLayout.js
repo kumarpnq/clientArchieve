@@ -107,19 +107,19 @@ const UserLayout = ({ children, contentHeightFixed }) => {
         ].filter(item => item)
       },
       screenPermissions.onlineHeadlines && {
-        title: 'Online Headlines',
+        title: 'Online News',
         icon: 'fluent-mdl2:news-search',
         path: '/headlines/online',
         hidden: !screenPermissions.onlineHeadlines
       },
       screenPermissions.onlineHeadlines && {
-        title: 'Print Headlines',
+        title: 'Print News',
         icon: 'emojione-monotone:newspaper',
         path: '/headlines/print',
         hidden: !screenPermissions.printHeadlines
       },
       screenPermissions.bothHeadlines && {
-        title: 'Print & Online Headlines',
+        title: 'Print & Online News',
         icon: 'material-symbols:article-shortcut-outline-rounded',
         path: '/headlines/print-online',
         hidden: !screenPermissions.bothHeadlines
