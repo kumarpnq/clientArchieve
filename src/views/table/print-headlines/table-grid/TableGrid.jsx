@@ -43,7 +43,6 @@ const TableGrid = ({
   const [tableSelect, setTableSelect] = useState({})
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
-  const selectedArticlesToSelectionModal = selectedArticles || []
 
   useCallback(
     tableSelect => {
@@ -304,9 +303,7 @@ const TableGrid = ({
                     disableColumnMenu
                     checkboxSelection
                     disableRowSelectionOnClick
-                    rowSelectionModel={selectedArticlesToSelectionModal.map(
-                      selectedArticle => selectedArticle.articleId
-                    )}
+                    rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle?.articleId)}
                   />
                 </Box>
               )}
@@ -324,7 +321,7 @@ const TableGrid = ({
                   hideFooter
                   checkboxSelection
                   disableRowSelectionOnClick
-                  rowSelectionModel={selectedArticlesToSelectionModal.map(selectedArticle => selectedArticle.articleId)}
+                  rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle?.articleId)}
                 />
               </Box>
             </Box>
