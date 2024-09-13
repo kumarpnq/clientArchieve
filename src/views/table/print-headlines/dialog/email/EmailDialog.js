@@ -75,7 +75,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   }
 
   const handleSendEmail = () => {
-    setFetchEmailFlag(!fetchEmailFlag)
+    // setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
     const recipients = selectedEmails.map(id => ({ id, recipientType: emailType[id] || 'to' }))
 

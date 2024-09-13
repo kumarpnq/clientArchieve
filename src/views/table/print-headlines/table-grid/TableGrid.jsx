@@ -43,6 +43,7 @@ const TableGrid = ({
   const [tableSelect, setTableSelect] = useState({})
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
+  const selectedArticlesToSelectionModal = selectedArticles || []
 
   useCallback(
     tableSelect => {
@@ -159,8 +160,6 @@ const TableGrid = ({
   )
 
   const getTooltipContent = row => {
-    console.log(row)
-
     const companies = Array.isArray(row.companies) ? row.companies : []
 
     return (
@@ -305,7 +304,9 @@ const TableGrid = ({
                     disableColumnMenu
                     checkboxSelection
                     disableRowSelectionOnClick
-                    rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle.articleId)}
+                    rowSelectionModel={selectedArticlesToSelectionModal.map(
+                      selectedArticle => selectedArticle.articleId
+                    )}
                   />
                 </Box>
               )}
@@ -323,7 +324,7 @@ const TableGrid = ({
                   hideFooter
                   checkboxSelection
                   disableRowSelectionOnClick
-                  rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle.articleId)}
+                  rowSelectionModel={selectedArticlesToSelectionModal.map(selectedArticle => selectedArticle.articleId)}
                 />
               </Box>
             </Box>
