@@ -18,6 +18,7 @@ import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
 import styled from '@emotion/styled'
+import pdfDownload from '../pdf/pdfdownload'
 
 const TableGrid = ({
   loading,
@@ -194,7 +195,15 @@ const TableGrid = ({
       <CustomTooltip title={getTooltipContent(row)} arrow>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           {/* <CustomTooltip title={getTooltipContent(row)} arrow> */}
-          <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
+          <Typography
+            noWrap
+            variant='body2'
+            sx={{ color: 'text.primary', fontWeight: 600 }}
+            onClick={() => {
+              const url = `/PDFView?articleId=${row?.articleId}`
+              window.open(url, '_blank')
+            }}
+          >
             {row.headline}
           </Typography>
           {/* </CustomTooltip> */}

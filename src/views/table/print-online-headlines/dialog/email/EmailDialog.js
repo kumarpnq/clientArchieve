@@ -46,7 +46,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
 
   const { mailList } = useClientMailerList(fetchEmailFlag)
-  const { response, error, sendMailRequest } = useMailRequest()
+  const { response, error, sendMailRequest } = useMailRequest('both')
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -87,7 +87,10 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
     const page = dataForMailDump.length && dataForMailDump.map(i => i.page).join('')
 
     const articleIds =
-      dataForMailDump.length && dataForMailDump?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'both' })))
+      dataForMailDump.length &&
+      dataForMailDump?.flatMap(i =>
+        i?.articleId?.map(id => ({ id: Number(id.articleId), type: id.articleType === 'print' ? 'p' : 'o' }))
+      )
 
     const recordsPerPage = dataForMailDump.length && dataForMailDump.map(i => i.recordsPerPage).join('')
 
@@ -311,11 +314,8 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
-    if (error) {
-      toast.error('something wrong.')
-    } else {
-      toast.success(response?.message || 'success')
-    }
+
+    toast.success(response?.message || 'success')
   }
 
   const handleAllDropdownChange = value => {

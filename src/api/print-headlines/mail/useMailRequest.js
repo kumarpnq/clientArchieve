@@ -25,8 +25,6 @@ const useMailRequest = requestEntity => {
         searchCriteria
       }
 
-      console.log(requestData)
-
       const axiosConfig = {
         headers
       }

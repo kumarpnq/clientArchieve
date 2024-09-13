@@ -107,7 +107,7 @@ const TableSelection = () => {
   const renderArticle = params => {
     const { row } = params
 
-    const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
+    const formattedDate = dayjs(row.articleDate || row.feedDate).format('DD-MM-YYYY')
 
     const getTooltipContent = row => (
       <List>
@@ -156,7 +156,7 @@ const TableSelection = () => {
             {row.headline}
           </Typography>
           <Typography noWrap variant='caption'>
-            {row.publisher}
+            {row.publisher || row.publication}
             <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
           </Typography>
         </Box>
