@@ -18,7 +18,6 @@ import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
 import styled from '@emotion/styled'
-import pdfDownload from '../pdf/pdfdownload'
 
 const TableGrid = ({
   loading,
@@ -53,106 +52,16 @@ const TableGrid = ({
     [tableSelect]
   )
 
-  const articleColumns = [
-    // {
-    //   flex: 0.1,
-    //   minWidth: 5,
-    //   headerName: 'Select',
-    //   field: 'select',
-    //   renderCell: params => (
-    //     // <MemoizedCheckbox
-    //     //   onClick={e => {
-    //     //     e.stopPropagation()
-    //     //     handleSelect(params.row)
-    //     //   }}
-    //     //   checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
-    //     // />
-    //     <Checkbox
-    //       onClick={e => {
-    //         // e.stopPropagation()
-    //         if (tableSelect[params.row.articleId]?.checkedState) {
-    //           setTableSelect({ ...tableSelect, [params.row.articleId]: { checkedState: false, ...params } })
-    //         } else {
-    //           setTableSelect(prev => {
-    //             return delete prev[params.row.articleId];
-    //           })
-    //         }
-    //       }}
-    //       checked={tableSelect[params.row.articleId]?.checkedState}
-    //     />
-    //   )
-    // },
-    // {
-    //   flex: 0.1,
-    //   minWidth: 5,
-    //   headerName: 'Grp',
-    //   field: 'Grp',
-    //   renderCell: params => {
-    //     const publications = params.row.children || []
-    //     return (
-    //       <SelectBox
-    //         icon={<Icon icon='ion:add' />}
-    //         iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
-    //         renderItem='publicationName'
-    //         renderKey='articleId'
-    //         menuItems={publications}
-    //         selectedItems={selectedArticles}
-    //         setSelectedItems={setSelectedArticles}
-    //       />
-    //     )
-    //   }
-    // },
-    // {
-    //   flex: 0.6,
-    //   minWidth: 240,
-    //   field: 'article',
-    //   headerName: 'Article',
-    //   renderCell: renderArticle
-    // },
-    // {
-    //   flex: 0.1,
-    //   minWidth: 5,
-    //   field: 'more',
-    //   headerName: 'More',
-    //   renderCell: params => (
-    //     <OptionsMenu
-    //       iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-    //       options={[
-    //         {
-    //           text: 'View Article',
-    //           menuItemProps: {
-    //             onClick: () => {
-    //               const articleCode = params.row.link
-    //               window.open(`/article-view?articleCode=${articleCode}`, '_blank')
-    //             }
-    //           }
-    //         },
-    //         {
-    //           text: 'Edit Detail',
-    //           menuItemProps: {
-    //             onClick: () => {
-    //               fetchReadArticleFile('jpg', params.row)
-    //               setEditDetailsDialogOpen(true)
-    //               setSelectedArticle(params.row)
-    //             }
-    //           }
-    //         }
-    //       ]}
-    //     />
-    //   )
-    // }
-  ]
-
   const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
     ({ theme }) => ({
       [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: theme.palette.background.default, // Use default background color for dark theme
-        color: theme.palette.text.primary, // Use primary text color for dark theme
+        backgroundColor: theme.palette.background.default,
+        color: theme.palette.text.primary,
         boxShadow: theme.shadows[1],
         fontSize: 11,
-        maxWidth: '300px', // Set the maximum width for better readability
+        maxWidth: '300px',
         '& .MuiTooltip-arrow': {
-          color: theme.palette.background.default // Use default background color for the arrow in dark theme
+          color: theme.palette.background.default
         }
       }
     })
@@ -198,7 +107,8 @@ const TableGrid = ({
             variant='body2'
             sx={{ color: 'text.primary', fontWeight: 600 }}
             onClick={() => {
-              const url = `/PDFView?articleId=${row?.articleId}`
+              const articleCode = params.row?.link
+              const url = `/PDFView?articleId=${articleCode}`
               window.open(url, '_blank')
             }}
           >
