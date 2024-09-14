@@ -11,9 +11,6 @@ const useAutoNotification = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const fetchAutoStatusFlag = useSelector(selectFetchAutoStatusFlag)
   const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
-  const [fetchFlag, setFetchFlag] = useState(fetchAutoStatusFlag)
-
-  console.log(fetchFlag)
 
   const clientId = selectedClient ? selectedClient.clientId : null
   const dispatch = useDispatch()
@@ -110,7 +107,7 @@ const useAutoNotification = () => {
 
     const intervalId = setInterval(() => {
       fetchData()
-    }, 30000)
+    }, 10000)
 
     return () => {
       clearInterval(intervalId)
