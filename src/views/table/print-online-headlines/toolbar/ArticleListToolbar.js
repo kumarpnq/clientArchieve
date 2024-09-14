@@ -506,17 +506,23 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       <Menu anchorEl={isSortByMenuOpen} open={Boolean(isSortByMenuOpen)} onClose={handleSortByClose}>
-        <MenuItem onClick={() => handleSortByArticleDate('articleDate')} selected={selectedSortBy === 'articleDate'}>
-          Sort by Article Date
-        </MenuItem>
-        <MenuItem onClick={() => handleSortByArticleReach('articleReach')} selected={selectedSortBy === 'articleReach'}>
-          Sort by Article Reach
-        </MenuItem>
         <MenuItem
-          onClick={() => handleSortByEngagement('articleEngagement')}
-          selected={selectedSortBy === 'articleEngagement'}
+          onClick={() => {
+            setSelectedSortBy(null)
+            handleSortByClose()
+          }}
+          selected={!selectedSortBy}
         >
-          Sort by Engagement
+          All
+        </MenuItem>
+        <MenuItem onClick={() => handleSortByArticleDate('print')} selected={selectedSortBy === 'print'}>
+          Sort by Print
+        </MenuItem>
+        <MenuItem onClick={() => handleSortByArticleReach('online')} selected={selectedSortBy === 'online'}>
+          Sort by Online
+        </MenuItem>
+        <MenuItem onClick={() => handleSortByEngagement('magazine')} selected={selectedSortBy === 'magazine'}>
+          Sort by Magazine
         </MenuItem>
       </Menu>
 
