@@ -314,7 +314,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
     if (error) {
       toast.error('something wrong.')
     } else {
-      toast.success(response?.message || 'success')
+      toast.success(response?.message || 'Email field updated.')
     }
   }
 

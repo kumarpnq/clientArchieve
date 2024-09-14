@@ -315,7 +315,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
 
-    toast.success(response?.message || 'success')
+    toast.success(response?.message || 'Email field updated.')
   }
 
   const handleAllDropdownChange = value => {
