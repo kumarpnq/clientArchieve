@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { selectFetchAutoStatusFlag, selectSelectedClient, setFetchAutoStatusFlag } from 'src/store/apps/user/userSlice'
 import toast from 'react-hot-toast'
 import { JOB_SERVER } from '../base'
-import { Snackbar, Alert, IconButton } from '@mui/material'
+import { IconButton } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 
 const useAutoNotification = () => {
