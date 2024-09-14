@@ -19,7 +19,12 @@ const useAutoNotification = () => {
     dispatch(setFetchAutoStatusFlag(true))
 
     try {
+      const storedToken = localStorage.getItem('accessToken')
+
       const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`
+        },
         params: {
           clientId: clientId,
           userId: getUserName
@@ -41,7 +46,7 @@ const useAutoNotification = () => {
               </a>
             </div>,
 
-            { duration: 10000 }
+            { duration: 10000, closeButton: true }
           )
         })
 
@@ -53,12 +58,13 @@ const useAutoNotification = () => {
       }
     } catch (error) {
       console.error('Error fetching auto notification status:', error)
+      dispatch(setFetchAutoStatusFlag(false))
     }
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      if (storedToken && clientId) {
+      if (storedToken && clientId && fetchAutoStatusFlag) {
         await fetchAutoNotificationStatus()
       }
     }
@@ -72,7 +78,7 @@ const useAutoNotification = () => {
     return () => {
       clearInterval(intervalId)
     }
-  }, [clientId, storedToken])
+  }, [clientId, storedToken, fetchAutoStatusFlag])
 }
 
 export default useAutoNotification

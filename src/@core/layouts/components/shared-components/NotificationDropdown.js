@@ -26,7 +26,6 @@ import useUpdateClientNotification from 'src/api/notifications/useUpdateReadClie
 import { selectNotificationFlag, selectSelectedClient, setNotificationFlag } from 'src/store/apps/user/userSlice'
 import useAutoNotification from 'src/api/notifications/useAutoNotificationStatus'
 import axios from 'axios'
-import { BASE_URL } from 'src/api/base'
 import { Box } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import CheckIcon from '@mui/icons-material/Check'
