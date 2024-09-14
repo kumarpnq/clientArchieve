@@ -28,7 +28,8 @@ const Grid = props => {
     handleLeftPagination,
     handleRightPagination,
     handleRecordsPerPageChange,
-    handleRowClick
+    handleRowClick,
+    SelectAllModal
   } = props
   const isNotResponsive = useMediaQuery('(min-width: 1100px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
@@ -113,60 +114,9 @@ const Grid = props => {
   ]
 
   return (
-    <Box p={2}>
-      {loading ? (
-        <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
-          <CircularProgress />
-        </Box>
-      ) : (
+    <>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <>
-          {isNotResponsive ? (
-            <Box display='flex'>
-              {isMobileView ? null : (
-                <Box flex={1} p={2} pr={1}>
-                  <DataGrid
-                    autoHeight
-                    rows={leftSocialFeeds}
-                    columns={socialFeedColumns}
-                    pagination={false}
-                    onRowClick={params => handleRowClick(params)}
-                    getRowId={getRowId}
-                    hideFooter
-                  />
-                </Box>
-              )}
-
-              {/* Right Column */}
-              <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
-                <DataGrid
-                  autoHeight
-                  rows={rightSocialFeeds}
-                  columns={socialFeedColumns}
-                  pagination={false} // Remove pagination
-                  onRowClick={params => handleRowClick(params)}
-                  getRowId={getRowId}
-                  hideFooter
-                />
-              </Box>
-            </Box>
-          ) : (
-            <DataGrid
-              autoHeight
-              rows={socialFeeds}
-              columns={socialFeedColumns.filter(column => {
-                // Check if it's mobile view and exclude only the "Select" and "Edit" columns
-                if (isMobileView) {
-                  return column.field !== 'select' && column.field !== 'edit' && !isNarrowMobileView
-                }
-
-                return true
-              })}
-              pagination={false} // Remove pagination
-              onRowClick={params => handleRowClick(params)}
-              getRowId={getRowId}
-              hideFooter
-            />
-          )}
           {socialFeeds.length > 0 && ( // Only render pagination if there are articles
             <Pagination
               paginationModel={paginationModel}
@@ -178,8 +128,76 @@ const Grid = props => {
             />
           )}
         </>
-      )}
-    </Box>
+        <SelectAllModal />
+      </Box>
+      <Box p={2}>
+        {loading ? (
+          <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            {isNotResponsive ? (
+              <Box display='flex'>
+                {isMobileView ? null : (
+                  <Box flex={1} p={2} pr={1}>
+                    <DataGrid
+                      autoHeight
+                      rows={leftSocialFeeds}
+                      columns={socialFeedColumns}
+                      pagination={false}
+                      onRowClick={params => handleRowClick(params)}
+                      getRowId={getRowId}
+                      hideFooter
+                    />
+                  </Box>
+                )}
+
+                {/* Right Column */}
+                <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
+                  <DataGrid
+                    autoHeight
+                    rows={rightSocialFeeds}
+                    columns={socialFeedColumns}
+                    pagination={false} // Remove pagination
+                    onRowClick={params => handleRowClick(params)}
+                    getRowId={getRowId}
+                    hideFooter
+                  />
+                </Box>
+              </Box>
+            ) : (
+              <DataGrid
+                autoHeight
+                rows={socialFeeds}
+                columns={socialFeedColumns.filter(column => {
+                  // Check if it's mobile view and exclude only the "Select" and "Edit" columns
+                  if (isMobileView) {
+                    return column.field !== 'select' && column.field !== 'edit' && !isNarrowMobileView
+                  }
+
+                  return true
+                })}
+                pagination={false} // Remove pagination
+                onRowClick={params => handleRowClick(params)}
+                getRowId={getRowId}
+                hideFooter
+              />
+            )}
+            {/* {socialFeeds.length > 0 && ( // Only render pagination if there are articles
+              <Pagination
+                paginationModel={paginationModel}
+                currentPage={currentPage}
+                recordsPerPage={recordsPerPage}
+                handleLeftPagination={handleLeftPagination}
+                handleRightPagination={handleRightPagination}
+                handleRecordsPerPageUpdate={handleRecordsPerPageChange}
+              />
+            )} */}
+          </>
+        )}
+      </Box>
+    </>
   )
 }
 

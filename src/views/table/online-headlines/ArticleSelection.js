@@ -579,17 +579,24 @@ const TableSelection = () => {
     }
   }
 
-  const SelectAllModel = () => {
+  const SelectAllModal = () => {
     return (
-      <Box>
-        <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
-          <FormControlLabel control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />} label='Page' />
-          <FormControlLabel
-            control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
-            label='All Articles'
-          />
-        </FormGroup>
-      </Box>
+      <>
+        {socialFeeds.length > 0 && (
+          <Box pl={3}>
+            <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+              <FormControlLabel
+                control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+                label='Page'
+              />
+              <FormControlLabel
+                control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+                label='All Articles'
+              />
+            </FormGroup>
+          </Box>
+        )}
+      </>
     )
   }
 
@@ -644,7 +651,7 @@ const TableSelection = () => {
       />
       {/* multiple selection */}
 
-      {socialFeeds.length > 0 && (
+      {/* {socialFeeds.length > 0 && (
         <Box pl={3}>
           <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
             <FormControlLabel
@@ -657,7 +664,7 @@ const TableSelection = () => {
             />
           </FormGroup>
         </Box>
-      )}
+      )} */}
       {/* DataGrid */}
       <Grid
         loading={loading}
@@ -681,7 +688,7 @@ const TableSelection = () => {
         handleRightPagination={handleRightPagination}
         handleRecordsPerPageChange={handleRecordsPerPageChange}
         handleRowClick={handleRowClick}
-        Multi
+        SelectAllModal={SelectAllModal}
       />
 
       <EditDialog

@@ -552,6 +552,27 @@ const TableSelection = () => {
     setSelectedArticles([])
   }
 
+  const SelectAllModal = () => {
+    return (
+      <>
+        {articles.length > 0 && (
+          <Box pl={3}>
+            <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+              <FormControlLabel
+                control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+                label='Page'
+              />
+              <FormControlLabel
+                control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+                label='All Articles'
+              />
+            </FormGroup>
+          </Box>
+        )}
+      </>
+    )
+  }
+
   return (
     <Card>
       <CardHeader
@@ -608,7 +629,7 @@ const TableSelection = () => {
         allCheck={allCheck}
       />
       {/* multiple selection */}
-      {articles.length > 0 && (
+      {/* {articles.length > 0 && (
         <Box pl={3}>
           <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
             <FormControlLabel
@@ -621,7 +642,7 @@ const TableSelection = () => {
             />
           </FormGroup>
         </Box>
-      )}
+      )} */}
       {/* DataGrid */}
       <TableGrid
         loading={loading}
@@ -644,6 +665,7 @@ const TableSelection = () => {
         handleRowCheck={handleRowCheck}
         fetchTags={fetchTags}
         setFetchTags={setFetchTags}
+        SelectAllModal={SelectAllModal}
       />
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}

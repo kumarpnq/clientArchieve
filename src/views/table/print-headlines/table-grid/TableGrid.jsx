@@ -35,7 +35,8 @@ const TableGrid = ({
   recordsPerPage,
   handleLeftPagination,
   handleRightPagination,
-  handleRecordsPerPageChange
+  handleRecordsPerPageChange,
+  SelectAllModal
 
   // setPageCheck
 }) => {
@@ -189,71 +190,10 @@ const TableGrid = ({
   ]
 
   return (
-    <Box p={2}>
-      {loading ? (
-        <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
-          <CircularProgress />
-        </Box>
-      ) : (
+    <>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <>
-          {isNotResponsive ? (
-            <Box display='flex'>
-              {/* left column */}
-              {isMobileView ? null : (
-                <Box flex={1} p={2} pr={1}>
-                  <DataGrid
-                    autoHeight
-                    rows={articles.slice(0, articles.length / 2)}
-                    columns={customArticleHeader}
-                    pagination={false}
-                    onRowClick={params => handleRowClick(params)}
-                    onRowSelectionModelChange={item => handleRowCheck('left', item)}
-                    getRowId={row => row.articleId}
-                    hideFooter
-                    disableColumnMenu
-                    checkboxSelection
-                    disableRowSelectionOnClick
-                    rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle?.articleId)}
-                  />
-                </Box>
-              )}
-
-              <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
-                <DataGrid
-                  autoHeight
-                  rows={articles.slice(articles.length / 2, articles.length)}
-                  columns={customArticleHeader}
-                  pagination={false}
-                  onRowClick={params => handleRowClick(params)}
-                  onRowSelectionModelChange={item => handleRowCheck('right', item)}
-                  getRowId={row => row.articleId}
-                  disableColumnMenu
-                  hideFooter
-                  checkboxSelection
-                  disableRowSelectionOnClick
-                  rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle?.articleId)}
-                />
-              </Box>
-            </Box>
-          ) : (
-            <DataGrid
-              autoHeight
-              disableColumnMenu
-              rows={articles}
-              columns={customArticleHeader.filter(column => {
-                column.field !== 'select' && column.field !== 'edit' && !(column.field === 'date' && isNarrowMobileView)
-
-                return true
-              })}
-              pagination={false}
-              onRowClick={params => handleRowClick(params)}
-              onRowSelectionModelChange={(item, params) => handleRowCheck('center', item)}
-              getRowId={row => row.articleId}
-              hideFooter
-              checkboxSelection
-            />
-          )}
-
+          {' '}
           {articles.length > 0 && (
             <Pagination
               paginationModel={paginationModel}
@@ -265,8 +205,89 @@ const TableGrid = ({
             />
           )}
         </>
-      )}
-    </Box>
+        <SelectAllModal />
+      </Box>
+      <Box p={2}>
+        {loading ? (
+          <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            {isNotResponsive ? (
+              <Box display='flex'>
+                {/* left column */}
+                {isMobileView ? null : (
+                  <Box flex={1} p={2} pr={1}>
+                    <DataGrid
+                      autoHeight
+                      rows={articles.slice(0, articles.length / 2)}
+                      columns={customArticleHeader}
+                      pagination={false}
+                      onRowClick={params => handleRowClick(params)}
+                      onRowSelectionModelChange={item => handleRowCheck('left', item)}
+                      getRowId={row => row.articleId}
+                      hideFooter
+                      disableColumnMenu
+                      checkboxSelection
+                      disableRowSelectionOnClick
+                      rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle?.articleId)}
+                    />
+                  </Box>
+                )}
+
+                <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
+                  <DataGrid
+                    autoHeight
+                    rows={articles.slice(articles.length / 2, articles.length)}
+                    columns={customArticleHeader}
+                    pagination={false}
+                    onRowClick={params => handleRowClick(params)}
+                    onRowSelectionModelChange={item => handleRowCheck('right', item)}
+                    getRowId={row => row.articleId}
+                    disableColumnMenu
+                    hideFooter
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    rowSelectionModel={selectedArticles.map(selectedArticle => selectedArticle?.articleId)}
+                  />
+                </Box>
+              </Box>
+            ) : (
+              <DataGrid
+                autoHeight
+                disableColumnMenu
+                rows={articles}
+                columns={customArticleHeader.filter(column => {
+                  column.field !== 'select' &&
+                    column.field !== 'edit' &&
+                    !(column.field === 'date' && isNarrowMobileView)
+
+                  return true
+                })}
+                pagination={false}
+                onRowClick={params => handleRowClick(params)}
+                onRowSelectionModelChange={(item, params) => handleRowCheck('center', item)}
+                getRowId={row => row.articleId}
+                hideFooter
+                checkboxSelection
+              />
+            )}
+
+            {/* {articles.length > 0 && (
+              <Pagination
+                paginationModel={paginationModel}
+                currentPage={currentPage}
+                recordsPerPage={recordsPerPage}
+                handleLeftPagination={handleLeftPagination}
+                handleRightPagination={handleRightPagination}
+                handleRecordsPerPageUpdate={handleRecordsPerPageChange}
+              />
+            )} */}
+          </>
+        )}
+      </Box>
+    </>
   )
 }
 
