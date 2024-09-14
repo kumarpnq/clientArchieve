@@ -235,12 +235,8 @@ const NotificationDropdown = () => {
           </Box>
         </MenuItem>
 
-        <MenuItem
-          disableRipple
-          disableTouchRipple
-          sx={{ cursor: 'default', userSelect: 'auto', backgroundColor: 'transparent !important' }}
-        >
-          <>
+        <MenuItem disableRipple disableTouchRipple>
+          <Box>
             {clientData?.excelDump.length > 0 && (
               <Box sx={{ maxWidth: '400px', pr: 12 }}>
                 <Accordion>
@@ -319,7 +315,11 @@ const NotificationDropdown = () => {
                               {job.downloadLink !== null && (
                                 <Typography fontSize={'0.9em'}>
                                   Download Link:{' '}
-                                  <Link href={`${process.env.NEXT_PUBLIC_JOB_SERVER}/downloadFile/${job.downloadLink}`}>
+                                  <Link
+                                    href={`${process.env.NEXT_PUBLIC_JOB_SERVER}/downloadFile/${job.downloadLink}`}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                  >
                                     link
                                   </Link>
                                 </Typography>
@@ -332,48 +332,11 @@ const NotificationDropdown = () => {
                 </Accordion>
               </Box>
             )}
-
-            {clientData?.dossier.length > 0 && (
-              <Accordion>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography variant='h5'>Dossier</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {clientData &&
-                    clientData.dossier.map((job, index) => (
-                      <MenuItem
-                        key={index}
-                        disableRipple
-                        disableTouchRipple
-                        sx={{
-                          cursor: 'default',
-                          userSelect: 'auto',
-                          backgroundColor: 'transparent !important'
-                        }}
-                      >
-                        <Accordion style={{ width: '100%' }}>
-                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                            <Box
-                              component='span'
-                              bgcolor={job.jobStatus === 'Processing' ? yellow : green}
-                              color='text.primary'
-                              borderRadius='2px'
-                            >
-                              {job.jobName}
-                            </Box>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <Typography key={job.jobId}>{job.jobName}</Typography>
-                            <Typography>Status: {job.jobStatus}</Typography>
-                            <Typography>Download Link: {job.downloadLink}</Typography>
-                          </AccordionDetails>
-                        </Accordion>
-                      </MenuItem>
-                    ))}
-                </AccordionDetails>
-              </Accordion>
-            )}
-
+          </Box>
+        </MenuItem>
+        <MenuItem disableRipple disableTouchRipple>
+          <Box>
+            {' '}
             {clientData?.mail.length > 0 && (
               <Box sx={{ maxWidth: '400px', pr: 12 }}>
                 <Accordion>
@@ -457,8 +420,54 @@ const NotificationDropdown = () => {
                 </Accordion>
               </Box>
             )}
-          </>
+          </Box>
         </MenuItem>
+        <MenuItem disableRipple disableTouchRipple>
+          <Box>
+            {' '}
+            {clientData?.dossier.length > 0 && (
+              <Accordion>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant='h5'>Dossier</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {clientData &&
+                    clientData.dossier.map((job, index) => (
+                      <MenuItem
+                        key={index}
+                        disableRipple
+                        disableTouchRipple
+                        sx={{
+                          cursor: 'default',
+                          userSelect: 'auto',
+                          backgroundColor: 'transparent !important'
+                        }}
+                      >
+                        <Accordion style={{ width: '100%' }}>
+                          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                            <Box
+                              component='span'
+                              bgcolor={job.jobStatus === 'Processing' ? yellow : green}
+                              color='text.primary'
+                              borderRadius='2px'
+                            >
+                              {job.jobName}
+                            </Box>
+                          </AccordionSummary>
+                          <AccordionDetails>
+                            <Typography key={job.jobId}>{job.jobName}</Typography>
+                            <Typography>Status: {job.jobStatus}</Typography>
+                            <Typography>Download Link: {job.downloadLink}</Typography>
+                          </AccordionDetails>
+                        </Accordion>
+                      </MenuItem>
+                    ))}
+                </AccordionDetails>
+              </Accordion>
+            )}
+          </Box>
+        </MenuItem>
+
         <MenuItem
           disableRipple
           disableTouchRipple
