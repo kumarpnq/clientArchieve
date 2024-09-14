@@ -289,7 +289,7 @@ const ArticleListToolbar = ({
         const data = await response.json()
         setEditionTypes(data.editionTypesList)
       } catch (error) {
-        console.error('Error fetching edition types:', error, message)
+        console.error('Error fetching edition types:', error.message)
       }
     }
 
