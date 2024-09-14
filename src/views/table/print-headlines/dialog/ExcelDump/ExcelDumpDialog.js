@@ -391,7 +391,7 @@ const ExcelDumpDialog = ({
     const searchCriteria = {
       selectPageOrAll,
       requestEntity: 'print',
-      ...(selectPageOrAll !== 'A' && { page, recordsPerPage }),
+      ...(selectPageOrAll !== 'A' && { page: Number(page), recordsPerPage: Number(recordsPerPage) }),
       clientIds: clientId,
       ...(editionType && { editionType }),
       ...(publicationCategory && { publicationCategory }),
