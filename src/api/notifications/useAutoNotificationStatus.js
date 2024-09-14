@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectFetchAutoStatusFlag, selectSelectedClient, setFetchAutoStatusFlag } from 'src/store/apps/user/userSlice'
@@ -14,9 +14,6 @@ const useAutoNotification = () => {
   const dispatch = useDispatch()
   const storedToken = localStorage.getItem('accessToken')
   const url = `${JOB_SERVER}/downloadStatusPopNotification`
-  const [keepFetching, setKeepFetching] = useState(true)
-
-  console.log(fetchAutoStatusFlag)
 
   const fetchAutoNotificationStatus = async () => {
     dispatch(setFetchAutoStatusFlag(true))
@@ -39,9 +36,6 @@ const useAutoNotification = () => {
       const completeJobs = jobData.length && jobData.filter(item => item.jobStatus === 'Completed')
       const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing')
 
-      console.log(keepFetching)
-      console.log(completeJobs)
-
       if (completeJobs.length) {
         completeJobs.forEach(item => {
           toast.success(
@@ -61,19 +55,18 @@ const useAutoNotification = () => {
           dispatch(setFetchAutoStatusFlag(true))
         } else {
           dispatch(setFetchAutoStatusFlag(false))
-          setKeepFetching(false)
         }
       }
     } catch (error) {
       console.error('Error fetching auto notification status:', error.message)
-      setKeepFetching(false)
+
       dispatch(setFetchAutoStatusFlag(false))
     }
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      if (storedToken && clientId && keepFetching) {
+      if (storedToken && clientId) {
         await fetchAutoNotificationStatus()
       }
     }
@@ -87,7 +80,7 @@ const useAutoNotification = () => {
     return () => {
       clearInterval(intervalId)
     }
-  }, [clientId, storedToken, keepFetching])
+  }, [clientId, storedToken])
 }
 
 export default useAutoNotification

@@ -238,7 +238,7 @@ const NotificationDropdown = () => {
         <MenuItem disableRipple disableTouchRipple>
           <Box>
             {clientData?.excelDump.length > 0 && (
-              <Box sx={{ maxWidth: '400px', pr: 12 }}>
+              <Box sx={{ maxWidth: '400px', pr: 15 }}>
                 <Accordion>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography variant='subtitle2'>ExcelDump</Typography>
@@ -270,7 +270,7 @@ const NotificationDropdown = () => {
                             backgroundColor: 'transparent !important'
                           }}
                         >
-                          <Accordion sx={{ maxWidth: '300px' }}>
+                          <Accordion sx={{ maxWidth: '300px', right: 15 }}>
                             <AccordionSummary
                               content='test'
                               expandIcon={<ExpandMoreIcon />}
@@ -338,7 +338,7 @@ const NotificationDropdown = () => {
           <Box>
             {' '}
             {clientData?.mail.length > 0 && (
-              <Box sx={{ maxWidth: '400px', pr: 12 }}>
+              <Box sx={{ maxWidth: '400px', pr: 15 }}>
                 <Accordion>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography variant='subtitle2'>Mail</Typography>
@@ -370,7 +370,7 @@ const NotificationDropdown = () => {
                             backgroundColor: 'transparent !important'
                           }}
                         >
-                          <Accordion sx={{ maxWidth: '300px' }}>
+                          <Accordion sx={{ maxWidth: '300px', right: 15 }}>
                             <AccordionSummary
                               content='test'
                               expandIcon={<ExpandMoreIcon />}
