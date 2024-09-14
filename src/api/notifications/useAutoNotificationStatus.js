@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectFetchAutoStatusFlag, selectSelectedClient, setFetchAutoStatusFlag } from 'src/store/apps/user/userSlice'
@@ -11,6 +11,9 @@ const useAutoNotification = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const fetchAutoStatusFlag = useSelector(selectFetchAutoStatusFlag)
   const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
+  const [fetchFlag, setFetchFlag] = useState(fetchAutoStatusFlag)
+
+  console.log(fetchFlag)
 
   const clientId = selectedClient ? selectedClient.clientId : null
   const dispatch = useDispatch()
@@ -81,18 +84,6 @@ const useAutoNotification = () => {
             ),
             { duration: 10000, closeButton: true }
           )
-
-          // toast.success(
-          //   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-          //     <span>Job: {item.jobName.substring(0, 20) + '...'}</span>
-          //     <span>Status: {item.jobStatus}</span>
-          //     <a className='' key={item.jobId} href={`example/link/${item.jobId}`} target='_blank' rel='noopener'>
-          //       {` DownloadLink`}
-          //     </a>
-          //   </div>,
-
-          //   { duration: 1000000, closeButton: true }
-          // )
         })
 
         if (jobData.length && keepFetching) {
