@@ -522,13 +522,13 @@ const ArticleListToolbar = ({
           All
         </MenuItem>
         <MenuItem onClick={() => handleSortByArticleDate('print')} selected={selectedSortBy === 'print'}>
-          Sort by Print
+          Filter by Print
         </MenuItem>
         <MenuItem onClick={() => handleSortByArticleReach('online')} selected={selectedSortBy === 'online'}>
-          Sort by Online
+          Filter by Online
         </MenuItem>
         <MenuItem onClick={() => handleSortByEngagement('magazine')} selected={selectedSortBy === 'magazine'}>
-          Sort by Magazine
+          Filter by Magazine
         </MenuItem>
       </Menu>
 
