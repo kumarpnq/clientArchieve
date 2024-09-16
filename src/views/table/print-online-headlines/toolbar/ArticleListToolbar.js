@@ -341,6 +341,12 @@ const ArticleListToolbar = ({
     setPublicationTypeMenuOpen(null)
   }
 
+  const handleSortByEngagement = val => {
+    // Implement the logic to sort by media
+    setSelectedSortBy()
+    handleSortByClose()
+  }
+
   const handlePublicationTypeSelection = publicationType => {
     setSelectedPublicationType(prevSelected => {
       const isAlreadySelected = prevSelected.includes(publicationType)
