@@ -315,7 +315,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     onClose()
 
-    toast.success(response?.message || 'Email field updated.', { duration: 3000 })
+    toast.success('Email request taken successfully.', { duration: 3000 })
   }
 
   const handleAllDropdownChange = value => {

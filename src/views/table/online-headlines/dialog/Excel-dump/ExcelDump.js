@@ -340,7 +340,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     setSelectedFields([])
     setSelectAll(false)
     if (responseData) {
-      toast.success(responseData.message || 'ExcelDump request recieved successully.')
+      toast.success('Excel dump taken successfully.')
     }
   }
 

@@ -506,7 +506,7 @@ const ArticleListToolbar = ({
       />
 
       {/* sort by */}
-      <CustomTooltip title='Sort By'>
+      <CustomTooltip title='Filter By'>
         <Button onClick={handleSortByClick} sx={{ color: primaryColor, mr: 0 }}>
           <SortByIcon />
         </Button>
