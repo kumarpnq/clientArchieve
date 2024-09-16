@@ -308,6 +308,7 @@ const TableSelection = () => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const clientName = selectedClient ? selectedClient.clientName : null
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedTypeOfDate = useSelector(selectedDateType)
   const selectedFromDate = useSelector(selectSelectedStartDate)
@@ -438,6 +439,8 @@ const TableSelection = () => {
             const requestData = {
               clientId: clientId,
               screenName: 'bothHeadlines',
+              displayName: 'Print Online News',
+              clientName,
               searchCriteria: {
                 requestEntity: 'both',
                 clientIds: clientId,

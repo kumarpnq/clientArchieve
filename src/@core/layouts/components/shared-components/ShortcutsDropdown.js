@@ -70,8 +70,6 @@ const ShortcutsDropdown = props => {
   // ** Props
   const { shortcuts, settings } = props
 
-  // console.log('checkingshortcut->', shortcuts)
-
   // ** States
   const [anchorEl, setAnchorEl] = useState(null)
 
@@ -173,9 +171,9 @@ const ShortcutsDropdown = props => {
                   {/* <Avatar sx={{ mb: 2, width: 48, height: 48 }}>
                     <Icon fontSize='1.5rem' icon={shortcut.icon} />
                   </Avatar> */}
-                  <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>{shortcut.clientId}</Typography>
+                  <Typography sx={{ fontWeight: 500, color: 'text.secondary' }}>{shortcut.clientName}</Typography>
                   <Typography variant='body2' sx={{ color: 'text.disabled' }}>
-                    {shortcut.screenName}
+                    {shortcut.displayName}
                   </Typography>
                 </Box>
               </Grid>

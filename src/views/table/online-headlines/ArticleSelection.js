@@ -144,6 +144,7 @@ const TableSelection = () => {
   const shortCutData = useSelector(selectShortCut)
 
   const clientId = selectedClient ? selectedClient.clientId : null
+  const clientName = selectedClient.clientName
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
@@ -293,6 +294,8 @@ const TableSelection = () => {
             const requestData = {
               clientId: clientId,
               screenName: 'onlineHeadlines',
+              displayName: 'Online News',
+              clientName,
               searchCriteria: {
                 requestEntity: 'online',
                 clientIds: clientId,
