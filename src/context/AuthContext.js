@@ -144,7 +144,7 @@ const AuthProvider = ({ children }) => {
   }
 
   const values = {
-    user: userData, // Use data from Redux store,
+    user: userData,
     loading,
     setUser,
     setLoading,
