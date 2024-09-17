@@ -46,6 +46,7 @@ import { Icon } from '@iconify/react'
 import SelectBox from 'src/@core/components/select'
 import ArticleView from './dialog/article-view/view'
 import Grid from './table-grid/Grid'
+import DateType from 'src/@core/layouts/components/shared-components/DateType'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -394,12 +395,17 @@ const TableSelection = () => {
             })
             .join(', ')
 
+          const formattedFromDate = formattedStartDate ? new Date(formattedStartDate).toISOString().split('T')[0] : null
+          const formattedToDate = formattedEndDate ? new Date(formattedEndDate).toISOString().split('T')[0] : null
+
           const request_params = {
-            clientIds: clientId,
-            companyIds: selectedCompaniesString,
-            DateTye: selectedTypeOfDate,
-            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
-            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
+            // clientIds: clientId,
+            clientIds: '0',
+            // companyIds: selectedCompaniesString,
+            // DateType:'articleInfo.articleDate',
+            // DateTye: selectedTypeOfDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
 
@@ -423,16 +429,18 @@ const TableSelection = () => {
             publicationCategory: publicationtype
           }
 
-          const response = await axios.get(`${base_url}/clientWiseSocialFeeds/`, {
+          const response = await axios.get(`http://51.222.9.159:5000/api/v1/client/getSocialFeed`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
             params: request_params
           })
 
-          const totalRecords = response.data.totalRecords || 0
+          const totalRecords = response.data.data.doc.length || 0
 
-          setSocialFeeds(response.data.socialFeeds)
+          console.log('checingtyp==>', typeof totalRecords)
+
+          setSocialFeeds(response.data.data.doc)
 
           // Update totalRecords in the state
           setPaginationModel(prevPagination => ({

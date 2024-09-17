@@ -2,6 +2,14 @@ import axios from 'axios'
 
 const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
+const removeSpacesFromCommaSeparatedString = str => {
+  return str
+    ? str
+        .split(',')
+        .map(item => item.trim())
+        .join(',')
+    : null
+}
 export const fetchArticles = async ({
   clientIds,
   companyIds,
@@ -31,19 +39,24 @@ export const fetchArticles = async ({
   try {
     const storedToken = localStorage.getItem('accessToken')
 
-    // const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : null
-    // const formattedToDate = toDate ? new Date(toDate).toISOString().split('T')[0] : null
+    const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : null
+    const formattedToDate = toDate ? new Date(toDate).toISOString().split('T')[0] : null
+
+    const formattedMedia = removeSpacesFromCommaSeparatedString(media)
+    const formattedTags = removeSpacesFromCommaSeparatedString(tags)
+    const formattedGeography = removeSpacesFromCommaSeparatedString(geography)
+    const formattedLanguage = removeSpacesFromCommaSeparatedString(language)
 
     const request_params = {
       clientIds: '0',
       dateType: 'articleInfo.articleDate',
-      fromDate: '2024-04-01',
-      toDate: '2024-09-14',
+      fromDate: formattedFromDate,
+      toDate: formattedToDate,
       page,
       recordsPerPage,
-      media,
-      tags,
-      geography,
+      media: formattedMedia,
+      tags: formattedTags,
+      geography: formattedGeography,
       headline,
       body,
       journalist,
@@ -54,7 +67,7 @@ export const fetchArticles = async ({
       editionType,
       publicationCategory,
       sortby,
-      language
+      language: formattedLanguage
     }
 
     console.log('recoredperpage==>', recordsPerPage)

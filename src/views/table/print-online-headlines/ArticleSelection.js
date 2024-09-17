@@ -527,12 +527,16 @@ const TableSelection = () => {
             })
             .join(', ')
 
+          const formattedFromDate = formattedStartDate ? new Date(formattedStartDate).toISOString().split('T')[0] : null
+          const formattedToDate = formattedEndDate ? new Date(formattedEndDate).toISOString().split('T')[0] : null
+
           const request_params = {
-            clientIds: clientId,
-            companyIds: selectedCompetitions.join(', '),
-            dateType: selectedTypeOfDate,
-            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
-            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
+            // clientIds: clientId,
+            clientIds: '0',
+            // companyIds: selectedCompetitions.join(', '),
+            // dateType: selectedTypeOfDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
             sortby: selectedSortBy,
@@ -545,16 +549,21 @@ const TableSelection = () => {
             tags: shortCutData?.searchCriteria?.tags || selectedTagString
           }
 
-          const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            params: request_params
-          })
+          // const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`,
+          const response = await axios.get(
+            `http://51.222.9.159:5000/api/v1/client/getOnlineAndprintArticle`,
 
-          const totalRecords = response.data.totalCount
+            {
+              headers: {
+                Authorization: `Bearer ${storedToken}`
+              },
+              params: request_params
+            }
+          )
 
-          setArticles(response.data.articles)
+          const totalRecords = response.data.data.doc.length
+
+          setArticles(response.data.data.doc)
 
           setPaginationModel(prevPagination => ({
             ...prevPagination,
