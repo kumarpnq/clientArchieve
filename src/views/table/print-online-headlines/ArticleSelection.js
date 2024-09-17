@@ -658,28 +658,22 @@ const TableSelection = () => {
   }, [pageCheck, articles, allCheck])
 
   const handleSelect = article => {
-    // Check if the article is already selected
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
 
-    // Update selectedArticles based on whether the article is already selected or not
     setSelectedArticles(prevSelectedArticles => {
       let updatedSelectedArticles = []
       if (isSelected) {
-        // If article is already selected, remove it from the selection
         updatedSelectedArticles = prevSelectedArticles.filter(
           selectedArticle => selectedArticle.articleId !== article.articleId
         )
       } else {
-        // If article is not selected, add it to the selection
         updatedSelectedArticles = [...prevSelectedArticles, article]
       }
 
-      // Check if all articles on the page are selected or not
       const isPageFullySelected = articles.every(article =>
         updatedSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
       )
 
-      // Update the page check state based on the page selection status
       setPageCheck(isPageFullySelected)
 
       return updatedSelectedArticles
@@ -692,7 +686,6 @@ const TableSelection = () => {
     }
   }
 
-  // Function to handle right pagination
   const handleRightPagination = () => {
     if (currentPage < Math.ceil(paginationModel.totalRecords / paginationModel.pageSize)) {
       setCurrentPage(prevPage => prevPage + 1)
@@ -704,7 +697,7 @@ const TableSelection = () => {
 
     if (!isNaN(newRecordsPerPage) && newRecordsPerPage > 0) {
       setRecordsPerPage(newRecordsPerPage)
-      setCurrentPage(1) // Reset current page when changing records per page
+      setCurrentPage(1)
     }
   }
 
