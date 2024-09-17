@@ -395,8 +395,11 @@ const TableSelection = () => {
               return `${isoString} ${timeString}`
             }
 
-            const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-            const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+            // const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+            // const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+            const formattedStartDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+
+            const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
             const selectedCompaniesString = selectedCompetitions.join(', ')
 
             const selectedMediaWithoutLastDigit = selectedMedia.map(item => {

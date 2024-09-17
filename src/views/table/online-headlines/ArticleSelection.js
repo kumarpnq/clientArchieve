@@ -252,7 +252,7 @@ const TableSelection = () => {
             const formatDateTimes = (date, setTime, isEnd) => {
               let formattedDate = date
               if (isEnd) {
-                formattedDate = date.add(1, 'day')
+                formattedDate = date.add(0, 'day')
               }
               const isoString = formattedDate.toISOString().slice(0, 10)
               const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
@@ -346,19 +346,22 @@ const TableSelection = () => {
         if (storedToken) {
           const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
-          const formatDateTimes = (date, setTime, isEnd) => {
-            let formattedDate = date
-            if (isEnd) {
-              formattedDate = date.add(1, 'day')
-            }
-            const isoString = formattedDate.toISOString().slice(0, 10)
-            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+          // const formatDateTimes = (date, setTime, isEnd) => {
+          //   let formattedDate = date
+          //   if (isEnd) {
+          //     formattedDate = date.add(0, 'day')
+          //   }
+          //   const isoString = formattedDate.toISOString().slice(0, 10)
+          //   const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
 
-            return `${isoString} ${timeString}`
-          }
-          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+          //   return `${isoString} ${timeString}`
+          // }
+          const formattedStartDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+          const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
-          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+          // const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+
+          // const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
           const selectedCompaniesString = selectedCompetitions.join(', ')
 
