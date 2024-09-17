@@ -194,7 +194,7 @@ const TableGrid = ({
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <>
           {' '}
-          {articles.length > 0 && (
+          {articles?.length > 0 && (
             <Pagination
               paginationModel={paginationModel}
               currentPage={currentPage}
@@ -221,7 +221,7 @@ const TableGrid = ({
                   <Box flex={1} p={2} pr={1}>
                     <DataGrid
                       autoHeight
-                      rows={articles.slice(0, articles.length / 2)}
+                      rows={articles?.slice(0, articles.length / 2)}
                       columns={customArticleHeader}
                       pagination={false}
                       onRowClick={params => handleRowClick(params)}
@@ -239,7 +239,7 @@ const TableGrid = ({
                 <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
                   <DataGrid
                     autoHeight
-                    rows={articles.slice(articles.length / 2, articles.length)}
+                    rows={articles?.slice(articles.length / 2, articles.length)}
                     columns={customArticleHeader}
                     pagination={false}
                     onRowClick={params => handleRowClick(params)}

@@ -377,9 +377,10 @@ const TableSelection = () => {
             publicationCategory: publicationtype
           })
 
-          const totalRecords = response.totalRecords
+          const totalRecords = 50
 
-          setArticles(response.data.doc)
+          setArticles(response)
+          console.log('checkingconsole=>', response)
 
           let obj = {}
           response?.data?.doc?.map(item => {

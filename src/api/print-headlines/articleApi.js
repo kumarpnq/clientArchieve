@@ -70,7 +70,8 @@ export const fetchArticles = async ({
       }
     )
 
-    return response.data.doc
+    console.log('checkingresponsue-==<', response.data.data.doc)
+    return response.data.data.doc
   } catch (error) {
     if (axios.isCancel(error)) {
       console.log('Request canceled:', error.message)
