@@ -377,7 +377,7 @@ const TableSelection = () => {
             publicationCategory: publicationtype
           })
 
-          const totalRecords = 50
+          const totalRecords = response.totalRecords
 
           setArticles(response)
           console.log('checkingconsole=>', response)

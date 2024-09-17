@@ -57,6 +57,8 @@ export const fetchArticles = async ({
       language
     }
 
+    console.log('recoredperpage==>', recordsPerPage)
+
     // const response = await axios.get(`${base_url}/clientWisePrintArticles/`,
     const response = await axios.get(
       `http://51.222.9.159:5000/api/v1/client/getPrintArticle`,
