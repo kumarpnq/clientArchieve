@@ -890,28 +890,6 @@ const TableSelection = () => {
       </Box>
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
-      {/* Edit Dialog */}
-      {/* Render the FullScreenDialog component when open
-      <FullScreenJPGDialog
-        open={jpgDialogOpen}
-        handleClose={handleJpgDialogClose}
-        imageSrc={imageSrc}
-        articles={selectedArticle}
-      />
-      {/* Render the FullScreenHTMLDialog component when open */}
-      {/* <FullScreenHTMLDialog
-        open={htmlDialogOpen}
-        handleClose={handleHtmlDialogClose}
-        fileContent={fileContent}
-        articles={selectedArticle}
-      /> */}
-      {/* Render the FullScreenPDFDialog component when open */}
-      {/* <FullScreenPDFDialog
-        open={pdfDialogOpen}
-        handleClose={handlePdfDialogClose}
-        pdfSrc={pdfSrc}
-        articles={selectedArticle}
-      /> */}
     </Card>
   )
 }

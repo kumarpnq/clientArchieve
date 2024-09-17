@@ -16,14 +16,14 @@ const useUpdateClientNotification = () => {
   const clientId = selectedClient ? selectedClient.clientId : null
 
   const updateReadClientNotification = async jobId => {
-    const storedToken = localStorage.getItem('accessToken')
+    // const storedToken = localStorage.getItem('accessToken')
     const url = `${JOB_SERVER}/updateReadClientNotification/`
     const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
 
-    const headers = {
-      Authorization: `Bearer ${storedToken}`,
-      'Content-Type': 'application/json'
-    }
+    // const headers = {
+    //   Authorization: `Bearer ${storedToken}`,
+    //   'Content-Type': 'application/json'
+    // }
 
     const params = {
       clientId: clientId,
@@ -33,8 +33,12 @@ const useUpdateClientNotification = () => {
 
     setLoading(true)
 
+    // {
+    //   headers
+    // }
+
     try {
-      const response = await axios.put(url, params, { headers })
+      const response = await axios.put(url, params)
       setData(response.data)
     } catch (error) {
       setError(error)

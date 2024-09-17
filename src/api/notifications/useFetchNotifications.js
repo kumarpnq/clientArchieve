@@ -15,7 +15,7 @@ const useFetchNotifications = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const storedToken = localStorage.getItem('accessToken')
+      // const storedToken = localStorage.getItem('accessToken')
       try {
         // Check if notificationFlag is true before making the API request
         if (notificationFlag || clientId) {
@@ -24,9 +24,9 @@ const useFetchNotifications = () => {
           const getUserName = JSON.parse(localStorage.getItem('userData'))?.email
 
           const response = await axios.get(`${JOB_SERVER}/clientArchiveNotificationList`, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
+            // headers: {
+            //   Authorization: `Bearer ${storedToken}`
+            // },
             params: {
               clientId: clientId,
               userId: getUserName,

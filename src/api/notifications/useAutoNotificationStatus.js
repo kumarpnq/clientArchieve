@@ -21,12 +21,12 @@ const useAutoNotification = () => {
     dispatch(setFetchAutoStatusFlag(true))
 
     try {
-      const storedToken = localStorage.getItem('accessToken')
+      // const storedToken = localStorage.getItem('accessToken')
 
       const res = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${storedToken}`
-        },
+        // headers: {
+        //   Authorization: `Bearer ${storedToken}`
+        // },
         params: {
           clientId: clientId,
           userId: getUserName
