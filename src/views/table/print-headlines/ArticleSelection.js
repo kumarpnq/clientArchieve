@@ -287,116 +287,6 @@ const TableSelection = () => {
 
   const [loading, setLoading] = useState(true)
 
-  //user shortcut
-  useEffect(() => {
-    setSelectedArticles([])
-
-    if (shortCutFlags) {
-      const fetchArticlesApi = async () => {
-        try {
-          setLoading(true)
-          const storedToken = localStorage.getItem('accessToken')
-
-          if (storedToken) {
-            const formatDateTimes = (date, setTime, isEnd) => {
-              let formattedDate = date
-              if (isEnd) {
-                formattedDate = date.add(1, 'day')
-              }
-              const isoString = formattedDate.toISOString().slice(0, 10)
-              const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
-              return `${isoString} ${timeString}`
-            }
-
-            const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-            const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
-            const selectedCompaniesString = selectedCompetitions.join(', ')
-
-            const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
-              const lastChar = item.slice(-1)
-              if (!isNaN(parseInt(lastChar))) {
-                return item.slice(0, -1)
-              }
-
-              return item
-            })
-
-            const result = selectedMediaWithoutLastDigit.join(', ')
-            const selectedTagString = selectedTags.join(', ')
-
-            const selectedCitiesString = selectedGeography.join(', ')
-
-            const edition = selectedEditionType
-              .map(i => {
-                return i.editionTypeId
-              })
-              .join(', ')
-
-            const publicationtype = selectedPublicationType
-              .map(i => {
-                return i.publicationTypeId
-              })
-              .join(', ')
-
-            const selectedLanguagesString = selectedLanguages
-              .map(i => {
-                return i.id
-              })
-              .join(', ')
-
-            const headers = {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${storedToken}`
-            }
-
-            const requestData = {
-              clientId: clientId,
-              screenName: 'printHeadlines',
-              displayName: 'Print News',
-              clientName,
-              searchCriteria: {
-                requestEntity: 'print',
-                clientIds: clientId,
-                companyIds: selectedCompaniesString,
-                fromDate: formattedStartDate,
-                toDate: formattedEndDate,
-                page: currentPage,
-                recordsPerPage: recordsPerPage,
-
-                media: result,
-                tags: selectedTagString,
-                geography: selectedCitiesString,
-                language: selectedLanguagesString,
-
-                // Advanced search
-                headline: searchParameters.searchHeadline,
-                body: searchParameters.searchBody,
-                journalist: searchParameters.journalist,
-                wordCombo: searchParameters.combinationOfWords,
-                anyWord: searchParameters.anyOfWords,
-                ignoreWords: searchParameters.ignoreThis,
-                phrase: searchParameters.exactPhrase,
-
-                editionType: edition,
-                sortby: selectedSortBy,
-
-                publicationCategory: publicationtype
-              }
-            }
-
-            const res = await axios.post(`${BASE_URL}/userConfigRequest`, requestData, { headers })
-          }
-        } catch (error) {
-          console.error('Error fetching articles:', error)
-        } finally {
-          setLoading(false)
-        }
-      }
-      fetchArticlesApi()
-    }
-  }, [shortCutFlags])
-
   useEffect(() => {
     setSelectedArticles([])
 
@@ -488,10 +378,11 @@ const TableSelection = () => {
           })
 
           const totalRecords = response.totalRecords
-          setArticles(response.articles)
+
+          setArticles(response.data.doc)
 
           let obj = {}
-          response.articles.map(item => {
+          response?.data?.doc?.map(item => {
             obj[item?.articleId] = item
           })
           setArticleOptimizedObj(obj)
@@ -665,7 +556,7 @@ const TableSelection = () => {
   const SelectAllModal = () => {
     return (
       <>
-        {articles.length > 0 && (
+        {articles?.length > 0 && (
           <Box pl={3}>
             <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
               <FormControlLabel

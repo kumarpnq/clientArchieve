@@ -31,13 +31,14 @@ export const fetchArticles = async ({
   try {
     const storedToken = localStorage.getItem('accessToken')
 
-    const request_params = {
-      clientIds,
-      companyIds,
+    // const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : null
+    // const formattedToDate = toDate ? new Date(toDate).toISOString().split('T')[0] : null
 
-      dateType,
-      fromDate,
-      toDate,
+    const request_params = {
+      clientIds: '0',
+      dateType: 'articleInfo.articleDate',
+      fromDate: '2024-04-01',
+      toDate: '2024-09-14',
       page,
       recordsPerPage,
       media,
@@ -56,15 +57,20 @@ export const fetchArticles = async ({
       language
     }
 
-    const response = await axios.get(`${base_url}/clientWisePrintArticles/`, {
-      headers: {
-        Authorization: `Bearer ${storedToken}`
-      },
-      params: request_params,
-      cancelToken: source.token
-    })
+    // const response = await axios.get(`${base_url}/clientWisePrintArticles/`,
+    const response = await axios.get(
+      `http://51.222.9.159:5000/api/v1/client/getPrintArticle`,
 
-    return response.data
+      {
+        headers: {
+          Authorization: `Bearer ${storedToken}`
+        },
+        params: request_params,
+        cancelToken: source.token
+      }
+    )
+
+    return response.data.doc
   } catch (error) {
     if (axios.isCancel(error)) {
       console.log('Request canceled:', error.message)
