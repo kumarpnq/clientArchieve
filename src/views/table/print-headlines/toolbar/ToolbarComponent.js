@@ -14,7 +14,7 @@ import ListItem from '@mui/material/ListItem'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient, selectShortCut } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
-import { TextField } from '@mui/material'
+import { Box, TextField } from '@mui/material'
 import useDebounce from 'src/hooks/useDebounce'
 
 const ToolbarComponent = ({
@@ -309,6 +309,7 @@ const ToolbarComponent = ({
         )}
 
         {/* Geography Dropdown Menu */}
+
         <Menu
           open={Boolean(geographyAnchor)}
           anchorEl={geographyAnchor}

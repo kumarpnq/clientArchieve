@@ -9,6 +9,7 @@ import Grid from '@mui/material/Grid'
 import ListItem from '@mui/material/ListItem'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import TextField from '@mui/material/TextField'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 
 //**  data hooks import
 import useUserDataAndCompanies from 'src/api/print-online-headlines/useToolbarComponentData'
@@ -336,7 +337,9 @@ const ToolbarComponent = ({
           open={Boolean(geographyAnchor)}
           anchorEl={geographyAnchor}
           onClose={() => closeDropdown(setGeographyAnchor)}
-          PaperProps={{ style: { maxHeight: 300 } }}
+          PaperProps={{
+            style: { maxHeight: 300 }
+          }}
         >
           {cities.length > 0 && (
             <ListItem sx={{ justifyContent: 'space-between' }}>
@@ -357,7 +360,6 @@ const ToolbarComponent = ({
             </MenuItem>
           ))}
         </Menu>
-
         {/* Language Dropdown Menu */}
         <Menu
           open={Boolean(languageAnchor)}

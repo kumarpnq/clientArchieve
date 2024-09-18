@@ -298,24 +298,13 @@ const TableSelection = () => {
           const storedToken = localStorage.getItem('accessToken')
 
           if (storedToken) {
-            const formatDateTimes = (date, setTime, isEnd) => {
-              let formattedDate = date
-              if (isEnd) {
-                formattedDate = date.add(1, 'day')
-              }
-              const isoString = formattedDate.toISOString().slice(0, 10)
-              const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
-              return `${isoString} ${timeString}`
-            }
-
-            // const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-            // const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
-
-            const formattedStartDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
-            const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
-
             const selectedCompaniesString = selectedCompetitions.join(', ')
+
+            const formattedStartDate = selectedFromDate
+              ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
+              : null
+
+            const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
             const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
               const lastChar = item.slice(-1)
@@ -409,21 +398,13 @@ const TableSelection = () => {
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
 
+        const formattedStartDate = selectedFromDate
+          ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
+          : null
+
+        const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
+
         if (storedToken) {
-          // Format start and end dates
-          const formatDateTimes = (date, setTime, isEnd) => {
-            let formattedDate = date
-
-            const isoString = formattedDate.toISOString().slice(0, 10)
-            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
-            return `${isoString} ${timeString}`
-          }
-
-          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-
-          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
-
           const selectedCompaniesString = selectedCompetitions.join(', ')
 
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {

@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem'
 import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 import Box from '@mui/material/Box'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 
 // ** hooks import
 import useClientMailerList from 'src/api/global/useClientMailerList '
@@ -372,42 +373,44 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth='md'>
       <DialogTitle color='primary'>Send Email</DialogTitle>
 
-      <FormGroup style={{ marginLeft: '20px', marginRight: '20px' }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={selectAll}
-              onChange={handleSelectAllChange}
-              indeterminate={selectedEmails.length > 0 && selectedEmails.length < mailList.length}
-            />
-          }
-          label='Select All'
-        />
+      <PerfectScrollbarComponent>
+        <FormGroup style={{ marginLeft: '20px', marginRight: '20px' }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={selectAll}
+                onChange={handleSelectAllChange}
+                indeterminate={selectedEmails.length > 0 && selectedEmails.length < mailList.length}
+              />
+            }
+            label='Select All'
+          />
 
-        {mailList.map(email => (
-          <div key={email} style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={selectedEmails.includes(email)} onChange={() => handleCheckboxChange(email)} />
-              }
-              label={email}
-            />
-            <RadioGroup
-              row
-              value={emailType[email]}
-              onChange={e => handleEmailTypeChange(e, email)}
-              style={{ marginLeft: '10px' }}
-            >
-              <FormControlLabel value='to' control={<Radio />} label='To' />
-              <FormControlLabel value='cc' control={<Radio />} label='Cc' />
-              <FormControlLabel value='bcc' control={<Radio />} label='Bcc' />
-            </RadioGroup>
-          </div>
-        ))}
-      </FormGroup>
+          {mailList.map(email => (
+            <div key={email} style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={selectedEmails.includes(email)} onChange={() => handleCheckboxChange(email)} />
+                }
+                label={email}
+              />
+              <RadioGroup
+                row
+                value={emailType[email]}
+                onChange={e => handleEmailTypeChange(e, email)}
+                style={{ marginLeft: '10px' }}
+              >
+                <FormControlLabel value='to' control={<Radio />} label='To' />
+                <FormControlLabel value='cc' control={<Radio />} label='Cc' />
+                <FormControlLabel value='bcc' control={<Radio />} label='Bcc' />
+              </RadioGroup>
+            </div>
+          ))}
+        </FormGroup>
+      </PerfectScrollbarComponent>
 
       <DialogActions>
         {/* <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)} size='small'>

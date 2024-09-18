@@ -249,19 +249,24 @@ const TableSelection = () => {
           const storedToken = localStorage.getItem('accessToken')
 
           if (storedToken) {
-            const formatDateTimes = (date, setTime, isEnd) => {
-              let formattedDate = date
-              if (isEnd) {
-                formattedDate = date.add(0, 'day')
-              }
-              const isoString = formattedDate.toISOString().slice(0, 10)
-              const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+            const formattedStartDate = selectedFromDate
+              ? (() => {
+                  const fromDate = dayjs(selectedFromDate)
 
-              return `${isoString} ${timeString}`
-            }
+                  // Check if the time is 00:00:00
+                  if (fromDate.format('HH:mm:ss') === '00:00:00') {
+                    // Add the current time to the fromDate
+                    const currentTime = dayjs().format('HH:mm:ss')
 
-            const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-            const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+                    return fromDate.format(`YYYY-MM-DD ${currentTime}`)
+                  }
+
+                  // Otherwise, return the original formatted fromDate
+                  return fromDate.format('YYYY-MM-DD HH:mm:ss')
+                })()
+              : null
+
+            const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
             const selectedCompaniesString = selectedCompetitions.join(', ')
 
             const selectedTagString = selectedTags.join(', ')
@@ -346,22 +351,20 @@ const TableSelection = () => {
         if (storedToken) {
           const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
-          // const formatDateTimes = (date, setTime, isEnd) => {
-          //   let formattedDate = date
-          //   if (isEnd) {
-          //     formattedDate = date.add(0, 'day')
-          //   }
-          //   const isoString = formattedDate.toISOString().slice(0, 10)
-          //   const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+          const formattedStartDate = selectedFromDate
+            ? (() => {
+                const fromDate = dayjs(selectedFromDate)
 
-          //   return `${isoString} ${timeString}`
-          // }
-          const formattedStartDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+                if (fromDate.format('HH:mm:ss') === '00:00:00') {
+                  const currentTime = dayjs().format('HH:mm:ss')
+
+                  return fromDate.format(`YYYY-MM-DD ${currentTime}`)
+                }
+
+                return fromDate.format('YYYY-MM-DD HH:mm:ss')
+              })()
+            : null
           const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
-
-          // const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-
-          // const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
           const selectedCompaniesString = selectedCompetitions.join(', ')
 

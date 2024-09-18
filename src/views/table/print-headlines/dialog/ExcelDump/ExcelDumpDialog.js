@@ -1,5 +1,6 @@
 // ExcelDumpDialog.js
 import React, { useState, useEffect } from 'react'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -29,6 +30,11 @@ import WarningIcon from '@mui/icons-material/Warning'
 // ** third party import
 import toast from 'react-hot-toast'
 import { Box, DialogContentText } from '@mui/material'
+import { styled } from '@mui/material'
+
+const PerfectScrollbar = styled(PerfectScrollbarComponent)({
+  maxHeight: 349
+})
 
 const ExcelDumpDialog = ({
   open,
@@ -464,31 +470,37 @@ const ExcelDumpDialog = ({
     <Dialog open={open} onClose={handleClose} maxWidth='xs'>
       <DialogTitle color='primary'>Excel Dump</DialogTitle>
       <DialogContent>
-        <FormControlLabel
-          control={<Checkbox checked={selectAll} onChange={handleSelectAllChange} />}
-          label='Select All'
-        />
-        <Grid container spacing={1}>
-          {fields.map(item => (
-            <Grid item xs={6} key={item.id}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={selectedFields.includes(item.name)}
-                    onChange={() => handleCheckboxChange(item.name)}
-                  />
-                }
-                label={item.description}
-              />
-            </Grid>
-          ))}
-        </Grid>
+        <PerfectScrollbarComponent>
+          <FormControlLabel
+            control={<Checkbox checked={selectAll} onChange={handleSelectAllChange} />}
+            label='Select All'
+          />
+          <Grid container spacing={1}>
+            {fields.map(item => (
+              <Grid item xs={6} key={item.id}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={selectedFields.includes(item.name)}
+                      onChange={() => handleCheckboxChange(item.name)}
+                    />
+                  }
+                  label={item.description}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </PerfectScrollbarComponent>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color='primary'>
+        <Button onClick={handleClose} color='primary' variant='outlined'>
           Close
         </Button>
-        <Button onClick={handleDownload} color='primary' disabled={selectedFields.length === 0}>
+        <Button
+          onClick={handleDownload}
+          sx={{ backgroundColor: 'primary.main', color: 'text.primary' }}
+          disabled={selectedFields.length === 0}
+        >
           Download
         </Button>
       </DialogActions>

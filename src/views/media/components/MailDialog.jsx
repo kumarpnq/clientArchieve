@@ -13,7 +13,8 @@ import {
   FormControl,
   InputLabel,
   Select,
-  MenuItem
+  MenuItem,
+  CircularProgress
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import useClientMailerList from 'src/api/global/useClientMailerList '
@@ -39,6 +40,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
   const [mailSubject, setMailSubject] = useState('')
   const [showHelperText, setShowHelperText] = useState(false)
   const [MailerFormat, setMailerFormat] = useState('dbWithoutDetails')
+  const [sendMailLoading, setSendMailLoading] = useState(false)
 
   // * redux
   const selectedClient = useSelector(selectSelectedClient)
@@ -119,6 +121,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
 
   const sendEmail = async htmlContent => {
     try {
+      setSendMailLoading(true)
       const toEmails = Object.keys(emailType).filter(email => emailType[email] === 'to')
       const ccEmails = Object.keys(emailType).filter(email => emailType[email] === 'cc')
       const bccEmails = Object.keys(emailType).filter(email => emailType[email] === 'bcc')
@@ -152,6 +155,8 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       }
     } catch (error) {
       toast.error('Failed to send email: ' + error.message)
+    } finally {
+      setSendMailLoading(false)
     }
   }
 
@@ -219,9 +224,10 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
         <Button
           onClick={handleSendEmail}
           variant='outlined'
-          sx={{ backgroundColor: 'primary.main', color: 'text.primary' }}
+          sx={{ backgroundColor: sendMailLoading ? '' : 'primary.main', color: 'text.primary' }}
           disabled={Object.keys(emailType).length === 0}
         >
+          {sendMailLoading && <CircularProgress size={'1em'} sx={{ mr: 1 }} />}
           Send
         </Button>
       </DialogActions>

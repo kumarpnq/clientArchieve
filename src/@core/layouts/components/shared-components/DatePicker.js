@@ -16,11 +16,14 @@ const DateBar = () => {
   const router = useRouter()
   const currentRoute = router.pathname
 
+  const isShowDateTime =
+    currentRoute === '/media' || currentRoute === '/headlines/online' || currentRoute === '/headlines/print-online'
+
   const dispatch = useDispatch()
   const selectedStartDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
 
-  const dateFormat = currentRoute === '/media' ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'
+  const dateFormat = isShowDateTime ? 'DD/MM/YYYY HH:mm' : 'DD/MM/YYYY'
   const formattedStartDate = selectedStartDate ? dayjs(selectedStartDate).format(dateFormat) : null
   const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format(dateFormat) : null
 
@@ -65,7 +68,7 @@ const DateBar = () => {
         sx={{ mt: 4.25, minWidth: 200 }}
       >
         <Stack spacing={2} p={2} sx={{ minWidth: '200px', minHeight: '200px' }}>
-          {currentRoute === '/media' ? (
+          {isShowDateTime ? (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Box display='flex' alignItems='center'>
                 <DateTimePicker

@@ -395,8 +395,6 @@ const TableSelection = () => {
               return `${isoString} ${timeString}`
             }
 
-            // const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-            // const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
             const formattedStartDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
 
             const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
@@ -494,19 +492,26 @@ const TableSelection = () => {
         const storedToken = localStorage.getItem('accessToken')
 
         if (storedToken) {
-          const formatDateTimes = (date, setTime, isEnd) => {
-            let formattedDate = date
-            if (isEnd) {
-              formattedDate = date.add(1, 'day')
-            }
-            const isoString = formattedDate.toISOString().slice(0, 10)
-            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+          const formattedStartDateForPrint = selectedFromDate
+            ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
+            : null
 
-            return `${isoString} ${timeString}`
-          }
+          const formattedEndDateForPrint = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
-          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+          const formattedStartDateForOnline = selectedFromDate
+            ? (() => {
+                const fromDate = dayjs(selectedFromDate)
+
+                if (fromDate.format('HH:mm:ss') === '00:00:00') {
+                  const currentTime = dayjs().format('HH:mm:ss')
+
+                  return fromDate.format(`YYYY-MM-DD ${currentTime}`)
+                }
+
+                return fromDate.format('YYYY-MM-DD HH:mm:ss')
+              })()
+            : null
+          const formattedEndDateOnline = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
           const selectedTagString = selectedTags.join(', ')
 
@@ -534,8 +539,13 @@ const TableSelection = () => {
             clientIds: clientId,
             companyIds: selectedCompetitions.join(', '),
             dateType: selectedTypeOfDate,
-            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
-            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
+
+            // fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
+            // toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
+            printFromDate: formattedStartDateForPrint,
+            printToDate: formattedEndDateForPrint,
+            onlineFromDate: formattedStartDateForOnline,
+            onlineToDate: formattedEndDateOnline,
             page: currentPage,
             recordsPerPage: recordsPerPage,
             sortby: selectedSortBy,

@@ -14,7 +14,6 @@ const GenericIcon = ({ label, component: IconComponent, ...props }) => (
   </SvgIcon>
 )
 
-// Define icons array
 const icons = [
   { label: '1D', days: 1, component: GenericIcon },
   { label: '7D', days: 7, component: GenericIcon },
@@ -34,7 +33,7 @@ const DaysJumper = ({ settings }) => {
 
   const handleFilter = (days, label) => {
     const start = calculateDate(days, shortCutData?.searchCriteria?.fromDate)
-    const end = calculateDate(0, shortCutData?.searchCriteria?.toDate) // End date is same as the current end date
+    const end = calculateDate(0, shortCutData?.searchCriteria?.toDate)
 
     dispatch(
       setSelectedDateRange({
@@ -46,11 +45,14 @@ const DaysJumper = ({ settings }) => {
   }
 
   const handleFilterChange = (days, label) => {
-    let startDate = calculateDate(days)
+    let startDate
 
-    // Adjust startDate to be the same time on the previous day
-    if (label === '1D' || label === '7D') {
-      startDate = startDate.startOf('day').subtract(0, 'day').startOf('day')
+    if (label === '1M') {
+      startDate = dayjs().subtract(1, 'month').startOf('day')
+    } else if (label === '3M') {
+      startDate = dayjs().subtract(3, 'month').startOf('day')
+    } else {
+      startDate = dayjs().subtract(days, 'day').startOf('day')
     }
 
     const endDate = dayjs()

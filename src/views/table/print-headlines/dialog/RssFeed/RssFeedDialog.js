@@ -16,13 +16,12 @@ import {
 import xmlJs from 'xml-js'
 import WarningIcon from '@mui/icons-material/Warning'
 import { useTheme } from '@mui/material/styles'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 
 const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
   const theme = useTheme()
   const [feedType, setFeedType] = useState('xml') // Default to XML feed
-  //style={{ backgroundColor: theme.palette.primary.main, color: 'white', textAlign: 'center' }}
 
-  // Check if selectedArticles is null or empty
   if (!selectedArticles || selectedArticles.length === 0) {
     return (
       <Dialog open={open} onClose={handleClose}>
@@ -113,25 +112,27 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
           <FormControlLabel value='json' control={<Radio />} label='JSON' />
         </RadioGroup>
       </DialogTitle>
-      <Box p={2}>
-        <Paper elevation={3} style={{ padding: '16px' }}>
-          <Typography variant='body1' component='div'>
-            This XML file does not appear to have any style information associated with it. The document tree is shown
-            below.
-          </Typography>
+      <PerfectScrollbarComponent>
+        <Box p={2}>
+          <Paper elevation={3} style={{ padding: '16px' }}>
+            <Typography variant='body1' component='div'>
+              This XML file does not appear to have any style information associated with it. The document tree is shown
+              below.
+            </Typography>
 
-          <TextareaAutosize
-            value={contentToShow}
-            readOnly
-            style={{ width: '100%', minHeight: '300px', fontSize: '14px', marginTop: '8px' }}
-          />
-          <Box mt={2} textAlign='right'>
-            <Button onClick={handleClose} color='primary'>
-              Close
-            </Button>
-          </Box>
-        </Paper>
-      </Box>
+            <TextareaAutosize
+              value={contentToShow}
+              readOnly
+              style={{ width: '100%', minHeight: '300px', fontSize: '14px', marginTop: '8px' }}
+            />
+            <Box mt={2} textAlign='right'>
+              <Button onClick={handleClose} color='primary' variant='outlined'>
+                Close
+              </Button>
+            </Box>
+          </Paper>
+        </Box>
+      </PerfectScrollbarComponent>
     </Dialog>
   )
 }

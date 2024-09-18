@@ -1,14 +1,13 @@
-import { Box, IconButton, Menu, MenuItem } from '@mui/material'
+import { Box, IconButton, Menu, MenuItem, Checkbox, ListItemText } from '@mui/material'
 import { useState } from 'react'
 
 const SelectBox = props => {
   const { icon, iconButtonProps, menuItems = [], selectedItems = [], setSelectedItems, renderItem, renderKey } = props
 
-  // State variable
+  // State variable for menu open/close
   const [anchorE1, setAnchorE1] = useState(null)
-  const [isMenuSelected, setIsMenuSelected] = useState({})
 
-  const handelMenuSelected = item => {
+  const handleToggle = item => {
     const itemKey = item[renderKey]
     const isSelected = selectedItems.some(selectedItem => selectedItem[renderKey] === itemKey)
 
@@ -19,11 +18,8 @@ const SelectBox = props => {
       updatedSelectedItems = [...selectedItems, item]
     }
 
+    // Update selected items state in parent
     setSelectedItems(updatedSelectedItems)
-    setIsMenuSelected(prevState => ({
-      ...prevState,
-      [itemKey]: !isSelected
-    }))
   }
 
   return (
@@ -34,12 +30,12 @@ const SelectBox = props => {
 
       <Menu anchorEl={anchorE1} open={Boolean(anchorE1)} onClose={() => setAnchorE1(null)}>
         {menuItems.map(item => (
-          <MenuItem
-            key={item[renderKey]}
-            onClick={() => handelMenuSelected(item)}
-            selected={isMenuSelected[item[renderKey]]}
-          >
-            {item[renderItem]}
+          <MenuItem key={item[renderKey]}>
+            <Checkbox
+              checked={selectedItems.some(selectedItem => selectedItem[renderKey] === item[renderKey])}
+              onChange={() => handleToggle(item)}
+            />
+            <ListItemText primary={item[renderItem]} />
           </MenuItem>
         ))}
       </Menu>

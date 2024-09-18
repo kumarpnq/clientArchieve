@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem'
 import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 import Box from '@mui/material/Box'
-
+import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 import useClientMailerList from 'src/api/global/useClientMailerList '
 import useMailRequest from 'src/api/print-headlines/mail/useMailRequest'
 
@@ -350,41 +350,41 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Send Email</DialogTitle>
+      <PerfectScrollbarComponent>
+        <FormGroup style={{ marginLeft: '20px', marginRight: '20px' }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={selectAll}
+                onChange={handleSelectAllChange}
+                indeterminate={selectedEmails.length > 0 && selectedEmails.length < mailList.length}
+              />
+            }
+            label='Select All'
+          />
 
-      <FormGroup style={{ marginLeft: '20px', marginRight: '20px' }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={selectAll}
-              onChange={handleSelectAllChange}
-              indeterminate={selectedEmails.length > 0 && selectedEmails.length < mailList.length}
-            />
-          }
-          label='Select All'
-        />
-
-        {mailList.map(email => (
-          <div key={email} style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <FormControlLabel
-              control={
-                <Checkbox checked={selectedEmails.includes(email)} onChange={() => handleCheckboxChange(email)} />
-              }
-              label={email}
-            />
-            <RadioGroup
-              row
-              value={emailType[email] || 'to'}
-              onChange={e => handleEmailTypeChange(e, email)}
-              style={{ marginLeft: '10px' }}
-            >
-              <FormControlLabel value='to' control={<Radio />} label='To' />
-              <FormControlLabel value='cc' control={<Radio />} label='Cc' />
-              <FormControlLabel value='bcc' control={<Radio />} label='Bcc' />
-            </RadioGroup>
-          </div>
-        ))}
-      </FormGroup>
-
+          {mailList.map(email => (
+            <div key={email} style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <FormControlLabel
+                control={
+                  <Checkbox checked={selectedEmails.includes(email)} onChange={() => handleCheckboxChange(email)} />
+                }
+                label={email}
+              />
+              <RadioGroup
+                row
+                value={emailType[email] || 'to'}
+                onChange={e => handleEmailTypeChange(e, email)}
+                style={{ marginLeft: '10px' }}
+              >
+                <FormControlLabel value='to' control={<Radio />} label='To' />
+                <FormControlLabel value='cc' control={<Radio />} label='Cc' />
+                <FormControlLabel value='bcc' control={<Radio />} label='Bcc' />
+              </RadioGroup>
+            </div>
+          ))}
+        </FormGroup>
+      </PerfectScrollbarComponent>
       <DialogActions>
         {/* <Select value='' displayEmpty onChange={e => handleAllDropdownChange(e.target.value)}>
           <MenuItem value='' disabled>
@@ -393,10 +393,10 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
           <MenuItem value='all'>Select All</MenuItem>
           <MenuItem value='none'>Select None</MenuItem>
         </Select> */}
-        <Button onClick={onClose} color='primary'>
+        <Button onClick={onClose} color='primary' variant='outlined'>
           Cancel
         </Button>
-        <Button onClick={handleSendEmail} color='primary'>
+        <Button onClick={handleSendEmail} sx={{ color: 'text.primary', backgroundColor: 'primary.main' }}>
           Send
         </Button>
       </DialogActions>

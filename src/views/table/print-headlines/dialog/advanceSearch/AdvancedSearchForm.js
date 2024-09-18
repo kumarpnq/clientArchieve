@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -84,62 +85,68 @@ const AdvancedSearchForm = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
       <DialogTitle color='primary'>Advanced Search</DialogTitle>
-      <DialogContent>
-        <TextField
-          label='Search Headline'
-          fullWidth
-          value={searchHeadline}
-          onChange={e => setSearchHeadline(e.target.value)}
-          margin='normal'
-        />
-        <TextField
-          label='Search Body'
-          fullWidth
-          value={searchBody}
-          onChange={e => setSearchBody(e.target.value)}
-          margin='normal'
-        />
-        <TextField
-          label="Combination of These Words  (Use '+' sign eg. abc+xyz)"
-          fullWidth
-          value={combinationOfWords}
-          onChange={e => setCombinationOfWords(e.target.value)}
-          margin='normal'
-        />
-        <TextField
-          label="Any of These Words  (Use '|' sign eg. abc|xyz)"
-          fullWidth
-          value={anyOfWords}
-          onChange={e => setAnyOfWords(e.target.value)}
-          margin='normal'
-        />
-        <TextField
-          label='Exact Phrase'
-          fullWidth
-          value={exactPhrase}
-          onChange={e => setExactPhrase(e.target.value)}
-          margin='normal'
-        />
-        <TextField
-          label='Ignore This'
-          fullWidth
-          value={ignoreThis}
-          onChange={e => setIgnoreThis(e.target.value)}
-          margin='normal'
-        />
-        <TextField
-          label='Journalist'
-          fullWidth
-          value={journalist}
-          onChange={e => setJournalist(e.target.value)}
-          margin='normal'
-        />
-      </DialogContent>
+      <PerfectScrollbarComponent>
+        <DialogContent>
+          <TextField
+            label='Search Headline'
+            fullWidth
+            value={searchHeadline}
+            onChange={e => setSearchHeadline(e.target.value)}
+            margin='normal'
+          />
+          <TextField
+            label='Search Body'
+            fullWidth
+            value={searchBody}
+            onChange={e => setSearchBody(e.target.value)}
+            margin='normal'
+          />
+          <TextField
+            label="Combination of These Words  (Use '+' sign eg. abc+xyz)"
+            fullWidth
+            value={combinationOfWords}
+            onChange={e => setCombinationOfWords(e.target.value)}
+            margin='normal'
+          />
+          <TextField
+            label="Any of These Words  (Use '|' sign eg. abc|xyz)"
+            fullWidth
+            value={anyOfWords}
+            onChange={e => setAnyOfWords(e.target.value)}
+            margin='normal'
+          />
+          <TextField
+            label='Exact Phrase'
+            fullWidth
+            value={exactPhrase}
+            onChange={e => setExactPhrase(e.target.value)}
+            margin='normal'
+          />
+          <TextField
+            label='Ignore This'
+            fullWidth
+            value={ignoreThis}
+            onChange={e => setIgnoreThis(e.target.value)}
+            margin='normal'
+          />
+          <TextField
+            label='Journalist'
+            fullWidth
+            value={journalist}
+            onChange={e => setJournalist(e.target.value)}
+            margin='normal'
+          />
+        </DialogContent>
+      </PerfectScrollbarComponent>
       <DialogActions>
-        <Button onClick={handleCancel} color='primary'>
+        <Button onClick={handleCancel} color='primary' variant='outlined'>
           Cancel
         </Button>
-        <Button onClick={handleSearch} color='primary'>
+        <Button
+          onClick={handleSearch}
+          sx={{ color: 'text.primary', backgroundColor: 'primary.main' }}
+          variant='outlined'
+        >
           Search
         </Button>
       </DialogActions>

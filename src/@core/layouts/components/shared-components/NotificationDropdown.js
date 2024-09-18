@@ -1,10 +1,10 @@
 import React, { useState, Fragment, useEffect } from 'react'
 import { IconButton, Badge, Typography, Button, Link, Box } from '@mui/material'
+import UseBgColor from 'src/@core/hooks/useBgColor'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { useDispatch, useSelector } from 'react-redux'
 import Icon from 'src/@core/components/icon'
 import { styled } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import MuiMenu from '@mui/material/Menu'
 import MuiMenuItem from '@mui/material/MenuItem'
 import PerfectScrollbarComponent from 'react-perfect-scrollbar'
@@ -15,6 +15,7 @@ import useUpdateClientNotification from 'src/api/notifications/useUpdateReadClie
 import { selectNotificationFlag, selectSelectedClient, setNotificationFlag } from 'src/store/apps/user/userSlice'
 import useAutoNotification from 'src/api/notifications/useAutoNotificationStatus'
 import axios from 'axios'
+import { BASE_URL, JOB_SERVER } from 'src/api/base'
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
   '& .MuiMenu-paper': {
@@ -71,15 +72,29 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 const NotificationDropdown = () => {
   useAutoNotification()
 
-  const [anchorEl, setAnchorEl] = useState(null)
+  // * hooks
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
-  const { notificationList, loading } = useFetchNotifications()
+  const bgColors = UseBgColor()
   const { loading: updateLoading, error, data, updateReadClientNotification } = useUpdateClientNotification()
+
+  const [anchorEl, setAnchorEl] = useState(null)
+  const { notificationList, loading } = useFetchNotifications()
   const selectedClient = useSelector(selectSelectedClient)
   const [activeIconFilter, setActiveIconFilter] = useState('all')
   const [filteredData, setFilteredData] = useState([])
-  const unreadNotifications = filteredData.filter(item => !item.readJobStatus)
+  const [selectedData, setSelectedData] = useState([])
+  const unreadNotifications = filteredData?.filter(item => !item.readJobStatus)
+  const clientId = selectedClient ? selectedClient.clientId : null
+
+  const colors = {
+    primary: { ...bgColors.primaryLight },
+    secondary: { ...bgColors.secondaryLight },
+    success: { ...bgColors.successLight },
+    error: { ...bgColors.errorLight },
+    warning: { ...bgColors.warningLight },
+    info: { ...bgColors.infoLight }
+  }
 
   useEffect(() => {
     if (notificationList) {
@@ -95,9 +110,8 @@ const NotificationDropdown = () => {
     const unreadItems = unreadNotifications.map(item => item.jobId)
     if (unreadItems.length > 0) {
       try {
-        // Send API request to mark all unread notifications as "seen"
         await Promise.all(unreadItems.map(jobId => updateReadClientNotification(jobId)))
-        dispatch(setNotificationFlag(!notificationFlag)) // update notification state
+        dispatch(setNotificationFlag(!notificationFlag))
       } catch (error) {
         toast.error('Error marking notifications as seen.')
       }
@@ -135,6 +149,43 @@ const NotificationDropdown = () => {
     setFilteredData(filtered)
   }
 
+  const handleDoubleClick = item => {
+    setSelectedData(prev => {
+      if (prev.some(selectedItem => selectedItem.jobId === item.jobId)) {
+        return prev.filter(selectedItem => selectedItem.jobId !== item.jobId)
+      } else {
+        return [...prev, item]
+      }
+    })
+  }
+
+  const isSelected = item => selectedData.some(selectedItem => selectedItem.jobId === item.jobId)
+
+  // * delete notifications
+  const handleRemoveNotifications = async () => {
+    console.log(selectedData)
+    const jobIds = selectedData.map(i => i.jobId)
+    console.log(jobIds)
+
+    try {
+      const request_data = {
+        clientId,
+        jobIds
+      }
+      const token = localStorage.getItem('accessToken')
+
+      const response = await axios.post(`${JOB_SERVER}/deleteNotifications`, request_data, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      console.log(response)
+      if (response.status === 200) {
+        toast.success('Notification deleted.')
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const dataArray = notificationList?.excelDump || []
   const unreadJobs = dataArray.filter(job => !job.readJobStatus)
   const notificationListCount = unreadJobs?.length
@@ -149,9 +200,10 @@ const NotificationDropdown = () => {
       hour12: true
     })
 
+    const day = date.toLocaleString('en-US', { day: 'numeric' })
     const month = date.toLocaleString('en-US', { month: 'short' })
 
-    return `${hoursAndMinutes}, ${month}`
+    return `${day} ${month}, ${hoursAndMinutes}`
   }
 
   const DownloadLink = ({ item, dumpType }) =>
@@ -208,13 +260,36 @@ const NotificationDropdown = () => {
             <Typography variant='h5' sx={{ cursor: 'text' }}>
               Notifications
             </Typography>
-            <CustomChip
-              skin='light'
-              size='small'
-              color='primary'
-              label={`
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <CustomChip
+                skin='light'
+                size='small'
+                color='primary'
+                label={`
                 ${notificationListCount} New`}
-            />
+              />
+              <Typography
+                onClick={() => {
+                  setSelectedData(selectedData.length === filteredData?.length ? [] : [...filteredData])
+                }}
+              >
+                <CustomChip
+                  skin='light'
+                  size='small'
+                  color='primary'
+                  label={selectedData.length === filteredData?.length ? 'None' : 'All'}
+                />
+              </Typography>
+              {!!selectedData.length && (
+                <CustomTooltip title='Delete'>
+                  <Badge badgeContent={selectedData.length} color='primary'>
+                    <Typography color='primary' onClick={handleRemoveNotifications}>
+                      <Icon icon={'material-symbols-light:delete-outline'} />
+                    </Typography>
+                  </Badge>
+                </CustomTooltip>
+              )}
+            </Box>
           </Box>
         </MenuItem>
         <MenuItem disableRipple disableTouchRipple sx={{ height: 50 }}>
@@ -261,8 +336,18 @@ const NotificationDropdown = () => {
         </MenuItem>
         {/* <MenuItem> */}
         <PerfectScrollbar>
-          {filteredData.map((item, index) => (
-            <MenuItem key={index} sx={{ width: '100%', display: 'flex', flexDirection: 'column', cursor: 'text' }}>
+          {filteredData?.map((item, index) => (
+            <MenuItem
+              key={index}
+              sx={{
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                cursor: 'text',
+                backgroundColor: isSelected(item) ? colors.primary : 'transparent'
+              }}
+              onDoubleClick={() => handleDoubleClick(item)}
+            >
               <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-evenly' }}>
                 <Box
                   sx={{
@@ -273,7 +358,7 @@ const NotificationDropdown = () => {
                     marginLeft: '10px'
                   }}
                 />
-                <Typography variant='body2'>{item.jobName.substring(0, 30) + '...'}</Typography>
+                <Typography variant='body2'>{item.jobName.substring(0, 27) + '...'}</Typography>
 
                 <Typography variant='body2' fontSize={'0.7em'}>
                   {formatDate(item.jobRequestTime)}
