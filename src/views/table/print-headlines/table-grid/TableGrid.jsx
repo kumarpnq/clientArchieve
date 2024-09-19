@@ -1,13 +1,13 @@
-import { Box, CircularProgress, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
-import Pagination from '../Pagination';
-import SelectBox from 'src/@core/components/select';
-import { Icon } from '@iconify/react';
-import dayjs from 'dayjs';
+import { Box, CircularProgress, Typography } from '@mui/material'
+import React, { useCallback, useEffect, useState } from 'react'
+import Pagination from '../Pagination'
+import SelectBox from 'src/@core/components/select'
+import { Icon } from '@iconify/react'
+import dayjs from 'dayjs'
 
-const renderArticle = (params) => {
-  const { row } = params;
-  const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY');
+const renderArticle = params => {
+  const { row } = params
+  const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -19,8 +19,8 @@ const renderArticle = (params) => {
         <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
       </Typography>
     </Box>
-  );
-};
+  )
+}
 
 const TableGrid = ({
   loading,
@@ -42,36 +42,36 @@ const TableGrid = ({
   handleRightPagination,
   handleRecordsPerPageChange
 }) => {
-  const [tableSelect, setTableSelect] = useState({});
-  const [dropdownVisible, setDropdownVisible] = useState(null);
+  const [tableSelect, setTableSelect] = useState({})
+  const [dropdownVisible, setDropdownVisible] = useState(null)
 
-  const handleDropdownToggle = (index) => {
-    setDropdownVisible(dropdownVisible === index ? null : index);
-  };
+  const handleDropdownToggle = index => {
+    setDropdownVisible(dropdownVisible === index ? null : index)
+  }
 
   const handleAction = (action, article) => {
     if (action === 'view') {
-      const articleCode = article.link;
-      window.open(`/article-view?articleCode=${articleCode}`, '_blank');
+      const articleCode = article.link
+      window.open(`/article-view?articleCode=${articleCode}`, '_blank')
     } else if (action === 'edit') {
-      fetchReadArticleFile('jpg', article);
-      setEditDetailsDialogOpen(true);
-      setSelectedArticle(article);
+      fetchReadArticleFile('jpg', article)
+      setEditDetailsDialogOpen(true)
+      setSelectedArticle(article)
     }
-    setDropdownVisible(null);
-  };
+    setDropdownVisible(null)
+  }
 
-  const handleCheckboxChange = (articleId) => {
-    setTableSelect((prev) => ({
+  const handleCheckboxChange = articleId => {
+    setTableSelect(prev => ({
       ...prev,
       [articleId]: !prev[articleId] ? articleId : null
-    }));
-  };
+    }))
+  }
 
   // Split the articles array into two parts
-  const halfwayIndex = Math.ceil(articles.length / 2);
-  const firstHalf = articles.slice(0, halfwayIndex);
-  const secondHalf = articles.slice(halfwayIndex);
+  const halfwayIndex = Math.ceil(articles.length / 2)
+  const firstHalf = articles.slice(0, halfwayIndex)
+  const secondHalf = articles.slice(halfwayIndex)
 
   return (
     <Box p={2}>
@@ -85,19 +85,34 @@ const TableGrid = ({
             <Box display='flex'>
               {isMobileView ? null : (
                 <Box flex='1' p={2} pr={1}>
-                  <div style={{ padding: '20px', height: "45rem", overflow: "scroll" }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', display: "flex", overflow: "auto" }}>
+                  <div style={{ padding: '20px', height: '45rem', overflow: 'scroll' }}>
+                    <table
+                      style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        display: 'flex',
+                        overflow: 'auto',
+                        gap: '1.5rem',
+                        justifyContent: 'space-between'
+                      }}
+                    >
                       {/* First Half */}
-                      <tbody>
+                      <tbody style={{ width: '100%' }}>
                         {firstHalf.map((article, index) => (
-                          <tr key={index}>
+                          <tr key={index} style={{ width: '100%' }}>
                             <td style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'center' }}>
-                              <input type='checkbox' checked={Boolean(tableSelect[article.articleId])} onChange={() => handleCheckboxChange(article.articleId)} />
+                              <input
+                                type='checkbox'
+                                checked={Boolean(tableSelect[article.articleId])}
+                                onChange={() => handleCheckboxChange(article.articleId)}
+                              />
                             </td>
                             <td style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'center' }}>
                               <SelectBox
                                 icon={<Icon icon='ion:add' />}
-                                iconButtonProps={{ sx: { color: Boolean(article.publication.length) ? 'primary.main' : 'primary' } }}
+                                iconButtonProps={{
+                                  sx: { color: Boolean(article.publication.length) ? 'primary.main' : 'primary' }
+                                }}
                                 renderItem='publicationName'
                                 renderKey='articleId'
                                 menuItems={article.publications}
@@ -106,27 +121,48 @@ const TableGrid = ({
                               />
                             </td>
                             <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                              <div style={{ display: 'flex', flexDirection: "column", gap: "0.5rem", justifyContent: 'space-between' }}>
-                                <span style={{ width: "25rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '0.5rem',
+                                  justifyContent: 'space-between'
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    width: '35rem',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                  }}
+                                >
                                   {article.headline}
                                 </span>
                                 <span>{article.publication}</span>
                               </div>
                             </td>
-                            <td style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'center', position: 'relative' }}>
+                            <td
+                              style={{
+                                border: '1px solid #ccc',
+                                padding: '8px',
+                                textAlign: 'center',
+                                position: 'relative'
+                              }}
+                            >
                               <select
                                 data-prev=''
-                                onClick={(e) => {
-                                  const prev = e.currentTarget.getAttribute('data-prev');
+                                onClick={e => {
+                                  const prev = e.currentTarget.getAttribute('data-prev')
                                   if (e.target.value === 'view') {
-                                    handleAction('view', article);
-                                    e.currentTarget.setAttribute('data-prev', 'view');
+                                    handleAction('view', article)
+                                    e.currentTarget.setAttribute('data-prev', 'view')
                                   }
                                   if (e.target.value === 'edit') {
-                                    handleAction('edit', article);
-                                    e.currentTarget.setAttribute('data-prev', 'edit');
+                                    handleAction('edit', article)
+                                    e.currentTarget.setAttribute('data-prev', 'edit')
                                   }
-                                  e.currentTarget.value = '...';
+                                  e.currentTarget.value = '...'
                                 }}
                               >
                                 <option>...</option>
@@ -143,12 +179,18 @@ const TableGrid = ({
                         {secondHalf.map((article, index) => (
                           <tr key={index}>
                             <td style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'center' }}>
-                              <input type='checkbox' checked={Boolean(tableSelect[article.articleId])} onChange={() => handleCheckboxChange(article.articleId)} />
+                              <input
+                                type='checkbox'
+                                checked={Boolean(tableSelect[article.articleId])}
+                                onChange={() => handleCheckboxChange(article.articleId)}
+                              />
                             </td>
                             <td style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'center' }}>
                               <SelectBox
                                 icon={<Icon icon='ion:add' />}
-                                iconButtonProps={{ sx: { color: Boolean(article.publication.length) ? 'primary.main' : 'primary' } }}
+                                iconButtonProps={{
+                                  sx: { color: Boolean(article.publication.length) ? 'primary.main' : 'primary' }
+                                }}
                                 renderItem='publicationName'
                                 renderKey='articleId'
                                 menuItems={article.publications}
@@ -157,27 +199,48 @@ const TableGrid = ({
                               />
                             </td>
                             <td style={{ border: '1px solid #ccc', padding: '8px' }}>
-                              <div style={{ display: 'flex', flexDirection: "column", gap: "0.5rem", justifyContent: 'space-between' }}>
-                                <span style={{ width: "25rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '0.5rem',
+                                  justifyContent: 'space-between'
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    width: '25rem',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                  }}
+                                >
                                   {article.headline}
                                 </span>
                                 <span>{article.publication}</span>
                               </div>
                             </td>
-                            <td style={{ border: '1px solid #ccc', padding: '8px', textAlign: 'center', position: 'relative' }}>
+                            <td
+                              style={{
+                                border: '1px solid #ccc',
+                                padding: '8px',
+                                textAlign: 'center',
+                                position: 'relative'
+                              }}
+                            >
                               <select
                                 data-prev=''
-                                onClick={(e) => {
-                                  const prev = e.currentTarget.getAttribute('data-prev');
+                                onClick={e => {
+                                  const prev = e.currentTarget.getAttribute('data-prev')
                                   if (e.target.value === 'view') {
-                                    handleAction('view', article);
-                                    e.currentTarget.setAttribute('data-prev', 'view');
+                                    handleAction('view', article)
+                                    e.currentTarget.setAttribute('data-prev', 'view')
                                   }
                                   if (e.target.value === 'edit') {
-                                    handleAction('edit', article);
-                                    e.currentTarget.setAttribute('data-prev', 'edit');
+                                    handleAction('edit', article)
+                                    e.currentTarget.setAttribute('data-prev', 'edit')
                                   }
-                                  e.currentTarget.value = '...';
+                                  e.currentTarget.value = '...'
                                 }}
                               >
                                 <option>...</option>
@@ -198,13 +261,13 @@ const TableGrid = ({
               autoHeight
               disableColumnMenu
               rows={articles}
-              columns={customArticleHeader.filter((column) => {
-                return column.field !== 'select' && column.field !== 'edit';
+              columns={customArticleHeader.filter(column => {
+                return column.field !== 'select' && column.field !== 'edit'
               })}
               pagination={false}
-              onRowClick={(params) => handleRowClick(params)}
+              onRowClick={params => handleRowClick(params)}
               onRowSelectionModelChange={(item, params) => handleRowCheck('center', item)}
-              getRowId={(row) => row.articleId}
+              getRowId={row => row.articleId}
               hideFooter
               checkboxSelection
             />
@@ -223,7 +286,7 @@ const TableGrid = ({
         </>
       )}
     </Box>
-  );
-};
+  )
+}
 
-export default React.memo(TableGrid);
+export default React.memo(TableGrid)
