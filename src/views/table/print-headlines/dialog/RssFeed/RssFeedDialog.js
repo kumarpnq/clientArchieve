@@ -49,7 +49,7 @@ const RssFeedDialog = ({ open, handleClose, selectedArticles }) => {
     const xmlOptions = { compact: true, ignoreComment: true, spaces: 4 }
 
     const xmlContent = selectedArticles.map((article, index) => {
-      console.log('checkingxml==>', article)
+      // console.log('checkingxml==>', article)
       // Remove unwanted elements from the article object
       const { articleId, clientId, ...filteredArticle } = article
 
