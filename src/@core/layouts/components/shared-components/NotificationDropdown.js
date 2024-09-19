@@ -15,7 +15,7 @@ import useUpdateClientNotification from 'src/api/notifications/useUpdateReadClie
 import { selectNotificationFlag, selectSelectedClient, setNotificationFlag } from 'src/store/apps/user/userSlice'
 import useAutoNotification from 'src/api/notifications/useAutoNotificationStatus'
 import axios from 'axios'
-import { BASE_URL, JOB_SERVER } from 'src/api/base'
+import { JOB_SERVER } from 'src/api/base'
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
   '& .MuiMenu-paper': {
@@ -76,10 +76,11 @@ const NotificationDropdown = () => {
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const bgColors = UseBgColor()
-  const { loading: updateLoading, error, data, updateReadClientNotification } = useUpdateClientNotification()
+  const [fetchFlag, setFetchFlag] = useState(false)
 
+  const { loading: updateLoading, error, data, updateReadClientNotification } = useUpdateClientNotification()
   const [anchorEl, setAnchorEl] = useState(null)
-  const { notificationList, loading } = useFetchNotifications()
+  const { notificationList, loading } = useFetchNotifications(fetchFlag, setFetchFlag)
   const selectedClient = useSelector(selectSelectedClient)
   const [activeIconFilter, setActiveIconFilter] = useState('all')
   const [filteredData, setFilteredData] = useState([])
@@ -124,7 +125,6 @@ const NotificationDropdown = () => {
     if (error) {
       toast.error('something wrong.')
     } else {
-      // toast.success(data?.message || 'Successfully read.')
       console.log('Success')
     }
   }
@@ -163,12 +163,11 @@ const NotificationDropdown = () => {
 
   // * delete notifications
   const handleRemoveNotifications = async () => {
-    console.log(selectedData)
     const jobIds = selectedData.map(i => i.jobId)
-    console.log(jobIds)
-
+    const userId = JSON.parse(localStorage.getItem('userData'))?.email
     try {
       const request_data = {
+        userId,
         clientId,
         jobIds
       }
@@ -177,12 +176,14 @@ const NotificationDropdown = () => {
       const response = await axios.post(`${JOB_SERVER}/deleteNotifications`, request_data, {
         headers: { Authorization: `Bearer ${token}` }
       })
-      console.log(response)
+
       if (response.status === 200) {
         toast.success('Notification deleted.')
+        setSelectedData([])
+        setFetchFlag(true)
       }
     } catch (error) {
-      console.log(error)
+      toast.error('Error while deleting.')
     }
   }
 

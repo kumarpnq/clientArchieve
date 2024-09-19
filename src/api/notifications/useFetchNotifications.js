@@ -6,7 +6,7 @@ import { JOB_SERVER } from '../base'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient, selectNotificationFlag } from 'src/store/apps/user/userSlice'
 
-const useFetchNotifications = () => {
+const useFetchNotifications = (fetchFlag, setFetchFlag) => {
   const [notificationList, setNotificationList] = useState([])
   const [loading, setLoading] = useState(true)
   const selectedClient = useSelector(selectSelectedClient)
@@ -40,11 +40,13 @@ const useFetchNotifications = () => {
       } catch (error) {
         console.error(error)
         setLoading(false)
+      } finally {
+        setFetchFlag(false)
       }
     }
 
     fetchData()
-  }, [clientId, notificationFlag])
+  }, [clientId, notificationFlag, fetchFlag])
 
   return { notificationList, loading }
 }
