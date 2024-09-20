@@ -50,7 +50,7 @@ const TableGrid = ({
   const [tableSelectTwo, setTableSelectTwo] = useState({})
   const [dropdownVisible, setDropdownVisible] = useState(null)
 
-  console.log(articles)
+  console.log('ARTCIEL==>', articles)
 
   const halfIndex = Math.ceil(articles.length / 2)
   const firstPortionArticles = articles.slice(0, halfIndex)

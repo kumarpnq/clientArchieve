@@ -347,7 +347,7 @@ const TableSelection = () => {
             .join(', ')
 
           // if(shortCutData)
-          const response = await fetchArticles({
+          let response = await fetchArticles({
             clientIds: clientId,
             companyIds: selectedCompaniesString,
 
@@ -392,7 +392,7 @@ const TableSelection = () => {
               articleDate: `${articleInfo.articleDate}T00:00:00`,
               articleUploadId: uploadInfo.uploadId,
               articleJournalist: '', // no information available in input
-              companies: companyTag.map(company => ({
+              companies: companyTag?.map(company => ({
                 id: company.id,
                 name: company.name
               })),
