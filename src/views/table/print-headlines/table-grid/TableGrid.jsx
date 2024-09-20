@@ -1,12 +1,13 @@
-import { Box, CircularProgress, Typography } from '@mui/material'
+import { Box, Checkbox, CircularProgress, Divider, Typography } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import Pagination from '../Pagination'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
 import { FixedSizeList as List } from 'react-window'
-
-
+import { DataGrid } from '@mui/x-data-grid'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+import OptionsMenu from 'src/@core/components/option-menu'
 
 const renderArticle = params => {
   const { row } = params
@@ -49,12 +50,15 @@ const TableGrid = ({
   const [tableSelectTwo, setTableSelectTwo] = useState({})
   const [dropdownVisible, setDropdownVisible] = useState(null)
 
+  console.log(articles)
+
+  const halfIndex = Math.ceil(articles.length / 2)
+  const firstPortionArticles = articles.slice(0, halfIndex)
+  const secondPortionArticles = articles.slice(halfIndex)
+
   const handleDropdownToggle = index => {
     setDropdownVisible(dropdownVisible === index ? null : index)
   }
-
-
-  console.log("checkingselec==>", selectedArticles)
 
   const handleAction = (action, article) => {
     if (action === 'view') {
@@ -71,133 +75,165 @@ const TableGrid = ({
   const handleCheckboxChange = articleId => {
     setTableSelect(prev => ({
       ...prev,
-      [articleId]: !prev[articleId] ? articleId : null // Toggle selection for specific articleId
-    }));
-  };
+      [articleId]: !prev[articleId] ? articleId : null
+    }))
+  }
 
   const handleCheckboxChangeTwo = articleId => {
     setTableSelectTwo(prev => ({
       ...prev,
-      [articleId]: !prev[articleId] ? articleId : null // Toggle selection for specific articleId
-    }));
-  };
-
-
-
+      [articleId]: !prev[articleId] ? articleId : null
+    }))
+  }
 
   const isArticleSelected = articleId => {
     return selectedArticles.some(article => article.articleId === articleId)
   }
 
-
   const Row = ({ index, style }) => {
-    const article = articles[index]
+    const firstArticle = firstPortionArticles[index]
+    const secondArticle = secondPortionArticles[index]
 
     return (
       <tr key={index} style={{ width: '100%', ...style }}>
-        <td style={{ borderBottom: '1px solid #ccc', padding: '8px', textAlign: 'center' }}>
-          <input
-            type='checkbox'
-            style={{ transform: 'scale(1.5)', margin: '8px' }}
-            checked={Boolean(tableSelect[article.articleId]) || isArticleSelected(article.articleId)}
-            onChange={() => handleCheckboxChange(article.articleId)}
-          />
-        </td>
-        <td style={{ borderBottom: '1px solid #ccc', padding: '8px', textAlign: 'center' }}>
-          <SelectBox
-            icon={<Icon icon='ion:add' />}
-            iconButtonProps={{ sx: { color: Boolean(article.publication?.length) ? 'primary.main' : 'primary' } }}
-            renderItem='publicationName'
-            renderKey='articleId'
-            menuItems={article.publications}
-            selectedItems={selectedArticles}
-            setSelectedItems={setSelectedArticles}
-          />
-        </td>
-        <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', justifyContent: 'space-between' }}>
-            <span style={{ width: '25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {article.headline}
-            </span>
-            <span>{article.publication}</span>
-          </div>
-        </td>
-        <td style={{ borderBottom: '1px solid #ccc', padding: '8px', textAlign: 'center', position: 'relative' }}>
-          <select
-            data-prev=''
-            onClick={e => {
-              const prev = e.currentTarget.getAttribute('data-prev')
-              if (e.target.value === 'view') {
-                handleAction('view', article)
-                e.currentTarget.setAttribute('data-prev', 'view')
-              }
-              if (e.target.value === 'edit') {
-                handleAction('edit', article)
-                e.currentTarget.setAttribute('data-prev', 'edit')
-              }
-              e.currentTarget.value = '...'
-            }}
-          >
-            <option>...</option>
-            <option value='view'>View Article</option>
-            <option value='edit'>Edit Detail</option>
-          </select>
-        </td>
+        {/* first portion */}
+        {firstArticle && (
+          <>
+            <td className='table-data'>
+              <Checkbox
+                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
+                onChange={() => handleCheckboxChange(firstArticle.articleId)}
+              />
+            </td>
+            <td className='table-data'>
+              <SelectBox
+                icon={<Icon icon='ion:add' />}
+                iconButtonProps={{
+                  sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                }}
+                renderItem='publicationName'
+                renderKey='articleId'
+                menuItems={firstArticle.publications}
+                selectedItems={selectedArticles}
+                setSelectedItems={setSelectedArticles}
+              />
+            </td>
+            <td className='table-data'>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+                <span
+                  style={{
+                    width: '25rem',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontSize: '0.9em',
+                    textAlign: 'left'
+                  }}
+                >
+                  {firstArticle.headline.substring(0, 70) + '...'}
+                </span>
+                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
+              </div>
+            </td>
+            <td className='table-data'>
+              <OptionsMenu
+                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                options={[
+                  {
+                    text: 'View Article',
+                    menuItemProps: {
+                      onClick: () => {
+                        const articleCode = firstArticle.link || 'default-link'
+                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                      }
+                    }
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        fetchReadArticleFile('jpg', firstArticle)
+                        setEditDetailsDialogOpen(true)
+                        setSelectedArticle(firstArticle)
+                      }
+                    }
+                  }
+                ]}
+              />
+            </td>
+          </>
+        )}
 
-        <td style={{ padding: '8px' }}></td>
-
-        <td style={{ borderBottom: '1px solid #ccc', padding: '8px', textAlign: 'center', }}>
-          <input
-            type='checkbox'
-            style={{ transform: 'scale(1.5)', margin: '8px' }}
-            checked={Boolean(tableSelectTwo[article.articleId]) || isArticleSelected(article.articleId)}
-            onChange={() => handleCheckboxChangeTwo(article.articleId)}
-          />
-        </td>
-        <td style={{ borderBottom: '1px solid #ccc', padding: '8px', textAlign: 'center' }}>
-          <SelectBox
-            icon={<Icon icon='ion:add' />}
-            iconButtonProps={{ sx: { color: Boolean(article?.publication?.length) ? 'primary.main' : 'primary' } }}
-            renderItem='publicationName'
-            renderKey='articleId'
-            menuItems={article.publications}
-            selectedItems={selectedArticles}
-            setSelectedItems={setSelectedArticles}
-          />
-        </td>
-        <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', justifyContent: 'space-between' }}>
-            <span style={{ width: '25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {article.headline}
-            </span>
-            <span>{article.publication}</span>
-          </div>
-        </td>
-        <td style={{ borderBottom: '1px solid #ccc', padding: '8px', textAlign: 'center', position: 'relative' }}>
-          <select
-            data-prev=''
-            onClick={e => {
-              const prev = e.currentTarget.getAttribute('data-prev')
-              if (e.target.value === 'view') {
-                handleAction('view', article)
-                e.currentTarget.setAttribute('data-prev', 'view')
-              }
-              if (e.target.value === 'edit') {
-                handleAction('edit', article)
-                e.currentTarget.setAttribute('data-prev', 'edit')
-              }
-              e.currentTarget.value = '...'
-            }}
-          >
-            <option>...</option>
-            <option value='view'>View Article</option>
-            <option value='edit'>Edit Detail</option>
-          </select>
-        </td>
+        {/* second portion */}
+        {secondArticle && (
+          <>
+            <td className='table-data'>
+              <Checkbox
+                checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
+                onChange={() => handleCheckboxChangeTwo(secondArticle.articleId)}
+              />
+            </td>
+            <td className='table-data'>
+              <SelectBox
+                icon={<Icon icon='ion:add' />}
+                iconButtonProps={{
+                  sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
+                }}
+                renderItem='publicationName'
+                renderKey='articleId'
+                menuItems={secondArticle.publications}
+                selectedItems={selectedArticles}
+                setSelectedItems={setSelectedArticles}
+              />
+            </td>
+            <td className='table-data'>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+                <span
+                  style={{
+                    width: '25rem',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontSize: '0.9em',
+                    textAlign: 'left'
+                  }}
+                >
+                  {secondArticle.headline}
+                </span>
+                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
+              </div>
+            </td>
+            <td className='table-data'>
+              <OptionsMenu
+                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                options={[
+                  {
+                    text: 'View Article',
+                    menuItemProps: {
+                      onClick: () => {
+                        const articleCode = secondArticle.link || 'default-link'
+                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                      }
+                    }
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        fetchReadArticleFile('jpg', secondArticle)
+                        setEditDetailsDialogOpen(true)
+                        setSelectedArticle(secondArticle)
+                      }
+                    }
+                  }
+                ]}
+              />
+            </td>
+          </>
+        )}
       </tr>
     )
   }
-
 
   return (
     <Box p={2}>
@@ -211,32 +247,34 @@ const TableGrid = ({
             <Box display='flex'>
               {isMobileView ? null : (
                 <Box flex='1' p={2} pr={1}>
-                  {articles.length > 0 ?
-                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                  {articles.length > 0 ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <table
                         style={{
                           width: '100%',
                           borderCollapse: 'collapse',
                           display: 'flex',
+
                           overflow: 'auto',
                           gap: '1.5rem',
                           justifyContent: 'space-between'
                         }}
                       >
-
                         <List
-                          height={720}
-                          itemCount={articles.length}
-                          itemSize={80}
+                          height={650}
+                          itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
+                          itemSize={50}
                           width={'100%'}
                         >
                           {Row}
                         </List>
                       </table>
-                    </div> : <div style={{ textAlign: "center", marginTop: "1rem", marginBottom: "1rem" }}>
+                    </div>
+                  ) : (
+                    <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
                       <span>No Data Found</span>
                     </div>
-                  }
+                  )}
                 </Box>
               )}
             </Box>

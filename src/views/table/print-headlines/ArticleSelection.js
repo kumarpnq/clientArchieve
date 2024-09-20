@@ -380,7 +380,38 @@ const TableSelection = () => {
 
           const totalRecords = response.length
 
-          setArticles(response)
+          const transformedArray = response.map(item => {
+            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag } = item._source
+
+            return {
+              articleId: articleId,
+              headline: articleData.headlines,
+              summary: articleData.summary,
+              publication: publicationInfo.name,
+              publicationId: publicationInfo.id,
+              articleDate: `${articleInfo.articleDate}T00:00:00`,
+              articleUploadId: uploadInfo.uploadId,
+              articleJournalist: '', // no information available in input
+              companies: companyTag.map(company => ({
+                id: company.id,
+                name: company.name
+              })),
+              clientId: '', // no information available in input
+              clientName: '', // no information available in input
+              editionType: '', // no information available in input
+              editionTypeName: '', // no information available in input
+              publicationCategory: '', // no information available in input
+              circulation: 0, // no information available in input
+              publicationType: '', // no information available in input
+              language: articleData.language,
+              size: articleData.space,
+              pageNumber: articleData.pageNumber,
+              children: [], // assuming no children for simplicity
+              link: '' // no information available in input
+            }
+          })
+
+          setArticles(transformedArray)
           console.log('checkingconsole=>', response)
 
           let obj = {}

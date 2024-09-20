@@ -10,6 +10,7 @@ const removeSpacesFromCommaSeparatedString = str => {
         .join(',')
     : null
 }
+
 export const fetchArticles = async ({
   clientIds,
   companyIds,
@@ -86,6 +87,7 @@ export const fetchArticles = async ({
     )
 
     console.log('checkingresponsue-==<', response.data.data.doc)
+
     return response.data.data.doc
   } catch (error) {
     if (axios.isCancel(error)) {
