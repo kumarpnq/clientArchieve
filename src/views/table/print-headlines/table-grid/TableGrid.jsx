@@ -26,6 +26,33 @@ const renderArticle = params => {
   )
 }
 
+
+const getTooltipContent = row => {
+  const companies = Array.isArray(row.companies) ? row.companies : []
+
+  return (
+    <List>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Summary :{' '}
+          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+            {row.summary}
+          </Typography>
+        </Typography>
+      </ListItem>
+
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Companies :{' '}
+          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+            {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
+          </Typography>
+        </Typography>
+      </ListItem>
+    </List>
+  )
+}
+
 const TableGrid = ({
   loading,
   isNotResponsive,
@@ -100,16 +127,17 @@ const TableGrid = ({
         {firstArticle && (
           <>
             <td className='table-data'>
-              <input
+              {/* <input
                 type='checkbox'
                 style={{ transform: 'scale(1.5)', margin: '8px' }}
                 checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
                 onChange={() => handleCheckboxChange(firstArticle.articleId)}
-              />
-              {/* <Checkbox
+              /> */}
+
+              <Checkbox
                 checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
                 onChange={() => handleCheckboxChange(firstArticle.articleId)}
-              /> */}
+              />
             </td>
             <td className='table-data'>
               <SelectBox
@@ -142,7 +170,7 @@ const TableGrid = ({
               </div>
             </td>
             <td className='table-data'>
-              <select
+              {/* <select
                 data-prev=''
                 onClick={e => {
                   const prev = e.currentTarget.getAttribute('data-prev')
@@ -160,7 +188,32 @@ const TableGrid = ({
                 <option>...</option>
                 <option value='view'>View Article</option>
                 <option value='edit'>Edit Detail</option>
-              </select>
+              </select> */}
+
+              <OptionsMenu
+                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                options={[
+                  {
+                    text: 'View Article',
+                    menuItemProps: {
+                      onClick: () => {
+                        const articleCode = firstArticle.link
+                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                      }
+                    }
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        fetchReadArticleFile('jpg', firstArticle)
+                        setEditDetailsDialogOpen(true)
+                        setSelectedArticle(firstArticle)
+                      }
+                    }
+                  }
+                ]}
+              />
             </td>
           </>
         )}
@@ -169,16 +222,16 @@ const TableGrid = ({
         {secondArticle && (
           <>
             <td className='table-data'>
-              <input
+              {/* <input
                 type='checkbox'
                 style={{ transform: 'scale(1.5)', margin: '8px' }}
                 checked={Boolean(tableSelect[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
                 onChange={() => handleCheckboxChange(secondArticle.articleId)}
-              />
-              {/* <Checkbox
+              /> */}
+              <Checkbox
                 checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
                 onChange={() => handleCheckboxChangeTwo(secondArticle.articleId)}
-              /> */}
+              />
             </td>
             <td className='table-data'>
               <SelectBox
@@ -211,7 +264,7 @@ const TableGrid = ({
               </div>
             </td>
             <td className='table-data'>
-              <select
+              {/* <select
                 data-prev=''
                 onClick={e => {
                   const prev = e.currentTarget.getAttribute('data-prev')
@@ -229,7 +282,32 @@ const TableGrid = ({
                 <option>...</option>
                 <option value='view'>View Article</option>
                 <option value='edit'>Edit Detail</option>
-              </select>
+              </select> */}
+              <OptionsMenu
+                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                options={[
+                  {
+                    text: 'View Article',
+                    menuItemProps: {
+                      onClick: () => {
+                        const articleCode = secondArticle.link
+                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                      }
+                    }
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        fetchReadArticleFile('jpg', secondArticle)
+                        setEditDetailsDialogOpen(true)
+                        setSelectedArticle(secondArticle)
+                      }
+                    }
+                  }
+                ]}
+              />
+
             </td>
           </>
         )}
