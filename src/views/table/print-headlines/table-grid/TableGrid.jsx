@@ -100,10 +100,16 @@ const TableGrid = ({
         {firstArticle && (
           <>
             <td className='table-data'>
-              <Checkbox
+              <input
+                type='checkbox'
+                style={{ transform: 'scale(1.5)', margin: '8px' }}
                 checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
                 onChange={() => handleCheckboxChange(firstArticle.articleId)}
               />
+              {/* <Checkbox
+                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
+                onChange={() => handleCheckboxChange(firstArticle.articleId)}
+              /> */}
             </td>
             <td className='table-data'>
               <SelectBox
@@ -136,30 +142,25 @@ const TableGrid = ({
               </div>
             </td>
             <td className='table-data'>
-              <OptionsMenu
-                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-                options={[
-                  {
-                    text: 'View Article',
-                    menuItemProps: {
-                      onClick: () => {
-                        const articleCode = firstArticle.link || 'default-link'
-                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
-                      }
-                    }
-                  },
-                  {
-                    text: 'Edit Detail',
-                    menuItemProps: {
-                      onClick: () => {
-                        fetchReadArticleFile('jpg', firstArticle)
-                        setEditDetailsDialogOpen(true)
-                        setSelectedArticle(firstArticle)
-                      }
-                    }
+              <select
+                data-prev=''
+                onClick={e => {
+                  const prev = e.currentTarget.getAttribute('data-prev')
+                  if (e.target.value === 'view') {
+                    handleAction('view', article)
+                    e.currentTarget.setAttribute('data-prev', 'view')
                   }
-                ]}
-              />
+                  if (e.target.value === 'edit') {
+                    handleAction('edit', article)
+                    e.currentTarget.setAttribute('data-prev', 'edit')
+                  }
+                  e.currentTarget.value = '...'
+                }}
+              >
+                <option>...</option>
+                <option value='view'>View Article</option>
+                <option value='edit'>Edit Detail</option>
+              </select>
             </td>
           </>
         )}
@@ -168,10 +169,16 @@ const TableGrid = ({
         {secondArticle && (
           <>
             <td className='table-data'>
-              <Checkbox
+              <input
+                type='checkbox'
+                style={{ transform: 'scale(1.5)', margin: '8px' }}
+                checked={Boolean(tableSelect[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
+                onChange={() => handleCheckboxChange(secondArticle.articleId)}
+              />
+              {/* <Checkbox
                 checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
                 onChange={() => handleCheckboxChangeTwo(secondArticle.articleId)}
-              />
+              /> */}
             </td>
             <td className='table-data'>
               <SelectBox
@@ -204,30 +211,25 @@ const TableGrid = ({
               </div>
             </td>
             <td className='table-data'>
-              <OptionsMenu
-                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-                options={[
-                  {
-                    text: 'View Article',
-                    menuItemProps: {
-                      onClick: () => {
-                        const articleCode = secondArticle.link || 'default-link'
-                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
-                      }
-                    }
-                  },
-                  {
-                    text: 'Edit Detail',
-                    menuItemProps: {
-                      onClick: () => {
-                        fetchReadArticleFile('jpg', secondArticle)
-                        setEditDetailsDialogOpen(true)
-                        setSelectedArticle(secondArticle)
-                      }
-                    }
+              <select
+                data-prev=''
+                onClick={e => {
+                  const prev = e.currentTarget.getAttribute('data-prev')
+                  if (e.target.value === 'view') {
+                    handleAction('view', article)
+                    e.currentTarget.setAttribute('data-prev', 'view')
                   }
-                ]}
-              />
+                  if (e.target.value === 'edit') {
+                    handleAction('edit', article)
+                    e.currentTarget.setAttribute('data-prev', 'edit')
+                  }
+                  e.currentTarget.value = '...'
+                }}
+              >
+                <option>...</option>
+                <option value='view'>View Article</option>
+                <option value='edit'>Edit Detail</option>
+              </select>
             </td>
           </>
         )}
