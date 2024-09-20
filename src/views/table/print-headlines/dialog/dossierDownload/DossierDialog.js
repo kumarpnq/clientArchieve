@@ -319,7 +319,8 @@ const DossierDialog = ({
       subject,
       clientId,
       clientName,
-      dossierType
+      dossierType,
+      requestEntity: 'print'
 
       // notificationFlag
     }
@@ -365,6 +366,7 @@ const DossierDialog = ({
             To generate an Dossier Download, you must select at least one article.
           </DialogContentText>
           <Box display='flex' justifyContent='center'>
+            s
             <Button onClick={handleClose} color='primary'>
               Close
             </Button>
