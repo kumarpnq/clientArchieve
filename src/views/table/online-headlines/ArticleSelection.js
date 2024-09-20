@@ -46,6 +46,7 @@ import { Icon } from '@iconify/react'
 import SelectBox from 'src/@core/components/select'
 import ArticleView from './dialog/article-view/view'
 import Grid from './table-grid/Grid'
+import useElasticSocialFeedData from 'src/api/elsatic/getSocialfeed'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -107,6 +108,9 @@ const renderSocialFeed = params => {
 }
 
 const TableSelection = () => {
+  // * mode changer elastic or fast API
+  const isElasticMode = process.env.NEXT_PUBLIC_ELASTIC_MODE
+
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
   const [openArticleView, setOpenArticleView] = useState(false)
@@ -165,6 +169,12 @@ const TableSelection = () => {
   const [dataFetchFlag, setDataFetchFlag] = useState(false)
   const [selectedEditionType, setSelectedEditionType] = useState([])
   const [selectedPublicationType, setSelectedPublicationType] = useState([])
+
+  // * elastic data
+  const fromDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD') : null
+  const { data, loading: ElasticLoading, error } = useElasticSocialFeedData(fromDate)
+
+  console.log(data)
 
   const edition = selectedEditionType?.map(i => {
     return i.editionTypeId
@@ -436,9 +446,9 @@ const TableSelection = () => {
             params: request_params
           })
 
-          const totalRecords = response.data.totalRecords || 0
-
-          setSocialFeeds(response.data.socialFeeds)
+          const totalRecords = response.data.totalRecords || data.length || 0
+          const socialFeedData = isElasticMode === 'true' ? data : response.data.socialFeeds
+          setSocialFeeds(socialFeedData || [])
 
           // Update totalRecords in the state
           setPaginationModel(prevPagination => ({
@@ -676,7 +686,7 @@ const TableSelection = () => {
       )} */}
       {/* DataGrid */}
       <Grid
-        loading={loading}
+        loading={isElasticMode === 'true' ? ElasticLoading : loading}
         leftSocialFeeds={leftSocialFeeds}
         rightSocialFeeds={rightSocialFeeds}
         socialFeeds={socialFeeds}
