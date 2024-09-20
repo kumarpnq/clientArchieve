@@ -351,7 +351,7 @@ const DossierDialog = ({
     setEmail('')
     setSelectedEmail([])
 
-    toast.success(response?.message)
+    toast.success('Dossier request taken successfully.')
   }
 
   if (!dataForDossierDownload || dataForDossierDownload.length === 0) {
