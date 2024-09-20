@@ -2,6 +2,14 @@ import axios from 'axios'
 
 const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
+const removeSpacesFromCommaSeparatedString = str => {
+  return str
+    ? str
+        .split(',')
+        .map(item => item.trim())
+        .join(',')
+    : null
+}
 export const fetchArticles = async ({
   clientIds,
   companyIds,
@@ -31,18 +39,24 @@ export const fetchArticles = async ({
   try {
     const storedToken = localStorage.getItem('accessToken')
 
-    const request_params = {
-      clientIds,
-      companyIds,
+    const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : null
+    const formattedToDate = toDate ? new Date(toDate).toISOString().split('T')[0] : null
 
-      dateType,
-      fromDate,
-      toDate,
+    const formattedMedia = removeSpacesFromCommaSeparatedString(media)
+    const formattedTags = removeSpacesFromCommaSeparatedString(tags)
+    const formattedGeography = removeSpacesFromCommaSeparatedString(geography)
+    const formattedLanguage = removeSpacesFromCommaSeparatedString(language)
+
+    const request_params = {
+      clientIds: '0',
+      dateType: 'CREATED_DATE',
+      fromDate: formattedFromDate,
+      toDate: formattedToDate,
       page,
       recordsPerPage,
-      media,
-      tags,
-      geography,
+      media: formattedMedia,
+      tags: formattedTags,
+      geography: formattedGeography,
       headline,
       body,
       journalist,
@@ -52,19 +66,27 @@ export const fetchArticles = async ({
       phrase,
       editionType,
       publicationCategory,
-      sortby,
-      language
+      sortby: sortby || 'LATEST',
+      language: formattedLanguage
     }
 
-    const response = await axios.get(`${base_url}/clientWisePrintArticles/`, {
-      headers: {
-        Authorization: `Bearer ${storedToken}`
-      },
-      params: request_params,
-      cancelToken: source.token
-    })
+    console.log('recoredperpage==>', recordsPerPage)
 
-    return response.data
+    // const response = await axios.get(`${base_url}/clientWisePrintArticles/`,
+    const response = await axios.get(
+      `http://51.222.9.159:5000/api/v1/client/getPrintArticle`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${storedToken}`
+        },
+        params: request_params,
+        cancelToken: source.token
+      }
+    )
+
+    console.log('checkingresponsue-==<', response.data.data.doc)
+    return response.data.data.doc
   } catch (error) {
     if (axios.isCancel(error)) {
       console.log('Request canceled:', error.message)

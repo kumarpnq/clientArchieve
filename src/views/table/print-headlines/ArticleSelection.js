@@ -378,11 +378,13 @@ const TableSelection = () => {
             publicationCategory: publicationtype
           })
 
-          const totalRecords = response.totalRecords
-          setArticles(response.articles)
+          const totalRecords = response.length
+
+          setArticles(response)
+          console.log('checkingconsole=>', response)
 
           let obj = {}
-          response.articles.map(item => {
+          response?.data?.doc?.map(item => {
             obj[item?.articleId] = item
           })
           setArticleOptimizedObj(obj)
