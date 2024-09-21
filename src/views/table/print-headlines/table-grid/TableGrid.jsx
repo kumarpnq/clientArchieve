@@ -1,4 +1,4 @@
-import { Box, Checkbox, CircularProgress, Divider, Typography } from '@mui/material'
+import { Box, Checkbox, CircularProgress, Divider, Tooltip, Typography } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import Pagination from '../Pagination'
 import SelectBox from 'src/@core/components/select'
@@ -30,25 +30,22 @@ const getTooltipContent = row => {
   const companies = Array.isArray(row.companies) ? row.companies : []
 
   return (
-    <List>
-      <ListItem>
+    <div>
+      <div>
         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
           Summary :{' '}
           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
             {row.summary}
           </Typography>
         </Typography>
-      </ListItem>
-
-      <ListItem>
         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
           Companies :{' '}
           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
             {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
           </Typography>
         </Typography>
-      </ListItem>
-    </List>
+      </div>
+    </div>
   )
 }
 
@@ -153,18 +150,19 @@ const TableGrid = ({
             </td>
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <span
-                  style={{
-                    width: '25rem',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    fontSize: '0.9em',
-                    textAlign: 'left'
-                  }}
-                >
-                  {firstArticle.headline.substring(0, 70) + '...'}
-                </span>
+                <Tooltip title={getTooltipContent(firstArticle)} arrow>
+                  <span
+                    style={{
+                      width: '25rem',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      fontSize: '0.9em',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {firstArticle.headline.substring(0, 70) + '...'}
+                  </span></Tooltip>
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
               </div>
             </td>

@@ -163,29 +163,28 @@ const Grid = props => {
     })
   )
 
-  const getTooltipContent = row => (
-    <List>
-      <ListItem>
-        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-          Summary :{' '}
-          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-            {row?.summary}
-          </Typography>
-        </Typography>
-      </ListItem>
+  const getTooltipContent = row => {
+    const companies = Array.isArray(row.companies) ? row.companies : []
 
-      <ListItem>
-        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-          Companies :{' '}
-          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-            {row.companies.length > 1
-              ? row?.companies?.map(company => company.name).join(', ')
-              : row.companies[0]?.name}
+    return (
+      <div>
+        <div>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Summary :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+              {row.summary}
+            </Typography>
           </Typography>
-        </Typography>
-      </ListItem>
-    </List>
-  )
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Companies :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+              {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
+            </Typography>
+          </Typography>
+        </div>
+      </div>
+    )
+  }
 
   // const Row = ({ index, style }) => {
   //   const firstArticle = firstPortionArticles[index]
@@ -456,6 +455,7 @@ const Grid = props => {
             </td>
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+
                 <span
                   style={{
                     width: '25rem',
