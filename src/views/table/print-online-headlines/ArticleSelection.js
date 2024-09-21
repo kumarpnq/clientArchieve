@@ -12,7 +12,7 @@ import CardHeader from '@mui/material/CardHeader'
 import { DataGrid } from '@mui/x-data-grid'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
-import { FormControlLabel, FormGroup } from '@mui/material'
+import { FormControlLabel, FormGroup, ListItem } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
@@ -48,6 +48,7 @@ import {
 // ** Tooltip
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
+
 // import { List, ListItem } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import OptionsMenu from 'src/@core/components/option-menu'
@@ -111,180 +112,157 @@ const TableSelection = () => {
   }
 
   // ** Renders social feed column
-  // const renderArticle = params => {
-  //   const { row } = params
+  const renderArticle = params => {
+    const { row } = params
 
-  //   const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
+    const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
 
-  //   const getTooltipContent = row => (
-  //     <List>
-  //       <ListItem>
-  //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-  //           Summary :{' '}
-  //           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-  //             {row.summary}
-  //           </Typography>
-  //         </Typography>
-  //       </ListItem>
-  //       <ListItem></ListItem>
-  //       <ListItem>
-  //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-  //           Companies :{' '}
-  //           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-  //             {row.companies.length > 1
-  //               ? row.companies.map(company => company.name).join(', ')
-  //               : row.companies[0]?.name}
-  //           </Typography>
-  //         </Typography>
-  //       </ListItem>
-  //       <ListItem>
-  //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-  //           Edition Type :{' '}
-  //           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-  //             {row.editionTypeName}
-  //           </Typography>
-  //         </Typography>
-  //       </ListItem>
-  //       <ListItem>
-  //         <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-  //           Page Number :{' '}
-  //           <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-  //             {row.pageNumber}
-  //           </Typography>
-  //         </Typography>
-  //       </ListItem>
-  //     </List>
-  //   )
-
-  //   return (
-  //     <CustomTooltip title={getTooltipContent(row)} arrow>
-  //       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-  //         <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
-  //           {row.headline}
-  //         </Typography>
-  //         <Typography noWrap variant='caption'>
-  //           {row.publisher}
-  //           <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
-  //         </Typography>
-  //       </Box>
-  //     </CustomTooltip>
-  //   )
-  // }
-
-  const getTooltipContent = row => {
-    const companies = Array.isArray(row.companies) ? row.companies : []
-
-    return (
-      <div>
-        <div>
+    const getTooltipContent = row => (
+      <List>
+        <ListItem>
           <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
             Summary :{' '}
             <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
               {row.summary}
             </Typography>
           </Typography>
+        </ListItem>
+        <ListItem></ListItem>
+        <ListItem>
           <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
             Companies :{' '}
             <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-              {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
+              {row.companies.length > 1
+                ? row.companies?.map(company => company.name).join(', ')
+                : row.companies[0]?.name}
             </Typography>
           </Typography>
-        </div>
-      </div>
+        </ListItem>
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Edition Type :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+              {row.editionTypeName}
+            </Typography>
+          </Typography>
+        </ListItem>
+        <ListItem>
+          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+            Page Number :{' '}
+            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+              {row.pageNumber}
+            </Typography>
+          </Typography>
+        </ListItem>
+      </List>
+    )
+
+    return (
+      <CustomTooltip title={getTooltipContent(row)} arrow>
+        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+          <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
+            {row.headline}
+          </Typography>
+          <Typography noWrap variant='caption'>
+            {row.publisher}
+            <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
+          </Typography>
+        </Box>
+      </CustomTooltip>
     )
   }
 
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
 
-  // const articleColumns = [
-  //   {
-  //     flex: 0.1,
-  //     minWidth: 5,
-  //     headerName: 'Select',
-  //     field: 'select',
-  //     renderCell: params => (
-  //       <Checkbox
-  //         onClick={e => {
-  //           e.stopPropagation()
-  //           handleSelect(params.row)
-  //         }}
-  //         checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
-  //       />
-  //     )
-  //   },
-  //   {
-  //     flex: 0.1,
-  //     minWidth: 5,
-  //     headerName: 'Grp',
-  //     field: 'Grp',
-  //     renderCell: params => {
-  //       const publications = params.row.children || []
+  const articleColumns = [
+    {
+      flex: 0.1,
+      minWidth: 5,
+      headerName: 'Select',
+      field: 'select',
+      renderCell: params => (
+        <Checkbox
+          onClick={e => {
+            e.stopPropagation()
+            handleSelect(params.row)
+          }}
+          checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
+        />
+      )
+    },
+    {
+      flex: 0.1,
+      minWidth: 5,
+      headerName: 'Grp',
+      field: 'Grp',
+      renderCell: params => {
+        const publications = params.row.children || []
 
-  //       return (
-  //         <SelectBox
-  //           icon={publications.length !== 1 ? <Icon icon='ion:add' /> : null}
-  //           iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
-  //           renderItem='publicationName'
-  //           renderKey={'socialFeedId' || 'articleId'}
-  //           menuItems={publications}
-  //           selectedItems={selectedItems}
-  //           setSelectedItems={setSelectedItems}
-  //         />
-  //       )
-  //     }
-  //   },
-  //   {
-  //     flex: 0.6,
-  //     minWidth: 240,
-  //     field: 'article',
-  //     headerName: 'Article',
-  //     renderCell: renderArticle
-  //   },
-  //   {
-  //     flex: 0.1,
-  //     minWidth: 5,
-  //     field: 'more',
-  //     headerName: 'More',
-  //     renderCell: params => {
-  //       // Check if articleId is online
-  //       if (params.row.articleType === 'online') {
-  //         return (
-  //           <OptionsMenu
-  //             iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-  //             options={[
-  //               {
-  //                 text: 'View',
-  //                 menuItemProps: {
-  //                   onClick: () => {
-  //                     handleView(params.row)
-  //                   }
-  //                 }
-  //               }
-  //             ]}
-  //           />
-  //         )
-  //       }
+        return (
+          <SelectBox
+            icon={publications.length !== 1 ? <Icon icon='ion:add' /> : null}
+            iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
+            renderItem='publicationName'
+            renderKey={'socialFeedId' || 'articleId'}
+            menuItems={publications}
+            selectedItems={selectedItems}
+            setSelectedItems={setSelectedItems}
+          />
+        )
+      }
+    },
+    {
+      flex: 0.6,
+      minWidth: 240,
+      field: 'article',
+      headerName: 'Article',
+      renderCell: renderArticle
+    },
+    {
+      flex: 0.1,
+      minWidth: 5,
+      field: 'more',
+      headerName: 'More',
+      renderCell: params => {
+        // Check if articleId is online
+        if (params.row.articleType === 'online') {
+          return (
+            <OptionsMenu
+              iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+              options={[
+                {
+                  text: 'View',
+                  menuItemProps: {
+                    onClick: () => {
+                      handleView(params.row)
+                    }
+                  }
+                }
+              ]}
+            />
+          )
+        }
 
-  //       return (
-  //         <OptionsMenu
-  //           iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-  //           options={[
-  //             {
-  //               text: 'View Article',
-  //               menuItemProps: {
-  //                 onClick: () => {
-  //                   const articleCode = params.row.link
-  //                   window.open(`/article-view?articleCode=${articleCode}`, '_blank')
-  //                 }
-  //               }
-  //             }
-  //           ]}
-  //         />
-  //       )
-  //     }
-  //   }
-  // ]
+        return (
+          <OptionsMenu
+            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+            options={[
+              {
+                text: 'View Article',
+                menuItemProps: {
+                  onClick: () => {
+                    const articleCode = params.row.link
+                    window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                  }
+                }
+              }
+            ]}
+          />
+        )
+      }
+    }
+  ]
 
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
@@ -556,6 +534,7 @@ const TableSelection = () => {
           const request_params = {
             // clientIds: clientId,
             clientIds: '0',
+
             // companyIds: selectedCompetitions.join(', '),
             // dateType: selectedTypeOfDate,
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
@@ -769,7 +748,7 @@ const TableSelection = () => {
 
     if (!isNaN(newRecordsPerPage) && newRecordsPerPage > 0) {
       setRecordsPerPage(newRecordsPerPage)
-      setCurrentPage(1) // Reset current page when changing records per page
+      setCurrentPage(1)
     }
   }
 
@@ -822,8 +801,6 @@ const TableSelection = () => {
   const firstPortionArticles = articles.slice(0, halfIndex)
   const secondPortionArticles = articles.slice(halfIndex)
 
-  console.log('checkignhaldf==>', firstPortionArticles)
-
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
     const secondArticle = secondPortionArticles[index]
@@ -861,20 +838,7 @@ const TableSelection = () => {
             </td>
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <Tooltip title={getTooltipContent(firstArticle)} arrow>
-                  <span
-                    style={{
-                      width: '25rem',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      fontSize: '0.9em',
-                      textAlign: 'left'
-                    }}
-                  >
-                    {firstArticle.headline.substring(0, 70) + '...'}
-                  </span>
-                </Tooltip>
+                <span className='headline'>{firstArticle.headline.substring(0, 70) + '...'}</span>
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
               </div>
             </td>
@@ -890,17 +854,18 @@ const TableSelection = () => {
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
-                  },
-                  {
-                    text: 'Edit Detail',
-                    menuItemProps: {
-                      onClick: () => {
-                        fetchReadArticleFile('jpg', firstArticle)
-                        setEditDetailsDialogOpen(true)
-                        setSelectedArticle(firstArticle)
-                      }
-                    }
                   }
+
+                  // {
+                  //   text: 'Edit Detail',
+                  //   menuItemProps: {
+                  //     onClick: () => {
+                  //       fetchReadArticleFile('jpg', firstArticle)
+                  //       setEditDetailsDialogOpen(true)
+                  //       setSelectedArticle(firstArticle)
+                  //     }
+                  //   }
+                  // }
                 ]}
               />
             </td>
@@ -931,21 +896,7 @@ const TableSelection = () => {
             </td>
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <Tooltip title={getTooltipContent(secondArticle)} arrow>
-                  <span
-                    style={{
-                      width: '25rem',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      fontSize: '0.9em',
-                      textAlign: 'left'
-                    }}
-                  >
-                    {secondArticle.headline}
-                  </span>
-                </Tooltip>
-
+                <span className='headline'>{secondArticle.headline}</span>
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
               </div>
             </td>
@@ -961,17 +912,18 @@ const TableSelection = () => {
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
-                  },
-                  {
-                    text: 'Edit Detail',
-                    menuItemProps: {
-                      onClick: () => {
-                        fetchReadArticleFile('jpg', secondArticle)
-                        setEditDetailsDialogOpen(true)
-                        setSelectedArticle(secondArticle)
-                      }
-                    }
                   }
+
+                  // {
+                  //   text: 'Edit Detail',
+                  //   menuItemProps: {
+                  //     onClick: () => {
+                  //       fetchReadArticleFile('jpg', secondArticle)
+                  //       setEditDetailsDialogOpen(true)
+                  //       setSelectedArticle(secondArticle)
+                  //     }
+                  //   }
+                  // }
                 ]}
               />
             </td>
