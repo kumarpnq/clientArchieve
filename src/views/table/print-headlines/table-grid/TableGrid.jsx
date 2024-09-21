@@ -315,6 +315,67 @@ const TableGrid = ({
     )
   }
 
+  const singleRow = ({ index, style }) => {
+    const article = articles[index]
+
+
+    return (
+      <tr key={index} style={{ width: '100%', ...style }}>
+        <td className='table-data'>
+          <Checkbox
+            checked={Boolean(articles[article.articleId]) || isArticleSelected(article.articleId)}
+            onChange={() => handleCheckboxChangeTwo(article.articleId)}
+          />
+        </td>
+        <td className='table-data'>
+          <SelectBox
+            icon={<Icon icon='ion:add' />}
+            iconButtonProps={{
+              sx: { color: Boolean(article?.publication?.length) ? 'primary.main' : 'primary' }
+            }}
+            renderItem='publicationName'
+            renderKey='articleId'
+            menuItems={article.publications}
+            selectedItems={selectedArticles}
+            setSelectedItems={setSelectedArticles}
+          />
+        </td>
+        <td className='table-data'>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+            <span className='headline'>{article.headline}</span>
+            <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
+          </div>
+        </td>
+        <td className='table-data'>
+          <OptionsMenu
+            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+            options={[
+              {
+                text: 'View Article',
+                menuItemProps: {
+                  onClick: () => {
+                    const articleCode = article.link
+                    window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                  }
+                }
+              },
+              {
+                text: 'Edit Detail',
+                menuItemProps: {
+                  onClick: () => {
+                    fetchReadArticleFile('jpg', article)
+                    setEditDetailsDialogOpen(true)
+                    setSelectedArticle(article)
+                  }
+                }
+              }
+            ]}
+          />
+        </td>
+      </tr>
+    )
+  }
+
   return (
     <Box p={2}>
       {loading ? (
