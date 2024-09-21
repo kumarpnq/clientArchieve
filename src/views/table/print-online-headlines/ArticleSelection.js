@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { BASE_URL } from 'src/api/base'
 import axios from 'axios'
+import { FixedSizeList as List } from 'react-window'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -47,7 +48,7 @@ import {
 // ** Tooltip
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
-import { List, ListItem } from '@mui/material'
+// import { List, ListItem } from '@mui/material'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import OptionsMenu from 'src/@core/components/option-menu'
 import useFetchReadArticleFile from 'src/api/global/useFetchReadArticleFile'
@@ -73,6 +74,8 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 )
 
 const TableSelection = () => {
+  const [tableSelect, setTableSelect] = useState({})
+  const [tableSelectTwo, setTableSelectTwo] = useState({})
   const [selectedArticle, setSelectedArticle] = useState(null)
   const [jpgDialogOpen, setJpgDialogOpen] = useState(false)
   const [imageSrc, setImageSrc] = useState('')
@@ -83,6 +86,10 @@ const TableSelection = () => {
   const [selectedSortBy, setSelectedSortBy] = useState(null)
 
   const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
+
+  const isArticleSelected = articleId => {
+    return selectedArticles.some(article => article.articleId === articleId)
+  }
 
   const handleJpgDialogClose = () => {
     setJpgDialogOpen(false)
@@ -125,7 +132,7 @@ const TableSelection = () => {
             Companies :{' '}
             <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
               {row.companies.length > 1
-                ? row.companies.map(company => company.name).join(', ')
+                ? row.companies?.map(company => company.name).join(', ')
                 : row.companies[0]?.name}
             </Typography>
           </Typography>
@@ -520,12 +527,16 @@ const TableSelection = () => {
             })
             .join(', ')
 
+          const formattedFromDate = formattedStartDate ? new Date(formattedStartDate).toISOString().split('T')[0] : null
+          const formattedToDate = formattedEndDate ? new Date(formattedEndDate).toISOString().split('T')[0] : null
+
           const request_params = {
-            clientIds: clientId,
-            companyIds: selectedCompetitions.join(', '),
-            dateType: selectedTypeOfDate,
-            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
-            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
+            // clientIds: clientId,
+            clientIds: '0',
+            // companyIds: selectedCompetitions.join(', '),
+            // dateType: selectedTypeOfDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
             sortby: selectedSortBy,
@@ -534,20 +545,58 @@ const TableSelection = () => {
 
             geography: selectedCitiesString,
             language: selectedLanguagesString,
-            media: selectedMedia,
+            media: selectedMedia.join(','),
             tags: shortCutData?.searchCriteria?.tags || selectedTagString
           }
 
-          const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            params: request_params
+          // const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`,
+          const response = await axios.get(
+            `http://51.222.9.159:5000/api/v1/client/getOnlineAndprintArticle`,
+
+            {
+              headers: {
+                Authorization: `Bearer ${storedToken}`
+              },
+              params: request_params
+            }
+          )
+
+          const totalRecords = response.data.data.doc.length
+
+          const transformedArray = response.data.data.doc.map(item => {
+            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag } = item._source
+
+            return {
+              articleId: articleId,
+              headline: articleData.headlines,
+              summary: articleData.summary,
+              publication: publicationInfo.name,
+              publicationId: publicationInfo.id,
+              articleDate: `${articleInfo.articleDate}T00:00:00`,
+              articleUploadId: uploadInfo.uploadId,
+              articleJournalist: '', // no information available in input
+              companies: companyTag?.map(company => ({
+                id: company.id,
+                name: company.name
+              })),
+              clientId: '', // no information available in input
+              clientName: '', // no information available in input
+              editionType: '', // no information available in input
+              editionTypeName: '', // no information available in input
+              publicationCategory: '', // no information available in input
+              circulation: 0, // no information available in input
+              publicationType: '', // no information available in input
+              language: articleData.language,
+              size: articleData.space,
+              pageNumber: articleData.pageNumber,
+              children: [], // assuming no children for simplicity
+              link: '' // no information available in input
+            }
           })
 
-          const totalRecords = response.data.totalAllArticles
+          console.log('checkingtransform==>', transformedArray)
 
-          setArticles(response.data.articles)
+          setArticles(transformedArray)
 
           setPaginationModel(prevPagination => ({
             ...prevPagination,
@@ -732,6 +781,238 @@ const TableSelection = () => {
     }
   }
 
+  const handleCheckboxChange = articleId => {
+    setTableSelect(prev => ({
+      ...prev,
+      [articleId]: !prev[articleId] ? articleId : null
+    }))
+  }
+
+  const handleCheckboxChangeTwo = articleId => {
+    setTableSelectTwo(prev => ({
+      ...prev,
+      [articleId]: !prev[articleId] ? articleId : null
+    }))
+  }
+
+  const halfIndex = Math.ceil(articles.length / 2)
+  const firstPortionArticles = articles.slice(0, halfIndex)
+  const secondPortionArticles = articles.slice(halfIndex)
+
+  console.log('checkignhaldf==>', firstPortionArticles)
+
+  const Row = ({ index, style }) => {
+    const firstArticle = firstPortionArticles[index]
+    const secondArticle = secondPortionArticles[index]
+
+    return (
+      <tr key={index} style={{ width: '100%', ...style }}>
+        {/* first portion */}
+        {firstArticle && (
+          <>
+            <td className='table-data'>
+              {/* <input
+                type='checkbox'
+                style={{ transform: 'scale(1.5)', margin: '8px' }}
+                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
+                onChange={() => handleCheckboxChange(firstArticle.articleId)}
+              /> */}
+
+              <Checkbox
+                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
+                onChange={() => handleCheckboxChange(firstArticle.articleId)}
+              />
+            </td>
+            <td className='table-data'>
+              <SelectBox
+                icon={<Icon icon='ion:add' />}
+                iconButtonProps={{
+                  sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                }}
+                renderItem='publicationName'
+                renderKey='articleId'
+                menuItems={firstArticle.publications}
+                selectedItems={selectedArticles}
+                setSelectedItems={setSelectedArticles}
+              />
+            </td>
+            <td className='table-data'>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+                <span
+                  style={{
+                    width: '25rem',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontSize: '0.9em',
+                    textAlign: 'left'
+                  }}
+                >
+                  {firstArticle.headline.substring(0, 70) + '...'}
+                </span>
+                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
+              </div>
+            </td>
+            <td className='table-data'>
+              <OptionsMenu
+                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                options={[
+                  {
+                    text: 'View Article',
+                    menuItemProps: {
+                      onClick: () => {
+                        const articleCode = firstArticle.link
+                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                      }
+                    }
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        fetchReadArticleFile('jpg', firstArticle)
+                        setEditDetailsDialogOpen(true)
+                        setSelectedArticle(firstArticle)
+                      }
+                    }
+                  }
+                ]}
+              />
+            </td>
+          </>
+        )}
+
+        {/* second portion */}
+        {secondArticle && (
+          <>
+            <td className='table-data'>
+              <Checkbox
+                checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
+                onChange={() => handleCheckboxChangeTwo(secondArticle.articleId)}
+              />
+            </td>
+            <td className='table-data'>
+              <SelectBox
+                icon={<Icon icon='ion:add' />}
+                iconButtonProps={{
+                  sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
+                }}
+                renderItem='publicationName'
+                renderKey='articleId'
+                menuItems={secondArticle.publications}
+                selectedItems={selectedArticles}
+                setSelectedItems={setSelectedArticles}
+              />
+            </td>
+            <td className='table-data'>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+                <span
+                  style={{
+                    width: '25rem',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    fontSize: '0.9em',
+                    textAlign: 'left'
+                  }}
+                >
+                  {secondArticle.headline}
+                </span>
+                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
+              </div>
+            </td>
+            <td className='table-data'>
+              <OptionsMenu
+                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                options={[
+                  {
+                    text: 'View Article',
+                    menuItemProps: {
+                      onClick: () => {
+                        const articleCode = secondArticle.link
+                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                      }
+                    }
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        fetchReadArticleFile('jpg', secondArticle)
+                        setEditDetailsDialogOpen(true)
+                        setSelectedArticle(secondArticle)
+                      }
+                    }
+                  }
+                ]}
+              />
+            </td>
+          </>
+        )}
+      </tr>
+    )
+  }
+
+  const singleRow = ({ index, style }) => {
+    const article = articles[index]
+
+    return (
+      <tr key={index} style={{ width: '100%', ...style }}>
+        <td className='table-data'>
+          <Checkbox
+            checked={Boolean(articles[article.articleId]) || isArticleSelected(article.articleId)}
+            onChange={() => handleCheckboxChangeTwo(article.articleId)}
+          />
+        </td>
+        <td className='table-data'>
+          <SelectBox
+            icon={<Icon icon='ion:add' />}
+            iconButtonProps={{
+              sx: { color: Boolean(article?.publication?.length) ? 'primary.main' : 'primary' }
+            }}
+            renderItem='publicationName'
+            renderKey='articleId'
+            menuItems={article.publications}
+            selectedItems={selectedArticles}
+            setSelectedItems={setSelectedArticles}
+          />
+        </td>
+        <td className='table-data'>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+            <span className='headline'>{article.headline}</span>
+            <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
+          </div>
+        </td>
+        <td className='table-data'>
+          <OptionsMenu
+            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+            options={[
+              {
+                text: 'View Article',
+                menuItemProps: {
+                  onClick: () => {
+                    const articleCode = article.link
+                    window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                  }
+                }
+              },
+              {
+                text: 'Edit Detail',
+                menuItemProps: {
+                  onClick: () => {
+                    fetchReadArticleFile('jpg', article)
+                    setEditDetailsDialogOpen(true)
+                    setSelectedArticle(article)
+                  }
+                }
+              }
+            ]}
+          />
+        </td>
+      </tr>
+    )
+  }
+
   return (
     <Card>
       <CardHeader
@@ -817,54 +1098,56 @@ const TableSelection = () => {
               <Box display='flex'>
                 {isMobileView ? null : (
                   <Box flex='1' p={2} pr={1}>
-                    <DataGrid
-                      autoHeight
-                      rows={leftArticles}
-                      columns={articleColumns}
-                      pagination={false} // Remove pagination
-                      onRowClick={params => handleRowClick(params)}
-                      getRowId={getRowId}
-                      hideFooter
-                    />
+                    {articles.length > 0 ? (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <table
+                          style={{
+                            width: '100%',
+                            borderCollapse: 'collapse',
+                            display: 'flex',
+
+                            overflow: 'auto',
+                            gap: '1.5rem',
+                            justifyContent: 'space-between'
+                          }}
+                        >
+                          <List
+                            height={650}
+                            itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
+                            itemSize={50}
+                            width={'100%'}
+                          >
+                            {Row}
+                          </List>
+                        </table>
+                      </div>
+                    ) : (
+                      <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
+                        <span>No Data Found</span>
+                      </div>
+                    )}
                   </Box>
                 )}
-
-                {/* Right Column */}
-                <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
-                  <DataGrid
-                    autoHeight
-                    rows={rightArticles}
-                    columns={articleColumns}
-                    pagination={false} // Remove pagination
-                    onRowClick={params => handleRowClick(params)}
-                    getRowId={getRowId}
-                    hideFooter
-                  />
-                </Box>
               </Box>
             ) : (
-              <DataGrid
-                autoHeight
-                rows={articles}
-                columns={articleColumns.filter(column => {
-                  // Check if it's mobile view and exclude only the "Select" and "Edit" columns
-                  if (isMobileView) {
-                    return (
-                      column.field !== 'select' &&
-                      column.field !== 'edit' &&
-                      !(column.field === 'date' && isNarrowMobileView)
-                    )
-                  }
-
-                  return true
-                })}
-                pagination={false} // Remove pagination
-                onRowClick={params => handleRowClick(params)}
-                getRowId={getRowId}
-                hideFooter
-              />
+              <Box>
+                {articles.length > 0 ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <table className='main-table'>
+                      <List height={650} itemCount={articles.length} itemSize={50} width={'100%'}>
+                        {singleRow}
+                      </List>
+                    </table>
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
+                    <span>No Data Found</span>
+                  </div>
+                )}
+              </Box>
             )}
-            {articles.length > 0 && ( // Only render pagination if there are articles
+
+            {articles.length > 0 && (
               <Pagination
                 paginationModel={paginationModel}
                 currentPage={currentPage}

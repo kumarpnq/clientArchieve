@@ -359,20 +359,21 @@ const TableGrid = ({
               )}
             </Box>
           ) : (
-            <DataGrid
-              autoHeight
-              disableColumnMenu
-              rows={articles}
-              columns={customArticleHeader.filter(column => {
-                return column.field !== 'select' && column.field !== 'edit'
-              })}
-              pagination={false}
-              onRowClick={params => handleRowClick(params)}
-              onRowSelectionModelChange={(item, params) => handleRowCheck('center', item)}
-              getRowId={row => row.articleId}
-              hideFooter
-              checkboxSelection
-            />
+            <Box>
+              {articles.length > 0 ? (
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <table className='main-table'>
+                    <List height={650} itemCount={articles.length} itemSize={50} width={'100%'}>
+                      {singleRow}
+                    </List>
+                  </table>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
+                  <span>No Data Found</span>
+                </div>
+              )}
+            </Box>
           )}
 
           {articles.length > 0 && (
