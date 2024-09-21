@@ -358,19 +358,23 @@ const Grid = props => {
             </td>
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <span
-                  style={{
-                    width: '25rem',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    fontSize: '0.9em',
-                    textAlign: 'left'
-                  }}
-                >
-                  {firstArticle?.headline?.substring(0, 70) + '...'}
+                <Tooltip title={getTooltipContent(firstArticle)} arrow>
 
-                </span>
+                  <span
+                    style={{
+                      width: '25rem',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      fontSize: '0.9em',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {firstArticle?.headline?.substring(0, 70) + '...'}
+
+                  </span>
+                </Tooltip>
+
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}
                   <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
                 </span>
@@ -455,19 +459,23 @@ const Grid = props => {
             </td>
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+                <Tooltip title={getTooltipContent(firstArticle)} arrow>
 
-                <span
-                  style={{
-                    width: '25rem',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    fontSize: '0.9em',
-                    textAlign: 'left'
-                  }}
-                >
-                  {secondArticle.headline}
-                </span>
+                  <span
+                    style={{
+                      width: '25rem',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      fontSize: '0.9em',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {secondArticle?.headline?.substring(0, 70) + '...'}
+                    {/* {secondArticle?.headline} */}
+                  </span>
+                </Tooltip>
+
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication} <span style={{ marginLeft: '4px' }}>({dayjs(secondArticle.articleDate).format('DD-MM-YYYY')})</span></span>
               </div>
             </td>

@@ -245,18 +245,22 @@ const TableGrid = ({
             </td>
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <span
-                  style={{
-                    width: '25rem',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    fontSize: '0.9em',
-                    textAlign: 'left'
-                  }}
-                >
-                  {secondArticle.headline}
-                </span>
+                <Tooltip title={getTooltipContent(secondArticle)} arrow>
+
+                  <span
+                    style={{
+                      width: '25rem',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      fontSize: '0.9em',
+                      textAlign: 'left'
+                    }}
+                  >
+                    {secondArticle.headline}
+                  </span>
+                </Tooltip>
+
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
               </div>
             </td>
