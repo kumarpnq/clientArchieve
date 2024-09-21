@@ -41,11 +41,12 @@ import {
   selectedDateType
 } from 'src/store/apps/user/userSlice'
 import OptionsMenu from 'src/@core/components/option-menu'
-import { BASE_URL, ELASTIC_SERVER } from 'src/api/base'
+import { BASE_URL } from 'src/api/base'
 import { Icon } from '@iconify/react'
 import SelectBox from 'src/@core/components/select'
 import ArticleView from './dialog/article-view/view'
 import Grid from './table-grid/Grid'
+import DateType from 'src/@core/layouts/components/shared-components/DateType'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -144,6 +145,7 @@ const TableSelection = () => {
   const shortCutData = useSelector(selectShortCut)
 
   const clientId = selectedClient ? selectedClient.clientId : null
+  const clientName = selectedClient.clientName
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
@@ -153,7 +155,7 @@ const TableSelection = () => {
 
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState([])
-  const [selectedMedia, setSelectedMedia] = useState('')
+  const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTags, setSelectedTags] = useState([])
   const [selectedSortBy, setSelectedSortBy] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -173,9 +175,19 @@ const TableSelection = () => {
     return i.publicationTypeId
   })
 
+  const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+    const lastChar = item.slice(-1)
+    if (!isNaN(parseInt(lastChar))) {
+      return item.slice(0, -1)
+    }
+
+    return item
+  })
+  const result = selectedMediaWithoutLastDigit.join(', ')
+
   const dataForDump = [
     selectedGeography.length && { geography: selectedGeography },
-    selectedMedia.length && { media: selectedMedia },
+    selectedMedia.length && { media: result },
     selectedTags.length && { tags: selectedTags },
     selectedLanguage.length && {
       language: selectedLanguage.map(i => {
@@ -283,6 +295,8 @@ const TableSelection = () => {
             const requestData = {
               clientId: clientId,
               screenName: 'onlineHeadlines',
+              displayName: 'Online News',
+              clientName,
               searchCriteria: {
                 requestEntity: 'online',
                 clientIds: clientId,
@@ -349,6 +363,17 @@ const TableSelection = () => {
 
           const selectedCompaniesString = selectedCompetitions.join(', ')
 
+          const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
+            const lastChar = item.slice(-1)
+            if (!isNaN(parseInt(lastChar))) {
+              return item.slice(0, -1)
+            }
+
+            return item
+          })
+
+          const result = selectedMediaWithoutLastDigit.join(', ')
+
           const selectedTagString = selectedTags.join(', ')
           const selectedCitiesString = selectedGeography.join(', ')
 
@@ -370,17 +395,22 @@ const TableSelection = () => {
             })
             .join(', ')
 
+          const formattedFromDate = formattedStartDate ? new Date(formattedStartDate).toISOString().split('T')[0] : null
+          const formattedToDate = formattedEndDate ? new Date(formattedEndDate).toISOString().split('T')[0] : null
+
           const request_params = {
-            clientIds: clientId,
-            companyIds: selectedCompaniesString,
-            DateTye: selectedTypeOfDate,
-            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
-            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
+            // clientIds: clientId,
+            clientIds: '0',
+            // companyIds: selectedCompaniesString,
+            // DateType:'articleInfo.articleDate',
+            // DateTye: selectedTypeOfDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
 
             geography: selectedCitiesString,
-            media: selectedMedia,
+            media: result,
             tags: shortCutData?.searchCriteria?.tags || selectedTagString,
             language: selectedLanguagesString,
 
@@ -393,36 +423,55 @@ const TableSelection = () => {
             phrase: searchParameters.exactPhrase,
 
             // sort by
-            sortby: selectedSortBy,
-            editionType: edition,
+            sortby: 'FEED_DATE' || selectedSortBy,
+
+            // editionType: edition,
             publicationCategory: publicationtype
           }
 
-          const elasticEndpoint = '/api/v1/client/getSocialFeed/'
-          const fastAPI = '/clientWiseSocialFeeds/'
-
-          const FAST_API_SERVER = base_url
-          const ELASTIC_SERVER_URI = ELASTIC_SERVER
-
-          console.log(ELASTIC_SERVER_URI)
-
-          const elastic_params = {
-            sortby: 'FEED_DATE',
-            fromDate: formattedStartDate,
-            page: 1,
-            recordsPerPage
-          }
-
-          const response = await axios.get(`${ELASTIC_SERVER_URI + elasticEndpoint}`, {
-            // headers: {
-            //   Authorization: `Bearer ${storedToken}`
-            // },
-            params: elastic_params
+          const response = await axios.get(`http://51.222.9.159:5000/api/v1/client/getSocialFeed`, {
+            headers: {
+              Authorization: `Bearer ${storedToken}`
+            },
+            params: request_params
           })
 
-          const totalRecords = response.data.totalRecords || 0
+          const transformedArray = response.data.data.doc.map(item => {
+            const { socialFeedId, feedInfo, feedData, uploadInfo, publicationInfo, companyTag } = item._source
 
-          setSocialFeeds(response.data.socialFeeds || [])
+            return {
+              articleId: socialFeedId,
+              headline: feedData.headlines,
+              summary: feedData.summary,
+              publication: publicationInfo.name,
+              publicationId: publicationInfo.id,
+              articleDate: `${feedData.feedDate}T00:00:00`,
+              articleUploadId: uploadInfo?.uploadId,
+              articleJournalist: '', // no information available in input
+              companies: companyTag?.map(company => ({
+                id: company.id,
+                name: company.name
+              })),
+              clientId: '', // no information available in input
+              clientName: '', // no information available in input
+              editionType: '', // no information available in input
+              editionTypeName: '', // no information available in input
+              publicationCategory: '', // no information available in input
+              circulation: 0, // no information available in input
+              publicationType: '', // no information available in input
+              language: feedData.language,
+              size: feedData.space,
+              pageNumber: feedData.pageNumber,
+              children: [], // assuming no children for simplicity
+              link: '' // no information available in input
+            }
+          })
+
+          const totalRecords = response.data.data.doc.length || 0
+
+          console.log('checingtyp==>', transformedArray)
+
+          setSocialFeeds(transformedArray)
 
           // Update totalRecords in the state
           setPaginationModel(prevPagination => ({
@@ -536,7 +585,7 @@ const TableSelection = () => {
     // setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguage([])
-    setSelectedMedia('')
+    setSelectedMedia([])
     setSelectedTags([])
     setSearchParameters({
       searchHeadline: '',
@@ -570,6 +619,27 @@ const TableSelection = () => {
       setAllCheck(event.target.checked)
       setSelectedArticles(event.target.checked ? [...socialFeeds] : [])
     }
+  }
+
+  const SelectAllModal = () => {
+    return (
+      <>
+        {socialFeeds.length > 0 && (
+          <Box pl={3}>
+            <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+              <FormControlLabel
+                control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+                label='Page'
+              />
+              <FormControlLabel
+                control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+                label='All Articles'
+              />
+            </FormGroup>
+          </Box>
+        )}
+      </>
+    )
   }
 
   return (
@@ -622,6 +692,7 @@ const TableSelection = () => {
         allCheck={allCheck}
       />
       {/* multiple selection */}
+
       {socialFeeds.length > 0 && (
         <Box pl={3}>
           <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
@@ -659,6 +730,7 @@ const TableSelection = () => {
         handleRightPagination={handleRightPagination}
         handleRecordsPerPageChange={handleRecordsPerPageChange}
         handleRowClick={handleRowClick}
+        SelectAllModal={SelectAllModal}
       />
 
       <EditDialog
