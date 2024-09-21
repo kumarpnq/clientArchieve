@@ -370,8 +370,11 @@ const Grid = props => {
                   }}
                 >
                   {firstArticle?.headline?.substring(0, 70) + '...'}
+
                 </span>
-                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
+                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}
+                  <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
+                </span>
               </div>
             </td>
             <td className='table-data'>
@@ -465,7 +468,7 @@ const Grid = props => {
                 >
                   {secondArticle.headline}
                 </span>
-                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
+                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication} <span style={{ marginLeft: '4px' }}>({dayjs(secondArticle.articleDate).format('DD-MM-YYYY')})</span></span>
               </div>
             </td>
             <td className='table-data'>
