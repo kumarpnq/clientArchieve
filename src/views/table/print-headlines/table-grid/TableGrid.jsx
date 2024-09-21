@@ -26,7 +26,6 @@ const renderArticle = params => {
   )
 }
 
-
 const getTooltipContent = row => {
   const companies = Array.isArray(row.companies) ? row.companies : []
 
@@ -307,7 +306,6 @@ const TableGrid = ({
                   }
                 ]}
               />
-
             </td>
           </>
         )}

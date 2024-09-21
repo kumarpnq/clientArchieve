@@ -41,7 +41,7 @@ import {
   selectedDateType
 } from 'src/store/apps/user/userSlice'
 import OptionsMenu from 'src/@core/components/option-menu'
-import { BASE_URL } from 'src/api/base'
+import { BASE_URL, ELASTIC_SERVER } from 'src/api/base'
 import { Icon } from '@iconify/react'
 import SelectBox from 'src/@core/components/select'
 import ArticleView from './dialog/article-view/view'
@@ -398,16 +398,31 @@ const TableSelection = () => {
             publicationCategory: publicationtype
           }
 
-          const response = await axios.get(`${base_url}/clientWiseSocialFeeds/`, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            params: request_params
+          const elasticEndpoint = '/api/v1/client/getSocialFeed/'
+          const fastAPI = '/clientWiseSocialFeeds/'
+
+          const FAST_API_SERVER = base_url
+          const ELASTIC_SERVER_URI = ELASTIC_SERVER
+
+          console.log(ELASTIC_SERVER_URI)
+
+          const elastic_params = {
+            sortby: 'FEED_DATE',
+            fromDate: formattedStartDate,
+            page: 1,
+            recordsPerPage
+          }
+
+          const response = await axios.get(`${ELASTIC_SERVER_URI + elasticEndpoint}`, {
+            // headers: {
+            //   Authorization: `Bearer ${storedToken}`
+            // },
+            params: elastic_params
           })
 
           const totalRecords = response.data.totalRecords || 0
 
-          setSocialFeeds(response.data.socialFeeds)
+          setSocialFeeds(response.data.socialFeeds || [])
 
           // Update totalRecords in the state
           setPaginationModel(prevPagination => ({

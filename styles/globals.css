@@ -29,3 +29,11 @@ code[class*='language-'] {
   padding: 8px;
   text-align: center;
 }
+.headline {
+  width: 25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+  text-align: left;
+}
