@@ -24,7 +24,12 @@ const SelectBox = props => {
 
   return (
     <Box>
-      <IconButton {...iconButtonProps} onClick={event => setAnchorE1(event.currentTarget)} aria-haspopup='true'>
+      <IconButton
+        {...iconButtonProps}
+        onClick={event => setAnchorE1(event.currentTarget)}
+        disabled={!menuItems?.length}
+        aria-haspopup='true'
+      >
         {icon}
       </IconButton>
 

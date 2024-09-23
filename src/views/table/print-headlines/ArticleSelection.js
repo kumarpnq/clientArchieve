@@ -1,5 +1,5 @@
-// ** React Importu
-import React, { useState, useEffect, useCallback } from 'react'
+// ** React Import
+import React, { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -14,6 +14,7 @@ import Button from '@mui/material/Button'
 import { FormControlLabel, FormGroup } from '@mui/material'
 
 // ** MUI icons
+import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
 
 //api call
@@ -32,96 +33,14 @@ import {
   selectedDateType
 } from 'src/store/apps/user/userSlice'
 
-// ** Tooltip
-import Tooltip from '@mui/material/Tooltip'
-import { styled } from '@mui/system'
-import { List, ListItem } from '@mui/material'
-import { tooltipClasses } from '@mui/material/Tooltip'
-
 // * component imports
 import useFetchReadArticleFile from 'src/api/global/useFetchReadArticleFile'
-import OptionsMenu from 'src/@core/components/option-menu'
 import FullScreenJPGDialog from './dialog/view/FullScreenJPGDialog'
 import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
 import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDialog'
-import { BASE_URL } from 'src/api/base'
-import axios from 'axios'
 import TableGrid from './table-grid/TableGrid'
-
-// Your CustomTooltip component
-const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
-  ({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.background.default, // Use default background color for dark theme
-      color: theme.palette.text.primary, // Use primary text color for dark theme
-      boxShadow: theme.shadows[1],
-      fontSize: 11,
-      maxWidth: '300px', // Set the maximum width for better readability
-      '& .MuiTooltip-arrow': {
-        color: theme.palette.background.default // Use default background color for the arrow in dark theme
-      }
-    }
-  })
-)
-
-const renderArticle = React.memo(params => {
-  const { row } = params
-
-  const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
-
-  return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <CustomTooltip title={getTooltipContent(row)} arrow>
-        <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
-          {row.headline}
-        </Typography>
-      </CustomTooltip>
-      <Typography noWrap variant='caption'>
-        {row.publication}
-        <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
-      </Typography>
-    </Box>
-  )
-})
-
-// Function to generate tooltip content using List
-const getTooltipContent = row => (
-  <List>
-    <ListItem>
-      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Summary :{' '}
-        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {row.summary}
-        </Typography>
-      </Typography>
-    </ListItem>
-    <ListItem>
-      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Companies :{' '}
-        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
-        </Typography>
-      </Typography>
-    </ListItem>
-    <ListItem>
-      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Edition Type :{' '}
-        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {row.editionTypeName}
-        </Typography>
-      </Typography>
-    </ListItem>
-    <ListItem>
-      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Page Number :{' '}
-        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {row.pageNumber}
-        </Typography>
-      </Typography>
-    </ListItem>
-  </List>
-)
+import Pagination from './Pagination'
 
 const TableSelection = () => {
   const [selectedArticle, setSelectedArticle] = useState({})
@@ -134,8 +53,6 @@ const TableSelection = () => {
   const [editDetailsDialogOpen, setEditDetailsDialogOpen] = useState(false)
   const [articleOptimizedObj, setArticleOptimizedObj] = useState({})
   const [articles, setArticles] = useState([])
-
-  const [fetchTags, setFetchTags] = useState(0)
 
   const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
 
@@ -175,7 +92,6 @@ const TableSelection = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
 
-  const getRowId = row => row.articleId
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(50)
 
@@ -205,8 +121,6 @@ const TableSelection = () => {
     journalist: ''
   })
   const [selectedArticles, setSelectedArticles] = useState([])
-
-  // console.log('checkingpages==>', pageCheck, 'articleselect==>', selectedArticles, 'allcheck==>', selectedMedia)
 
   const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
     const lastChar = item.slice(-1)
@@ -287,109 +201,6 @@ const TableSelection = () => {
 
   const [loading, setLoading] = useState(true)
 
-  //user shortcut
-  useEffect(() => {
-    setSelectedArticles([])
-
-    if (shortCutFlags) {
-      const fetchArticlesApi = async () => {
-        try {
-          setLoading(true)
-          const storedToken = localStorage.getItem('accessToken')
-
-          if (storedToken) {
-            const selectedCompaniesString = selectedCompetitions.join(', ')
-
-            const formattedStartDate = selectedFromDate
-              ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
-              : null
-
-            const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
-
-            const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
-              const lastChar = item.slice(-1)
-              if (!isNaN(parseInt(lastChar))) {
-                return item.slice(0, -1)
-              }
-
-              return item
-            })
-
-            const result = selectedMediaWithoutLastDigit.join(', ')
-            const selectedTagString = selectedTags.join(', ')
-
-            const selectedCitiesString = selectedGeography.join(', ')
-
-            const edition = selectedEditionType
-              .map(i => {
-                return i.editionTypeId
-              })
-              .join(', ')
-
-            const publicationtype = selectedPublicationType
-              .map(i => {
-                return i.publicationTypeId
-              })
-              .join(', ')
-
-            const selectedLanguagesString = selectedLanguages
-              .map(i => {
-                return i.id
-              })
-              .join(', ')
-
-            const headers = {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${storedToken}`
-            }
-
-            const requestData = {
-              clientId: clientId,
-              screenName: 'printHeadlines',
-              displayName: 'Print News',
-              clientName,
-              searchCriteria: {
-                requestEntity: 'print',
-                clientIds: clientId,
-                companyIds: selectedCompaniesString,
-                fromDate: formattedStartDate,
-                toDate: formattedEndDate,
-                page: currentPage,
-                recordsPerPage: recordsPerPage,
-
-                media: result,
-                tags: selectedTagString,
-                geography: selectedCitiesString,
-                language: selectedLanguagesString,
-
-                // Advanced search
-                headline: searchParameters.searchHeadline,
-                body: searchParameters.searchBody,
-                journalist: searchParameters.journalist,
-                wordCombo: searchParameters.combinationOfWords,
-                anyWord: searchParameters.anyOfWords,
-                ignoreWords: searchParameters.ignoreThis,
-                phrase: searchParameters.exactPhrase,
-
-                editionType: edition,
-                sortby: selectedSortBy,
-
-                publicationCategory: publicationtype
-              }
-            }
-
-            const res = await axios.post(`${BASE_URL}/userConfigRequest`, requestData, { headers })
-          }
-        } catch (error) {
-          console.error('Error fetching articles:', error)
-        } finally {
-          setLoading(false)
-        }
-      }
-      fetchArticlesApi()
-    }
-  }, [shortCutFlags])
-
   useEffect(() => {
     setSelectedArticles([])
 
@@ -398,13 +209,28 @@ const TableSelection = () => {
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
 
-        const formattedStartDate = selectedFromDate
-          ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
-          : null
-
-        const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
-
         if (storedToken) {
+          // Format start and end dates
+          const formatDateTimes = (date, setTime, isEnd) => {
+            let formattedDate = date
+
+            const isoString = formattedDate.toISOString().slice(0, 10)
+            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
+
+            return `${isoString} ${timeString}`
+          }
+
+          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+
+          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
+
+          // * new date function for formatting
+          // const formattedStartDate = selectedFromDate
+          //   ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
+          //   : null
+
+          // const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
+
           const selectedCompaniesString = selectedCompetitions.join(', ')
 
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
@@ -441,7 +267,7 @@ const TableSelection = () => {
             .join(', ')
 
           // if(shortCutData)
-          const response = await fetchArticles({
+          let response = await fetchArticles({
             clientIds: clientId,
             companyIds: selectedCompaniesString,
 
@@ -472,11 +298,44 @@ const TableSelection = () => {
             publicationCategory: publicationtype
           })
 
-          const totalRecords = response.totalRecords
-          setArticles(response.articles)
+          const totalRecords = response.length
+
+          const transformedArray = response.map(item => {
+            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag } = item._source
+
+            return {
+              articleId: articleId,
+              headline: articleData.headlines,
+              summary: articleData.summary,
+              publication: publicationInfo.name,
+              publicationId: publicationInfo.id,
+              articleDate: `${articleInfo.articleDate}T00:00:00`,
+              articleUploadId: uploadInfo.uploadId,
+              articleJournalist: '', // no information available in input
+              companies:
+                companyTag?.map(company => ({
+                  id: company.id,
+                  name: company.name
+                })) || [],
+              clientId: '', // no information available in input
+              clientName: '', // no information available in input
+              editionType: '', // no information available in input
+              editionTypeName: '', // no information available in input
+              publicationCategory: '', // no information available in input
+              circulation: 0, // no information available in input
+              publicationType: '', // no information available in input
+              language: articleData.language,
+              size: articleData.space,
+              pageNumber: articleData.pageNumber,
+              children: [], // assuming no children for simplicity
+              link: '' // no information available in input
+            }
+          })
+
+          setArticles(transformedArray)
 
           let obj = {}
-          response.articles.map(item => {
+          response?.data?.doc?.map(item => {
             obj[item?.articleId] = item
           })
           setArticleOptimizedObj(obj)
@@ -512,10 +371,6 @@ const TableSelection = () => {
     fetchTagsFlag,
     selectedTypeOfDate
   ])
-
-  // Divide social feeds into left and right columns
-  // const leftArticles = articles.filter((_, index) => index % 2 === 0)
-  // const rightArticles = articles.filter((_, index) => index % 2 !== 0)
 
   // Open the date filter popover
   const openFilterPopover = event => {
@@ -577,9 +432,6 @@ const TableSelection = () => {
     } else {
       setPageCheck(event.target.checked)
       setSelectedArticles(event.target.checked ? [...articles] : [])
-      localStorage.setItem('selectedRows', JSON.stringify([]))
-      localStorage.setItem('rightSelectedRows', JSON.stringify([]))
-      localStorage.setItem('leftSelectedRows', JSON.stringify([]))
     }
   }
 
@@ -591,9 +443,6 @@ const TableSelection = () => {
     } else {
       setAllCheck(event.target.checked)
       setSelectedArticles(event.target.checked ? [...articles] : [])
-      localStorage.setItem('selectedRows', JSON.stringify([]))
-      localStorage.setItem('rightSelectedRows', JSON.stringify([]))
-      localStorage.setItem('leftSelectedRows', JSON.stringify([]))
     }
   }
 
@@ -635,48 +484,20 @@ const TableSelection = () => {
   const handleReset = () => {
     setSelectedMedia([])
     setSelectedCities([])
-
     setSelectedTag([])
     setSelectedLanguages([])
-
     setSelectedEditionType([])
     setSelectedPublicationType([])
     setSelectedSortBy(null)
     setClearAdvancedSearchField(true)
-
     setSelectedArticles([])
-  }
-
-  const SelectAllModal = () => {
-    return (
-      <>
-        {articles.length > 0 && (
-          <Box pl={3}>
-            <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
-              <FormControlLabel
-                control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
-                label='Page'
-              />
-              <FormControlLabel
-                control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
-                label='All Articles'
-              />
-            </FormGroup>
-          </Box>
-        )}
-      </>
-    )
   }
 
   return (
     <Card>
-      <CardHeader
-        title={
-          <Typography variant='title-lg'>
-            <Button onClick={handleReset}>{priorityCompanyName}</Button>
-          </Typography>
-        }
-      />{' '}
+      <Typography variant='title-lg'>
+        <Button onClick={handleReset}>{priorityCompanyName}</Button>
+      </Typography>
       {/* Top Toolbar */}
       <ToolbarComponent
         selectedMedia={selectedMedia}
@@ -690,7 +511,6 @@ const TableSelection = () => {
         tags={tags}
         setTags={setTags}
         fetchTagsFlag={fetchTagsFlag}
-        fetchTags={fetchTags}
       />{' '}
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
@@ -724,43 +544,41 @@ const TableSelection = () => {
         allCheck={allCheck}
       />
       {/* multiple selection */}
-      {/* {articles.length > 0 && (
-        <Box pl={3}>
-          <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
-            <FormControlLabel
-              control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
-              label='Page'
-            />
-            <FormControlLabel
-              control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
-              label='All Articles'
-            />
-          </FormGroup>
-        </Box>
-      )} */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {articles.length > 0 && (
+          <Pagination
+            paginationModel={paginationModel}
+            currentPage={currentPage}
+            recordsPerPage={recordsPerPage}
+            handleLeftPagination={handleLeftPagination}
+            handleRightPagination={handleRightPagination}
+            handleRecordsPerPageUpdate={handleRecordsPerPageChange}
+          />
+        )}
+        {articles.length > 0 && (
+          <Box pl={3}>
+            <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+              <FormControlLabel
+                control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+                label='Page'
+              />
+              <FormControlLabel
+                control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+                label='All Articles'
+              />
+            </FormGroup>
+          </Box>
+        )}
+      </Box>
       {/* DataGrid */}
       <TableGrid
         loading={loading}
         articles={articles}
         selectedArticles={selectedArticles}
         setSelectedArticles={setSelectedArticles}
-        handleRowClick={handleRowClick}
-        getRowId={getRowId}
-        renderArticle={renderArticle}
         fetchReadArticleFile={fetchReadArticleFile}
         setEditDetailsDialogOpen={setEditDetailsDialogOpen}
         setSelectedArticle={setSelectedArticle}
-        paginationModel={paginationModel}
-        currentPage={currentPage}
-        recordsPerPage={recordsPerPage}
-        handleLeftPagination={handleLeftPagination}
-        handleRightPagination={handleRightPagination}
-        handleRecordsPerPageChange={handleRecordsPerPageChange}
-        setPageCheck={setPageCheck}
-        handleRowCheck={handleRowCheck}
-        fetchTags={fetchTags}
-        setFetchTags={setFetchTags}
-        SelectAllModal={SelectAllModal}
       />
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
@@ -792,8 +610,6 @@ const TableSelection = () => {
         imageSrc={imageSrc}
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
-        fetchTags={fetchTags}
-        setFetchTags={setFetchTags}
       />
       <style css>{`
         .css-1p6gmy3-MuiDataGrid-root .MuiDataGrid-cell:not(.MuiDataGrid-cellCheckbox):first-of-type {

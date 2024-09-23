@@ -249,13 +249,14 @@ const ToolbarComponent = ({
     <AppBar sx={{ position: 'static' }}>
       <Toolbar>
         {isMobile ? (
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             <Grid item xs={6}>
               <Button
                 endIcon={<ExpandMoreIcon />}
                 onClick={e => openDropdown(e, setGeographyAnchor)}
                 color='inherit'
                 fullWidth
+                size='medium'
               >
                 Geography
               </Button>
@@ -267,6 +268,7 @@ const ToolbarComponent = ({
                 onClick={e => openDropdown(e, setLanguageAnchor)}
                 color='inherit'
                 fullWidth
+                size='medium'
               >
                 Language
               </Button>
@@ -278,6 +280,7 @@ const ToolbarComponent = ({
                 onClick={e => openDropdown(e, setMediaAnchor)}
                 color='inherit'
                 fullWidth
+                size='medium'
               >
                 Media
               </Button>
@@ -289,6 +292,7 @@ const ToolbarComponent = ({
                 onClick={e => openDropdown(e, setTagsAnchor)}
                 color='inherit'
                 fullWidth
+                size='medium'
               >
                 Tags
               </Button>

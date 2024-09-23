@@ -26,7 +26,7 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
 
   const article = selectedArticles.map(({ socialFeedId, companies }) => ({
     socialFeedId: Number(socialFeedId),
-    companyIds: companies.map(company => company.id)
+    companyIds: companies?.map(company => company.id)
   }))
 
   const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleOnlineArticles({

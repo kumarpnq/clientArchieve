@@ -37,12 +37,12 @@ const DataGrid = () => {
   const clientName = selectedClient ? selectedClient.clientName : ''
 
   return (
-    <Grid container spacing={6}>
+    <Grid container spacing={2}>
       <PageHeader
         title={
           <Grid container alignItems='center' justifyContent='space-between'>
             <Grid item>
-              <Typography variant='h4' sx={{ color: 'primary.main' }}>
+              <Typography variant='h5' sx={{ color: 'primary.main' }}>
                 Print News
               </Typography>
             </Grid>

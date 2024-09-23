@@ -30,7 +30,7 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
   const article = selectedArticles.map(({ articleId, articleType, companies }) => ({
     id: Number(articleId),
     articleType,
-    companyIds: companies.map(company => company.id)
+    companyIds: companies?.map(company => company.id)
   }))
 
   const { loading, error, responseData, updateTagForMultipleArticles } = useUpdateTagForMultipleOnlineArticles({

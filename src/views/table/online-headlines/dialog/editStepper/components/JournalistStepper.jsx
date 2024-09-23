@@ -13,6 +13,7 @@ const JournalistStepper = ({ socialFeed, onCancel, handleClose }) => {
     headline: '',
     author: ''
   })
+
   const { author } = editedSocialFeed
 
   useEffect(() => {

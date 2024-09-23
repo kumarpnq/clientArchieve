@@ -1,12 +1,19 @@
-import { Box, Checkbox, CircularProgress, Tooltip, tooltipClasses, Typography, useMediaQuery } from '@mui/material'
-import React, { useState } from 'react'
-import Pagination from '../Pagination'
+import {
+  Box,
+  Checkbox,
+  CircularProgress,
+  ListItem,
+  styled,
+  Tooltip,
+  tooltipClasses,
+  Typography,
+  useMediaQuery
+} from '@mui/material'
+import OptionsMenu from 'src/@core/components/option-menu'
+import { FixedSizeList as List } from 'react-window'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
-import dayjs from 'dayjs'
-import { FixedSizeList as List } from 'react-window'
-import OptionsMenu from 'src/@core/components/option-menu'
-import styled from '@emotion/styled'
+import { useState } from 'react'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -15,8 +22,7 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
       color: theme.palette.text.primary,
       boxShadow: theme.shadows[1],
       fontSize: 11,
-
-      // maxWidth: '300px',
+      maxWidth: '300px',
       '& .MuiTooltip-arrow': {
         color: theme.palette.background.default
       }
@@ -24,47 +30,52 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
   })
 )
 
-const getTooltipContent = row => {
-  const companies = Array.isArray(row.companies) ? row.companies : []
-
-  return (
-    <Box>
+const getTooltipContent = row => (
+  <Box>
+    <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
         Summary :{' '}
         <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
           {row.summary}
         </Typography>
       </Typography>
+    </ListItem>
+    <ListItem></ListItem>
+    <ListItem>
       <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
         Companies :{' '}
         <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
+          {row.companies?.length > 0 ? row.companies?.map(company => company.name).join(', ') : row.companies[0]?.name}
         </Typography>
       </Typography>
-    </Box>
-  )
-}
+    </ListItem>
+    <ListItem>
+      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+        Edition Type :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.editionTypeName}
+        </Typography>
+      </Typography>
+    </ListItem>
+    <ListItem>
+      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+        Page Number :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.pageNumber}
+        </Typography>
+      </Typography>
+    </ListItem>
+  </Box>
+)
 
-const TableGrid = ({
-  loading,
-  articles,
-  selectedArticles,
-  setSelectedArticles,
-  fetchReadArticleFile,
-  setEditDetailsDialogOpen,
-  setSelectedArticle
-}) => {
+const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
 
   const [tableSelect, setTableSelect] = useState({})
   const [tableSelectTwo, setTableSelectTwo] = useState({})
 
-  const halfIndex = Math.ceil(articles.length / 2)
-  const firstPortionArticles = articles.slice(0, halfIndex)
-  const secondPortionArticles = articles.slice(halfIndex)
-
-  const toggleCheckboxSelection = (articleId, companies, setTableSelectFunc) => {
+  const toggleCheckboxSelection = (articleId, articleType, companies, setTableSelectFunc) => {
     setTableSelectFunc(prev => ({
       ...prev,
       [articleId]: !prev[articleId] ? articleId : null
@@ -76,24 +87,28 @@ const TableGrid = ({
       if (updatedArticles.has(articleId)) {
         updatedArticles.delete(articleId)
       } else {
-        updatedArticles.set(articleId, { articleId, companies })
+        updatedArticles.set(articleId, { articleId, articleType, companies })
       }
 
       return Array.from(updatedArticles.values())
     })
   }
 
-  const handleCheckboxChange = (articleId, companies) => {
-    toggleCheckboxSelection(articleId, companies, setTableSelect)
+  const handleCheckboxChange = (articleId, articleType, companies) => {
+    toggleCheckboxSelection(articleId, articleType, companies, setTableSelect)
   }
 
-  const handleCheckboxChangeTwo = (articleId, companies) => {
-    toggleCheckboxSelection(articleId, companies, setTableSelectTwo)
+  const handleCheckboxChangeTwo = (articleId, articleType, companies) => {
+    toggleCheckboxSelection(articleId, articleType, companies, setTableSelectTwo)
   }
 
   const isArticleSelected = articleId => {
     return selectedArticles.some(article => article.articleId === articleId)
   }
+
+  const halfIndex = Math.ceil(articles.length / 2)
+  const firstPortionArticles = articles.slice(0, halfIndex)
+  const secondPortionArticles = articles.slice(halfIndex)
 
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
@@ -107,7 +122,9 @@ const TableGrid = ({
             <td className='table-data'>
               <Checkbox
                 checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
-                onChange={() => handleCheckboxChange(firstArticle.articleId, firstArticle.companies)}
+                onChange={() =>
+                  handleCheckboxChange(firstArticle.articleId, firstArticle.articleType, firstArticle.companies)
+                }
               />
             </td>
             <td className='table-data'>
@@ -124,15 +141,14 @@ const TableGrid = ({
               />
             </td>
             <td className='table-data'>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
+              <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
+                >
                   <span className='headline'>{firstArticle.headline.substring(0, 70) + '...'}</span>
-                </CustomTooltip>
-                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
-                  {firstArticle.publication}
-                  <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
-                </span>
-              </div>
+                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
+                </div>
+              </CustomTooltip>
             </td>
             <td className='table-data'>
               <OptionsMenu
@@ -146,17 +162,18 @@ const TableGrid = ({
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
-                  },
-                  {
-                    text: 'Edit Detail',
-                    menuItemProps: {
-                      onClick: () => {
-                        fetchReadArticleFile('jpg', firstArticle)
-                        setEditDetailsDialogOpen(true)
-                        setSelectedArticle(firstArticle)
-                      }
-                    }
                   }
+
+                  // {
+                  //   text: 'Edit Detail',
+                  //   menuItemProps: {
+                  //     onClick: () => {
+                  //       fetchReadArticleFile('jpg', firstArticle)
+                  //       setEditDetailsDialogOpen(true)
+                  //       setSelectedArticle(firstArticle)
+                  //     }
+                  //   }
+                  // }
                 ]}
               />
             </td>
@@ -169,7 +186,9 @@ const TableGrid = ({
             <td className='table-data'>
               <Checkbox
                 checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
-                onChange={() => handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.companies)}
+                onChange={() =>
+                  handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.articleType, firstArticle.companies)
+                }
               />
             </td>
             <td className='table-data'>
@@ -186,16 +205,14 @@ const TableGrid = ({
               />
             </td>
             <td className='table-data'>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
+              <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
+                >
                   <span className='headline'>{secondArticle.headline}</span>
-                </CustomTooltip>
-
-                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
-                  {secondArticle.publication}
-                  <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
-                </span>
-              </div>
+                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
+                </div>
+              </CustomTooltip>
             </td>
             <td className='table-data'>
               <OptionsMenu
@@ -209,17 +226,18 @@ const TableGrid = ({
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
-                  },
-                  {
-                    text: 'Edit Detail',
-                    menuItemProps: {
-                      onClick: () => {
-                        fetchReadArticleFile('jpg', secondArticle)
-                        setEditDetailsDialogOpen(true)
-                        setSelectedArticle(secondArticle)
-                      }
-                    }
                   }
+
+                  // {
+                  //   text: 'Edit Detail',
+                  //   menuItemProps: {
+                  //     onClick: () => {
+                  //       fetchReadArticleFile('jpg', secondArticle)
+                  //       setEditDetailsDialogOpen(true)
+                  //       setSelectedArticle(secondArticle)
+                  //     }
+                  //   }
+                  // }
                 ]}
               />
             </td>
@@ -325,11 +343,14 @@ const TableGrid = ({
           ) : (
             <Box>
               {articles.length > 0 ? (
-                <table className='main-table'>
-                  <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
-                    {singleRow}
-                  </List>
-                </table>
+                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  {/* Mobile table rendering */}
+                  <table className='main-table'>
+                    <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
+                      {singleRow}
+                    </List>
+                  </table>
+                </div>
               ) : (
                 <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
                   <span>No Data Found</span>
@@ -343,4 +364,4 @@ const TableGrid = ({
   )
 }
 
-export default React.memo(TableGrid)
+export default Grid

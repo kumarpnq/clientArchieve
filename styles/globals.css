@@ -22,3 +22,27 @@ code:not([class*='language-']):after {
 code[class*='language-'] {
   padding: 0;
 }
+
+/* table style */
+.main-table {
+  width: 100%;
+  border-collapse: collapse;
+  display: flex;
+  overflow: auto;
+  gap: 1.5rem;
+  justify-content: space-between;
+}
+.table-data {
+  border-bottom: 1px solid rgba(47, 43, 61, 0.16);
+  padding: 8px;
+  text-align: center;
+}
+.headline {
+  width: 25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+  text-align: left;
+  font-weight: 600;
+}

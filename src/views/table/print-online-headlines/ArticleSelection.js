@@ -1,39 +1,29 @@
 // ** React Import
 import { useState, useEffect } from 'react'
-import { BASE_URL } from 'src/api/base'
+import { BASE_URL, ELASTIC_SERVER } from 'src/api/base'
 import axios from 'axios'
+import { FixedSizeList as List } from 'react-window'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
-import { DataGrid } from '@mui/x-data-grid'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
-import { FormControlLabel, FormGroup } from '@mui/material'
-
+import { FormControlLabel, FormGroup, ListItem } from '@mui/material'
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
-
-// import ViewDialog from './dialog/MoreDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
-
-// ** MUI icons
-
-// ** Article Database
-
 import useMediaQuery from '@mui/material/useMediaQuery'
-
 import dayjs from 'dayjs'
 
 //pagination
 import Pagination from './PrintOnlinePagination.js'
-
 import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import {
   selectSelectedClient,
   selectSelectedCompetitions,
@@ -47,26 +37,24 @@ import {
 // ** Tooltip
 import Tooltip from '@mui/material/Tooltip'
 import { styled } from '@mui/system'
-import { List, ListItem } from '@mui/material'
+
 import { tooltipClasses } from '@mui/material/Tooltip'
 import OptionsMenu from 'src/@core/components/option-menu'
 import useFetchReadArticleFile from 'src/api/global/useFetchReadArticleFile'
-import FullScreenJPGDialog from './dialog/view/FullScreenJPGDialog'
-import FullScreenHTMLDialog from './dialog/view/FullScreenHTMLDialog'
-import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
+import Grid from './data-grid/Grid'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.background.default, // Use default background color for dark theme
-      color: theme.palette.text.primary, // Use primary text color for dark theme
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.text.primary,
       boxShadow: theme.shadows[1],
       fontSize: 11,
-      maxWidth: '300px', // Set the maximum width for better readability
+      maxWidth: '300px',
       '& .MuiTooltip-arrow': {
-        color: theme.palette.background.default // Use default background color for the arrow in dark theme
+        color: theme.palette.background.default
       }
     }
   })
@@ -74,30 +62,7 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 
 const TableSelection = () => {
   const [selectedArticle, setSelectedArticle] = useState(null)
-  const [jpgDialogOpen, setJpgDialogOpen] = useState(false)
-  const [imageSrc, setImageSrc] = useState('')
-  const [htmlDialogOpen, setHtmlDialogOpen] = useState(false)
-  const [fileContent, setFileContent] = useState('')
-  const [pdfDialogOpen, setPdfDialogOpen] = useState(false)
-  const [pdfSrc, setPdfSrc] = useState('')
   const [selectedSortBy, setSelectedSortBy] = useState(null)
-
-  const { fetchReadArticleFile } = useFetchReadArticleFile(setImageSrc, setPdfSrc, setFileContent)
-
-  const handleJpgDialogClose = () => {
-    setJpgDialogOpen(false)
-    setImageSrc('')
-  }
-
-  const handleHtmlDialogClose = () => {
-    setHtmlDialogOpen(false)
-    setFileContent('')
-  }
-
-  const handlePdfDialogClose = () => {
-    setPdfDialogOpen(false)
-    setPdfSrc('')
-  }
 
   const handleView = row => {
     window.open(row.socialFeedlink, '_blank')
@@ -107,7 +72,7 @@ const TableSelection = () => {
   const renderArticle = params => {
     const { row } = params
 
-    const formattedDate = dayjs(row.articleDate || row.feedDate).format('DD-MM-YYYY')
+    const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
 
     const getTooltipContent = row => (
       <List>
@@ -125,7 +90,7 @@ const TableSelection = () => {
             Companies :{' '}
             <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
               {row.companies.length > 1
-                ? row.companies.map(company => company.name).join(', ')
+                ? row.companies?.map(company => company.name).join(', ')
                 : row.companies[0]?.name}
             </Typography>
           </Typography>
@@ -156,7 +121,7 @@ const TableSelection = () => {
             {row.headline}
           </Typography>
           <Typography noWrap variant='caption'>
-            {row.publisher || row.publication}
+            {row.publisher}
             <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
           </Typography>
         </Box>
@@ -167,99 +132,6 @@ const TableSelection = () => {
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
 
-  const articleColumns = [
-    {
-      flex: 0.1,
-      minWidth: 5,
-      headerName: 'Select',
-      field: 'select',
-      renderCell: params => (
-        <Checkbox
-          onClick={e => {
-            e.stopPropagation()
-            handleSelect(params.row)
-          }}
-          checked={selectedArticles.some(selectedArticle => selectedArticle.articleId === params.row.articleId)}
-        />
-      )
-    },
-    {
-      flex: 0.1,
-      minWidth: 5,
-      headerName: 'Grp',
-      field: 'Grp',
-      renderCell: params => {
-        const publications = params.row.children || []
-
-        return (
-          <SelectBox
-            icon={publications.length !== 1 ? <Icon icon='ion:add' /> : null}
-            iconButtonProps={{ sx: { color: Boolean(publications.length) ? 'primary.main' : 'primary' } }}
-            renderItem='publicationName'
-            renderKey={'socialFeedId' || 'articleId'}
-            menuItems={publications}
-            selectedItems={selectedItems}
-            setSelectedItems={setSelectedItems}
-          />
-        )
-      }
-    },
-    {
-      flex: 0.6,
-      minWidth: 240,
-      field: 'article',
-      headerName: 'Article',
-      renderCell: renderArticle
-    },
-    {
-      flex: 0.1,
-      minWidth: 5,
-      field: 'more',
-      headerName: 'More',
-      renderCell: params => {
-        // Check if articleId is online
-        if (params.row.articleType === 'online') {
-          return (
-            <OptionsMenu
-              iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-              options={[
-                {
-                  text: 'View',
-                  menuItemProps: {
-                    onClick: () => {
-                      handleView(params.row)
-                    }
-                  }
-                }
-              ]}
-            />
-          )
-        }
-
-        return (
-          <OptionsMenu
-            iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-            options={[
-              {
-                text: 'View Article',
-                menuItemProps: {
-                  onClick: () => {
-                    const articleCode = params.row.link
-                    window.open(`/article-view?articleCode=${articleCode}`, '_blank')
-                  }
-                }
-              }
-            ]}
-          />
-        )
-      }
-    }
-  ]
-
-  const isNotResponsive = useMediaQuery('(min-width: 1000px )')
-  const isMobileView = useMediaQuery('(max-width: 530px)')
-  const isNarrowMobileView = useMediaQuery('(max-width: 405px)')
-
   // ** State
   const [articles, setArticles] = useState([])
 
@@ -269,8 +141,8 @@ const TableSelection = () => {
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize: 0,
-    totalRecords: 0
+    pageSize: 0, // Default pageSize
+    totalRecords: 0 // New state for totalRecords
   })
 
   const [filterPopoverAnchor, setFilterPopoverAnchor] = useState(null)
@@ -278,9 +150,6 @@ const TableSelection = () => {
   const [isSearchBarVisible, setIsSearchBarVisible] = useState(false)
   const [selectedDuration, setSelectedDuration] = useState(null)
   const [isEditDialogOpen, setEditDialogOpen] = useState(false)
-
-  const getRowId = row => row.articleId
-
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguages, setSelectedLanguages] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
@@ -308,7 +177,6 @@ const TableSelection = () => {
   //Redux call
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
-  const clientName = selectedClient ? selectedClient.clientName : null
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedTypeOfDate = useSelector(selectedDateType)
   const selectedFromDate = useSelector(selectSelectedStartDate)
@@ -395,9 +263,8 @@ const TableSelection = () => {
               return `${isoString} ${timeString}`
             }
 
-            const formattedStartDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
-
-            const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
+            const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+            const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
             const selectedCompaniesString = selectedCompetitions.join(', ')
 
             const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
@@ -440,8 +307,6 @@ const TableSelection = () => {
             const requestData = {
               clientId: clientId,
               screenName: 'bothHeadlines',
-              displayName: 'Print Online News',
-              clientName,
               searchCriteria: {
                 requestEntity: 'both',
                 clientIds: clientId,
@@ -451,7 +316,7 @@ const TableSelection = () => {
                 page: currentPage,
                 recordsPerPage: recordsPerPage,
 
-                media: result,
+                // media: result,
                 tags: selectedTagString,
                 geography: selectedCitiesString,
                 language: selectedLanguagesString,
@@ -492,26 +357,19 @@ const TableSelection = () => {
         const storedToken = localStorage.getItem('accessToken')
 
         if (storedToken) {
-          const formattedStartDateForPrint = selectedFromDate
-            ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
-            : null
+          const formatDateTimes = (date, setTime, isEnd) => {
+            let formattedDate = date
+            if (isEnd) {
+              formattedDate = date.add(1, 'day')
+            }
+            const isoString = formattedDate.toISOString().slice(0, 10)
+            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
 
-          const formattedEndDateForPrint = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
+            return `${isoString} ${timeString}`
+          }
 
-          const formattedStartDateForOnline = selectedFromDate
-            ? (() => {
-                const fromDate = dayjs(selectedFromDate)
-
-                if (fromDate.format('HH:mm:ss') === '00:00:00') {
-                  const currentTime = dayjs().format('HH:mm:ss')
-
-                  return fromDate.format(`YYYY-MM-DD ${currentTime}`)
-                }
-
-                return fromDate.format('YYYY-MM-DD HH:mm:ss')
-              })()
-            : null
-          const formattedEndDateOnline = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
+          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
           const selectedTagString = selectedTags.join(', ')
 
@@ -535,17 +393,48 @@ const TableSelection = () => {
             })
             .join(', ')
 
-          const request_params = {
-            clientIds: clientId,
-            companyIds: selectedCompetitions.join(', '),
-            dateType: selectedTypeOfDate,
+          const formattedFromDate = formattedStartDate ? new Date(formattedStartDate).toISOString().split('T')[0] : null
+          const formattedToDate = formattedEndDate ? new Date(formattedEndDate).toISOString().split('T')[0] : null
 
-            // fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
-            // toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
-            printFromDate: formattedStartDateForPrint,
-            printToDate: formattedEndDateForPrint,
-            onlineFromDate: formattedStartDateForOnline,
-            onlineToDate: formattedEndDateOnline,
+          // * format date functions
+          // const formattedStartDateForPrint = selectedFromDate
+          //   ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
+          //   : null
+
+          // const formattedEndDateForPrint = selectedEndDate
+          //   ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss')
+          //   : null
+
+          // const formattedStartDateForOnline = selectedFromDate
+          //   ? (() => {
+          //       const fromDate = dayjs(selectedFromDate)
+
+          //       if (fromDate.format('HH:mm:ss') === '00:00:00') {
+          //         const currentTime = dayjs().format('HH:mm:ss')
+
+          //         return fromDate.format(`YYYY-MM-DD ${currentTime}`)
+          //       }
+
+          //       return fromDate.format('YYYY-MM-DD HH:mm:ss')
+          //     })()
+          //   : null
+          // const formattedEndDateOnline = selectedEndDate
+          //   ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss')
+          //   : null
+
+          const request_params = {
+            // clientIds: clientId,
+            clientIds: '0',
+
+            // companyIds: selectedCompetitions.join(', '),
+            // dateType: selectedTypeOfDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
+
+            // printFromDate: formattedStartDateForPrint,
+            // printToDate: formattedEndDateForPrint,
+            // onlineFromDate: formattedStartDateForOnline,
+            // onlineToDate: formattedEndDateOnline,
             page: currentPage,
             recordsPerPage: recordsPerPage,
             sortby: selectedSortBy,
@@ -558,16 +447,54 @@ const TableSelection = () => {
             tags: shortCutData?.searchCriteria?.tags || selectedTagString
           }
 
-          const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`, {
-            headers: {
-              Authorization: `Bearer ${storedToken}`
-            },
-            params: request_params
+          // const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`,
+          const response = await axios.get(
+            `${ELASTIC_SERVER}/api/v1/client/getOnlineAndprintArticle`,
+
+            {
+              headers: {
+                Authorization: `Bearer ${storedToken}`
+              },
+              params: request_params
+            }
+          )
+
+          const totalRecords = response.data.data.doc.length
+
+          const transformedArray = response.data.data.doc.map(item => {
+            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag } = item._source
+
+            return {
+              articleId: articleId,
+              headline: articleData.headlines,
+              summary: articleData.summary,
+              publication: publicationInfo.name,
+              publicationId: publicationInfo.id,
+              articleDate: `${articleInfo.articleDate}T00:00:00`,
+              articleUploadId: uploadInfo.uploadId,
+              articleJournalist: '',
+              companies:
+                companyTag?.map(company => ({
+                  id: company.id,
+                  name: company.name
+                })) || [],
+              clientId: '',
+              clientName: '',
+              editionType: '',
+              editionTypeName: '',
+              publicationCategory: '',
+              circulation: 0,
+              publicationType: '',
+              language: articleData.language,
+              size: articleData.space,
+              pageNumber: articleData.pageNumber,
+              children: [],
+              link: '',
+              articleType: 'print' // hardcoded remove after getting through elastic
+            }
           })
 
-          const totalRecords = response.data.totalCount
-
-          setArticles(response.data.articles)
+          setArticles(transformedArray)
 
           setPaginationModel(prevPagination => ({
             ...prevPagination,
@@ -599,10 +526,6 @@ const TableSelection = () => {
     selectedTypeOfDate
   ])
 
-  // Divide social feeds into left and right columns
-  const leftArticles = articles.filter((_, index) => index % 2 === 0)
-  const rightArticles = articles.filter((_, index) => index % 2 !== 0)
-
   // Open the date filter popover
   const openFilterPopover = event => {
     setFilterPopoverAnchor(event.currentTarget)
@@ -616,31 +539,6 @@ const TableSelection = () => {
   // Function to toggle search bar visibility
   const toggleSearchBarVisibility = () => {
     setIsSearchBarVisible(prev => !prev)
-  }
-
-  const handleDelete = () => {
-    // Add your delete logic here
-    console.log('Delete action triggered')
-  }
-
-  const handleEmail = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
-  const handleImage = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
-  const handleDownload = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
-  }
-
-  const handleRssFeed = () => {
-    // Add your search logic here
-    console.log('Search action triggered')
   }
 
   const handleFilter1D = () => {
@@ -659,8 +557,6 @@ const TableSelection = () => {
 
   const handleRowClick = params => {
     setSelectedArticle(params.row)
-
-    // currently hiding the click summary
     setPopupOpen(false)
   }
 
@@ -672,7 +568,6 @@ const TableSelection = () => {
 
   const handleSelect = article => {
     const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
-
     setSelectedArticles(prevSelectedArticles => {
       let updatedSelectedArticles = []
       if (isSelected) {
@@ -699,6 +594,7 @@ const TableSelection = () => {
     }
   }
 
+  // Function to handle right pagination
   const handleRightPagination = () => {
     if (currentPage < Math.ceil(paginationModel.totalRecords / paginationModel.pageSize)) {
       setCurrentPage(prevPage => prevPage + 1)
@@ -715,7 +611,6 @@ const TableSelection = () => {
   }
 
   const handleReset = () => {
-    // setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguages([])
     setSelectedMedia('')
@@ -778,11 +673,6 @@ const TableSelection = () => {
         setSelectedSortBy={setSelectedSortBy}
         selectedSortBy={selectedSortBy}
         toggleSearchBarVisibility={toggleSearchBarVisibility}
-        handleDelete={handleDelete}
-        handleEmail={handleEmail}
-        handleImage={handleImage}
-        handleDownload={handleDownload}
-        handleRssFeed={handleRssFeed}
         openFilterPopover={openFilterPopover}
         handleFilter1D={handleFilter1D}
         handleFilter7D={handleFilter7D}
@@ -816,7 +706,7 @@ const TableSelection = () => {
           />
         )}
         {articles.length > 0 && (
-          <Box>
+          <Box pl={3}>
             <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
               <FormControlLabel
                 control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
@@ -831,76 +721,12 @@ const TableSelection = () => {
         )}
       </Box>
       {/* DataGrid */}
-      <Box p={2}>
-        {loading ? (
-          <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
-            <CircularProgress />
-          </Box>
-        ) : (
-          <>
-            {isNotResponsive ? (
-              <Box display='flex'>
-                {isMobileView ? null : (
-                  <Box flex='1' p={2} pr={1}>
-                    <DataGrid
-                      autoHeight
-                      rows={leftArticles}
-                      columns={articleColumns}
-                      pagination={false}
-                      onRowClick={params => handleRowClick(params)}
-                      getRowId={getRowId}
-                      hideFooter
-                    />
-                  </Box>
-                )}
-
-                {/* Right Column */}
-                <Box flex='1' p={2} pl={isMobileView ? 0 : 1}>
-                  <DataGrid
-                    autoHeight
-                    rows={rightArticles}
-                    columns={articleColumns}
-                    pagination={false}
-                    onRowClick={params => handleRowClick(params)}
-                    getRowId={getRowId}
-                    hideFooter
-                  />
-                </Box>
-              </Box>
-            ) : (
-              <DataGrid
-                autoHeight
-                rows={articles}
-                columns={articleColumns.filter(column => {
-                  if (isMobileView) {
-                    return (
-                      column.field !== 'select' &&
-                      column.field !== 'edit' &&
-                      !(column.field === 'date' && isNarrowMobileView)
-                    )
-                  }
-
-                  return true
-                })}
-                pagination={false} // Remove pagination
-                onRowClick={params => handleRowClick(params)}
-                getRowId={getRowId}
-                hideFooter
-              />
-            )}
-            {/* {articles.length > 0 && (
-              <Pagination
-                paginationModel={paginationModel}
-                currentPage={currentPage}
-                recordsPerPage={recordsPerPage}
-                handleLeftPagination={handleLeftPagination}
-                handleRightPagination={handleRightPagination}
-                handleRecordsPerPageUpdate={handleRecordsPerPageChange}
-              />
-            )} */}
-          </>
-        )}
-      </Box>
+      <Grid
+        articles={articles}
+        selectedArticles={selectedArticles}
+        loading={loading}
+        setSelectedArticles={setSelectedArticles}
+      />
       {/* Popup Window */}
       <ArticleDialog open={isPopupOpen} handleClose={() => setPopupOpen(false)} article={selectedArticle} />{' '}
     </Card>

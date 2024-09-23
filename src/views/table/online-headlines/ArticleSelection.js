@@ -25,8 +25,6 @@ import EditDialog from './dialog/EditDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
 
 // ** Article Database
-
-import useMediaQuery from '@mui/material/useMediaQuery'
 import dayjs from 'dayjs'
 
 // ** Redux
@@ -41,12 +39,13 @@ import {
   selectedDateType
 } from 'src/store/apps/user/userSlice'
 import OptionsMenu from 'src/@core/components/option-menu'
-import { BASE_URL } from 'src/api/base'
+import { BASE_URL, ELASTIC_SERVER } from 'src/api/base'
 import { Icon } from '@iconify/react'
 import SelectBox from 'src/@core/components/select'
 import ArticleView from './dialog/article-view/view'
 import Grid from './table-grid/Grid'
-import useElasticSocialFeedData from 'src/api/elsatic/getSocialfeed'
+import DateType from 'src/@core/layouts/components/shared-components/DateType'
+import Pagination from './OnlineHeadlinePagination'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -108,9 +107,6 @@ const renderSocialFeed = params => {
 }
 
 const TableSelection = () => {
-  // * mode changer elastic or fast API
-  const isElasticMode = process.env.NEXT_PUBLIC_ELASTIC_MODE
-
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
   const [openArticleView, setOpenArticleView] = useState(false)
@@ -169,12 +165,6 @@ const TableSelection = () => {
   const [dataFetchFlag, setDataFetchFlag] = useState(false)
   const [selectedEditionType, setSelectedEditionType] = useState([])
   const [selectedPublicationType, setSelectedPublicationType] = useState([])
-
-  // * elastic data
-  const fromDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD') : null
-  const { data, loading: ElasticLoading, error } = useElasticSocialFeedData(fromDate)
-
-  console.log(data)
 
   const edition = selectedEditionType?.map(i => {
     return i.editionTypeId
@@ -259,24 +249,19 @@ const TableSelection = () => {
           const storedToken = localStorage.getItem('accessToken')
 
           if (storedToken) {
-            const formattedStartDate = selectedFromDate
-              ? (() => {
-                  const fromDate = dayjs(selectedFromDate)
+            const formatDateTimes = (date, setTime, isEnd) => {
+              let formattedDate = date
+              if (isEnd) {
+                formattedDate = date.add(1, 'day')
+              }
+              const isoString = formattedDate.toISOString().slice(0, 10)
+              const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
 
-                  // Check if the time is 00:00:00
-                  if (fromDate.format('HH:mm:ss') === '00:00:00') {
-                    // Add the current time to the fromDate
-                    const currentTime = dayjs().format('HH:mm:ss')
+              return `${isoString} ${timeString}`
+            }
 
-                    return fromDate.format(`YYYY-MM-DD ${currentTime}`)
-                  }
-
-                  // Otherwise, return the original formatted fromDate
-                  return fromDate.format('YYYY-MM-DD HH:mm:ss')
-                })()
-              : null
-
-            const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
+            const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
+            const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
             const selectedCompaniesString = selectedCompetitions.join(', ')
 
             const selectedTagString = selectedTags.join(', ')
@@ -361,20 +346,37 @@ const TableSelection = () => {
         if (storedToken) {
           const base_url = process.env.NEXT_PUBLIC_BASE_URL
 
-          const formattedStartDate = selectedFromDate
-            ? (() => {
-                const fromDate = dayjs(selectedFromDate)
+          const formatDateTimes = (date, setTime, isEnd) => {
+            let formattedDate = date
+            if (isEnd) {
+              formattedDate = date.add(1, 'day')
+            }
+            const isoString = formattedDate.toISOString().slice(0, 10)
+            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
 
-                if (fromDate.format('HH:mm:ss') === '00:00:00') {
-                  const currentTime = dayjs().format('HH:mm:ss')
+            return `${isoString} ${timeString}`
+          }
+          const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
 
-                  return fromDate.format(`YYYY-MM-DD ${currentTime}`)
-                }
+          const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
 
-                return fromDate.format('YYYY-MM-DD HH:mm:ss')
-              })()
-            : null
-          const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
+          // * new format date functions
+          // const formattedStartDate = selectedFromDate
+          //   ? (() => {
+          //       const fromDate = dayjs(selectedFromDate)
+
+          //       if (fromDate.format('HH:mm:ss') === '00:00:00') {
+          //         const currentTime = dayjs().format('HH:mm:ss')
+
+          //         return fromDate.format(`YYYY-MM-DD ${currentTime}`)
+          //       }
+
+          //       return fromDate.format('YYYY-MM-DD HH:mm:ss')
+          //     })()
+          //   : null
+          // const formattedEndDate = selectedEndDate
+          //   ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss')
+          //   : null
 
           const selectedCompaniesString = selectedCompetitions.join(', ')
 
@@ -410,12 +412,18 @@ const TableSelection = () => {
             })
             .join(', ')
 
+          const formattedFromDate = formattedStartDate ? new Date(formattedStartDate).toISOString().split('T')[0] : null
+          const formattedToDate = formattedEndDate ? new Date(formattedEndDate).toISOString().split('T')[0] : null
+
           const request_params = {
-            clientIds: clientId,
-            companyIds: selectedCompaniesString,
-            DateTye: selectedTypeOfDate,
-            fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
-            toDate: shortCutData?.searchCriteria?.toDate || formattedEndDate,
+            // clientIds: clientId,
+            clientIds: '0',
+
+            // companyIds: selectedCompaniesString,
+            // DateType:'articleInfo.articleDate',
+            // DateTye: selectedTypeOfDate,
+            fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
+            toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
             page: currentPage,
             recordsPerPage: recordsPerPage,
 
@@ -433,22 +441,44 @@ const TableSelection = () => {
             phrase: searchParameters.exactPhrase,
 
             // sort by
-            sortby: selectedSortBy,
+            sortby: 'FEED_DATE' || selectedSortBy,
 
             // editionType: edition,
             publicationCategory: publicationtype
           }
 
-          const response = await axios.get(`${base_url}/clientWiseSocialFeeds/`, {
+          const response = await axios.get(`${ELASTIC_SERVER}/api/v1/client/getSocialFeed`, {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
             params: request_params
           })
 
-          const totalRecords = response.data.totalRecords || data.length || 0
-          const socialFeedData = isElasticMode === 'true' ? data : response.data.socialFeeds
-          setSocialFeeds(socialFeedData || [])
+          const transformedArray = response.data.data.doc.map(item => {
+            const { socialFeedId, feedInfo, feedData, uploadInfo, publicationInfo, companyTag } = item._source
+
+            return {
+              socialFeedId: socialFeedId,
+              headline: feedData.headlines,
+              summary: feedData.summary,
+              publisher: publicationInfo.name,
+              socialFeedlink: feedInfo?.link,
+              feedDate: `${feedData.feedDate}`,
+              articleUploadId: uploadInfo?.uploadId,
+              socialFeedAuthorName: '',
+              companies: companyTag?.map(company => ({
+                id: company.id,
+                name: company.name
+              })),
+              clientId: '',
+              clientName: '',
+              children: []
+            }
+          })
+
+          const totalRecords = response.data.data.doc.length || 0
+
+          setSocialFeeds(transformedArray)
 
           // Update totalRecords in the state
           setPaginationModel(prevPagination => ({
@@ -481,10 +511,6 @@ const TableSelection = () => {
     selectedPublicationType,
     selectedTypeOfDate
   ])
-
-  // Divide social feeds into left and right columns
-  const leftSocialFeeds = socialFeeds.filter((_, index) => index % 2 === 0)
-  const rightSocialFeeds = socialFeeds.filter((_, index) => index % 2 !== 0)
 
   // Open the date filter popover
   const openFilterPopover = event => {
@@ -527,7 +553,7 @@ const TableSelection = () => {
       }
 
       const isPageFullySelected = socialFeeds.every(article =>
-        updatedSelectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.articleId)
+        updatedSelectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
       )
 
       setPageCheck(isPageFullySelected)
@@ -621,13 +647,9 @@ const TableSelection = () => {
 
   return (
     <Card>
-      <CardHeader
-        title={
-          <Typography variant='title-lg' sx={{ cursor: 'pointer', color: 'primary' }}>
-            <Button onClick={handleResetValues}>{priorityCompanyName}</Button>
-          </Typography>
-        }
-      />
+      <Typography sx={{ cursor: 'pointer', color: 'primary' }}>
+        <Button onClick={handleResetValues}>{priorityCompanyName}</Button>
+      </Typography>
       {/* Top Toolbar */}
       <ToolbarComponent
         selectedGeography={selectedGeography}
@@ -669,45 +691,46 @@ const TableSelection = () => {
         allCheck={allCheck}
       />
       {/* multiple selection */}
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {socialFeeds.length > 0 && (
+          <Pagination
+            paginationModel={paginationModel}
+            currentPage={currentPage}
+            recordsPerPage={recordsPerPage}
+            handleLeftPagination={handleLeftPagination}
+            handleRightPagination={handleRightPagination}
+            handleRecordsPerPageUpdate={handleRecordsPerPageChange}
+          />
+        )}
 
-      {/* {socialFeeds.length > 0 && (
-        <Box pl={3}>
-          <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
-            <FormControlLabel
-              control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
-              label='Page'
-            />
-            <FormControlLabel
-              control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
-              label='All Articles'
-            />
-          </FormGroup>
-        </Box>
-      )} */}
+        {socialFeeds.length > 0 && (
+          <Box pl={3}>
+            <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
+              <FormControlLabel
+                control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
+                label='Page'
+              />
+              <FormControlLabel
+                control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
+                label='All Articles'
+              />
+            </FormGroup>
+          </Box>
+        )}
+      </Box>
+
       {/* DataGrid */}
       <Grid
-        loading={isElasticMode === 'true' ? ElasticLoading : loading}
-        leftSocialFeeds={leftSocialFeeds}
-        rightSocialFeeds={rightSocialFeeds}
+        loading={loading}
         socialFeeds={socialFeeds}
-        getRowId={getRowId}
-        handleSelect={handleSelect}
         handleEdit={handleEdit}
         handleView={handleView}
         setSelectedArticle={setSelectedArticle}
         setOpenArticleView={setOpenArticleView}
         selectedArticles={selectedArticles}
+        setSelectedArticles={setSelectedArticles}
         selectedItems={selectedItems}
         setSelectedItems={setSelectedItems}
-        renderSocialFeed={renderSocialFeed}
-        paginationModel={paginationModel}
-        currentPage={currentPage}
-        recordsPerPage={recordsPerPage}
-        handleLeftPagination={handleLeftPagination}
-        handleRightPagination={handleRightPagination}
-        handleRecordsPerPageChange={handleRecordsPerPageChange}
-        handleRowClick={handleRowClick}
-        SelectAllModal={SelectAllModal}
       />
 
       <EditDialog

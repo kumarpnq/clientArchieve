@@ -57,18 +57,24 @@ const RecordsPerPageSelector = ({ recordsPerPage, handleRecordsPerPageUpdate }) 
         <MenuItem onClick={() => handlePredefinedUpdate(100)}>100</MenuItem>
         <MenuItem onClick={() => handlePredefinedUpdate(200)}>200</MenuItem>
         <MenuItem onClick={() => handlePredefinedUpdate(500)}>500</MenuItem>
-        {/* <MenuItem>
+        <MenuItem>
           <TextField
             label='Custom'
             type='number'
             value={customValue}
             onChange={handleCustomInputChange}
-            size='small' // Adjust the size of the input field
+            size='small'
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                handleCustomUpdate()
+              }
+            }}
           />
-          <Button size='small' onClick={handleCustomUpdate}>
+          {/* <Button size='small' onClick={handleCustomUpdate}>
             Update
-          </Button>
-        </MenuItem> */}
+          </Button> */}
+        </MenuItem>
       </Popover>
     </Box>
   )

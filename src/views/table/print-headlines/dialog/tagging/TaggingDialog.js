@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import PerfectScrollbarComponent from 'react-perfect-scrollbar'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -14,7 +15,7 @@ import WarningIcon from '@mui/icons-material/Warning'
 import DialogContentText from '@mui/material/DialogContentText'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 // ** third party imports
@@ -106,22 +107,24 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
         />
 
         <Box sx={{ minWidth: 120, marginTop: '20px' }}>
-          <FormControl fullWidth>
-            <InputLabel id='demo-simple-select-label'>Select Tag</InputLabel>
-            <Select
-              labelId='demo-simple-select-label'
-              id='demo-simple-select'
-              value={selectedTag}
-              label='Select Tag'
-              onChange={handleTagSelectChange}
-            >
-              {tags.map(tag => (
-                <MenuItem key={tag} value={tag}>
-                  {tag}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <PerfectScrollbarComponent>
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-label'>Select Tag</InputLabel>
+              <Select
+                labelId='demo-simple-select-label'
+                id='demo-simple-select'
+                value={selectedTag}
+                label='Select Tag'
+                onChange={handleTagSelectChange}
+              >
+                {tags.map(tag => (
+                  <MenuItem key={tag} value={tag}>
+                    {tag}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </PerfectScrollbarComponent>
         </Box>
       </DialogContent>
       <DialogActions>
