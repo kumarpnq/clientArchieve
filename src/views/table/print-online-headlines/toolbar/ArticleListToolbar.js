@@ -140,11 +140,7 @@ const ArticleListToolbar = ({
   setSearchQuery,
   isSearchBarVisible,
   toggleSearchBarVisibility,
-  handleDelete,
-  handleEmail,
-  handleImage,
-  handleDownload,
-  handleRssFeed,
+
   openFilterPopover,
   filterPopoverAnchor,
   closeFilterPopover,
