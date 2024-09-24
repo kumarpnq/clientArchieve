@@ -98,7 +98,7 @@ const NotificationDropdown = () => {
   }
 
   useEffect(() => {
-    if (notificationList) {
+    if (notificationList && notificationList?.length) {
       setFilteredData([
         ...(notificationList.excelDump || []),
         ...(notificationList.mail || []),
@@ -108,7 +108,7 @@ const NotificationDropdown = () => {
   }, [notificationList])
 
   const markAsSeen = async () => {
-    const unreadItems = unreadNotifications.map(item => item.jobId)
+    const unreadItems = unreadNotifications?.map(item => item.jobId) || []
     if (unreadItems.length > 0) {
       try {
         await Promise.all(unreadItems.map(jobId => updateReadClientNotification(jobId)))
@@ -140,12 +140,20 @@ const NotificationDropdown = () => {
     setActiveIconFilter(value)
 
     let filtered
-    if (value === 'all') {
-      // Combine all arrays into one
-      filtered = [...notificationList.excelDump, ...notificationList.mail, ...notificationList.dossier]
+    if (notificationList) {
+      if (value === 'all') {
+        filtered = [
+          ...(notificationList.excelDump || []),
+          ...(notificationList.mail || []),
+          ...(notificationList.dossier || [])
+        ]
+      } else {
+        filtered = notificationList[value] || []
+      }
     } else {
-      filtered = notificationList[value]
+      filtered = []
     }
+
     setFilteredData(filtered)
   }
 
