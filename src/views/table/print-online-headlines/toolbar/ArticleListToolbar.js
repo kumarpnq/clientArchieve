@@ -139,15 +139,6 @@ const SortByIcon = ({ handleSortByLatest, handleSortByMedia }) => (
 const ArticleListToolbar = ({
   setSearchQuery,
   isSearchBarVisible,
-  toggleSearchBarVisibility,
-  handleDelete,
-  handleEmail,
-  handleImage,
-  handleDownload,
-  handleRssFeed,
-  openFilterPopover,
-  filterPopoverAnchor,
-  closeFilterPopover,
   setSelectedSortBy,
   selectedSortBy,
   selectedPublicationType,
@@ -290,13 +281,11 @@ const ArticleListToolbar = ({
         setPublicationTypes(data.publicationsTypeList)
       } catch (error) {
         console.error('Error fetching publication types:', error)
-
-        // Handle error appropriately, e.g., display an error message to the user
       }
     }
 
     fetchPublicationTypes()
-  }, []) // Fetch publication types only once on component mount
+  }, [])
 
   const [editionTypes, setEditionTypes] = useState([])
   const [isEditionTypeMenuOpen, setEditionTypeMenuOpen] = useState(null)

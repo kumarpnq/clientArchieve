@@ -56,6 +56,7 @@ const TableGrid = ({
 }) => {
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
+  const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
 
   const [tableSelect, setTableSelect] = useState({})
   const [tableSelectTwo, setTableSelectTwo] = useState({})
@@ -95,6 +96,12 @@ const TableGrid = ({
     return selectedArticles.some(article => article.articleId === articleId)
   }
 
+  const similarArticles = [
+    { articleId: 1, publicationName: 'Article 1' },
+    { articleId: 2, publicationName: 'Article 2' },
+    { articleId: 3, publicationName: 'Article3' }
+  ]
+
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
     const secondArticle = secondPortionArticles[index]
@@ -114,11 +121,13 @@ const TableGrid = ({
               <SelectBox
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
-                  sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                  // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(similarArticles) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='articleId'
-                menuItems={firstArticle.publications}
+                // menuItems={firstArticle.publications}
+                menuItems={similarArticles}
                 selectedItems={selectedArticles}
                 setSelectedItems={setSelectedArticles}
               />
@@ -126,7 +135,17 @@ const TableGrid = ({
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
                 <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
-                  <span className='headline'>{firstArticle.headline.substring(0, 70) + '...'}</span>
+                  <span
+                    className='headline'
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    onClick={() => {
+                      const articleCode = firstArticle?.link || 'test'
+                      const url = `/PDFView?articleId=${articleCode}`
+                      window.open(url, '_blank')
+                    }}
+                  >
+                    {firstArticle.headline}
+                  </span>
                 </CustomTooltip>
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
                   {firstArticle.publication}
@@ -162,7 +181,7 @@ const TableGrid = ({
             </td>
           </>
         )}
-
+        <td style={{ padding: '6px' }}></td>
         {/* second portion */}
         {secondArticle && (
           <>
@@ -188,7 +207,17 @@ const TableGrid = ({
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
                 <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
-                  <span className='headline'>{secondArticle.headline}</span>
+                  <span
+                    className='headline'
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    onClick={() => {
+                      const articleCode = secondArticle?.link || 'test'
+                      const url = `/PDFView?articleId=${articleCode}`
+                      window.open(url, '_blank')
+                    }}
+                  >
+                    {secondArticle.headline}
+                  </span>
                 </CustomTooltip>
 
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>

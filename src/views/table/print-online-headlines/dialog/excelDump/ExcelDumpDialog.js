@@ -7,7 +7,7 @@ import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { getArticleFieldList } from '../../../../../api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi' // Adjust the import path accordingly
+import { getArticleFieldList } from '../../../../../api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi'
 import useExcelDump from 'src/api/dump/useExcelDump'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -327,7 +327,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
     dispatch(setNotificationFlag(!notificationFlag))
     dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
     handleClose()
-    setSelectedFields([])
+
+    // setSelectedFields([])
     setSelectAll(false)
     if (error) return toast.error('something wrong.')
     if (responseData) {
@@ -360,10 +361,14 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color='primary'>
+        <Button onClick={handleClose} color='primary' variant='outlined'>
           Close
         </Button>
-        <Button onClick={handleDownload} color='primary' disabled={selectedFields.length === 0}>
+        <Button
+          onClick={handleDownload}
+          sx={{ backgroundColor: 'primary.main', color: 'text.primary' }}
+          disabled={selectedFields.length === 0}
+        >
           Download
         </Button>
       </DialogActions>

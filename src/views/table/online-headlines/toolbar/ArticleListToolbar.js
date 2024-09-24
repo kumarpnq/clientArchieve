@@ -124,6 +124,7 @@ const ExcelDumpIcon = () => (
 
 const ArticleListToolbar = ({
   selectedStartDate,
+
   selectedEndDate,
   selectedPublicationType,
   selectedEditionType,
@@ -132,6 +133,7 @@ const ArticleListToolbar = ({
   primaryColor,
   setSearchParameters,
   selectedArticles,
+  setSelectedArticles,
   tags,
   fetchTagsFlag,
   setFetchTagsFlag,
@@ -392,6 +394,7 @@ const ArticleListToolbar = ({
             open={isEmailDialogOpen}
             onClose={handleEmailDialogClose}
             dataForMail={dataForDump}
+            setSelectedItems={setSelectedArticles}
           />{' '}
         </Fragment>
       )}
@@ -413,6 +416,7 @@ const ArticleListToolbar = ({
             dataForDossierDownload={dataForDump}
             pageCheck={pageCheck}
             allCheck={allCheck}
+            setSelectedItems={setSelectedArticles}
           />
         </Fragment>
       )}
@@ -431,6 +435,7 @@ const ArticleListToolbar = ({
             dataForExcelDump={dataForDump}
             pageCheck={pageCheck}
             allCheck={allCheck}
+            setSelectedItems={setSelectedArticles}
           />
         </Fragment>
       )}

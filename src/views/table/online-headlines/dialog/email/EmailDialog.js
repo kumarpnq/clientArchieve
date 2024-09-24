@@ -339,6 +339,8 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
     if (error) {
       toast.error('something wrong.')
     } else {
+      setSelectedEmails([])
+      setEmailType({})
       toast.success('Email request taken successfully.')
     }
   }

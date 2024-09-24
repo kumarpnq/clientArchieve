@@ -71,6 +71,7 @@ const getTooltipContent = row => (
 const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
+  const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
 
   const [tableSelect, setTableSelect] = useState({})
   const [tableSelectTwo, setTableSelectTwo] = useState({})
@@ -110,6 +111,12 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const firstPortionArticles = articles.slice(0, halfIndex)
   const secondPortionArticles = articles.slice(halfIndex)
 
+  const similarArticles = [
+    { articleId: 1, publicationName: 'Article 1' },
+    { articleId: 2, publicationName: 'Article 2' },
+    { articleId: 3, publicationName: 'Article3' }
+  ]
+
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
     const secondArticle = secondPortionArticles[index]
@@ -131,11 +138,12 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
               <SelectBox
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
-                  sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                  // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(similarArticles.length) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='articleId'
-                menuItems={firstArticle.publications}
+                menuItems={similarArticles}
                 selectedItems={selectedArticles}
                 setSelectedItems={setSelectedArticles}
               />
@@ -145,7 +153,9 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
                 >
-                  <span className='headline'>{firstArticle.headline.substring(0, 70) + '...'}</span>
+                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
+                    {firstArticle.headline}
+                  </span>
                   <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
                 </div>
               </CustomTooltip>
@@ -179,7 +189,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
             </td>
           </>
         )}
-
+        <td style={{ padding: '6px' }}></td>
         {/* second portion */}
         {secondArticle && (
           <>
@@ -209,7 +219,9 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
                 >
-                  <span className='headline'>{secondArticle.headline}</span>
+                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
+                    {secondArticle.headline}
+                  </span>
                   <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
                 </div>
               </CustomTooltip>

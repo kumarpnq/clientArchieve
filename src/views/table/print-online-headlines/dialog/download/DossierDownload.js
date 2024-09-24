@@ -453,11 +453,11 @@ const DossierDownload = ({
         </p>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color='primary'>
+        <Button onClick={handleClose} color='primary' variant='outlined'>
           Cancel
         </Button>
-        <Button onClick={handleSubmit} color='primary'>
-          Submit Your Request
+        <Button onClick={handleSubmit} sx={{ color: 'text.primary', backgroundColor: 'primary.main' }}>
+          Submit
         </Button>
       </DialogActions>
     </Dialog>

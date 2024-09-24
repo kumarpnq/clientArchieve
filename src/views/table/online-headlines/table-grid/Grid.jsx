@@ -23,6 +23,7 @@ const Grid = props => {
   } = props
   const isNotResponsive = useMediaQuery('(min-width: 1100px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
+  const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
 
   const [tableSelect, setTableSelect] = useState({})
   const [tableSelectTwo, setTableSelectTwo] = useState({})
@@ -98,6 +99,12 @@ const Grid = props => {
     )
   }
 
+  const similarSocialFeeds = [
+    { socialFeedId: 1, publicationName: 'Social Feed 1' },
+    { socialFeedId: 2, publicationName: 'Social Feed 2' },
+    { socialFeedId: 3, publicationName: 'Social Feed 3' }
+  ]
+
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
     const secondArticle = secondPortionArticles[index]
@@ -119,19 +126,23 @@ const Grid = props => {
               <SelectBox
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
-                  sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                  // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(similarSocialFeeds.length) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='socialFeedId'
-                menuItems={firstArticle.publications}
-                selectedItems={selectedItems}
-                setSelectedItems={setSelectedItems}
+                // menuItems={firstArticle.publications}
+                menuItems={similarSocialFeeds}
+                selectedItems={selectedArticles}
+                setSelectedItems={setSelectedArticles}
               />
             </td>
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
                 <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
-                  <span className='headline'>{firstArticle?.headline?.substring(0, 70) + '...'}</span>
+                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
+                    {firstArticle?.headline}
+                  </span>
                 </CustomTooltip>
 
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
@@ -196,7 +207,9 @@ const Grid = props => {
             <td className='table-data'>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
                 <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
-                  <span className='headline'>{secondArticle?.headline?.substring(0, 70) + '...'}</span>
+                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
+                    {secondArticle?.headline}
+                  </span>
                 </CustomTooltip>
 
                 <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
@@ -262,7 +275,7 @@ const Grid = props => {
         <td className='table-data'>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
             <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
-              <span className='headline'>{firstArticle?.headline?.substring(0, 70) + '...'}</span>
+              <span className='headline'>{firstArticle?.headline}</span>
             </CustomTooltip>
 
             <span style={{ fontSize: '0.7em', textAlign: 'left' }}>

@@ -12,7 +12,7 @@ import TextField from '@mui/material/TextField'
 import axios from 'axios'
 
 // ** Redux
-import { useSelector } from 'react-redux' // Import useSelector from react-redux
+import { useSelector } from 'react-redux'
 import { selectSelectedClient, selectShortCut } from 'src/store/apps/user/userSlice'
 import { BASE_URL } from 'src/api/base'
 
@@ -71,10 +71,8 @@ const ToolbarComponent = ({
       const isAlreadySelected = prevSelected.includes(cityId)
 
       if (isAlreadySelected) {
-        // If already selected, remove from the list
         return prevSelected.filter(id => id !== cityId)
       } else {
-        // If not selected, add to the list
         return [...prevSelected, cityId]
       }
     })
@@ -85,10 +83,8 @@ const ToolbarComponent = ({
       const isAlreadySelected = prevSelected.includes(languageCode)
 
       if (isAlreadySelected) {
-        // If already selected, remove from the list
         return Object.entries(languages).filter(([_, languageCode]) => languageCode !== languageCode)
       } else {
-        // If not selected, add to the list
         return [...prevSelected, languageCode]
       }
     })
@@ -109,10 +105,8 @@ const ToolbarComponent = ({
       const isAlreadySelected = prevSelected.includes(item)
 
       if (isAlreadySelected) {
-        // If already selected, remove from the list
         return prevSelected.filter(id => id !== item)
       } else {
-        // If not selected, add to the list
         return [...prevSelected, item]
       }
     })
@@ -211,7 +205,7 @@ const ToolbarComponent = ({
           setSelectedMedia(selectedMediaIds)
         }
       } catch (error) {
-        console.error('Error fetching user data and companies:', error)
+        console.error('Error fetching user data and companies:', error.message)
       }
     }
 

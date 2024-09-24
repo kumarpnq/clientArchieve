@@ -472,11 +472,11 @@ const DossierDialog = ({
         </p>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color='primary'>
+        <Button onClick={handleClose} color='primary' variant='outlined'>
           Cancel
         </Button>
-        <Button onClick={handleSubmit} color='primary'>
-          Submit Your Request
+        <Button onClick={handleSubmit} sx={{ backgroundColor: 'primary.main', color: 'text.primary' }}>
+          Submit
         </Button>
       </DialogActions>
     </Dialog>

@@ -580,7 +580,7 @@ const TableSelection = () => {
 
     if (!isNaN(newRecordsPerPage) && newRecordsPerPage > 0) {
       setRecordsPerPage(newRecordsPerPage)
-      setCurrentPage(1) // Reset current page when changing records per page
+      setCurrentPage(1)
     }
   }
 
@@ -676,6 +676,7 @@ const TableSelection = () => {
         dataForDump={dataForDump}
         setSearchParameters={setSearchParameters}
         selectedArticles={selectedArticles}
+        setSelectedArticles={setSelectedArticles}
         tags={tags}
         fetchTagsFlag={fetchTagsFlag}
         setFetchTagsFlag={setFetchTagsFlag}
