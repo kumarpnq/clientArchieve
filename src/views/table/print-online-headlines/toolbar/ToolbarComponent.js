@@ -402,7 +402,7 @@ const ToolbarComponent = ({
 
           {
             <ListItem>
-              <TextField placeholder='Search Media' value={searchTerm} onChange={handleSearchChange} />
+              <TextField placeholder='Search Media' size='small' value={searchTerm} onChange={handleSearchChange} />
             </ListItem>
           }
           {media.map((item, index) => (
@@ -437,7 +437,12 @@ const ToolbarComponent = ({
 
           {
             <ListItem>
-              <TextField placeholder='Search Tags' value={searchTermtags} onChange={handleSearchChangeTags} />
+              <TextField
+                placeholder='Search Tags'
+                size='small'
+                value={searchTermtags}
+                onChange={handleSearchChangeTags}
+              />
             </ListItem>
           }
           {tags?.map((item, index) => (

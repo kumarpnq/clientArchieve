@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import PerfectScrollbarComponent from 'react-perfect-scrollbar'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -107,24 +107,33 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
         />
 
         <Box sx={{ minWidth: 120, marginTop: '20px' }}>
-          <PerfectScrollbarComponent>
-            <FormControl fullWidth>
-              <InputLabel id='demo-simple-select-label'>Select Tag</InputLabel>
-              <Select
-                labelId='demo-simple-select-label'
-                id='demo-simple-select'
-                value={selectedTag}
-                label='Select Tag'
-                onChange={handleTagSelectChange}
-              >
+          <FormControl fullWidth>
+            <InputLabel id='demo-simple-select-label'>Select Tag</InputLabel>
+            <Select
+              labelId='demo-simple-select-label'
+              id='demo-simple-select'
+              value={selectedTag}
+              label='Select Tag'
+              onChange={handleTagSelectChange}
+              MenuProps={{
+                disableScrollLock: true,
+                PaperProps: {
+                  style: {
+                    maxHeight: 200,
+                    width: 250
+                  }
+                }
+              }}
+            >
+              <PerfectScrollbar>
                 {tags.map(tag => (
                   <MenuItem key={tag} value={tag}>
                     {tag}
                   </MenuItem>
                 ))}
-              </Select>
-            </FormControl>
-          </PerfectScrollbarComponent>
+              </PerfectScrollbar>
+            </Select>
+          </FormControl>
         </Box>
       </DialogContent>
       <DialogActions>
