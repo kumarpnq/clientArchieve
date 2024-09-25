@@ -283,10 +283,12 @@ const TableGrid = ({
           />
         </td>
         <td className='table-data'>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-            <span className='headline'>{article.headline}</span>
-            <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
-          </div>
+          <CustomTooltip title={getTooltipContent(article)} arrow>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+              <span className='headline'>{article.headline}</span>
+              <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
+            </div>
+          </CustomTooltip>
         </td>
         <td className='table-data'>
           <OptionsMenu
