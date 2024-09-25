@@ -456,14 +456,16 @@ const DossierDialog = ({
           After submitting the request, the system will send a Dossier link to the selected E-Mail IDs.
         </p>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color='primary' variant='outlined'>
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit} sx={{ backgroundColor: 'primary.main', color: 'text.primary' }}>
-          Submit
-        </Button>
-      </DialogActions>
+      <div inert={open ? true : undefined}>
+        <DialogActions>
+          <Button onClick={handleClose} color='primary' variant='outlined'>
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} sx={{ backgroundColor: 'primary.main', color: 'text.primary' }}>
+            Submit
+          </Button>
+        </DialogActions>
+      </div>
     </Dialog>
   )
 }
