@@ -98,8 +98,8 @@ const TagStepper = ({ articles, handleClose, fetchTags, setFetchTags, token, fet
   return (
     <Box>
       <Box>
-        {articles.companies.map((company, companyIndex) => {
-          const companyTagsData = tagsData.find(data => data.companyId === company.id) || { tags: [] }
+        {articles?.companies?.map((company, companyIndex) => {
+          const companyTagsData = tagsData?.find(data => data.companyId === company.id) || { tags: [] }
 
           return (
             <Box key={company.id} mb={3}>

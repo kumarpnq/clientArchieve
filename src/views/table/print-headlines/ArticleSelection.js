@@ -268,8 +268,8 @@ const TableSelection = () => {
 
           // if(shortCutData)
           let response = await fetchArticles({
-            clientIds: clientId,
-            companyIds: selectedCompaniesString,
+            clientIds: [clientId],
+            companyIds: selectedCompetitions,
 
             dateType: selectedTypeOfDate,
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDate,
@@ -369,7 +369,10 @@ const TableSelection = () => {
     selectedPublicationType,
     selectedSortBy,
     fetchTagsFlag,
-    selectedTypeOfDate
+    selectedTypeOfDate,
+    shortCutData?.searchCriteria?.fromDate,
+    shortCutData?.searchCriteria?.tags,
+    shortCutData?.searchCriteria?.toDate
   ])
 
   // Open the date filter popover

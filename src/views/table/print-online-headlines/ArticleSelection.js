@@ -424,9 +424,11 @@ const TableSelection = () => {
 
           const request_params = {
             // clientIds: clientId,
-            clientIds: '0',
 
-            // companyIds: selectedCompetitions.join(', '),
+            clientIds: [clientId],
+
+            companyIds: selectedCompetitions,
+
             // dateType: selectedTypeOfDate,
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
             toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
@@ -490,7 +492,7 @@ const TableSelection = () => {
               pageNumber: articleData.pageNumber,
               children: [],
               link: '',
-              articleType: 'print' // hardcoded remove after getting through elastic
+              articleType: 'print'
             }
           })
 
@@ -523,7 +525,10 @@ const TableSelection = () => {
     selectedSortBy,
     selectedEditionType,
     selectedPublicationType,
-    selectedTypeOfDate
+    selectedTypeOfDate,
+    shortCutData?.searchCriteria?.fromDate,
+    shortCutData?.searchCriteria?.toDate,
+    shortCutData?.searchCriteria?.tags
   ])
 
   // Open the date filter popover

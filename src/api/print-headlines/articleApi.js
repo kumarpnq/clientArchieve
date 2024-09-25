@@ -50,7 +50,7 @@ export const fetchArticles = async ({
     const formattedLanguage = removeSpacesFromCommaSeparatedString(language)
 
     const request_params = {
-      clientIds: '0',
+      clientIds: clientIds,
       dateType: 'CREATED_DATE',
       fromDate: formattedFromDate,
       toDate: formattedToDate,

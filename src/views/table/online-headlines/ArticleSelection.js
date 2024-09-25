@@ -416,10 +416,12 @@ const TableSelection = () => {
           const formattedToDate = formattedEndDate ? new Date(formattedEndDate).toISOString().split('T')[0] : null
 
           const request_params = {
-            // clientIds: clientId,
-            clientIds: '0',
+            clientIds: [clientId],
 
-            // companyIds: selectedCompaniesString,
+            // clientIds: '0',
+
+            companyIds: selectedCompetitions,
+
             // DateType:'articleInfo.articleDate',
             // DateTye: selectedTypeOfDate,
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
@@ -509,7 +511,10 @@ const TableSelection = () => {
     dataFetchFlag,
     selectedEditionType,
     selectedPublicationType,
-    selectedTypeOfDate
+    selectedTypeOfDate,
+    shortCutData?.searchCriteria?.fromDate,
+    shortCutData?.searchCriteria?.tags,
+    shortCutData?.searchCriteria?.toDate
   ])
 
   // Open the date filter popover

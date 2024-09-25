@@ -138,18 +138,20 @@ const Grid = props => {
               />
             </td>
             <td className='table-data'>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
+              <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
+                >
                   <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
                     {firstArticle?.headline}
                   </span>
-                </CustomTooltip>
 
-                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
-                  {firstArticle.publisher}
-                  <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.feedDate).format('DD-MM-YYYY')})</span>
-                </span>
-              </div>
+                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
+                    {firstArticle.publisher}
+                    <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.feedDate).format('DD-MM-YYYY')})</span>
+                  </span>
+                </div>
+              </CustomTooltip>
             </td>
             <td className='table-data'>
               <OptionsMenu
@@ -205,18 +207,20 @@ const Grid = props => {
               />
             </td>
             <td className='table-data'>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-                <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
+              <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
+                <div
+                  style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
+                >
                   <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
                     {secondArticle?.headline}
                   </span>
-                </CustomTooltip>
 
-                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
-                  {secondArticle.publisher}{' '}
-                  <span style={{ marginLeft: '4px' }}>({dayjs(secondArticle.feedDate).format('DD-MM-YYYY')})</span>
-                </span>
-              </div>
+                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
+                    {secondArticle.publisher}{' '}
+                    <span style={{ marginLeft: '4px' }}>({dayjs(secondArticle.feedDate).format('DD-MM-YYYY')})</span>
+                  </span>
+                </div>
+              </CustomTooltip>
             </td>
             <td className='table-data'>
               <OptionsMenu
