@@ -375,6 +375,8 @@ const TableSelection = () => {
     shortCutData?.searchCriteria?.toDate
   ])
 
+  console.log(selectedCompetitions)
+
   // Open the date filter popover
   const openFilterPopover = event => {
     setFilterPopoverAnchor(event.currentTarget)

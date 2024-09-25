@@ -416,7 +416,7 @@ const TableSelection = () => {
           const formattedToDate = formattedEndDate ? new Date(formattedEndDate).toISOString().split('T')[0] : null
 
           const request_params = {
-            clientIds: [clientId],
+            // clientIds: [clientId],
 
             // clientIds: '0',
 
@@ -453,7 +453,21 @@ const TableSelection = () => {
             headers: {
               Authorization: `Bearer ${storedToken}`
             },
-            params: request_params
+            params: request_params,
+            paramsSerializer: params => {
+              const str = []
+              for (const key in params) {
+                if (Array.isArray(params[key])) {
+                  params[key].forEach(val => {
+                    str.push(`${encodeURIComponent(key)}=${encodeURIComponent(val)}`)
+                  })
+                } else if (params[key] !== null && params[key] !== undefined) {
+                  str.push(`${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+                }
+              }
+
+              return str.join('&')
+            }
           })
 
           const transformedArray = response.data.data.doc.map(item => {
