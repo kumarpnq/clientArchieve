@@ -313,7 +313,8 @@ const DossierDialog = ({
       subject,
       clientId,
       clientName,
-      dossierType
+      dossierType,
+      requestEntity: 'online'
     }
 
     if (pageCheck === true || allCheck === true) {
