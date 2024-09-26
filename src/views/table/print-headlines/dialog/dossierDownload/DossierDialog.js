@@ -30,9 +30,8 @@ import {
   selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
-import { BASE_URL } from 'src/api/base'
+import dayjs from 'dayjs'
 import toast from 'react-hot-toast'
-import { formatDateTime } from 'src/utils/formatDateTime'
 import useClientMailerList from 'src/api/global/useClientMailerList '
 
 const DossierDialog = ({
@@ -244,12 +243,9 @@ const DossierDialog = ({
         .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
-    const formattedFromDate = formatDateTime(selectedStartDate)
-    const formattedToDate = formatDateTime(selectedEndDate)
-
     const searchCriteria = {
-      fromDate: formattedFromDate,
-      toDate: formattedToDate,
+      fromDate: dayjs(selectedStartDate).format('YYYY-MM-DD'),
+      toDate: dayjs(selectedEndDate).format('YYYY-MM-DD'),
       selectPageOrAll,
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
