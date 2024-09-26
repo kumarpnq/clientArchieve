@@ -33,6 +33,7 @@ import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest
 import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
+import useClientMailerList from 'src/api/global/useClientMailerList '
 
 const DossierDialog = ({
   open,
@@ -52,7 +53,7 @@ const DossierDialog = ({
   const [subject, setSubject] = useState('')
   const [dossierType, setDossierType] = useState('word')
   const [selectedEmail, setSelectedEmail] = useState([])
-  const [mailList, setMailList] = useState([])
+
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const { response, error, sendDossierRequest } = useDossierRequest()
@@ -61,6 +62,7 @@ const DossierDialog = ({
   const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
 
   const dispatch = useDispatch()
+  const { mailList } = useClientMailerList()
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
 
@@ -114,6 +116,8 @@ const DossierDialog = ({
       dataForDossierDownload.length &&
       dataForDossierDownload?.flatMap(i => i?.socialFeedId?.map(id => ({ id, type: 'online' })))
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
+
+    console.log(articleIds)
 
     const media =
       dataForDossierDownload.length &&
@@ -348,28 +352,6 @@ const DossierDialog = ({
       toast.success(response?.message ?? 'Success!')
     }
   }
-
-  useEffect(() => {
-    const getClientMailerList = async () => {
-      const storedToken = localStorage.getItem('accessToken')
-      try {
-        const url = `${BASE_URL}/clientMailerList/`
-
-        const headers = {
-          Authorization: `Bearer ${storedToken}`
-        }
-
-        const requestData = { clientId }
-        const axiosConfig = { headers, params: requestData }
-        const axiosResponse = await axios.get(url, axiosConfig)
-
-        setMailList(axiosResponse.data.mailList || [])
-      } catch (axiosError) {
-        console.log(axiosError)
-      }
-    }
-    getClientMailerList()
-  }, [clientId])
 
   if (!dataForDossierDownload || dataForDossierDownload.length === 0) {
     return (
