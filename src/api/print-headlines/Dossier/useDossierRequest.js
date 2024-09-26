@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import axios from 'axios'
-import { BASE_URL } from 'src/api/base'
+import { BASE_URL, JOB_SERVER } from 'src/api/base'
 
 const useDossierRequest = () => {
   const [response, setResponse] = useState(null)
@@ -18,7 +18,7 @@ const useDossierRequest = () => {
   }) => {
     const storedToken = localStorage.getItem('accessToken')
     try {
-      const url = `${BASE_URL}/dossierRequest/`
+      const url = `${BASE_URL}/dossierRequest`
 
       const headers = {
         Authorization: `Bearer ${storedToken}`,

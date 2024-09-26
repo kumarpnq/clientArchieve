@@ -114,10 +114,8 @@ const DossierDialog = ({
 
     const articleIds =
       dataForDossierDownload.length &&
-      dataForDossierDownload?.flatMap(i => i?.socialFeedId?.map(id => ({ id, type: 'online' })))
+      dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'o' })))
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
-
-    console.log(articleIds)
 
     const media =
       dataForDossierDownload.length &&
@@ -346,11 +344,8 @@ const DossierDialog = ({
     handleClose()
     setEmail('')
     setSelectedEmail([])
-    if (error) {
-      toast.error('something wrong')
-    } else {
-      toast.success(response?.message ?? 'Success!')
-    }
+
+    toast.success('Dossier field updated.')
   }
 
   if (!dataForDossierDownload || dataForDossierDownload.length === 0) {
