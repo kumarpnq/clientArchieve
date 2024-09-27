@@ -477,7 +477,7 @@ const TableSelection = () => {
               pageNumber: articleData?.pageNumber,
               children: [],
               link: '',
-              articleType: 'print'
+              articleType: item?._index === 'printarticle' ? 'print' : 'online'
             }
           })
 

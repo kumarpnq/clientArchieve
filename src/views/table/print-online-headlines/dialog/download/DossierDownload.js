@@ -318,7 +318,8 @@ const DossierDownload = ({
       subject,
       clientId,
       clientName,
-      dossierType
+      dossierType,
+      requestEntity: 'both'
     }
 
     if (pageCheck === true || allCheck === true) {
@@ -349,7 +350,7 @@ const DossierDownload = ({
     if (error) {
       toast.error('something wrong')
     } else {
-      toast.success(response?.message ?? 'Success!')
+      toast.success('Dossier request taken successfully.')
     }
   }
 
