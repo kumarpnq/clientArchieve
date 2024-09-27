@@ -486,8 +486,9 @@ const ArticleListToolbar = ({
         </MenuItem>
       </Menu>
 
-      <CustomTooltip title='Publication'>
-        <Button onClick={handlePublicationTypeClick} sx={{ color: primaryColor, mr: 0 }}>
+      <CustomTooltip title='Coming soon.'>
+        {/* onClick={handlePublicationTypeClick} */}
+        <Button sx={{ color: primaryColor, mr: 0 }}>
           <PublicationTypeIcon />
         </Button>
       </CustomTooltip>
@@ -508,8 +509,9 @@ const ArticleListToolbar = ({
         ))}
       </Menu>
 
-      <CustomTooltip title='Edition'>
-        <Button onClick={handleEditionTypeClick} sx={{ color: primaryColor, mr: 0 }}>
+      <CustomTooltip title='Coming soon.'>
+        {/* onClick={handleEditionTypeClick} */}
+        <Button sx={{ color: primaryColor, mr: 0 }}>
           <EditionTypeIcon />
         </Button>
       </CustomTooltip>

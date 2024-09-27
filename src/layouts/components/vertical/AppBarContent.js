@@ -30,7 +30,12 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** redux
 import { BASE_URL } from 'src/api/base'
 import { useSelector, useDispatch } from 'react-redux'
-import { setShotCutPrint, selectShortCut } from 'src/store/apps/user/userSlice'
+import {
+  setShotCutPrint,
+  selectShortCut,
+  selectSelectedStartDate,
+  selectSelectedEndDate
+} from 'src/store/apps/user/userSlice'
 
 // * third party imports
 import axios from 'axios'
@@ -40,6 +45,8 @@ import { Tooltip } from 'recharts'
 import { tooltipClasses, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import toast from 'react-hot-toast'
+import { CloseOutlined } from '@mui/icons-material'
+import dayjs from 'dayjs'
 
 const notifications = [
   {
@@ -104,7 +111,14 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
 const AppBarContent = props => {
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
 
-  // const fetchAutoStatusFlag = useSelector(selectShortCut)
+  const startDateForPrint = useSelector(selectSelectedStartDate)
+  const endDateForPrint = useSelector(selectSelectedEndDate)
+  const date = dayjs(startDateForPrint).add(1, 'day')
+  const endDate = dayjs(endDateForPrint)
+
+  // Format the date
+  const formattedDate = date.format('DD-MMM').toUpperCase()
+  const formattedEndDate = endDate.format('DD-MMM').toUpperCase()
 
   const [dataShort, setDataShort] = useState([])
 
@@ -187,13 +201,19 @@ const AppBarContent = props => {
                   onClick={() => {
                     toast(t => (
                       <span>
-                        <b>Print news will be starting from yesterday.</b>
-                        <button onClick={() => toast.dismiss(t.id)}>Dismiss</button>
+                        <Typography sx={{ textAlign: 'right' }}>
+                          <IconButton onClick={() => toast.dismiss(t.id)} size='small'>
+                            <CloseOutlined />
+                          </IconButton>
+                        </Typography>
+                        <Typography sx={{ color: 'primary.main', fontSize: '0.9em' }}>
+                          Print news from {formattedDate} : {formattedEndDate}.
+                        </Typography>
                       </span>
                     ))
                   }}
                 >
-                  <div style={{ display: 'inline' }}>*</div>
+                  <div style={{ display: 'inline', cursor: 'pointer' }}>*</div>
                 </Typography>
               )}
 
