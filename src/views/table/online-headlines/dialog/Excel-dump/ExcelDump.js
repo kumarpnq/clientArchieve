@@ -30,6 +30,7 @@ import { getArticleFieldList } from 'src/api/print-headlines/dialog/ExcelDump/Ex
 import { formatDateTime } from 'src/utils/formatDateTime'
 import useExcelDump from 'src/api/dump/useExcelDump'
 import { Box, DialogContentText } from '@mui/material'
+import dayjs from 'dayjs'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCheck }) => {
   //Redux call
@@ -39,8 +40,9 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+  const formattedFromDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+
+  const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
   // states
   const [fields, setFields] = useState([])
@@ -303,8 +305,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
       searchCriteria.tags = tags
     }
 
-    searchCriteria.fromDate = formattedStartDate
-    searchCriteria.toDate = formattedEndDate
+    searchCriteria.fromDate = formattedFromDate
+    searchCriteria.toDate = formattedToDate
 
     const postDataParams = {
       clientId,

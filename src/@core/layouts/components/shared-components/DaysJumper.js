@@ -4,6 +4,7 @@ import { selectShortCut, setSelectedDateRange } from 'src/store/apps/user/userSl
 import SvgIcon from '@mui/material/SvgIcon'
 import dayjs from 'dayjs'
 import IconButton from '@mui/material/IconButton'
+import { useRouter } from 'next/router'
 
 // Generic Icon component
 const GenericIcon = ({ label, component: IconComponent, ...props }) => (
@@ -26,10 +27,12 @@ const DaysJumper = ({ settings }) => {
   const dispatch = useDispatch()
   const shortCutData = useSelector(selectShortCut)
 
-  const [selectedDayFilter, setSelectedDayFilter] = useState('1D')
+  const router = useRouter()
+  const currentRoute = router.pathname
 
-  const calculateDate = (days, startDate = null) =>
-    startDate ? dayjs(startDate).subtract(0, 'day') : dayjs().subtract(days, 'day')
+  const isSubtract = currentRoute === '/headlines/print' ? 0 : 1
+
+  const [selectedDayFilter, setSelectedDayFilter] = useState('1D')
 
   const handleFilter = (days, label) => {
     const start = calculateDate(days, shortCutData?.searchCriteria?.fromDate)
@@ -48,14 +51,16 @@ const DaysJumper = ({ settings }) => {
     let startDate
 
     if (label === '1M') {
-      startDate = dayjs().subtract(1, 'month').startOf('day')
+      startDate = dayjs().subtract(1, 'month') // Subtract 1 month
     } else if (label === '3M') {
-      startDate = dayjs().subtract(3, 'month').startOf('day')
+      startDate = dayjs().subtract(3, 'month') // Subtract 3 months
+    } else if (label === '7D') {
+      startDate = dayjs().subtract(7, 'day') // Subtract 7 days
     } else {
-      startDate = dayjs().subtract(days, 'day').startOf('day')
+      startDate = dayjs().subtract(isSubtract ? days : 0, 'day') // Subtract days if applicable
     }
 
-    const endDate = dayjs()
+    const endDate = dayjs() // Set end date to current date
 
     dispatch(setSelectedDateRange({ startDate, endDate }))
     setSelectedDayFilter(label)
@@ -74,14 +79,14 @@ const DaysJumper = ({ settings }) => {
       } else if (daysDifference - 1 === 7) {
         handleFilter(daysDifference - 1, '7D')
       } else if (daysDifference - 1 === 1) {
-        handleFilter(daysDifference - 1, '1D')
+        handleFilter(daysDifference - isSubtract, '1D')
       }
     }
-  }, [shortCutData])
+  }, [shortCutData, currentRoute])
 
   useEffect(() => {
     handleFilterChange(1, '1D')
-  }, [])
+  }, [currentRoute])
 
   return (
     <Fragment>
@@ -93,7 +98,8 @@ const DaysJumper = ({ settings }) => {
             backgroundColor:
               selectedDayFilter === label ||
               (label === '1D' &&
-                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.fromDate ===
+                  dayjs().subtract(isSubtract, 'day').format('YYYY-MM-DD HH:mm:ss') &&
                 shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss')) ||
               (label === '7D' &&
                 shortCutData?.searchCriteria?.fromDate === dayjs().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss') &&
@@ -109,7 +115,8 @@ const DaysJumper = ({ settings }) => {
             color:
               selectedDayFilter === label ||
               (label === '1D' &&
-                shortCutData?.searchCriteria?.fromDate === dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss') &&
+                shortCutData?.searchCriteria?.fromDate ===
+                  dayjs().subtract(isSubtract, 'day').format('YYYY-MM-DD HH:mm:ss') &&
                 shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss')) ||
               (label === '7D' &&
                 shortCutData?.searchCriteria?.fromDate === dayjs().subtract(7, 'day').format('YYYY-MM-DD HH:mm:ss') &&

@@ -1,5 +1,5 @@
-import React, { useState, Fragment, useEffect } from 'react'
-import { IconButton, Badge, Typography, Button, Link, Box } from '@mui/material'
+import React, { useState, Fragment, useEffect, useLayoutEffect } from 'react'
+import { IconButton, Badge, Typography, Button, Link, Box, CircularProgress } from '@mui/material'
 import UseBgColor from 'src/@core/hooks/useBgColor'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { useDispatch, useSelector } from 'react-redux'
@@ -69,6 +69,30 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
   })
 )
 
+function CircularProgressWithLabel(props) {
+  return (
+    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+      <CircularProgress variant='determinate' {...props} />
+      <Box
+        sx={{
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0,
+          position: 'absolute',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}
+      >
+        <Typography variant='caption' component='div' sx={{ color: 'text.secondary' }}>
+          {`${Math.round(props.value)}%`}
+        </Typography>
+      </Box>
+    </Box>
+  )
+}
+
 const NotificationDropdown = () => {
   useAutoNotification()
 
@@ -96,6 +120,12 @@ const NotificationDropdown = () => {
     warning: { ...bgColors.warningLight },
     info: { ...bgColors.infoLight }
   }
+
+  useLayoutEffect(() => {
+    if (anchorEl) {
+      setFetchFlag(true)
+    }
+  }, [anchorEl])
 
   useEffect(() => {
     if (notificationList && notificationList?.length) {
@@ -214,6 +244,45 @@ const NotificationDropdown = () => {
 
     return `${day} ${month}, ${hoursAndMinutes}`
   }
+
+  // * fake progress bar
+  const [progress, setProgress] = useState(10)
+  const [allJobsCompleted, setAllJobsCompleted] = useState(false)
+
+  useEffect(() => {
+    const getRandomProgressIncrement = () => Math.floor(Math.random() * 15) + 1
+
+    const timer = setInterval(() => {
+      setProgress(prevProgress => {
+        const allJobsCompleted = filteredData.every(job => job.jobStatus === 'Completed')
+
+        if (allJobsCompleted || prevProgress >= 99) {
+          clearInterval(timer)
+
+          return prevProgress >= 99 ? 99 : prevProgress
+        }
+
+        const increment = getRandomProgressIncrement()
+
+        return Math.min(prevProgress + increment, 99)
+      })
+    }, 2000)
+
+    return () => {
+      clearInterval(timer)
+    }
+  }, [filteredData])
+
+  // useEffect(() => {
+  //   const checkCompletionStatus = () => {
+  //     if (filteredData.length > 0) {
+  //       const allCompleted = filteredData.every(job => job.jobStatus === 'Completed')
+
+  //       setAllJobsCompleted(allCompleted)
+  //     }
+  //   }
+  //   checkCompletionStatus()
+  // }, [filteredData])
 
   const DownloadLink = ({ item, dumpType }) =>
     dumpType === 'mail' ? (
@@ -379,7 +448,9 @@ const NotificationDropdown = () => {
                 {item.jobStatus === 'Completed' && activeIconFilter !== 'mail' ? (
                   <DownloadLink item={item} dumpType={item.jobType} />
                 ) : (
-                  <Typography variant='body2'>{item.jobStatus}</Typography>
+                  <Typography variant='body2'>
+                    {item.jobStatus === 'Processing' ? <CircularProgressWithLabel value={progress} /> : item.jobStatus}
+                  </Typography>
                 )}
               </Box>
             </MenuItem>

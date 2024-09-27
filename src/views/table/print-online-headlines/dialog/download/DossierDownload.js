@@ -34,6 +34,7 @@ import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 import useClientMailerList from 'src/api/global/useClientMailerList '
+import dayjs from 'dayjs'
 
 const DossierDownload = ({
   open,
@@ -60,6 +61,10 @@ const DossierDownload = ({
   const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
   const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join('')
   const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
+
+  const formattedFromDate = selectedStartDate ? dayjs(selectedStartDate).format('YYYY-MM-DD HH:mm:ss') : null
+
+  const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
   const { mailList } = useClientMailerList()
 
@@ -303,9 +308,6 @@ const DossierDownload = ({
     if (tags != '') {
       searchCriteria.tags = tags
     }
-
-    const formattedFromDate = formatDateTime(selectedStartDate)
-    const formattedToDate = formatDateTime(selectedEndDate)
 
     searchCriteria.fromDate = formattedFromDate
     searchCriteria.toDate = formattedToDate

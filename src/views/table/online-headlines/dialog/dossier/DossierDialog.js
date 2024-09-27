@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React, { useState } from 'react'
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
@@ -60,6 +59,10 @@ const DossierDialog = ({
   const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
   const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join('')
   const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
+
+  const formattedFromDate = selectedStartDate ? dayjs(selectedStartDate).format('YYYY-MM-DD HH:mm:ss') : null
+
+  const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
   const dispatch = useDispatch()
   const { mailList } = useClientMailerList()
@@ -302,9 +305,6 @@ const DossierDialog = ({
     if (tags != '') {
       searchCriteria.tags = tags
     }
-
-    const formattedFromDate = dayjs(selectedStartDate).format('YYYY-MM-DD')
-    const formattedToDate = dayjs(selectedEndDate).format('YYYY-MM-DD')
 
     searchCriteria.fromDate = formattedFromDate
     searchCriteria.toDate = formattedToDate

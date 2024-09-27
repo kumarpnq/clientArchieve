@@ -35,6 +35,11 @@ import { setShotCutPrint, selectShortCut } from 'src/store/apps/user/userSlice'
 // * third party imports
 import axios from 'axios'
 import DateType from 'src/@core/layouts/components/shared-components/DateType'
+import { Tooltip } from 'recharts'
+
+import { tooltipClasses, Typography } from '@mui/material'
+import styled from '@emotion/styled'
+import toast from 'react-hot-toast'
 
 const notifications = [
   {
@@ -81,6 +86,21 @@ const notifications = [
   }
 ]
 
+const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
+  ({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.text.primary,
+      boxShadow: theme.shadows[1],
+      fontSize: 11,
+      maxWidth: '300px',
+      '& .MuiTooltip-arrow': {
+        color: theme.palette.background.default
+      }
+    }
+  })
+)
+
 const AppBarContent = props => {
   const { hidden, settings, saveSettings, toggleNavVisibility } = props
 
@@ -99,6 +119,7 @@ const AppBarContent = props => {
   const isOnPeersPage = currentRoute === '/dashboards/peers'
   const isOnPerformancePage = currentRoute === '/dashboards/performance'
   const isMedia = currentRoute === '/media'
+  const isBothNews = currentRoute === '/headlines/print-online'
 
   const isShowMedia =
     isOnAnalyticsPage || isOnVisibilityImageQePage || isOnTonalityPage || isOnPeersPage || isOnPerformancePage
@@ -159,6 +180,23 @@ const AppBarContent = props => {
             </Box>
             <Box>
               <DateBar />
+              {isBothNews && (
+                <Typography
+                  component={'span'}
+                  sx={{ color: 'primary.main', fontSize: '1.5em' }}
+                  onClick={() => {
+                    toast(t => (
+                      <span>
+                        <b>Print news will be starting from yesterday.</b>
+                        <button onClick={() => toast.dismiss(t.id)}>Dismiss</button>
+                      </span>
+                    ))
+                  }}
+                >
+                  <div style={{ display: 'inline' }}>*</div>
+                </Typography>
+              )}
+
               <DaysJumper settings={settings} />
               {!isMedia && <DateType settings={settings} />}
             </Box>

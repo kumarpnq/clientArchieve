@@ -24,6 +24,7 @@ import {
 import { formatDateTime } from 'src/utils/formatDateTime'
 
 import toast from 'react-hot-toast'
+import dayjs from 'dayjs'
 
 const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCheck }) => {
   const selectedClient = useSelector(selectSelectedClient)
@@ -31,8 +32,10 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+  const formattedFromDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+
+  const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
+
   const [fields, setFields] = useState([])
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
@@ -291,8 +294,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
       searchCriteria.tags = tags
     }
 
-    searchCriteria.fromDate = formattedStartDate
-    searchCriteria.toDate = formattedEndDate
+    searchCriteria.fromDate = formattedFromDate
+    searchCriteria.toDate = formattedToDate
 
     const postDataParams = {
       clientId,

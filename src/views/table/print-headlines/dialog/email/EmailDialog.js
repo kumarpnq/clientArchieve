@@ -33,6 +33,7 @@ import {
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
 import { styled } from '@mui/material'
+import dayjs from 'dayjs'
 
 const PerfectScrollbar = styled(PerfectScrollbarComponent)({
   maxHeight: 349
@@ -49,6 +50,8 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
+  const formattedStartDateTest = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD') : null
+  const formattedEndDateTest = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD') : null
 
   //states
   const [emailType, setEmailType] = useState({})
@@ -219,12 +222,12 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
         .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
-    const formattedFromDate = formatDateTime(selectedFromDate)
-    const formattedToDate = formatDateTime(selectedEndDate)
+    // const formattedFromDate = formatDateTime(selectedFromDate)
+    // const formattedToDate = formatDateTime(selectedEndDate)
 
     const searchCriteria = {
-      fromDate: formattedFromDate,
-      toDate: formattedToDate,
+      fromDate: formattedStartDateTest,
+      toDate: formattedEndDateTest,
       selectPageOrAll,
       ...(selectPageOrAll !== 'A' && { page: Number(page) }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage: Number(recordsPerPage) }),

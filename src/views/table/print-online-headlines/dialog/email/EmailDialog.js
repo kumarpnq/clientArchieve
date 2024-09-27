@@ -30,6 +30,7 @@ import {
 
 import toast from 'react-hot-toast'
 import { formatDateTime } from 'src/utils/formatDateTime'
+import dayjs from 'dayjs'
 
 const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) => {
   const [emailType, setEmailType] = useState({})
@@ -47,6 +48,8 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
 
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest('both')
+  const formattedFromDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+  const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
   const handleEmailTypeChange = (event, email) => {
     setEmailType({
@@ -277,9 +280,6 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
     if (tags != '') {
       searchCriteria.tags = tags
     }
-
-    const formattedFromDate = formatDateTime(selectedFromDate)
-    const formattedToDate = formatDateTime(selectedEndDate)
 
     searchCriteria.fromDate = formattedFromDate
 

@@ -61,6 +61,8 @@ const DossierDialog = ({
   const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
   const { mailList: mailerList, subject: mailerSubject } = useClientMailerList()
+  const formattedStartDateTest = selectedStartDate ? dayjs(selectedStartDate).format('YYYY-MM-DD') : null
+  const formattedEndDateTest = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD') : null
 
   useEffect(() => {
     setMailList(mailerList)
@@ -244,8 +246,8 @@ const DossierDialog = ({
         .replace(/,+$/, '')
 
     const searchCriteria = {
-      fromDate: dayjs(selectedStartDate).format('YYYY-MM-DD'),
-      toDate: dayjs(selectedEndDate).format('YYYY-MM-DD'),
+      fromDate: formattedStartDateTest,
+      toDate: formattedEndDateTest,
       selectPageOrAll,
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),

@@ -9,11 +9,11 @@ import Button from '@mui/material/Button'
 import Grid from '@mui/material/Grid'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import { getArticleFieldList } from '../../../../../api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi' // Adjust the import path accordingly
+import { getArticleFieldList } from '../../../../../api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi'
 import useExcelDump from 'src/api/dump/useExcelDump'
 
 // ** Redux
-import { useSelector, useDispatch } from 'react-redux' // Import useSelector from react-redux
+import { useSelector, useDispatch } from 'react-redux'
 import {
   selectSelectedClient,
   selectSelectedCompetitions,
@@ -24,13 +24,13 @@ import {
   setFetchAutoStatusFlag,
   selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
-import { formatDateTime } from 'src/utils/formatDateTime'
 import WarningIcon from '@mui/icons-material/Warning'
 
 // ** third party import
 import toast from 'react-hot-toast'
 import { Box, DialogContentText } from '@mui/material'
 import { styled } from '@mui/material'
+import dayjs from 'dayjs'
 
 const PerfectScrollbar = styled(PerfectScrollbarComponent)({
   maxHeight: 349
@@ -51,12 +51,12 @@ const ExcelDumpDialog = ({
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
   const [fields, setFields] = useState([])
   const [selectedFields, setSelectedFields] = useState([])
   const [selectAll, setSelectAll] = useState(false)
   const { responseData, loading, error, postData } = useExcelDump('print')
+  const formattedStartDateTest = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD') : null
+  const formattedEndDateTest = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD') : null
 
   // redux states
   const dispatch = useDispatch()
@@ -104,250 +104,6 @@ const ExcelDumpDialog = ({
     setSelectAll(prevSelectAll => !prevSelectAll)
   }
 
-  // const handleDownload = () => {
-  //   dispatch(setNotificationFlag(!notificationFlag))
-
-  //   function convertPageOrAll(value) {
-  //     if (typeof value === 'number') {
-  //       return value === 0 ? 'A' : 'P'
-  //     }
-
-  //     return value
-  //   }
-
-  //   const selectPageOrAll =
-  //     dataForExcelDump.length && dataForExcelDump.map(i => convertPageOrAll(i.selectPageorAll)).join('')
-  //   const requestEntity = 'print'
-  //   const page = dataForExcelDump.length && dataForExcelDump.map(i => i.page).join('')
-
-  //   const articleIds = dataForExcelDump.length && dataForExcelDump.map(i => i.articleId).flat()
-  //   const recordsPerPage = dataForExcelDump.length && dataForExcelDump.map(i => i.recordsPerPage).join('')
-
-  //   const media =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.media)
-  //       .flat()
-  //       .join(',')
-  //       .replace(/^,+/g, '')
-  //       .replace(/,+/g, ',')
-  //       .replace(/,+$/, '')
-
-  //   const geography =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.geography)
-  //       .flat()
-  //       .join(',')
-  //       .replace(/,+$/, '')
-
-  //   const language =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.language)
-  //       .flat()
-  //       .join(',')
-  //       .replace(/^,+/g, '')
-  //       .replace(/,+/g, ',')
-  //       .replace(/,+$/, '')
-
-  //   const tags =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.tags)
-  //       .flat()
-  //       .join(',')
-  //       .replace(/^,+/g, '')
-  //       .replace(/,+/g, ',')
-  //       .replace(/,+$/, '')
-
-  //   const headline =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.headline)
-  //       .flat()
-  //       .join('')
-  //       .replace(/,+$/, '')
-
-  //   const body =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.body)
-  //       .flat()
-  //       .join('')
-  //       .replace(/,+$/, '')
-
-  //   const journalist =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.journalist)
-  //       .flat()
-  //       .join('')
-  //       .replace(/,+$/, '')
-
-  //   const wordCombo =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.wordCombo)
-  //       .flat()
-  //       .join('')
-  //       .replace(/,+$/, '')
-
-  //   const anyWord =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.anyWord)
-  //       .flat()
-  //       .join('')
-  //       .replace(/,+$/, '')
-
-  //   const ignoreWords =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.ignoreWords)
-  //       .flat()
-  //       .join('')
-  //       .replace(/,+$/, '')
-
-  //   const phrase =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.phrase)
-  //       .flat()
-  //       .join('')
-  //       .replace(/,+$/, '')
-
-  //   const sortby =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.sortby)
-  //       .flat()
-  //       .join('')
-  //       .replace(/,+$/, '')
-
-  //   const publicationCategory =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.publicationCategory)
-  //       .flat()
-  //       .join(',')
-  //       .replace(/^,+/g, '')
-  //       .replace(/,+/g, ',')
-  //       .replace(/,+$/, '')
-
-  //   const editionType =
-  //     dataForExcelDump.length &&
-  //     dataForExcelDump
-  //       .map(i => i.editionType)
-  //       .flat()
-  //       .join(',')
-  //       .replace(/^,+/g, '')
-  //       .replace(/,+/g, ',')
-  //       .replace(/,+$/, '')
-
-  //   const searchCriteria = {
-  //     selectPageOrAll,
-  //     requestEntity,
-  //     ...(selectPageOrAll !== 'A' && { page }),
-  //     ...(selectPageOrAll !== 'A' && { recordsPerPage }),
-  //     clientIds: clientId
-  //   }
-
-  //   if (editionType !== '') {
-  //     searchCriteria.editionType = editionType
-  //   }
-
-  //   if (publicationCategory !== '') {
-  //     searchCriteria.publicationCategory = publicationCategory
-  //   }
-
-  //   if (sortby !== '') {
-  //     searchCriteria.sortby = sortby
-  //   }
-
-  //   if (body !== '') {
-  //     searchCriteria.body = body
-  //   }
-
-  //   if (journalist !== '') {
-  //     searchCriteria.journalist = journalist
-  //   }
-
-  //   if (wordCombo !== '') {
-  //     searchCriteria.wordCombo = wordCombo
-  //   }
-
-  //   if (anyWord !== '') {
-  //     searchCriteria.anyWord = anyWord
-  //   }
-
-  //   if (ignoreWords !== '') {
-  //     searchCriteria.ignoreWords = ignoreWords
-  //   }
-
-  //   if (phrase !== '') {
-  //     searchCriteria.phrase = phrase
-  //   }
-
-  //   if (headline !== '') {
-  //     searchCriteria.headline = headline
-  //   }
-
-  //   if (media !== '') {
-  //     searchCriteria.media = media
-  //   }
-
-  //   if (geography !== '') {
-  //     searchCriteria.geography = geography
-  //   }
-
-  //   if (language != '') {
-  //     searchCriteria.language = language
-  //   }
-
-  //   if (tags != '') {
-  //     searchCriteria.tags = tags
-  //   }
-
-  //   searchCriteria.fromDate = formattedStartDate
-  //   searchCriteria.toDate = formattedEndDate
-
-  //   const postDataParams = {
-  //     clientId,
-  //     selectedFields,
-  //     notificationFlag
-  //   }
-
-  //   if (pageCheck === true || allCheck === true) {
-  //     postDataParams.searchCriteria = searchCriteria
-  //   } else {
-  //     postDataParams.articleIds = articleIds.filter(id => id !== undefined)
-  //   }
-
-  //   if (
-  //     (media === '' &&
-  //       geography === '' &&
-  //       language === '' &&
-  //       tags === '' &&
-  //       [media, geography, language, tags].some(field => field.includes('articleId'))) ||
-  //     (articleIds.length && articleIds.some(id => id !== undefined))
-  //   ) {
-  //   } else {
-  //     postDataParams.searchCriteria = searchCriteria
-  //   }
-
-  //   postData(postDataParams)
-
-  //   dispatch(setNotificationFlag(!notificationFlag))
-  //   dispatch(setFetchAutoStatusFlag(!autoNotificationFlag ? true : autoNotificationFlag))
-  //   handleClose()
-  //   setSelectedFields([])
-  //   setSelectAll(false)
-  //   if (error) return toast.error('something wrong.')
-  //   if (responseData?.message) {
-  //     responseData.message && toast.success(responseData.message)
-  //   }
-  // }
   const handleDownload = () => {
     dispatch(setNotificationFlag(!notificationFlag))
 
@@ -413,8 +169,8 @@ const ExcelDumpDialog = ({
       ...(geography && { geography }),
       ...(language && { language }),
       ...(tags && { tags }),
-      fromDate: formattedStartDate,
-      toDate: formattedEndDate
+      fromDate: formattedStartDateTest,
+      toDate: formattedEndDateTest
     }
 
     const postDataParams = {
