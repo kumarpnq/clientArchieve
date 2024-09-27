@@ -66,7 +66,7 @@ const DossierDialog = ({
 
   useEffect(() => {
     setMailList(mailerList)
-    setSubject(mailerSubject)
+    setSubject('')
   }, [open])
 
   const dispatch = useDispatch()
