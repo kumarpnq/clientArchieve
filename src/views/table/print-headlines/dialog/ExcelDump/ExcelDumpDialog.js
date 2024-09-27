@@ -191,7 +191,8 @@ const ExcelDumpDialog = ({
 
     if (responseData) {
       toast.success('Excel dump taken successfully.')
-      setSelectedArticles([])
+
+      // setSelectedArticles([])
     } else {
       toast.success('Something went wrong.')
     }
