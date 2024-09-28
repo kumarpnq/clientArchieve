@@ -1,5 +1,5 @@
-import React, { useState, Fragment, useEffect, useLayoutEffect } from 'react'
-import { IconButton, Badge, Typography, Button, Link, Box, CircularProgress } from '@mui/material'
+import React, { useState, Fragment, useEffect } from 'react'
+import { IconButton, Badge, Typography, Button, Link, Box } from '@mui/material'
 import UseBgColor from 'src/@core/hooks/useBgColor'
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip'
 import { useDispatch, useSelector } from 'react-redux'
@@ -69,28 +69,16 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
   })
 )
 
-function CircularProgressWithLabel(props) {
-  return (
-    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-      <CircularProgress variant='determinate' {...props} />
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          position: 'absolute',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}
-      >
-        <Typography variant='caption' component='div' sx={{ color: 'text.secondary' }}>
-          {`${Math.round(props.value)}%`}
-        </Typography>
-      </Box>
-    </Box>
-  )
+function getColor(percentage) {
+  if (percentage < 25) {
+    return 'red'
+  } else if (percentage < 50) {
+    return 'orange'
+  } else if (percentage < 75) {
+    return 'yellow'
+  } else {
+    return '#28C76F'
+  }
 }
 
 const NotificationDropdown = () => {
@@ -121,12 +109,6 @@ const NotificationDropdown = () => {
     info: { ...bgColors.infoLight }
   }
 
-  useLayoutEffect(() => {
-    if (anchorEl) {
-      setFetchFlag(true)
-    }
-  }, [anchorEl])
-
   useEffect(() => {
     if (notificationList && notificationList?.length) {
       setFilteredData([
@@ -136,6 +118,22 @@ const NotificationDropdown = () => {
       ])
     }
   }, [notificationList])
+
+  useEffect(() => {
+    if (!anchorEl) {
+      return
+    }
+    let intervalId
+    if (anchorEl) {
+      intervalId = setInterval(() => {
+        setFetchFlag(true)
+      }, 10000)
+    }
+
+    return () => {
+      clearInterval(intervalId)
+    }
+  }, [anchorEl])
 
   const markAsSeen = async () => {
     const unreadItems = unreadNotifications?.map(item => item.jobId) || []
@@ -186,6 +184,10 @@ const NotificationDropdown = () => {
 
     setFilteredData(filtered)
   }
+
+  useEffect(() => {
+    handleIconClick(activeIconFilter)
+  }, [notificationList, activeIconFilter])
 
   const handleDoubleClick = item => {
     setSelectedData(prev => {
@@ -247,7 +249,6 @@ const NotificationDropdown = () => {
 
   // * fake progress bar
   const [progress, setProgress] = useState(10)
-  const [allJobsCompleted, setAllJobsCompleted] = useState(false)
 
   useEffect(() => {
     const getRandomProgressIncrement = () => Math.floor(Math.random() * 15) + 1
@@ -272,17 +273,6 @@ const NotificationDropdown = () => {
       clearInterval(timer)
     }
   }, [filteredData])
-
-  // useEffect(() => {
-  //   const checkCompletionStatus = () => {
-  //     if (filteredData.length > 0) {
-  //       const allCompleted = filteredData.every(job => job.jobStatus === 'Completed')
-
-  //       setAllJobsCompleted(allCompleted)
-  //     }
-  //   }
-  //   checkCompletionStatus()
-  // }, [filteredData])
 
   const DownloadLink = ({ item, dumpType }) =>
     dumpType === 'mail' ? (
@@ -448,14 +438,30 @@ const NotificationDropdown = () => {
                 {item.jobStatus === 'Completed' && activeIconFilter !== 'mail' ? (
                   <DownloadLink item={item} dumpType={item.jobType} />
                 ) : (
-                  <Typography variant='body2'>
-                    {item.jobStatus === 'Processing' ? <CircularProgressWithLabel value={progress} /> : item.jobStatus}
+                  <Typography variant='body2' sx={{ width: '100%' }}>
+                    {item.jobStatus === 'Processing' ? (
+                      <Box
+                        sx={{
+                          width: `${progress}%`,
+                          background: getColor(progress),
+                          textAlign: 'center',
+                          borderRadius: '3px',
+                          border: '1px  solid #ccc'
+                        }}
+                      >
+                        {' '}
+                        <Typography sx={{ color: 'text.primary', fontSize: '0.8em' }}>{progress}%</Typography>
+                      </Box>
+                    ) : (
+                      item.jobStatus
+                    )}
                   </Typography>
                 )}
               </Box>
             </MenuItem>
           ))}
         </PerfectScrollbar>
+
         {/* </MenuItem> */}
         <MenuItem
           disableRipple

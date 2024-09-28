@@ -213,7 +213,7 @@ const AppBarContent = props => {
                     ))
                   }}
                 >
-                  <div style={{ display: 'inline', cursor: 'pointer' }}>*</div>
+                  <div style={{ display: 'inline', cursor: 'pointer', color: '#28C76F' }}>*</div>
                 </Typography>
               )}
 
