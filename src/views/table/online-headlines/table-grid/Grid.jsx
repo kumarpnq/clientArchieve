@@ -187,7 +187,7 @@ const Grid = props => {
         {/* second portion */}
         <div style={{ width: '50%' }}>
           {secondArticle && (
-            <>
+            <div style={{ width: '100%' }}>
               <td className='table-data'>
                 <Checkbox
                   checked={
@@ -247,7 +247,7 @@ const Grid = props => {
                   ]}
                 />
               </td>
-            </>
+            </div>
           )}
         </div>
       </tr>

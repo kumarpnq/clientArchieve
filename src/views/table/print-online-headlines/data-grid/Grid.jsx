@@ -124,139 +124,141 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
     const secondArticle = secondPortionArticles[index]
 
     return (
-      <tr key={index} style={{ width: '100%', ...style }}>
+      <tr key={index} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 5, ...style }}>
         {/* first portion */}
-        {firstArticle && (
-          <>
-            <td className='table-data'>
-              <Checkbox
-                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
-                onChange={() =>
-                  handleCheckboxChange(firstArticle.articleId, firstArticle.articleType, firstArticle.companies)
-                }
-              />
-            </td>
-            <td className='table-data'>
-              <SelectBox
-                icon={<Icon icon='ion:add' />}
-                iconButtonProps={{
-                  // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
-                  sx: { color: Boolean(similarArticles.length) ? 'primary.main' : 'primary' }
-                }}
-                renderItem='publicationName'
-                renderKey='articleId'
-                menuItems={similarArticles}
-                selectedItems={selectedArticles}
-                setSelectedItems={setSelectedArticles}
-              />
-            </td>
-            <td className='table-data'>
-              <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
-                <div
-                  style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
-                >
-                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
-                    {firstArticle.headline}
-                  </span>
-                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
-                </div>
-              </CustomTooltip>
-            </td>
-            <td className='table-data'>
-              <OptionsMenu
-                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-                options={[
-                  {
-                    text: 'View Article',
-                    menuItemProps: {
-                      onClick: () => {
-                        const articleCode = firstArticle.link
-                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+        <div style={{ width: '50%', marginTop: '4px' }}>
+          {firstArticle && (
+            <div style={{ width: '100%' }}>
+              <td className='table-data'>
+                <Checkbox
+                  checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
+                  onChange={() =>
+                    handleCheckboxChange(firstArticle.articleId, firstArticle.articleType, firstArticle.companies)
+                  }
+                />
+              </td>
+              <td className='table-data'>
+                <SelectBox
+                  icon={<Icon icon='ion:add' />}
+                  iconButtonProps={{
+                    // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                    sx: { color: Boolean(similarArticles.length) ? 'primary.main' : 'primary' }
+                  }}
+                  renderItem='publicationName'
+                  renderKey='articleId'
+                  menuItems={similarArticles}
+                  selectedItems={selectedArticles}
+                  setSelectedItems={setSelectedArticles}
+                />
+              </td>
+              <td className='table-data' width={'75%'}>
+                <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
+                  <div
+                    style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
+                  >
+                    <span className='headline'>{firstArticle.headline}</span>
+                    <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
+                  </div>
+                </CustomTooltip>
+              </td>
+              <td className='table-data'>
+                <OptionsMenu
+                  iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                  options={[
+                    {
+                      text: 'View Article',
+                      menuItemProps: {
+                        onClick: () => {
+                          const articleCode = firstArticle.link
+                          window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                        }
                       }
                     }
-                  }
 
-                  // {
-                  //   text: 'Edit Detail',
-                  //   menuItemProps: {
-                  //     onClick: () => {
-                  //       fetchReadArticleFile('jpg', firstArticle)
-                  //       setEditDetailsDialogOpen(true)
-                  //       setSelectedArticle(firstArticle)
-                  //     }
-                  //   }
-                  // }
-                ]}
-              />
-            </td>
-          </>
-        )}
-        <td style={{ padding: '6px' }}></td>
+                    // {
+                    //   text: 'Edit Detail',
+                    //   menuItemProps: {
+                    //     onClick: () => {
+                    //       fetchReadArticleFile('jpg', firstArticle)
+                    //       setEditDetailsDialogOpen(true)
+                    //       setSelectedArticle(firstArticle)
+                    //     }
+                    //   }
+                    // }
+                  ]}
+                />
+              </td>
+            </div>
+          )}
+        </div>
+        {/* <td style={{ padding: '6px' }}></td> */}
         {/* second portion */}
-        {secondArticle && (
-          <>
-            <td className='table-data'>
-              <Checkbox
-                checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
-                onChange={() =>
-                  handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.articleType, firstArticle.companies)
-                }
-              />
-            </td>
-            <td className='table-data'>
-              <SelectBox
-                icon={<Icon icon='ion:add' />}
-                iconButtonProps={{
-                  sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
-                }}
-                renderItem='publicationName'
-                renderKey='articleId'
-                menuItems={secondArticle.publications}
-                selectedItems={selectedArticles}
-                setSelectedItems={setSelectedArticles}
-              />
-            </td>
-            <td className='table-data'>
-              <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
-                <div
-                  style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
-                >
-                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
-                    {secondArticle.headline}
-                  </span>
-                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
-                </div>
-              </CustomTooltip>
-            </td>
-            <td className='table-data'>
-              <OptionsMenu
-                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-                options={[
-                  {
-                    text: 'View Article',
-                    menuItemProps: {
-                      onClick: () => {
-                        const articleCode = secondArticle.link
-                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+        <div style={{ width: '50%' }}>
+          {secondArticle && (
+            <div style={{ width: '100%' }}>
+              <td className='table-data'>
+                <Checkbox
+                  checked={
+                    Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)
+                  }
+                  onChange={() =>
+                    handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.articleType, firstArticle.companies)
+                  }
+                />
+              </td>
+              <td className='table-data'>
+                <SelectBox
+                  icon={<Icon icon='ion:add' />}
+                  iconButtonProps={{
+                    sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
+                  }}
+                  renderItem='publicationName'
+                  renderKey='articleId'
+                  menuItems={secondArticle.publications}
+                  selectedItems={selectedArticles}
+                  setSelectedItems={setSelectedArticles}
+                />
+              </td>
+              <td className='table-data' width={'75%'}>
+                <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
+                  <div
+                    style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
+                  >
+                    <span className='headline'>{secondArticle.headline}</span>
+                    <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
+                  </div>
+                </CustomTooltip>
+              </td>
+              <td className='table-data'>
+                <OptionsMenu
+                  iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                  options={[
+                    {
+                      text: 'View Article',
+                      menuItemProps: {
+                        onClick: () => {
+                          const articleCode = secondArticle.link
+                          window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                        }
                       }
                     }
-                  }
 
-                  // {
-                  //   text: 'Edit Detail',
-                  //   menuItemProps: {
-                  //     onClick: () => {
-                  //       fetchReadArticleFile('jpg', secondArticle)
-                  //       setEditDetailsDialogOpen(true)
-                  //       setSelectedArticle(secondArticle)
-                  //     }
-                  //   }
-                  // }
-                ]}
-              />
-            </td>
-          </>
-        )}
+                    // {
+                    //   text: 'Edit Detail',
+                    //   menuItemProps: {
+                    //     onClick: () => {
+                    //       fetchReadArticleFile('jpg', secondArticle)
+                    //       setEditDetailsDialogOpen(true)
+                    //       setSelectedArticle(secondArticle)
+                    //     }
+                    //   }
+                    // }
+                  ]}
+                />
+              </td>
+            </div>
+          )}
+        </div>
       </tr>
     )
   }
@@ -344,7 +346,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                           height={500}
                           itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
                           itemSize={50}
-                          width={listWidth}
+                          width={'100%'}
                         >
                           {Row}
                         </List>

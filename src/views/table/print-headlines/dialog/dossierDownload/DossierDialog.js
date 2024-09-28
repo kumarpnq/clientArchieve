@@ -402,7 +402,7 @@ const DossierDialog = ({
                   id='demo-simple-select'
                   value={selectedEmail}
                   label='Age'
-                  required
+                  multiple
                   onChange={handleSelectedEmailChange}
                 >
                   {mailList?.map(emailId => (
