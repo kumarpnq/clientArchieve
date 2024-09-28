@@ -90,7 +90,8 @@ const DossierDialog = ({
     setSelectedEmail(event.target.value)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = event => {
+    event.preventDefault()
     dispatch(setNotificationFlag(!notificationFlag))
 
     let recipients = []
@@ -372,92 +373,95 @@ const DossierDialog = ({
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle color='primary'>Dossier</DialogTitle>
-      <DialogContent>
-        <FormControl component='fieldset' fullWidth>
-          <FormLabel component='legend'>Select Dossier Type</FormLabel>
-          <RadioGroup
-            row
-            aria-label='dossier-type'
-            name='dossier-type'
-            value={dossierType}
-            onChange={handleDossierTypeChange}
-          >
-            <FormControlLabel value='word' control={<Radio />} label='Word Dossier' />
-            <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' />
-          </RadioGroup>
-        </FormControl>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <FormControl fullWidth margin='normal'>
-              <InputLabel id='demo-simple-select-label'>Emails</InputLabel>
-              <Select
-                labelId='demo-simple-select-label'
-                id='demo-simple-select'
-                value={selectedEmail}
-                label='Age'
-                multiple
-                onChange={handleSelectedEmailChange}
-              >
-                {mailList.map(emailId => (
-                  <MenuItem key={emailId} value={emailId}>
-                    {emailId}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+      <form onSubmit={handleSubmit}>
+        <DialogContent>
+          <FormControl component='fieldset' fullWidth>
+            <FormLabel component='legend'>Select Dossier Type</FormLabel>
+            <RadioGroup
+              row
+              aria-label='dossier-type'
+              name='dossier-type'
+              value={dossierType}
+              onChange={handleDossierTypeChange}
+            >
+              <FormControlLabel value='word' control={<Radio />} label='Word Dossier' />
+              <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' />
+            </RadioGroup>
+          </FormControl>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <FormControl fullWidth margin='normal'>
+                <InputLabel id='demo-simple-select-label'>Emails</InputLabel>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={selectedEmail}
+                  label='Age'
+                  multiple
+                  required
+                  onChange={handleSelectedEmailChange}
+                >
+                  {mailList.map(emailId => (
+                    <MenuItem key={emailId} value={emailId}>
+                      {emailId}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField fullWidth label='Enter Email' value={email} onChange={handleEmailChange} margin='normal' />
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-            <TextField fullWidth label='Enter Email' value={email} onChange={handleEmailChange} margin='normal' />
-          </Grid>
-        </Grid>
-        <TextField
-          fullWidth
-          label='Enter Client/Company Name'
-          value={clientName}
-          onChange={handleCompanyNameChange}
-          margin='normal'
-        />
-        <TextField
-          fullWidth
-          required
-          label='Enter Title/Subject'
-          value={subject}
-          onChange={handleSubjectChange}
-          margin='normal'
-        />
+          <TextField
+            fullWidth
+            label='Enter Client/Company Name'
+            value={clientName}
+            onChange={handleCompanyNameChange}
+            margin='normal'
+          />
+          <TextField
+            fullWidth
+            required
+            label='Enter Title/Subject'
+            value={subject}
+            onChange={handleSubjectChange}
+            margin='normal'
+          />
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <Grid container spacing={2} sx={{ marginTop: '8px' }}>
-            <Grid item xs={6}>
-              <DatePicker
-                label='Start Date'
-                value={selectedStartDate}
-                onChange={date => setFromDate(date)}
-                renderInput={params => <TextField {...params} fullWidth />}
-              />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Grid container spacing={2} sx={{ marginTop: '8px' }}>
+              <Grid item xs={6}>
+                <DatePicker
+                  label='Start Date'
+                  value={selectedStartDate}
+                  onChange={date => setFromDate(date)}
+                  renderInput={params => <TextField {...params} fullWidth />}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <DatePicker
+                  label='End Date'
+                  value={selectedEndDate}
+                  onChange={date => setToDate(date)}
+                  renderInput={params => <TextField {...params} fullWidth />}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <DatePicker
-                label='End Date'
-                value={selectedEndDate}
-                onChange={date => setToDate(date)}
-                renderInput={params => <TextField {...params} fullWidth />}
-              />
-            </Grid>
-          </Grid>
-        </LocalizationProvider>
-        <p style={{ margin: '16px 0', color: '#757575' }}>
-          After submitting the request, the system will send a Dossier link to the selected E-Mail IDs.
-        </p>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color='primary' variant='outlined'>
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit} sx={{ backgroundColor: 'primary.main', color: 'text.primary' }}>
-          Submit
-        </Button>
-      </DialogActions>
+          </LocalizationProvider>
+          <p style={{ margin: '16px 0', color: '#757575' }}>
+            After submitting the request, the system will send a Dossier link to the selected E-Mail IDs.
+          </p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color='primary' variant='outlined'>
+            Cancel
+          </Button>
+          <Button sx={{ backgroundColor: 'primary.main', color: 'text.primary' }} type='submit'>
+            Submit
+          </Button>
+        </DialogActions>
+      </form>
     </Dialog>
   )
 }

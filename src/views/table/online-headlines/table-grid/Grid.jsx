@@ -8,6 +8,7 @@ import { FixedSizeList as List } from 'react-window'
 import dayjs from 'dayjs'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import useResponsiveHeadline from 'src/hooks/useResponsiveHeadline'
 
 const Grid = props => {
   const {
@@ -30,6 +31,7 @@ const Grid = props => {
   const halfIndex = Math.ceil(socialFeeds.length / 2)
   const firstPortionArticles = socialFeeds.slice(0, halfIndex)
   const secondPortionArticles = socialFeeds.slice(halfIndex)
+  const { listWidth, getMobileViewHeadlineWidth } = useResponsiveHeadline()
 
   const toggleCheckboxSelection = (socialFeedId, companies, setTableSelectFunc) => {
     setTableSelectFunc(prev => ({
@@ -279,7 +281,9 @@ const Grid = props => {
         <td className='table-data'>
           <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-              <span className='headline'>{firstArticle?.headline}</span>
+              <span className='headline' style={{ width: getMobileViewHeadlineWidth(listWidth) }}>
+                {firstArticle?.headline}
+              </span>
 
               <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
                 {firstArticle.publisher}{' '}
@@ -334,7 +338,7 @@ const Grid = props => {
                         height={500}
                         itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
                         itemSize={50}
-                        width={'100%'}
+                        width={listWidth}
                       >
                         {Row}
                       </List>
@@ -351,7 +355,7 @@ const Grid = props => {
             <Box>
               {socialFeeds.length > 0 ? (
                 <table className='main-table'>
-                  <List height={500} itemCount={socialFeeds.length} itemSize={50} width={'100%'}>
+                  <List height={500} itemCount={socialFeeds.length} itemSize={50} width={listWidth}>
                     {singleRow}
                   </List>
                 </table>

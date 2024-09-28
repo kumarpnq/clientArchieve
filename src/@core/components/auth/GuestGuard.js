@@ -13,8 +13,6 @@ const GuestGuard = props => {
 
   const router = useRouter()
   useEffect(() => {
-    console.log('i am rendering')
-
     if (!router.isReady) {
       console.log('no ready')
 

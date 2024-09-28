@@ -14,6 +14,7 @@ import { FixedSizeList as List } from 'react-window'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
+import useResponsiveHeadline from 'src/hooks/useResponsiveHeadline'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -72,6 +73,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
+  const { listWidth, getMobileViewHeadlineWidth } = useResponsiveHeadline()
 
   const [tableSelect, setTableSelect] = useState({})
   const [tableSelectTwo, setTableSelectTwo] = useState({})
@@ -286,7 +288,9 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
         <td className='table-data'>
           <CustomTooltip title={getTooltipContent(article)} arrow>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-              <span className='headline'>{article.headline}</span>
+              <span className='headline' style={{ width: getMobileViewHeadlineWidth(listWidth) }}>
+                {article.headline}
+              </span>
               <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
             </div>
           </CustomTooltip>
@@ -340,7 +344,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                           height={500}
                           itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
                           itemSize={50}
-                          width={'100%'}
+                          width={listWidth}
                         >
                           {Row}
                         </List>
@@ -360,7 +364,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   {/* Mobile table rendering */}
                   <table className='main-table'>
-                    <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
+                    <List height={500} itemCount={articles.length} itemSize={50} width={listWidth}>
                       {singleRow}
                     </List>
                   </table>

@@ -1,12 +1,12 @@
 import { Box, Checkbox, CircularProgress, Tooltip, tooltipClasses, Typography, useMediaQuery } from '@mui/material'
-import React, { useState } from 'react'
-import Pagination from '../Pagination'
+import React, { useEffect, useState } from 'react'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
 import { FixedSizeList as List } from 'react-window'
 import OptionsMenu from 'src/@core/components/option-menu'
 import styled from '@emotion/styled'
+import useResponsiveHeadline from 'src/hooks/useResponsiveHeadline'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -57,6 +57,7 @@ const TableGrid = ({
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
+  const { listWidth, getMobileViewHeadlineWidth } = useResponsiveHeadline()
 
   const [tableSelect, setTableSelect] = useState({})
   const [tableSelectTwo, setTableSelectTwo] = useState({})
@@ -285,7 +286,9 @@ const TableGrid = ({
         <td className='table-data'>
           <CustomTooltip title={getTooltipContent(article)} arrow>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-              <span className='headline'>{article.headline}</span>
+              <span className='headline' style={{ width: `${getMobileViewHeadlineWidth(listWidth)}` }}>
+                {article.headline}
+              </span>
               <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
             </div>
           </CustomTooltip>
@@ -329,9 +332,9 @@ const TableGrid = ({
       ) : (
         <>
           {isNotResponsive ? (
-            <Box display='flex'>
+            <Box>
               {isMobileView ? null : (
-                <Box flex='1' p={2} pr={1}>
+                <Box>
                   {articles.length > 0 ? (
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <table className='main-table'>
@@ -339,7 +342,7 @@ const TableGrid = ({
                           height={500}
                           itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
                           itemSize={50}
-                          width={'100%'}
+                          width={listWidth}
                         >
                           {Row}
                         </List>
@@ -357,7 +360,7 @@ const TableGrid = ({
             <Box>
               {articles.length > 0 ? (
                 <table className='main-table'>
-                  <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
+                  <List height={500} itemCount={articles.length} itemSize={50} width={listWidth}>
                     {singleRow}
                   </List>
                 </table>
