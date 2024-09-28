@@ -398,7 +398,6 @@ const DossierDialog = ({
                   value={selectedEmail}
                   label='Age'
                   multiple
-                  required
                   onChange={handleSelectedEmailChange}
                 >
                   {mailList.map(emailId => (

@@ -402,7 +402,6 @@ const DossierDialog = ({
                   id='demo-simple-select'
                   value={selectedEmail}
                   label='Age'
-                  multiple
                   required
                   onChange={handleSelectedEmailChange}
                 >
