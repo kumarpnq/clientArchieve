@@ -1,12 +1,12 @@
 import { Box, Checkbox, CircularProgress, Tooltip, tooltipClasses, Typography, useMediaQuery } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import Pagination from '../Pagination'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
 import { FixedSizeList as List } from 'react-window'
 import OptionsMenu from 'src/@core/components/option-menu'
 import styled from '@emotion/styled'
-import useResponsiveHeadline from 'src/hooks/useResponsiveHeadline'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -57,7 +57,6 @@ const TableGrid = ({
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
-  const { listWidth, getMobileViewHeadlineWidth } = useResponsiveHeadline()
 
   const [tableSelect, setTableSelect] = useState({})
   const [tableSelectTwo, setTableSelectTwo] = useState({})
@@ -108,161 +107,153 @@ const TableGrid = ({
     const secondArticle = secondPortionArticles[index]
 
     return (
-      <tr key={index} style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 5, ...style }}>
+      <tr key={index} style={{ width: '100%', ...style }}>
         {/* first portion */}
-        <div style={{ width: '50%', marginTop: '4px' }}>
-          {firstArticle && (
-            <div style={{ width: '100%' }}>
-              <td className='table-data'>
-                <Checkbox
-                  checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
-                  onChange={() => handleCheckboxChange(firstArticle.articleId, firstArticle.companies)}
-                />
-              </td>
-              <td className='table-data'>
-                <SelectBox
-                  icon={<Icon icon='ion:add' />}
-                  iconButtonProps={{
-                    // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
-                    sx: { color: Boolean(similarArticles) ? 'primary.main' : 'primary' }
-                  }}
-                  renderItem='publicationName'
-                  renderKey='articleId'
-                  // menuItems={firstArticle.publications}
-                  menuItems={similarArticles}
-                  selectedItems={selectedArticles}
-                  setSelectedItems={setSelectedArticles}
-                />
-              </td>
-              <td className='table-data' width={'75%'}>
-                <div
-                  style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
-                >
-                  <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
-                    <span
-                      className='headline'
-                      onClick={() => {
-                        const articleCode = firstArticle?.link || 'test'
-                        const url = `/PDFView?articleId=${articleCode}`
-                        window.open(url, '_blank')
-                      }}
-                    >
-                      {firstArticle.headline}
-                    </span>
-                  </CustomTooltip>
-                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
-                    {firstArticle.publication}
-                    <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
+        {firstArticle && (
+          <>
+            <td className='table-data'>
+              <Checkbox
+                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
+                onChange={() => handleCheckboxChange(firstArticle.articleId, firstArticle.companies)}
+              />
+            </td>
+            <td className='table-data'>
+              <SelectBox
+                icon={<Icon icon='ion:add' />}
+                iconButtonProps={{
+                  // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(similarArticles) ? 'primary.main' : 'primary' }
+                }}
+                renderItem='publicationName'
+                renderKey='articleId'
+                // menuItems={firstArticle.publications}
+                menuItems={similarArticles}
+                selectedItems={selectedArticles}
+                setSelectedItems={setSelectedArticles}
+              />
+            </td>
+            <td className='table-data'>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+                <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
+                  <span
+                    className='headline'
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    onClick={() => {
+                      const articleCode = firstArticle?.link || 'test'
+                      const url = `/PDFView?articleId=${articleCode}`
+                      window.open(url, '_blank')
+                    }}
+                  >
+                    {firstArticle.headline}
                   </span>
-                </div>
-              </td>
-              <td className='table-data'>
-                <OptionsMenu
-                  iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-                  options={[
-                    {
-                      text: 'View Article',
-                      menuItemProps: {
-                        onClick: () => {
-                          const articleCode = firstArticle.link
-                          window.open(`/article-view?articleCode=${articleCode}`, '_blank')
-                        }
-                      }
-                    },
-                    {
-                      text: 'Edit Detail',
-                      menuItemProps: {
-                        onClick: () => {
-                          fetchReadArticleFile('jpg', firstArticle)
-                          setEditDetailsDialogOpen(true)
-                          setSelectedArticle(firstArticle)
-                        }
+                </CustomTooltip>
+                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
+                  {firstArticle.publication}
+                  <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
+                </span>
+              </div>
+            </td>
+            <td className='table-data'>
+              <OptionsMenu
+                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                options={[
+                  {
+                    text: 'View Article',
+                    menuItemProps: {
+                      onClick: () => {
+                        const articleCode = firstArticle.link
+                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
-                  ]}
-                />
-              </td>
-            </div>
-          )}
-        </div>
-        {/* <td style={{ padding: '6px' }}></td> */}
-        {/* second portion */}
-        <div style={{ width: '50%' }}>
-          {secondArticle && (
-            <>
-              <td className='table-data'>
-                <Checkbox
-                  checked={
-                    Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        fetchReadArticleFile('jpg', firstArticle)
+                        setEditDetailsDialogOpen(true)
+                        setSelectedArticle(firstArticle)
+                      }
+                    }
                   }
-                  onChange={() => handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.companies)}
-                />
-              </td>
-              <td className='table-data'>
-                <SelectBox
-                  icon={<Icon icon='ion:add' />}
-                  iconButtonProps={{
-                    sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
-                  }}
-                  renderItem='publicationName'
-                  renderKey='articleId'
-                  menuItems={secondArticle.publications}
-                  selectedItems={selectedArticles}
-                  setSelectedItems={setSelectedArticles}
-                />
-              </td>
-              <td className='table-data' width={'75%'}>
-                <div
-                  style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
-                >
-                  <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
-                    <span
-                      className='headline'
-                      onClick={() => {
-                        const articleCode = secondArticle?.link || 'test'
-                        const url = `/PDFView?articleId=${articleCode}`
-                        window.open(url, '_blank')
-                      }}
-                    >
-                      {secondArticle.headline}
-                    </span>
-                  </CustomTooltip>
-
-                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
-                    {secondArticle.publication}
-                    <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
+                ]}
+              />
+            </td>
+          </>
+        )}
+        <td style={{ padding: '6px' }}></td>
+        {/* second portion */}
+        {secondArticle && (
+          <>
+            <td className='table-data'>
+              <Checkbox
+                checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
+                onChange={() => handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.companies)}
+              />
+            </td>
+            <td className='table-data'>
+              <SelectBox
+                icon={<Icon icon='ion:add' />}
+                iconButtonProps={{
+                  sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
+                }}
+                renderItem='publicationName'
+                renderKey='articleId'
+                menuItems={secondArticle.publications}
+                selectedItems={selectedArticles}
+                setSelectedItems={setSelectedArticles}
+              />
+            </td>
+            <td className='table-data'>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
+                <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
+                  <span
+                    className='headline'
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    onClick={() => {
+                      const articleCode = secondArticle?.link || 'test'
+                      const url = `/PDFView?articleId=${articleCode}`
+                      window.open(url, '_blank')
+                    }}
+                  >
+                    {secondArticle.headline}
                   </span>
-                </div>
-              </td>
-              <td className='table-data'>
-                <OptionsMenu
-                  iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-                  options={[
-                    {
-                      text: 'View Article',
-                      menuItemProps: {
-                        onClick: () => {
-                          const articleCode = secondArticle.link
-                          window.open(`/article-view?articleCode=${articleCode}`, '_blank')
-                        }
-                      }
-                    },
-                    {
-                      text: 'Edit Detail',
-                      menuItemProps: {
-                        onClick: () => {
-                          fetchReadArticleFile('jpg', secondArticle)
-                          setEditDetailsDialogOpen(true)
-                          setSelectedArticle(secondArticle)
-                        }
+                </CustomTooltip>
+
+                <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
+                  {secondArticle.publication}
+                  <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
+                </span>
+              </div>
+            </td>
+            <td className='table-data'>
+              <OptionsMenu
+                iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                options={[
+                  {
+                    text: 'View Article',
+                    menuItemProps: {
+                      onClick: () => {
+                        const articleCode = secondArticle.link
+                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
-                  ]}
-                />
-              </td>
-            </>
-          )}
-        </div>
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        fetchReadArticleFile('jpg', secondArticle)
+                        setEditDetailsDialogOpen(true)
+                        setSelectedArticle(secondArticle)
+                      }
+                    }
+                  }
+                ]}
+              />
+            </td>
+          </>
+        )}
       </tr>
     )
   }
@@ -294,9 +285,7 @@ const TableGrid = ({
         <td className='table-data'>
           <CustomTooltip title={getTooltipContent(article)} arrow>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-              <span className='headline' style={{ width: `${getMobileViewHeadlineWidth(listWidth)}` }}>
-                {article.headline}
-              </span>
+              <span className='headline'>{article.headline}</span>
               <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
             </div>
           </CustomTooltip>
@@ -340,9 +329,9 @@ const TableGrid = ({
       ) : (
         <>
           {isNotResponsive ? (
-            <Box>
+            <Box display='flex'>
               {isMobileView ? null : (
-                <Box>
+                <Box flex='1' p={2} pr={1}>
                   {articles.length > 0 ? (
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <table className='main-table'>
@@ -368,7 +357,7 @@ const TableGrid = ({
             <Box>
               {articles.length > 0 ? (
                 <table className='main-table'>
-                  <List height={500} itemCount={articles.length} itemSize={50} width={listWidth}>
+                  <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
                     {singleRow}
                   </List>
                 </table>
