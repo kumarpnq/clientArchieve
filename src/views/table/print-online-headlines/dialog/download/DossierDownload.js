@@ -30,9 +30,7 @@ import {
   selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
-import { BASE_URL } from 'src/api/base'
 import toast from 'react-hot-toast'
-import { formatDateTime } from 'src/utils/formatDateTime'
 import useClientMailerList from 'src/api/global/useClientMailerList '
 import dayjs from 'dayjs'
 
@@ -425,6 +423,7 @@ const DossierDownload = ({
         />
         <TextField
           fullWidth
+          required
           label='Enter Title/Subject'
           value={subject}
           onChange={handleSubjectChange}

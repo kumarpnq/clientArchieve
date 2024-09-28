@@ -419,6 +419,7 @@ const DossierDialog = ({
         />
         <TextField
           fullWidth
+          required
           label='Enter Title/Subject'
           value={subject}
           onChange={handleSubjectChange}

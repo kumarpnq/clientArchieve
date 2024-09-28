@@ -432,7 +432,7 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       <ImageDialog open={isImageDialogOpen} handleClose={handleImageDialogClose} selectedArticles={selectedArticles} />
-      {isDossierVisible && (
+      {/* {isDossierVisible && (
         <Fragment>
           <CustomTooltip title='Dossier'>
             <Button onClick={handleDossierDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
@@ -450,7 +450,7 @@ const ArticleListToolbar = ({
             allCheck={allCheck}
           />
         </Fragment>
-      )}
+      )} */}
       {isExcelDumpVisible && (
         <Fragment>
           <CustomTooltip title='Excel Dump'>
