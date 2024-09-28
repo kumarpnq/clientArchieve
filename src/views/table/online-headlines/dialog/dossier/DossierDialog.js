@@ -385,7 +385,7 @@ const DossierDialog = ({
               onChange={handleDossierTypeChange}
             >
               <FormControlLabel value='word' control={<Radio />} label='Word Dossier' />
-              <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' />
+              {/* <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' /> */}
             </RadioGroup>
           </FormControl>
           <Grid container spacing={2}>
