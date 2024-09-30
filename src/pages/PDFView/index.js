@@ -30,31 +30,21 @@ const PDFView = () => {
   }, [articleId, BASE_URL])
 
   useEffect(() => {
-    const fetchAndModifyPDF = async () => {
+    const createPDF = async () => {
       if (!articleData) return
 
       try {
-        // Fetch the PDF from the URL in articleData
-        const pdfResponse = await axios.get(`${BASE_URL}/${articleData.PDFPATH}`, {
-          responseType: 'arraybuffer' // Handle as binary data
-        })
+        // Create a new PDF document
+        const pdfDoc = await PDFDocument.create()
 
-        // Load the PDF document
-        const pdfDoc = await PDFDocument.load(pdfResponse.data)
+        // Add a page to the PDF
+        const page = pdfDoc.addPage()
+        const { width, height } = page.getSize()
 
-        // Get the first page
-        const pages = pdfDoc.getPages()
-        const firstPage = pages[0]
-        const { width, height } = firstPage.getSize()
-
-        // Embed font
+        // Embed a font
         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
-        // Define starting position
-        const startX = 50
-        let startY = height - 100
-
-        // Define text details from articleData
+        // Define the text details from articleData
         const details = [
           `Publication Type: ${articleData.publicationType}`,
           `Media: ${articleData.media}`,
@@ -66,39 +56,63 @@ const PDFView = () => {
           `Article Date: ${articleData.articleDate}`
         ]
 
-        // Draw text details on the first page
-        details.forEach(detail => {
-          firstPage.drawText(detail, {
-            x: startX,
-            y: startY,
-            size: 12,
-            font: helveticaFont,
-            color: rgb(0, 0, 0)
-          })
+        // Define text styling
+        const textOptions = {
+          size: 14,
+          font: helveticaFont,
+          color: rgb(0, 0, 0)
+        }
 
-          // Move position down for next line
-          startY -= 20
+        // Draw the text details at the top of the page
+        let startY = height - 50
+        details.forEach(detail => {
+          page.drawText(detail, {
+            x: 50,
+            y: startY,
+            ...textOptions
+          })
+          startY -= 20 // Move down for next line
         })
 
-        // Serialize the PDF
+        // Fetch and embed the image
+        const imageUrl = articleData.JPGPATH
+        const imageBytes = await axios.get(imageUrl, { responseType: 'arraybuffer' }).then(res => res.data)
+        const embeddedImage = await pdfDoc.embedJpg(imageBytes)
+
+        // Scale and position the image
+        const imageWidth = width * 0.8 // 80% of page width
+        const imageHeight = (embeddedImage.height / embeddedImage.width) * imageWidth
+        page.drawImage(embeddedImage, {
+          x: (width - imageWidth) / 2,
+          y: startY - imageHeight - 30, // Leave some space between text and image
+          width: imageWidth,
+          height: imageHeight
+        })
+
+        // Serialize the PDF to bytes
         const pdfBytes = await pdfDoc.save()
         const blob = new Blob([pdfBytes], { type: 'application/pdf' })
-        const modifiedPdfUrl = URL.createObjectURL(blob)
-        setPdfUrl(modifiedPdfUrl)
+        const pdfUrl = URL.createObjectURL(blob)
+        setPdfUrl(pdfUrl)
+
+        // Clean up object URL on unmount
+        return () => URL.revokeObjectURL(pdfUrl)
       } catch (error) {
-        console.error('Error modifying PDF:', error)
+        console.error('Error generating PDF:', error)
       }
     }
 
-    fetchAndModifyPDF()
+    createPDF()
   }, [articleData])
 
   return (
-    <iframe
-      src={pdfUrl || `${BASE_URL}/${articleData?.PDFPATH}`}
-      title='PDF Viewer'
-      style={{ width: '100%', height: '100vh' }}
-    />
+    <>
+      {pdfUrl ? (
+        <iframe src={pdfUrl} title='PDF Viewer' style={{ width: '100%', height: '100vh' }} />
+      ) : (
+        <p>Loading PDF...</p>
+      )}
+    </>
   )
 }
 

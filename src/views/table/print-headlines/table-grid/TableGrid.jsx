@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { FixedSizeList as List } from 'react-window'
 import OptionsMenu from 'src/@core/components/option-menu'
 import styled from '@emotion/styled'
+import generateLink from 'src/api/generateLink/generateLink'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -131,8 +132,8 @@ const TableGrid = ({
                   <span
                     className='headline'
                     style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
-                    onClick={() => {
-                      const articleCode = firstArticle?.link || 'test'
+                    onClick={async () => {
+                      const articleCode = await generateLink(firstArticle?.articleId)
                       const url = `/PDFView?articleId=${articleCode}`
                       window.open(url, '_blank')
                     }}
@@ -153,8 +154,8 @@ const TableGrid = ({
                   {
                     text: 'View Article',
                     menuItemProps: {
-                      onClick: () => {
-                        const articleCode = firstArticle.link
+                      onClick: async () => {
+                        const articleCode = await generateLink(firstArticle?.articleId)
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
@@ -162,10 +163,12 @@ const TableGrid = ({
                   {
                     text: 'Edit Detail',
                     menuItemProps: {
-                      onClick: () => {
-                        fetchReadArticleFile('jpg', firstArticle)
+                      onClick: async () => {
+                        const articleCode = await generateLink(firstArticle.articleId)
+                        const firstArticleWithLink = { ...firstArticle, link: articleCode }
+                        fetchReadArticleFile('jpg', firstArticleWithLink)
                         setEditDetailsDialogOpen(true)
-                        setSelectedArticle(firstArticle)
+                        setSelectedArticle(firstArticleWithLink)
                       }
                     }
                   }
@@ -203,8 +206,8 @@ const TableGrid = ({
                   <span
                     className='headline'
                     style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
-                    onClick={() => {
-                      const articleCode = secondArticle?.link || 'test'
+                    onClick={async () => {
+                      const articleCode = await generateLink(secondArticle?.articleId)
                       const url = `/PDFView?articleId=${articleCode}`
                       window.open(url, '_blank')
                     }}
@@ -226,8 +229,8 @@ const TableGrid = ({
                   {
                     text: 'View Article',
                     menuItemProps: {
-                      onClick: () => {
-                        const articleCode = secondArticle.link
+                      onClick: async () => {
+                        const articleCode = await generateLink(secondArticle.articleId)
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
@@ -235,10 +238,12 @@ const TableGrid = ({
                   {
                     text: 'Edit Detail',
                     menuItemProps: {
-                      onClick: () => {
-                        fetchReadArticleFile('jpg', secondArticle)
+                      onClick: async () => {
+                        const articleCode = await generateLink(secondArticle.articleId)
+                        const secondArticleWithLink = { ...secondArticle, link: articleCode }
+                        fetchReadArticleFile('jpg', secondArticleWithLink)
                         setEditDetailsDialogOpen(true)
-                        setSelectedArticle(secondArticle)
+                        setSelectedArticle(secondArticleWithLink)
                       }
                     }
                   }
@@ -278,7 +283,16 @@ const TableGrid = ({
         <td className='table-data'>
           <CustomTooltip title={getTooltipContent(article)} arrow>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-              <span className='headline'>{article.headline}</span>
+              <span
+                className='headline'
+                onClick={async () => {
+                  const articleCode = await generateLink(article?.articleId)
+                  const url = `/PDFView?articleId=${articleCode}`
+                  window.open(url, '_blank')
+                }}
+              >
+                {article.headline}
+              </span>
               <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
             </div>
           </CustomTooltip>
@@ -290,8 +304,8 @@ const TableGrid = ({
               {
                 text: 'View Article',
                 menuItemProps: {
-                  onClick: () => {
-                    const articleCode = article.link
+                  onClick: async () => {
+                    const articleCode = await generateLink(article.articleId)
                     window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                   }
                 }
@@ -299,10 +313,12 @@ const TableGrid = ({
               {
                 text: 'Edit Detail',
                 menuItemProps: {
-                  onClick: () => {
-                    fetchReadArticleFile('jpg', article)
+                  onClick: async () => {
+                    const articleCode = await generateLink(article.articleId)
+                    const articleWithLink = { ...article, link: articleCode }
+                    fetchReadArticleFile('jpg', articleWithLink)
                     setEditDetailsDialogOpen(true)
-                    setSelectedArticle(article)
+                    setSelectedArticle(articleWithLink)
                   }
                 }
               }

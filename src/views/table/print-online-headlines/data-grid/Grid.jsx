@@ -14,6 +14,7 @@ import { FixedSizeList as List } from 'react-window'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
+import generateLink from 'src/api/generateLink/generateLink'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -161,8 +162,8 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                   {
                     text: 'View Article',
                     menuItemProps: {
-                      onClick: () => {
-                        const articleCode = firstArticle.link
+                      onClick: async () => {
+                        const articleCode = await generateLink(firstArticle.articleId)
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
@@ -228,7 +229,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                     text: 'View Article',
                     menuItemProps: {
                       onClick: () => {
-                        const articleCode = secondArticle.link
+                        const articleCode = generateLink(secondArticle.articleId)
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                       }
                     }
@@ -292,22 +293,23 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
               {
                 text: 'View Article',
                 menuItemProps: {
-                  onClick: () => {
-                    const articleCode = article.link
+                  onClick: async () => {
+                    const articleCode = await generateLink(article.articleId)
                     window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                   }
                 }
-              },
-              {
-                text: 'Edit Detail',
-                menuItemProps: {
-                  onClick: () => {
-                    fetchReadArticleFile('jpg', article)
-                    setEditDetailsDialogOpen(true)
-                    setSelectedArticle(article)
-                  }
-                }
               }
+
+              // {
+              //   text: 'Edit Detail',
+              //   menuItemProps: {
+              //     onClick: () => {
+              //       fetchReadArticleFile('jpg', article)
+              //       setEditDetailsDialogOpen(true)
+              //       setSelectedArticle(article)
+              //     }
+              //   }
+              // }
             ]}
           />
         </td>

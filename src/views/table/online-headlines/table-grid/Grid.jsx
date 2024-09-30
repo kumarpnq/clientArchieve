@@ -150,20 +150,19 @@ const Grid = props => {
                 iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
                 options={[
                   {
-                    text: 'Edit Detail',
-                    menuItemProps: {
-                      onClick: () => {
-                        handleEdit(firstArticle)
-                      }
-                    }
-                  },
-
-                  {
                     text: 'Article View',
                     menuItemProps: {
                       onClick: () => {
                         setSelectedArticle(firstArticle)
                         setOpenArticleView(true)
+                      }
+                    }
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        handleEdit(firstArticle)
                       }
                     }
                   }
@@ -219,19 +218,19 @@ const Grid = props => {
                 iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
                 options={[
                   {
-                    text: 'Edit Detail',
-                    menuItemProps: {
-                      onClick: () => {
-                        handleEdit(secondArticle)
-                      }
-                    }
-                  },
-                  {
                     text: 'View Article',
                     menuItemProps: {
                       onClick: () => {
                         const articleCode = secondArticle.link
                         window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                      }
+                    }
+                  },
+                  {
+                    text: 'Edit Detail',
+                    menuItemProps: {
+                      onClick: () => {
+                        handleEdit(secondArticle)
                       }
                     }
                   }
@@ -285,19 +284,19 @@ const Grid = props => {
             iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
             options={[
               {
-                text: 'Edit Detail',
-                menuItemProps: {
-                  onClick: () => {
-                    handleEdit(firstArticle)
-                  }
-                }
-              },
-              {
                 text: 'View Article',
                 menuItemProps: {
                   onClick: () => {
                     const articleCode = firstArticle.link
                     window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                  }
+                }
+              },
+              {
+                text: 'Edit Detail',
+                menuItemProps: {
+                  onClick: () => {
+                    handleEdit(firstArticle)
                   }
                 }
               }

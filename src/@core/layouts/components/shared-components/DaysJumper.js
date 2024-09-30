@@ -82,13 +82,13 @@ const DaysJumper = ({ settings }) => {
         handleFilter(daysDifference - isSubtract, '1D')
       }
     }
-  }, [shortCutData])
+  }, [shortCutData, currentRoute])
 
   //currentRoute removed from dependence array
 
-  // useEffect(() => {
-  //   handleFilterChange(1, '1D')
-  // }, [currentRoute])
+  useEffect(() => {
+    handleFilterChange(1, '1D')
+  }, [currentRoute])
 
   return (
     <Fragment>
