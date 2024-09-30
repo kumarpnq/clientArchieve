@@ -385,10 +385,7 @@ const TableSelection = () => {
           const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
           const request_params = {
-            // clientIds: [clientId],
-
-            // clientIds: '0',
-
+            clientIds: clientId,
             companyIds: selectedCompetitions,
 
             // DateType:'articleInfo.articleDate',

@@ -268,8 +268,9 @@ const TableSelection = () => {
             .join(', ')
 
           // if(shortCutData)
+
           let response = await fetchArticles({
-            clientIds: [clientId],
+            clientIds: clientId,
             companyIds: selectedCompetitions,
 
             dateType: selectedTypeOfDate,

@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react'
 import { BASE_URL, ELASTIC_SERVER } from 'src/api/base'
 import axios from 'axios'
-import { FixedSizeList as List } from 'react-window'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -15,12 +14,11 @@ import { FormControlLabel, FormGroup, ListItem } from '@mui/material'
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
-import useMediaQuery from '@mui/material/useMediaQuery'
+
 import dayjs from 'dayjs'
 
 //pagination
 import Pagination from './PrintOnlinePagination.js'
-import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Redux
 import { useSelector } from 'react-redux'
@@ -34,31 +32,7 @@ import {
   selectedDateType
 } from 'src/store/apps/user/userSlice'
 
-// ** Tooltip
-import Tooltip from '@mui/material/Tooltip'
-import { styled } from '@mui/system'
-
-import { tooltipClasses } from '@mui/material/Tooltip'
-import OptionsMenu from 'src/@core/components/option-menu'
-import useFetchReadArticleFile from 'src/api/global/useFetchReadArticleFile'
-import SelectBox from 'src/@core/components/select'
-import { Icon } from '@iconify/react'
 import Grid from './data-grid/Grid'
-
-const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
-  ({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.background.default,
-      color: theme.palette.text.primary,
-      boxShadow: theme.shadows[1],
-      fontSize: 11,
-      maxWidth: '300px',
-      '& .MuiTooltip-arrow': {
-        color: theme.palette.background.default
-      }
-    }
-  })
-)
 
 const TableSelection = () => {
   const [selectedArticle, setSelectedArticle] = useState(null)
@@ -66,67 +40,6 @@ const TableSelection = () => {
 
   const handleView = row => {
     window.open(row.socialFeedlink, '_blank')
-  }
-
-  // ** Renders social feed column
-  const renderArticle = params => {
-    const { row } = params
-
-    const formattedDate = dayjs(row.articleDate).format('DD-MM-YYYY')
-
-    const getTooltipContent = row => (
-      <List>
-        <ListItem>
-          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-            Summary :{' '}
-            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-              {row.summary}
-            </Typography>
-          </Typography>
-        </ListItem>
-        <ListItem></ListItem>
-        <ListItem>
-          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-            Companies :{' '}
-            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-              {row.companies.length > 1
-                ? row.companies?.map(company => company.name).join(', ')
-                : row.companies[0]?.name}
-            </Typography>
-          </Typography>
-        </ListItem>
-        <ListItem>
-          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-            Edition Type :{' '}
-            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-              {row.editionTypeName}
-            </Typography>
-          </Typography>
-        </ListItem>
-        <ListItem>
-          <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-            Page Number :{' '}
-            <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-              {row.pageNumber}
-            </Typography>
-          </Typography>
-        </ListItem>
-      </List>
-    )
-
-    return (
-      <CustomTooltip title={getTooltipContent(row)} arrow>
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
-            {row.headline}
-          </Typography>
-          <Typography noWrap variant='caption'>
-            {row.publisher}
-            <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
-          </Typography>
-        </Box>
-      </CustomTooltip>
-    )
   }
 
   // * temp
@@ -393,10 +306,7 @@ const TableSelection = () => {
           const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
           const request_params = {
-            // clientIds: clientId,
-
-            // clientIds: [clientId],
-
+            clientIds: clientId,
             companyIds: selectedCompetitions,
 
             // dateType: selectedTypeOfDate,
