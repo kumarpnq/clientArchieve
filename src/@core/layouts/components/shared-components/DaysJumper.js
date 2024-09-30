@@ -80,6 +80,8 @@ const DaysJumper = ({ settings }) => {
         handleFilter(daysDifference - 1, '7D')
       } else if (daysDifference - 1 === 1) {
         handleFilter(daysDifference - isSubtract, '1D')
+      } else {
+        handleFilterChange(1, '1D')
       }
     }
   }, [shortCutData, currentRoute])
@@ -88,7 +90,7 @@ const DaysJumper = ({ settings }) => {
 
   useEffect(() => {
     handleFilterChange(1, '1D')
-  }, [currentRoute])
+  }, [])
 
   return (
     <Fragment>
