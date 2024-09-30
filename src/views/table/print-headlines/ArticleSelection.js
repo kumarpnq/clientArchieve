@@ -314,9 +314,9 @@ const TableSelection = () => {
               publicationId: publicationInfo.id,
               articleDate: `${articleInfo.articleDate}`,
               articleUploadId: uploadInfo.uploadId,
-              articleJournalist: '', // no information available in input
+              articleJournalist: '',
               companies:
-                companyTag?.map(company => ({
+                item.fields?.companyTag?.map(company => ({
                   id: company.id,
                   name: company.name
                 })) || [],

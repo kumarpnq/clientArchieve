@@ -372,7 +372,7 @@ const TableSelection = () => {
               articleUploadId: uploadInfo?.uploadId,
               articleJournalist: '',
               companies:
-                companyTag?.map(company => ({
+                item.fields?.companyTag?.map(company => ({
                   id: company.id,
                   name: company.name
                 })) || [],

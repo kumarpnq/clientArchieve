@@ -435,7 +435,7 @@ const NotificationDropdown = () => {
 
               <Box sx={{ width: '85%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 {activeIconFilter === 'all' && <Typography variant='body2'>{item.jobType}</Typography>}
-                {item.jobStatus === 'Completed' && activeIconFilter !== 'mail' ? (
+                {item.jobStatus === 'Completed' && activeIconFilter !== 'mail' && activeIconFilter !== 'dossier' ? (
                   <DownloadLink item={item} dumpType={item.jobType} />
                 ) : (
                   <Typography variant='body2' sx={{ width: '100%' }}>

@@ -448,7 +448,7 @@ const TableSelection = () => {
               feedDate: `${feedData.feedDate}`,
               articleUploadId: uploadInfo?.uploadId,
               socialFeedAuthorName: '',
-              companies: companyTag?.map(company => ({
+              companies: item.fields?.companyTag?.map(company => ({
                 id: company.id,
                 name: company.name
               })),
