@@ -355,12 +355,14 @@ const AutocompleteComponent = ({ hidden, settings }) => {
     return (
       <Box
         ref={wrapper}
-        onClick={() => !openDialog && setOpenDialog(true)}
+        // onClick={() => !openDialog && setOpenDialog(true)}
+        onClick={() => setOpenDialog(false)}
         sx={{ display: 'flex', cursor: 'pointer', alignItems: 'center' }}
       >
-        <IconButton color='primary' sx={!hidden && layout === 'vertical' ? { mr: 0.5, ml: -2.75 } : {}}>
+        <IconButton color='text.primary' sx={!hidden && layout === 'vertical' ? { mr: 0.5, ml: -2.75 } : {}}>
           <Icon fontSize='1.625rem' icon='tabler:search' />
         </IconButton>
+
         {!hidden && layout === 'vertical' ? (
           <Typography sx={{ userSelect: 'none', color: 'text.disabled' }}>Search (Ctrl+/)</Typography>
         ) : null}
