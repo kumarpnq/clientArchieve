@@ -302,7 +302,8 @@ const TableSelection = () => {
           const totalRecords = response.length
 
           const transformedArray = response.map(item => {
-            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag } = item._source
+            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag, children } =
+              item._source
 
             return {
               articleId: articleId,
@@ -310,7 +311,7 @@ const TableSelection = () => {
               summary: articleData.summary,
               publication: publicationInfo.name,
               publicationId: publicationInfo.id,
-              articleDate: `${articleInfo.articleDate}T00:00:00`,
+              articleDate: `${articleInfo.articleDate}`,
               articleUploadId: uploadInfo.uploadId,
               articleJournalist: '', // no information available in input
               companies:
@@ -328,7 +329,7 @@ const TableSelection = () => {
               language: articleData.language,
               size: articleData.space,
               pageNumber: articleData.pageNumber,
-              children: [], // assuming no children for simplicity
+              children: children || [], // assuming no children for simplicity
               link: '' // no information available in input
             }
           })

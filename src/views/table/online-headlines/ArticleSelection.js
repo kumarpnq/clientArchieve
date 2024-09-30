@@ -440,7 +440,7 @@ const TableSelection = () => {
           })
 
           const transformedArray = response.data.data.doc.map(item => {
-            const { socialFeedId, feedInfo, feedData, uploadInfo, publicationInfo, companyTag } = item._source
+            const { socialFeedId, feedInfo, feedData, uploadInfo, publicationInfo, companyTag, children } = item._source
 
             return {
               socialFeedId: socialFeedId,
@@ -457,7 +457,7 @@ const TableSelection = () => {
               })),
               clientId: '',
               clientName: '',
-              children: []
+              children: children || []
             }
           })
 

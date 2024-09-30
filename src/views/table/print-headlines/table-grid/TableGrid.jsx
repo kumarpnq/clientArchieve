@@ -96,12 +96,6 @@ const TableGrid = ({
     return selectedArticles.some(article => article.articleId === articleId)
   }
 
-  const similarArticles = [
-    { articleId: 1, publicationName: 'Article 1' },
-    { articleId: 2, publicationName: 'Article 2' },
-    { articleId: 3, publicationName: 'Article3' }
-  ]
-
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
     const secondArticle = secondPortionArticles[index]
@@ -122,12 +116,11 @@ const TableGrid = ({
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
                   // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
-                  sx: { color: Boolean(similarArticles) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(firstArticle?.children?.length) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='articleId'
-                // menuItems={firstArticle.publications}
-                menuItems={similarArticles}
+                menuItems={firstArticle.children}
                 selectedItems={selectedArticles}
                 setSelectedItems={setSelectedArticles}
               />
@@ -195,11 +188,11 @@ const TableGrid = ({
               <SelectBox
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
-                  sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(secondArticle?.children?.length) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='articleId'
-                menuItems={secondArticle.publications}
+                menuItems={secondArticle.children}
                 selectedItems={selectedArticles}
                 setSelectedItems={setSelectedArticles}
               />
@@ -273,11 +266,11 @@ const TableGrid = ({
           <SelectBox
             icon={<Icon icon='ion:add' />}
             iconButtonProps={{
-              sx: { color: Boolean(article?.publication?.length) ? 'primary.main' : 'primary' }
+              sx: { color: Boolean(article?.children?.length) ? 'primary.main' : 'primary' }
             }}
             renderItem='publicationName'
             renderKey='articleId'
-            menuItems={article.publications}
+            menuItems={article?.children}
             selectedItems={selectedArticles}
             setSelectedItems={setSelectedArticles}
           />

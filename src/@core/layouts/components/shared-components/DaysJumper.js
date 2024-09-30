@@ -51,16 +51,16 @@ const DaysJumper = ({ settings }) => {
     let startDate
 
     if (label === '1M') {
-      startDate = dayjs().subtract(1, 'month') // Subtract 1 month
+      startDate = dayjs().subtract(1, 'month')
     } else if (label === '3M') {
-      startDate = dayjs().subtract(3, 'month') // Subtract 3 months
+      startDate = dayjs().subtract(3, 'month')
     } else if (label === '7D') {
-      startDate = dayjs().subtract(7, 'day') // Subtract 7 days
+      startDate = dayjs().subtract(7, 'day')
     } else {
-      startDate = dayjs().subtract(isSubtract ? days : 0, 'day') // Subtract days if applicable
+      startDate = dayjs().subtract(isSubtract ? days : 0, 'day')
     }
 
-    const endDate = dayjs() // Set end date to current date
+    const endDate = dayjs()
 
     dispatch(setSelectedDateRange({ startDate, endDate }))
     setSelectedDayFilter(label)
@@ -82,11 +82,13 @@ const DaysJumper = ({ settings }) => {
         handleFilter(daysDifference - isSubtract, '1D')
       }
     }
-  }, [shortCutData, currentRoute])
+  }, [shortCutData])
 
-  useEffect(() => {
-    handleFilterChange(1, '1D')
-  }, [currentRoute])
+  //currentRoute removed from dependence array
+
+  // useEffect(() => {
+  //   handleFilterChange(1, '1D')
+  // }, [currentRoute])
 
   return (
     <Fragment>

@@ -17,6 +17,10 @@ const SelectBox = props => {
     setSelectedItems(updatedSelectedItems)
   }
 
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
+
   return (
     <Box>
       <IconButton
@@ -28,12 +32,15 @@ const SelectBox = props => {
         {icon}
       </IconButton>
 
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)}>
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} disableAutoFocusItem>
         {menuItems.map(item => (
-          <MenuItem key={item[renderKey]} onClick={() => handleToggle(item)}>
+          <MenuItem key={item[renderKey]} disableRipple>
             <Checkbox
               checked={selectedItems.some(selectedItem => selectedItem[renderKey] === item[renderKey])}
-              onChange={() => handleToggle(item)}
+              onChange={event => {
+                event.stopPropagation()
+                handleToggle(item)
+              }}
             />
             <ListItemText primary={item[renderItem]} />
           </MenuItem>

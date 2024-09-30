@@ -111,12 +111,6 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const firstPortionArticles = articles.slice(0, halfIndex)
   const secondPortionArticles = articles.slice(halfIndex)
 
-  const similarArticles = [
-    { articleId: 1, publicationName: 'Article 1' },
-    { articleId: 2, publicationName: 'Article 2' },
-    { articleId: 3, publicationName: 'Article3' }
-  ]
-
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
     const secondArticle = secondPortionArticles[index]
@@ -139,11 +133,11 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
                   // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
-                  sx: { color: Boolean(similarArticles.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(firstArticle?.children?.length) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='articleId'
-                menuItems={similarArticles}
+                menuItems={firstArticle.children}
                 selectedItems={selectedArticles}
                 setSelectedItems={setSelectedArticles}
               />
@@ -205,11 +199,11 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
               <SelectBox
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
-                  sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(secondArticle?.children?.length) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='articleId'
-                menuItems={secondArticle.publications}
+                menuItems={secondArticle.children}
                 selectedItems={selectedArticles}
                 setSelectedItems={setSelectedArticles}
               />
@@ -274,11 +268,11 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
           <SelectBox
             icon={<Icon icon='ion:add' />}
             iconButtonProps={{
-              sx: { color: Boolean(article?.publication?.length) ? 'primary.main' : 'primary' }
+              sx: { color: Boolean(article?.children?.length) ? 'primary.main' : 'primary' }
             }}
             renderItem='publicationName'
             renderKey='articleId'
-            menuItems={article.publications}
+            menuItems={article.children}
             selectedItems={selectedArticles}
             setSelectedItems={setSelectedArticles}
           />

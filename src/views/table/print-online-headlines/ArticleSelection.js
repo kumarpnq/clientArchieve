@@ -449,7 +449,8 @@ const TableSelection = () => {
           const totalRecords = response.data.data.doc.length
 
           const transformedArray = response.data.data.doc.map(item => {
-            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag } = item._source
+            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag, children } =
+              item._source
 
             return {
               articleId: articleId,
@@ -475,7 +476,7 @@ const TableSelection = () => {
               language: articleData?.language,
               size: articleData?.space,
               pageNumber: articleData?.pageNumber,
-              children: [],
+              children: children || [],
               link: '',
               articleType: item?._index === 'printarticle' ? 'print' : 'online'
             }

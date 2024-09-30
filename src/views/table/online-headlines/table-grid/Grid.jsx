@@ -99,12 +99,6 @@ const Grid = props => {
     )
   }
 
-  const similarSocialFeeds = [
-    { socialFeedId: 1, publicationName: 'Social Feed 1' },
-    { socialFeedId: 2, publicationName: 'Social Feed 2' },
-    { socialFeedId: 3, publicationName: 'Social Feed 3' }
-  ]
-
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
     const secondArticle = secondPortionArticles[index]
@@ -126,13 +120,11 @@ const Grid = props => {
               <SelectBox
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
-                  // sx: { color: Boolean(firstArticle.publication?.length) ? 'primary.main' : 'primary' }
-                  sx: { color: Boolean(similarSocialFeeds.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(firstArticle.children?.length) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='socialFeedId'
-                // menuItems={firstArticle.publications}
-                menuItems={similarSocialFeeds}
+                menuItems={firstArticle.children}
                 selectedItems={selectedArticles}
                 setSelectedItems={setSelectedArticles}
               />
@@ -197,11 +189,11 @@ const Grid = props => {
               <SelectBox
                 icon={<Icon icon='ion:add' />}
                 iconButtonProps={{
-                  sx: { color: Boolean(secondArticle?.publication?.length) ? 'primary.main' : 'primary' }
+                  sx: { color: Boolean(secondArticle?.children?.length) ? 'primary.main' : 'primary' }
                 }}
                 renderItem='publicationName'
                 renderKey='socialFeedId'
-                menuItems={secondArticle.publications}
+                menuItems={secondArticle.children}
                 selectedItems={selectedItems}
                 setSelectedItems={setSelectedItems}
               />
@@ -271,7 +263,7 @@ const Grid = props => {
             }}
             renderItem='publicationName'
             renderKey='socialFeedId'
-            menuItems={firstArticle.publications}
+            menuItems={firstArticle?.children}
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
           />
