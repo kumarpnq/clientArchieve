@@ -15,6 +15,7 @@ import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import { useState } from 'react'
 import generateLink from 'src/api/generateLink/generateLink'
+import ArticleView from '../../online-headlines/dialog/article-view/view'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -77,6 +78,10 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const [tableSelect, setTableSelect] = useState({})
   const [tableSelectTwo, setTableSelectTwo] = useState({})
 
+  // * article view for socialFeed
+  const [openArticleView, setOpenArticleView] = useState(false)
+  const [selectedArticle, setSelectedArticle] = useState(null)
+
   const toggleCheckboxSelection = (articleId, articleType, companies, setTableSelectFunc) => {
     setTableSelectFunc(prev => ({
       ...prev,
@@ -111,6 +116,8 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const halfIndex = Math.ceil(articles.length / 2)
   const firstPortionArticles = articles.slice(0, halfIndex)
   const secondPortionArticles = articles.slice(halfIndex)
+
+  console.log(articles)
 
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
@@ -148,7 +155,17 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
                 >
-                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
+                  <span
+                    className='headline'
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    onClick={async () => {
+                      if (firstArticle.articleType === 'print') {
+                        const articleCode = await generateLink(firstArticle?.articleId)
+                        const url = `/PDFView?articleId=${articleCode}`
+                        window.open(url, '_blank')
+                      }
+                    }}
+                  >
                     {firstArticle.headline}
                   </span>
                   <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
@@ -163,22 +180,16 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                     text: 'View Article',
                     menuItemProps: {
                       onClick: async () => {
-                        const articleCode = await generateLink(firstArticle.articleId)
-                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                        if (firstArticle.articleType === 'print') {
+                          const articleCode = await generateLink(firstArticle.articleId)
+                          window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                        } else {
+                          setSelectedArticle(firstArticle)
+                          setOpenArticleView(true)
+                        }
                       }
                     }
                   }
-
-                  // {
-                  //   text: 'Edit Detail',
-                  //   menuItemProps: {
-                  //     onClick: () => {
-                  //       fetchReadArticleFile('jpg', firstArticle)
-                  //       setEditDetailsDialogOpen(true)
-                  //       setSelectedArticle(firstArticle)
-                  //     }
-                  //   }
-                  // }
                 ]}
               />
             </td>
@@ -214,7 +225,17 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
                 >
-                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
+                  <span
+                    className='headline'
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    onClick={async () => {
+                      if (secondArticle.articleType === 'print') {
+                        const articleCode = await generateLink(secondArticle?.articleId)
+                        const url = `/PDFView?articleId=${articleCode}`
+                        window.open(url, '_blank')
+                      }
+                    }}
+                  >
                     {secondArticle.headline}
                   </span>
                   <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
@@ -228,23 +249,17 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                   {
                     text: 'View Article',
                     menuItemProps: {
-                      onClick: () => {
-                        const articleCode = generateLink(secondArticle.articleId)
-                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                      onClick: async () => {
+                        if (secondArticle.articleType === 'print') {
+                          const articleCode = await generateLink(secondArticle.articleId)
+                          window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                        } else {
+                          setSelectedArticle(firstArticle)
+                          setOpenArticleView(true)
+                        }
                       }
                     }
                   }
-
-                  // {
-                  //   text: 'Edit Detail',
-                  //   menuItemProps: {
-                  //     onClick: () => {
-                  //       fetchReadArticleFile('jpg', secondArticle)
-                  //       setEditDetailsDialogOpen(true)
-                  //       setSelectedArticle(secondArticle)
-                  //     }
-                  //   }
-                  // }
                 ]}
               />
             </td>
@@ -281,7 +296,18 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
         <td className='table-data'>
           <CustomTooltip title={getTooltipContent(article)} arrow>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-              <span className='headline'>{article.headline}</span>
+              <span
+                className='headline'
+                onClick={async () => {
+                  if (article.articleType === 'print') {
+                    const articleCode = await generateLink(article?.articleId)
+                    const url = `/PDFView?articleId=${articleCode}`
+                    window.open(url, '_blank')
+                  }
+                }}
+              >
+                {article.headline}
+              </span>
               <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
             </div>
           </CustomTooltip>
@@ -294,22 +320,16 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 text: 'View Article',
                 menuItemProps: {
                   onClick: async () => {
-                    const articleCode = await generateLink(article.articleId)
-                    window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                    if (article.articleType === 'print') {
+                      const articleCode = await generateLink(article.articleId)
+                      window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                    } else {
+                      setSelectedArticle(firstArticle)
+                      setOpenArticleView(true)
+                    }
                   }
                 }
               }
-
-              // {
-              //   text: 'Edit Detail',
-              //   menuItemProps: {
-              //     onClick: () => {
-              //       fetchReadArticleFile('jpg', article)
-              //       setEditDetailsDialogOpen(true)
-              //       setSelectedArticle(article)
-              //     }
-              //   }
-              // }
             ]}
           />
         </td>
@@ -318,59 +338,67 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   }
 
   return (
-    <Box p={2}>
-      {loading ? (
-        <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <>
-          {isNotResponsive ? (
-            <Box display='flex'>
-              {isMobileView ? null : (
-                <Box flex='1' p={2} pr={1}>
-                  {articles.length > 0 ? (
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                      <table className='main-table'>
-                        <List
-                          height={500}
-                          itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
-                          itemSize={50}
-                          width={'100%'}
-                        >
-                          {Row}
-                        </List>
-                      </table>
-                    </div>
-                  ) : (
-                    <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
-                      <span>No Data Found</span>
-                    </div>
-                  )}
-                </Box>
-              )}
-            </Box>
-          ) : (
-            <Box>
-              {articles.length > 0 ? (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  {/* Mobile table rendering */}
-                  <table className='main-table'>
-                    <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
-                      {singleRow}
-                    </List>
-                  </table>
-                </div>
-              ) : (
-                <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
-                  <span>No Data Found</span>
-                </div>
-              )}
-            </Box>
-          )}
-        </>
-      )}
-    </Box>
+    <>
+      <Box p={2}>
+        {loading ? (
+          <Box display='flex' justifyContent='center' alignItems='center' height='200px'>
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            {isNotResponsive ? (
+              <Box display='flex'>
+                {isMobileView ? null : (
+                  <Box flex='1' p={2} pr={1}>
+                    {articles.length > 0 ? (
+                      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <table className='main-table'>
+                          <List
+                            height={500}
+                            itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
+                            itemSize={50}
+                            width={'100%'}
+                          >
+                            {Row}
+                          </List>
+                        </table>
+                      </div>
+                    ) : (
+                      <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
+                        <span>No Data Found</span>
+                      </div>
+                    )}
+                  </Box>
+                )}
+              </Box>
+            ) : (
+              <Box>
+                {articles.length > 0 ? (
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {/* Mobile table rendering */}
+                    <table className='main-table'>
+                      <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
+                        {singleRow}
+                      </List>
+                    </table>
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
+                    <span>No Data Found</span>
+                  </div>
+                )}
+              </Box>
+            )}
+          </>
+        )}
+      </Box>
+      <ArticleView
+        open={openArticleView}
+        setOpen={setOpenArticleView}
+        article={selectedArticle}
+        setArticle={setSelectedArticle}
+      />
+    </>
   )
 }
 

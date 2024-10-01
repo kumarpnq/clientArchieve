@@ -359,18 +359,30 @@ const TableSelection = () => {
           const totalRecords = response.data.data.doc.length
 
           const transformedArray = response.data.data.doc.map(item => {
-            const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag, children } =
-              item._source
+            const isSocialFeed = item._index === 'socialFeedId'
+
+            const {
+              articleId,
+              socialFeedId,
+              articleInfo,
+              articleData,
+              uploadInfo,
+              publicationInfo,
+              companyTag,
+              children,
+              feedData,
+              feedInfo
+            } = item._source
 
             return {
-              articleId: articleId,
-              headline: articleData?.headlines,
-              summary: articleData?.summary,
+              articleId: articleId || socialFeedId,
+              headline: feedData?.headlines || articleData?.headlines,
+              summary: feedData?.summary || articleData?.summary,
               publication: publicationInfo?.name,
               publicationId: publicationInfo?.id,
               articleDate: `${articleInfo?.articleDate}T00:00:00`,
               articleUploadId: uploadInfo?.uploadId,
-              articleJournalist: '',
+              articleJournalist: articleInfo?.journalist,
               companies:
                 item.fields?.companyTag?.map(company => ({
                   id: company.id,
@@ -387,7 +399,7 @@ const TableSelection = () => {
               size: articleData?.space,
               pageNumber: articleData?.pageNumber,
               children: children || [],
-              link: '',
+              link: feedInfo?.link || '',
               articleType: item?._index === 'printarticle' ? 'print' : 'online'
             }
           })

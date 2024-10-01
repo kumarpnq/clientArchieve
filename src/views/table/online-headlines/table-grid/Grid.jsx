@@ -150,7 +150,7 @@ const Grid = props => {
                 iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
                 options={[
                   {
-                    text: 'Article View',
+                    text: 'View Article',
                     menuItemProps: {
                       onClick: () => {
                         setSelectedArticle(firstArticle)
@@ -221,8 +221,8 @@ const Grid = props => {
                     text: 'View Article',
                     menuItemProps: {
                       onClick: () => {
-                        const articleCode = secondArticle.link
-                        window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                        setSelectedArticle(firstArticle)
+                        setOpenArticleView(true)
                       }
                     }
                   },
@@ -287,8 +287,8 @@ const Grid = props => {
                 text: 'View Article',
                 menuItemProps: {
                   onClick: () => {
-                    const articleCode = firstArticle.link
-                    window.open(`/article-view?articleCode=${articleCode}`, '_blank')
+                    setSelectedArticle(firstArticle)
+                    setOpenArticleView(true)
                   }
                 }
               },
