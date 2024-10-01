@@ -17,6 +17,7 @@ import DialogContentText from '@mui/material/DialogContentText'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import useUpdateTagForMultipleOnlineArticles from 'src/api/online-headline/tag/useUpdateTagForMultipleOnlineArticle'
+import { CircularProgress } from '@mui/material'
 
 const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, setFetchTagsFlag }) => {
   const [tag, setTag] = useState('')
@@ -115,7 +116,12 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSave} variant='contained' color='primary'>
+        <Button
+          onClick={handleSave}
+          variant='outlined'
+          sx={{ display: 'flex', alignItems: 'center', gap: 2, backgroundColor: !loading ? 'primary.main' : '' }}
+        >
+          {loading && <CircularProgress size={'1em'} />}
           Save
         </Button>
       </DialogActions>

@@ -448,10 +448,16 @@ const TableSelection = () => {
               feedDate: `${feedData.feedDate}`,
               articleUploadId: uploadInfo?.uploadId,
               socialFeedAuthorName: '',
-              companies: item.fields?.company?.map(company => ({
-                id: company.id,
-                name: company.name
-              })),
+              companies:
+                item.fields?.company?.map(company => ({
+                  id: company.id,
+                  name: company.name,
+                  tags:
+                    company?.clientArticleTag?.map(tag => ({
+                      clientId: tag?.clientId,
+                      tags: tag?.tags || []
+                    })) || []
+                })) || [],
               clientId: '',
               clientName: '',
               children: children || []

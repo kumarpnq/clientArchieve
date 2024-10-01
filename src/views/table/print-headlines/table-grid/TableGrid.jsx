@@ -97,6 +97,8 @@ const TableGrid = ({
     return selectedArticles.some(article => article.articleId === articleId)
   }
 
+  console.log(selectedArticles)
+
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
     const secondArticle = secondPortionArticles[index]
@@ -264,7 +266,7 @@ const TableGrid = ({
         <td className='table-data'>
           <Checkbox
             checked={Boolean(articles[article.articleId]) || isArticleSelected(article.articleId)}
-            onChange={() => handleCheckboxChangeTwo(article.articleId)}
+            onChange={() => handleCheckboxChangeTwo(article.articleId, article.companies)}
           />
         </td>
         <td className='table-data'>

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import axios from 'axios'
-import { BASE_URL } from 'src/api/base'
+import { BASE_URL, ELASTIC_SERVER } from 'src/api/base'
 
 const useUpdateTagForMultipleOnlineArticles = props => {
-  const { clientId, article, tag } = props
+  const { clientId, article = [], tag } = props
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [responseData, setResponseData] = useState(null)
@@ -18,6 +18,17 @@ const useUpdateTagForMultipleOnlineArticles = props => {
         tag: tag
       }
 
+      const articleForElastic = article.map(item => ({
+        articleId: item?.socialFeedId,
+        articleType: 'online',
+        companyIds: item?.companyIds
+      }))
+
+      const elasticRequestData = {
+        clientIds: clientId,
+        article: articleForElastic,
+        tags: tag
+      }
       const storedToken = localStorage.getItem('accessToken')
 
       const headers = {
@@ -27,10 +38,16 @@ const useUpdateTagForMultipleOnlineArticles = props => {
 
       const response = await axios.post(`${BASE_URL}/updateTagForMultipleOnlineArticles/`, requestData, { headers })
 
-      setResponseData(response.data)
-      setLoading(false)
+      const elasticResponse = await axios.put(
+        `${ELASTIC_SERVER}/api/v1/internals/updateMultipleArticleTag/`,
+        elasticRequestData,
+        { headers }
+      )
+
+      setResponseData({ fastAPI: response.data, elastic: elasticResponse.data })
     } catch (error) {
       setError(error)
+    } finally {
       setLoading(false)
     }
   }

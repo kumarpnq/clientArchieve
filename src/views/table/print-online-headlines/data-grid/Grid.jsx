@@ -83,6 +83,8 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const [selectedArticle, setSelectedArticle] = useState(null)
 
   const toggleCheckboxSelection = (articleId, articleType, companies, setTableSelectFunc) => {
+    console.log(companies, articleType)
+
     setTableSelectFunc(prev => ({
       ...prev,
       [articleId]: !prev[articleId] ? articleId : null
@@ -277,7 +279,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
         <td className='table-data'>
           <Checkbox
             checked={Boolean(articles[article.articleId]) || isArticleSelected(article.articleId)}
-            onChange={() => handleCheckboxChangeTwo(article.articleId)}
+            onChange={() => handleCheckboxChangeTwo(article.articleId, article.articleType, article.companies)}
           />
         </td>
         <td className='table-data'>

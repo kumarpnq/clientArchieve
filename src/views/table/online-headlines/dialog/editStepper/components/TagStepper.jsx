@@ -1,74 +1,63 @@
 import React, { useEffect, useState } from 'react'
-import Typography from '@mui/material/Typography'
+
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
-import TextField from '@mui/material/TextField'
+
 import Button from '@mui/material/Button'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
+
 import TableContainer from '@mui/material/TableContainer'
-import TableRow from '@mui/material/TableRow'
+
 import Card from '@mui/material/Card'
-import { updateClientTagsToCompany } from 'src/api/print-headlines/dialog/view/articleTagEditApi'
-import { BASE_URL } from 'src/api/base'
+
+import { BASE_URL, ELASTIC_SERVER } from 'src/api/base'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import useGetTagsForArticle from 'src/api/online-headline/tag/useGetTagsForArtcile'
+
 import CustomTextField from 'src/@core/components/mui/text-field'
-import { Box, Divider } from '@mui/material'
+import { Box, CircularProgress, Divider } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 
 const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsFlag }) => {
   const articleId = articles?.socialFeedId
-  const clientId = articles?.clientId
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
   const companyId = articles?.companies.map(i => i.id).join()
 
   const [value, setValue] = useState(0)
   const [fetchFlag, setFetchFlag] = useState(false)
+  const [updateLoading, setUpdateLoading] = useState(false)
 
-  const [tags, setTags] = useState({
-    tag1: '',
-    tag2: '',
-    tag3: '',
-    tag4: '',
-    tag5: ''
-  })
-
-  const {
-    tagsData,
-    loading: fetchLoading,
-    error: fetchError
-  } = useGetTagsForArticle({
-    articleId,
-    clientId,
-    companyIds: companyId,
-    fetchFlag
-  })
+  const [tags, setTags] = useState({})
 
   useEffect(() => {
     setFetchTagsFlag(prev => !prev)
   }, [fetchFlag, value])
 
-  useEffect(() => {
-    // Use the first company's data in tagsData or default to an empty object
-    const companyTagsData = tagsData[0] || { tags: [] }
-
+  const handleAddTag = (tagIndex, company, tag) => {
     setTags(prevTags => ({
       ...prevTags,
-      tag1: companyTagsData.tags[0] || '',
-      tag2: companyTagsData.tags[1] || '',
-      tag3: companyTagsData.tags[2] || '',
-      tag4: companyTagsData.tags[3] || '',
-      tag5: companyTagsData.tags[4] || ''
-    }))
-  }, [tagsData])
-
-  const handleAddTag = (tagIndex, tag) => {
-    setTags(prevTags => ({
-      ...prevTags,
-      [`tag${tagIndex}`]: tag
+      [company.id]: {
+        ...prevTags[company.id],
+        [`tag${tagIndex}`]: tag
+      }
     }))
   }
+
+  useEffect(() => {
+    const initialTags = {}
+    articles.companies.forEach(company => {
+      const companyTags = company.tags?.[0]?.tags || []
+      initialTags[company.id] = {
+        tag1: companyTags[0] || '',
+        tag2: companyTags[1] || '',
+        tag3: companyTags[2] || '',
+        tag4: companyTags[3] || '',
+        tag5: companyTags[4] || ''
+      }
+    })
+    setTags(initialTags)
+  }, [articles])
 
   useEffect(() => {
     setFetchFlag(!fetchFlag)
@@ -76,35 +65,53 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
 
   const handleSaveDetails = async () => {
     const storedToken = localStorage.getItem('accessToken')
-    const clientId = articles?.clientId
     const socialFeedId = parseInt(articles?.socialFeedId)
-    const companyId = articles?.companies.map(i => i.id).join()
-    const tagsForPost = Object.values(tags).filter(tag => tag.trim() !== '')
 
     try {
+      setUpdateLoading(true)
+
       const headers = {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${storedToken}`
       }
 
+      const companyIdsAndTags = Object.keys(tags).map(companyId => ({
+        companyId,
+        tags: Object.values(tags[companyId] || {}).filter(tag => tag.trim() !== '')
+      }))
+
       const requestData = {
         clientId,
-        companyIdsAndTags: [
-          {
-            companyId: companyId,
-            tags: tagsForPost
-          }
-        ],
+        companyIdsAndTags,
         socialFeedId
       }
 
-      await axios.post(`${BASE_URL}/updateTagsForOnlineArticle`, requestData, { headers })
-      setFetchTagsFlag(prev => !prev)
-      handleClose()
-      toast.success('updated')
+      const elasticRequestData = {
+        clientId,
+        companyIdsAndTags,
+        articleId: socialFeedId,
+        articleType: 'online'
+      }
+
+      const fastAPIResponse = await axios.post(`${BASE_URL}/updateTagsForOnlineArticle`, requestData, { headers })
+
+      const elasticResponse = await axios.put(
+        `${ELASTIC_SERVER}/api/v1/internals/updateSingleArticleTags`,
+        elasticRequestData,
+        {
+          headers
+        }
+      )
+      if (fastAPIResponse.status === 200 && elasticResponse.status === 200) {
+        setFetchTagsFlag(prev => !prev)
+        handleClose()
+        toast.success('updated')
+      }
     } catch (error) {
       console.log(error.message || error.response?.data || error)
       toast.error('something wrong')
+    } finally {
+      setUpdateLoading(false)
     }
   }
 
@@ -113,7 +120,7 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
       <TableContainer component={Paper}>
         <Box>
           {articles.companies.map((company, companyIndex) => {
-            const companyTagsData = tagsData.find(data => data.companyId === company.id) || { tags: [] }
+            const companyTags = tags[company.id] || {}
 
             return (
               <Box key={company.id} mb={3}>
@@ -126,8 +133,8 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
                       <CustomTextField
                         size='small'
                         label={`Tag ${tagIndex}`}
-                        value={tags[`tag${tagIndex}`]}
-                        onChange={e => handleAddTag(tagIndex, e.target.value)}
+                        value={companyTags[`tag${tagIndex}`] || ''}
+                        onChange={e => handleAddTag(tagIndex, company, e.target.value)}
                         fullWidth
                       />
                     </Grid>
@@ -144,9 +151,17 @@ const TagStepper = ({ articles, handleClose, token, fetchTagsFlag, setFetchTagsF
           </Button>
           <Button
             variant='outlined'
-            sx={{ bgcolor: 'primary.main', color: 'text.primary', ml: 2 }}
+            sx={{
+              bgcolor: !updateLoading ? 'primary.main' : '',
+              color: 'text.primary',
+              ml: 2,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
+            }}
             onClick={handleSaveDetails}
           >
+            {updateLoading && <CircularProgress size={'1em'} />}
             Save
           </Button>
         </Grid>

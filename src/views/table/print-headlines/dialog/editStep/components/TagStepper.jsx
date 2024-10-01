@@ -11,6 +11,9 @@ import useGetTagsForArticle from 'src/api/print-headlines/tags/useGetTagsForArti
 // * third party imports
 import toast from 'react-hot-toast'
 import CustomTextField from 'src/@core/components/mui/text-field'
+import axios from 'axios'
+import { ELASTIC_SERVER } from 'src/api/base'
+import { Divider } from '@mui/material'
 
 const TagStepper = ({ articles, handleClose, fetchTags, setFetchTags, token, fetchTagsFlag, setFetchTagsFlag }) => {
   const selectedClient = useSelector(selectSelectedClient)
@@ -20,49 +23,47 @@ const TagStepper = ({ articles, handleClose, fetchTags, setFetchTags, token, fet
   const [fetchFlag, setFetchFlag] = useState(false)
   const [value, setValue] = useState(0)
 
-  const {
-    tagsData,
-    loading: fetchLoading,
-    error: fetchError
-  } = useGetTagsForArticle({
-    articleId,
-    clientId,
-    companyIds: companyId,
-    fetchFlag
-  })
+  // const {
+  //   tagsData,
+  //   loading: fetchLoading,
+  //   error: fetchError
+  // } = useGetTagsForArticle({
+  //   articleId,
+  //   clientId,
+  //   companyIds: companyId,
+  //   fetchFlag
+  // })
 
   const { postData, errorMessage } = useUpdateClientTagsToCompanyForArticles()
 
-  const [tags, setTags] = useState({
-    tag1: '',
-    tag2: '',
-    tag3: '',
-    tag4: '',
-    tag5: ''
-  })
+  const [tags, setTags] = useState({})
 
   useEffect(() => {
     setFetchTagsFlag(prev => !prev)
   }, [fetchFlag, value, setFetchTagsFlag])
 
   useEffect(() => {
-    // Use the first company's data in tagsData or default to an empty object
-    const companyTagsData = tagsData[0] || { tags: [] }
+    const initialTags = {}
+    articles.companies.forEach(company => {
+      const companyTags = company.tags?.[0]?.tags || []
+      initialTags[company.id] = {
+        tag1: companyTags[0] || '',
+        tag2: companyTags[1] || '',
+        tag3: companyTags[2] || '',
+        tag4: companyTags[3] || '',
+        tag5: companyTags[4] || ''
+      }
+    })
+    setTags(initialTags)
+  }, [articles])
 
+  const handleAddTag = (tagIndex, company, tag) => {
     setTags(prevTags => ({
       ...prevTags,
-      tag1: companyTagsData.tags[0] || '',
-      tag2: companyTagsData.tags[1] || '',
-      tag3: companyTagsData.tags[2] || '',
-      tag4: companyTagsData.tags[3] || '',
-      tag5: companyTagsData.tags[4] || ''
-    }))
-  }, [tagsData])
-
-  const handleAddTag = (tagIndex, tag) => {
-    setTags(prevTags => ({
-      ...prevTags,
-      [`tag${tagIndex}`]: tag
+      [company.id]: {
+        ...prevTags[company.id],
+        [`tag${tagIndex}`]: tag
+      }
     }))
   }
 
@@ -70,15 +71,40 @@ const TagStepper = ({ articles, handleClose, fetchTags, setFetchTags, token, fet
     setFetchFlag(!fetchFlag)
   }, [])
 
-  const handleSaveDetails = () => {
+  const handleSaveDetails = async () => {
     try {
-      const tagsForPost = Object.values(tags).filter(tag => tag.trim() !== '')
+      const companyIdsAndTags = Object.keys(tags).map(companyId => ({
+        companyId,
+        tags: Object.values(tags[companyId] || {}).filter(tag => tag.trim() !== '')
+      }))
       postData({
         clientId,
-        companyId,
-        tagsForPost,
+        companyIdsAndTags,
         articleId
       })
+
+      const elasticRequestData = {
+        clientId,
+        companyIdsAndTags,
+        articleId: articleId,
+        articleType: 'print'
+      }
+
+      const storedToken = localStorage.getItem('accessToken')
+
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${storedToken}`
+      }
+
+      const elasticResponse = await axios.put(
+        `${ELASTIC_SERVER}/api/v1/internals/updateSingleArticleTags`,
+        elasticRequestData,
+        {
+          headers
+        }
+      )
+
       setFetchFlag(!fetchFlag)
 
       setValue(value + 1)
@@ -91,6 +117,8 @@ const TagStepper = ({ articles, handleClose, fetchTags, setFetchTags, token, fet
         setFetchTagsFlag(prev => !prev)
       }
     } catch (error) {
+      console.log(error)
+
       toast.error('something wrong')
     }
   }
@@ -99,7 +127,7 @@ const TagStepper = ({ articles, handleClose, fetchTags, setFetchTags, token, fet
     <Box>
       <Box>
         {articles?.companies?.map((company, companyIndex) => {
-          const companyTagsData = tagsData?.find(data => data.companyId === company.id) || { tags: [] }
+          const companyTags = tags[company.id] || {}
 
           return (
             <Box key={company.id} mb={3}>
@@ -112,13 +140,14 @@ const TagStepper = ({ articles, handleClose, fetchTags, setFetchTags, token, fet
                     <CustomTextField
                       size='small'
                       label={`Tag ${tagIndex}`}
-                      value={tags[`tag${tagIndex}`]}
-                      onChange={e => handleAddTag(tagIndex, e.target.value)}
+                      value={companyTags[`tag${tagIndex}`] || ''}
+                      onChange={e => handleAddTag(tagIndex, company, e.target.value)}
                       fullWidth
                     />
                   </Grid>
                 ))}
               </Grid>
+              {companyIndex < articles.companies.length - 1 && <Divider sx={{ mt: 1 }} />}
             </Box>
           )
         })}

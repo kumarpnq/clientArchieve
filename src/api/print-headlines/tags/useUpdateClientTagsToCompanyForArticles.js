@@ -1,13 +1,13 @@
 // useUpdateClientTagsToCompanyForArticles.js
 import axios from 'axios'
 import { useState } from 'react'
-import toast from 'react-hot-toast'
+
 import { BASE_URL } from 'src/api/base'
 
 const useUpdateClientTagsToCompanyForArticles = () => {
   const [errorMessage, setErrorMessage] = useState('')
 
-  const postData = async ({ clientId, companyId, tagsForPost, articleId }) => {
+  const postData = async ({ clientId, companyIdsAndTags, articleId }) => {
     const storedToken = localStorage.getItem('accessToken')
 
     try {
@@ -18,12 +18,7 @@ const useUpdateClientTagsToCompanyForArticles = () => {
 
       const requestData = {
         clientId,
-        companyIdsAndTags: [
-          {
-            companyId: companyId,
-            tags: tagsForPost
-          }
-        ],
+        companyIdsAndTags,
         articleId
       }
 

@@ -21,6 +21,7 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 // ** third party imports
 import toast from 'react-hot-toast'
 import useUpdateTagForMultipleArticles from 'src/api/print-headlines/tags/useUpdateTagsForMultipleArticles'
+import { CircularProgress } from '@mui/material'
 
 const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, setFetchTagsFlag }) => {
   const [tag, setTag] = useState('')
@@ -138,7 +139,18 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSave} variant='contained' color='primary'>
+        <Button
+          onClick={handleSave}
+          variant='outlined'
+          sx={{
+            backgroundColor: !loading ? 'primary.main' : '',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            color: 'text.primary'
+          }}
+        >
+          {loading && <CircularProgress size={'1em'} />}
           Save
         </Button>
       </DialogActions>

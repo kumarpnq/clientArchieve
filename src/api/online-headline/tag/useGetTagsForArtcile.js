@@ -25,7 +25,8 @@ const useGetTagsForArticle = ({ articleId, clientId, companyIds, fetchFlag }) =>
 
       try {
         const response = await axios.get(url, { headers, params })
-        setTagsData(response.data.tags)
+
+        setTagsData(response.data.tags || [])
       } catch (error) {
         setError(error.message || error.response?.data || 'An error occurred')
       } finally {
