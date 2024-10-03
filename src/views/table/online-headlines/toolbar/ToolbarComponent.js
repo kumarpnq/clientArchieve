@@ -137,15 +137,14 @@ const ToolbarComponent = ({
     setSearchTermtags(event.target.value)
   }
 
-  const handleMediaSelect = publicationId => {
+  const handleMediaSelect = (publicationId, itemIndex) => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationId)
+      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
 
       if (isAlreadySelected) {
-        return prevSelected.filter(id => id !== publicationId)
+        return prevSelected.filter(id => id !== publicationId + itemIndex)
       } else {
-        // If not selected, add to the list
-        return [...prevSelected, publicationId]
+        return [...prevSelected, publicationId + itemIndex]
       }
     })
   }
@@ -186,7 +185,19 @@ const ToolbarComponent = ({
             .map(city => city.cityId)
           setSelectedGeography(selectedCityIds)
         }
+      } catch (error) {
+        console.error('Error fetching user data and companies:', error.message)
+      }
+    }
 
+    fetchUserDataAndCompanies()
+  }, [clientId])
+
+  // * fetching media separately
+  useEffect(() => {
+    const fetchMedia = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
         const mediaResponse = await axios.get(`${BASE_URL}/onlineMediaList`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
@@ -197,7 +208,6 @@ const ToolbarComponent = ({
           }
         })
         setMedia(mediaResponse.data.mediaList)
-
         if (shortCutData?.screenName == 'onlineHeadlines') {
           const selectedMediaIds = mediaResponse.data.mediaList
             .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
@@ -205,11 +215,11 @@ const ToolbarComponent = ({
           setSelectedMedia(selectedMediaIds)
         }
       } catch (error) {
-        console.error('Error fetching user data and companies:', error.message)
+        console.error('Error fetching media:', error.message)
       }
     }
 
-    fetchUserDataAndCompanies()
+    fetchMedia()
   }, [clientId, searchTerm])
 
   useEffect(() => {
@@ -388,9 +398,9 @@ const ToolbarComponent = ({
           {media.map((item, index) => (
             <div key={`${item.publicationId}-${index}`}>
               <MenuItem
-                onClick={() => handleMediaSelect(item.publicationId)}
+                onClick={() => handleMediaSelect(item.publicationId, index)}
                 selected={
-                  selectedMedia?.includes(item.publicationId) ||
+                  selectedMedia?.includes(item.publicationId + index) ||
                   shortCutData?.searchCriteria?.media?.includes(item.publicationId)
                 }
               >

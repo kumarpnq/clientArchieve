@@ -106,7 +106,7 @@ const ToolbarComponent = ({
     })
   }
 
-  let index = 0 // This should be outside the component
+  let index = 0
 
   const handleMediaSelect = (publicationId, itemIndex) => {
     setSelectedMedia(prevSelected => {
@@ -182,7 +182,19 @@ const ToolbarComponent = ({
             .map(city => city.cityId)
           setSelectedCities(selectedCityIds)
         }
+      } catch (error) {
+        console.error('Error fetching user data and companies:', error)
+      }
+    }
 
+    fetchUserDataAndCompanies()
+  }, [clientId, selectedClient])
+
+  // * fetching media separately
+  useEffect(() => {
+    const fetchMedia = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
         // Fetch media
         const mediaResponse = await axios.get(`${BASE_URL}/printMediaList`, {
           headers: {
@@ -203,12 +215,12 @@ const ToolbarComponent = ({
           setSelectedMedia(selectedMediaIds)
         }
       } catch (error) {
-        console.error('Error fetching user data and companies:', error)
+        console.error('Error fetching media:', error.message)
       }
     }
 
-    fetchUserDataAndCompanies()
-  }, [clientId, selectedClient, debouncedSearchTerm, shortCutData?.searchCriteria?.media])
+    fetchMedia()
+  }, [clientId, debouncedSearchTerm, shortCutData?.searchCriteria?.media])
 
   useEffect(() => {
     const fetchData = async () => {

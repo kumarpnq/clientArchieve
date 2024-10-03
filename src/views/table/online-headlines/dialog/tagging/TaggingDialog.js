@@ -119,7 +119,13 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
         <Button
           onClick={handleSave}
           variant='outlined'
-          sx={{ display: 'flex', alignItems: 'center', gap: 2, backgroundColor: !loading ? 'primary.main' : '' }}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            backgroundColor: !loading ? 'primary.main' : '',
+            color: 'text.primary'
+          }}
         >
           {loading && <CircularProgress size={'1em'} />}
           Save

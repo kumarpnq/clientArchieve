@@ -83,8 +83,6 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const [selectedArticle, setSelectedArticle] = useState(null)
 
   const toggleCheckboxSelection = (articleId, articleType, companies, setTableSelectFunc) => {
-    console.log(companies, articleType)
-
     setTableSelectFunc(prev => ({
       ...prev,
       [articleId]: !prev[articleId] ? articleId : null
@@ -118,8 +116,6 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const halfIndex = Math.ceil(articles.length / 2)
   const firstPortionArticles = articles.slice(0, halfIndex)
   const secondPortionArticles = articles.slice(halfIndex)
-
-  console.log(articles)
 
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]
@@ -326,7 +322,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                       const articleCode = await generateLink(article.articleId)
                       window.open(`/article-view?articleCode=${articleCode}`, '_blank')
                     } else {
-                      setSelectedArticle(firstArticle)
+                      setSelectedArticle(article)
                       setOpenArticleView(true)
                     }
                   }

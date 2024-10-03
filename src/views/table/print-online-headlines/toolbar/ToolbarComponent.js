@@ -195,7 +195,18 @@ const ToolbarComponent = ({
             .map(city => city.cityId)
           setSelectedGeography(selectedCityIds)
         }
+      } catch (error) {
+        console.error('Error fetching user data and companies:', error)
+      }
+    }
 
+    fetchUserDataAndCompanies()
+  }, [clientId])
+
+  useEffect(() => {
+    const fetchMedia = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      try {
         const mediaResponse = await axios.get(`${BASE_URL}/printOnlineMediaList/`, {
           headers: {
             Authorization: `Bearer ${storedToken}`
@@ -214,11 +225,11 @@ const ToolbarComponent = ({
           setSelectedMedia(selectedMediaIds)
         }
       } catch (error) {
-        console.error('Error fetching user data and companies:', error)
+        console.error('Error fetching media:', error.message)
       }
     }
 
-    fetchUserDataAndCompanies()
+    fetchMedia()
   }, [clientId, searchTerm])
 
   useEffect(() => {

@@ -126,13 +126,11 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
                 }
               }}
             >
-              <PerfectScrollbar>
-                {tags.map(tag => (
-                  <MenuItem key={tag} value={tag}>
-                    {tag}
-                  </MenuItem>
-                ))}
-              </PerfectScrollbar>
+              {tags.map(tag => (
+                <MenuItem key={tag} value={tag}>
+                  {tag}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>

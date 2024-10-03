@@ -648,6 +648,7 @@ const TableSelection = () => {
         selectedLanguage={selectedLanguage}
         setSelectedLanguage={setSelectedLanguage}
         setSelectedMedia={setSelectedMedia}
+        selectedMedia={selectedMedia}
         selectedTags={selectedTags}
         setSelectedTags={setSelectedTags}
         tags={tags}

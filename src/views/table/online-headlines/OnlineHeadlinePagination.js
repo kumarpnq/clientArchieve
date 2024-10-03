@@ -52,15 +52,11 @@ const Pagination = ({
           handleRecordsPerPageUpdate={handleRecordsPerPageUpdate}
         />
       </Box>
-      <Box
-        display='flex'
-        flexDirection={{ xs: 'column', md: 'row' }} // Adjust the layout based on screen size
-        alignItems='center'
-      >
+      <Box display='flex' flexDirection={{ xs: 'column', md: 'row' }} alignItems='center'>
         <Typography variant='body2' sx={{ marginLeft: { xs: 0, md: 7 } }}>
           {startRecord}-{endRecord} of {paginationModel.totalRecords}
         </Typography>
-        <Button
+        {/* <Button
           startIcon={<NavigateBeforeIcon />}
           onClick={handleLeftPagination}
           disabled={currentPage === 1}
@@ -70,7 +66,7 @@ const Pagination = ({
           endIcon={<NavigateNextIcon />}
           onClick={handleRightPagination}
           disabled={currentPage === Math.ceil(paginationModel.totalRecords / paginationModel.pageSize)}
-        />
+        /> */}
       </Box>
     </Box>
   )
