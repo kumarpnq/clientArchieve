@@ -439,17 +439,16 @@ const NotificationDropdown = () => {
                   <DownloadLink item={item} dumpType={item.jobType} />
                 ) : (
                   <Typography variant='body2' sx={{ width: '100%' }}>
-                    {item.jobStatus === 'Processing' ? (
+                    {['Processing', 'In Progress'].includes(item.jobStatus) ? (
                       <Box
                         sx={{
                           width: `${progress}%`,
                           background: getColor(progress),
                           textAlign: 'center',
                           borderRadius: '3px',
-                          border: '1px  solid #ccc'
+                          border: '1px solid #ccc'
                         }}
                       >
-                        {' '}
                         <Typography sx={{ color: 'text.primary', fontSize: '0.8em' }}>{progress}%</Typography>
                       </Box>
                     ) : (

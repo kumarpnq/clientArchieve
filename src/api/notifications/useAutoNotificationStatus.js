@@ -36,7 +36,7 @@ const useAutoNotification = () => {
       const jobData = res.data.jobs
 
       const completeJobs = jobData.length && jobData.filter(item => item.jobStatus === 'Completed')
-      const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing')
+      const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing' || 'In Progress')
 
       if (completeJobs.length) {
         completeJobs.forEach(item => {
