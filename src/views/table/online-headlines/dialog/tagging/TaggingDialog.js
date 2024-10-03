@@ -104,6 +104,13 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
               value={selectedTag}
               label='Select Tag'
               onChange={handleTagSelectChange}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 300
+                  }
+                }
+              }}
             >
               {tags.map(tag => (
                 <MenuItem key={tag} value={tag}>

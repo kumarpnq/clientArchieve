@@ -1,6 +1,6 @@
 import { Box, Checkbox, CircularProgress, Tooltip, tooltipClasses, Typography, useMediaQuery } from '@mui/material'
 import React, { useState } from 'react'
-
+import Pagination from '../Pagination'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
@@ -108,7 +108,7 @@ const TableGrid = ({
           <>
             <td className='table-data'>
               <Checkbox
-                checked={Boolean(tableSelect[firstArticle.articleId])}
+                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
                 onChange={() => handleCheckboxChange(firstArticle.articleId, firstArticle.companies)}
               />
             </td>
@@ -183,7 +183,7 @@ const TableGrid = ({
           <>
             <td className='table-data'>
               <Checkbox
-                checked={Boolean(tableSelectTwo[secondArticle.articleId])}
+                checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
                 onChange={() => handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.companies)}
               />
             </td>
