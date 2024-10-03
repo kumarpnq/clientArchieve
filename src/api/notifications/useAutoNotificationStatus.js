@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectFetchAutoStatusFlag, selectSelectedClient, setFetchAutoStatusFlag } from 'src/store/apps/user/userSlice'
@@ -17,16 +17,13 @@ const useAutoNotification = () => {
   const storedToken = localStorage.getItem('accessToken')
   const url = `${JOB_SERVER}/downloadStatusPopNotification`
 
+  const [keepFetchingFalseCount, setKeepFetchingFalseCount] = useState(0)
+
   const fetchAutoNotificationStatus = async () => {
     dispatch(setFetchAutoStatusFlag(true))
 
     try {
-      // const storedToken = localStorage.getItem('accessToken')
-
       const res = await axios.get(url, {
-        // headers: {
-        //   Authorization: `Bearer ${storedToken}`
-        // },
         params: {
           clientId: clientId,
           userId: getUserName
@@ -35,8 +32,17 @@ const useAutoNotification = () => {
 
       const jobData = res.data.jobs
 
-      const completeJobs = jobData.length && jobData.filter(item => item.jobStatus === 'Completed')
-      const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing')
+      if (!jobData) {
+        setKeepFetchingFalseCount(prev => prev + 1)
+        if (keepFetchingFalseCount >= 1) {
+          dispatch(setFetchAutoStatusFlag(false))
+        }
+
+        return
+      }
+
+      const completeJobs = jobData?.filter(item => item.jobStatus === 'Completed')
+      const keepFetching = jobData?.some(item => item.jobStatus === 'Processing')
 
       if (completeJobs.length) {
         completeJobs.forEach(item => {
@@ -82,23 +88,33 @@ const useAutoNotification = () => {
             { duration: 10000, closeButton: true }
           )
         })
+      }
 
-        if (jobData.length && keepFetching) {
-          dispatch(setFetchAutoStatusFlag(true))
-        } else {
-          dispatch(setFetchAutoStatusFlag(false))
-        }
+      if (keepFetching) {
+        setKeepFetchingFalseCount(0)
+        dispatch(setFetchAutoStatusFlag(true))
+      } else {
+        setKeepFetchingFalseCount(prevCount => {
+          const newCount = prevCount + 1
+          if (newCount >= 2) {
+            dispatch(setFetchAutoStatusFlag(false))
+          }
+
+          return newCount
+        })
       }
     } catch (error) {
       console.error('Error fetching auto notification status:', error.message)
-
       dispatch(setFetchAutoStatusFlag(false))
     }
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      if (storedToken && clientId) {
+      if (storedToken && clientId && fetchAutoStatusFlag) {
+        if (keepFetchingFalseCount > 0) {
+          setKeepFetchingFalseCount(0)
+        }
         await fetchAutoNotificationStatus()
       }
     }
@@ -106,13 +122,17 @@ const useAutoNotification = () => {
     fetchData()
 
     const intervalId = setInterval(() => {
-      fetchData()
+      if (fetchAutoStatusFlag) {
+        fetchData()
+      }
     }, 10000)
 
     return () => {
       clearInterval(intervalId)
     }
-  }, [clientId, storedToken])
+  }, [clientId, storedToken, fetchAutoStatusFlag, keepFetchingFalseCount])
+
+  return null
 }
 
 export default useAutoNotification

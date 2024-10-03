@@ -55,28 +55,24 @@ const PDFView = () => {
           color: rgb(0, 0, 0)
         }
 
-        // Calculate the text width to center it
         const textWidth = helveticaFont.widthOfTextAtSize(formattedDetails, textOptions.size)
-        const x = (width - textWidth) / 2 // Center the text
+        const x = (width - textWidth) / 2
 
-        // Draw the formatted details centered
         page.drawText(formattedDetails, {
           x,
-          y: height - 50, // Position it near the top
+          y: height - 50,
           ...textOptions
         })
 
-        // Fetch and embed the image
         const imageUrl = articleData.JPGPATH
         const imageBytes = await axios.get(imageUrl, { responseType: 'arraybuffer' }).then(res => res.data)
         const embeddedImage = await pdfDoc.embedJpg(imageBytes)
-        const imageWidth = width * 0.8 // 80% of page width
+        const imageWidth = width * 0.8
         const imageHeight = (embeddedImage.height / embeddedImage.width) * imageWidth
 
-        // Draw the image below the text
         page.drawImage(embeddedImage, {
           x: (width - imageWidth) / 2,
-          y: height - 50 - imageHeight - 20, // Leave some space below the text
+          y: height - 50 - imageHeight - 20,
           width: imageWidth,
           height: imageHeight
         })
