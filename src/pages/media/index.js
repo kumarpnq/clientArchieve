@@ -32,12 +32,8 @@ const MediaAnalysis = () => {
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedCompaniesString = selectedCompetitions.join(', ')
 
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
-
-  const formatDate = dateTimeString => {
-    return dayjs(dateTimeString).format('YYYY-MM-DD H:mm:ss')
-  }
+  const formattedFromDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+  const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,8 +42,8 @@ const MediaAnalysis = () => {
         const params = {
           clientIds,
           companyIds: selectedCompaniesString,
-          fromDate: formatDate(formattedStartDate),
-          toDate: formatDate(formattedEndDate),
+          fromDate: formattedFromDate,
+          toDate: formattedToDate,
           mediaType: value
         }
 
@@ -70,7 +66,7 @@ const MediaAnalysis = () => {
     }
 
     fetchData()
-  }, [value, formattedStartDate, formattedEndDate, clientIds, selectedCompaniesString])
+  }, [value, formattedFromDate, formattedToDate, clientIds, selectedCompaniesString])
 
   const handlePageChange = (event, page) => {
     setCurrentPage(page)

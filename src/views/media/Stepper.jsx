@@ -79,8 +79,8 @@ const Stepper = ({
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedCompaniesString = selectedCompetitions.join(', ')
 
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+  const formattedStartDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+  const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
   const handleChange = (event, newValue) => {
     setValue(newValue)
@@ -88,11 +88,6 @@ const Stepper = ({
 
   const handleSendEmail = () => {
     setOpen(true)
-  }
-
-  // * function to format date time to date only
-  const formatDate = dateTimeString => {
-    return dayjs(dateTimeString).format('YYYY-MM-DD H:mm:ss')
   }
 
   const generateWebURL = async () => {
@@ -103,8 +98,8 @@ const Stepper = ({
       const params = {
         clientIds: clientId,
         companyIds: selectedCompaniesString,
-        fromDate: formatDate(formattedStartDate),
-        toDate: formatDate(formattedEndDate)
+        fromDate: formattedStartDate,
+        toDate: formattedEndDate
 
         // mediaType: value
       }

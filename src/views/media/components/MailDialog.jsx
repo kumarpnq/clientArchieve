@@ -50,8 +50,8 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedCompaniesString = selectedCompetitions.join(', ')
 
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+  const formattedStartDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
+  const formattedEndDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
 
   const { mailList, subject } = useClientMailerList(open)
 
@@ -63,11 +63,6 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
     setOpen(false)
   }
 
-  // * function to format date time to date only
-  const formatDate = dateTimeString => {
-    return dayjs(dateTimeString).format('YYYY-MM-DD H:mm:ss')
-  }
-
   const generateWebURL = async () => {
     try {
       const storedToken = localStorage.getItem('accessToken')
@@ -76,8 +71,8 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       const params = {
         clientIds: clientId,
         companyIds: selectedCompaniesString,
-        fromDate: formatDate(formattedStartDate),
-        toDate: formatDate(formattedEndDate)
+        fromDate: formattedStartDate,
+        toDate: formattedEndDate
 
         // mediaType: value
       }

@@ -395,68 +395,38 @@ const TableSelection = () => {
 
   const [isPopupOpen, setPopupOpen] = useState(false)
 
-  const handleRowCheck = (tablePosition, params) => {
-    if (tablePosition === 'center') {
-      localStorage.setItem('selectedRows', JSON.stringify(params))
-    }
-    if (tablePosition == 'left') {
-      localStorage.setItem('leftSelectedRows', JSON.stringify(params))
-    }
-
-    if (tablePosition == 'right') {
-      localStorage.setItem('rightSelectedRows', JSON.stringify(params))
-    }
-
-    if (tablePosition === 'left' || tablePosition === 'right') {
-      const prevLeft = JSON.parse(localStorage.getItem('leftSelectedRows'))
-      const prevRight = JSON.parse(localStorage.getItem('rightSelectedRows'))
-      let finalArr = []
-      if (prevLeft?.length > 0) {
-        finalArr.push(...prevLeft)
-      }
-      if (prevRight?.length > 0) {
-        finalArr.push(...prevRight)
-      }
-      localStorage.setItem('selectedRows', JSON.stringify(finalArr))
-    }
-
-    setTimeout(() => {
-      const params = JSON.parse(localStorage.getItem('selectedRows'))
-      let arr = []
-      params?.map(itm => {
-        arr.push(articleOptimizedObj[itm])
-      })
-      setSelectedArticles(arr)
-    }, 2000)
-  }
-
   const handlePageCheckChange = event => {
-    if (allCheck && event.target.checked) {
-      setAllCheck(false)
-      setPageCheck(true)
-      setSelectedArticles([...articles])
+    if (event.target.checked) {
+      // Keep the previously selected articles and add the current page's articles
+      setSelectedArticles(prevSelected => {
+        const selectedMap = new Map(prevSelected.map(article => [article.articleId, article]))
+
+        articles.forEach(article => {
+          if (!selectedMap.has(article.articleId)) {
+            selectedMap.set(article.articleId, article)
+          }
+        })
+
+        return Array.from(selectedMap.values())
+      })
     } else {
-      setPageCheck(event.target.checked)
-      setSelectedArticles(event.target.checked ? [...articles] : [])
+      // Remove the current page's articles from the selected list
+      setSelectedArticles(prevSelected => {
+        return prevSelected.filter(article => !articles.some(a => a.articleId === article.articleId))
+      })
     }
+    setPageCheck(event.target.checked)
   }
 
   const handleAllCheckChange = event => {
-    if (pageCheck && event.target.checked) {
-      setPageCheck(false)
-      setAllCheck(true)
+    if (event.target.checked) {
+      // Select all articles (retain any previously selected articles)
       setSelectedArticles([...articles])
     } else {
-      setAllCheck(event.target.checked)
-      setSelectedArticles(event.target.checked ? [...articles] : [])
+      // Deselect all articles
+      setSelectedArticles([])
     }
-  }
-
-  const handleRowClick = params => {
-    setSelectedArticle(params.row)
-
-    // currently hiding the click summary
-    setPopupOpen(false)
+    setAllCheck(event.target.checked)
   }
 
   useEffect(() => {
