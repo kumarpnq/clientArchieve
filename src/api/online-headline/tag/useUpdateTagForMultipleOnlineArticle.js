@@ -39,7 +39,7 @@ const useUpdateTagForMultipleOnlineArticles = props => {
       const response = await axios.post(`${BASE_URL}/updateTagForMultipleOnlineArticles/`, requestData, { headers })
 
       const elasticResponse = await axios.put(
-        `${ELASTIC_SERVER}/api/v1/internals/updateMultipleArticleTag/`,
+        `${ELASTIC_SERVER}/api/v1/internals/updateMultipleArticleTag`,
         elasticRequestData,
         { headers }
       )

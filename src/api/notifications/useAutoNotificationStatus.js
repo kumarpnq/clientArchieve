@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectFetchAutoStatusFlag, selectSelectedClient, setFetchAutoStatusFlag } from 'src/store/apps/user/userSlice'
@@ -17,88 +17,103 @@ const useAutoNotification = () => {
   const storedToken = localStorage.getItem('accessToken')
   const url = `${JOB_SERVER}/downloadStatusPopNotification`
 
+  const [nullJobDataCount, setNullJobDataCount] = useState(0)
+  const [emptyJobProgressCount, setEmptyJobProgressCount] = useState(0)
+
   const fetchAutoNotificationStatus = async () => {
-    dispatch(setFetchAutoStatusFlag(true))
+    if (!fetchAutoStatusFlag) {
+      return
+    }
 
     try {
-      // const storedToken = localStorage.getItem('accessToken')
-
       const res = await axios.get(url, {
-        // headers: {
-        //   Authorization: `Bearer ${storedToken}`
-        // },
         params: {
           clientId: clientId,
           userId: getUserName
         }
       })
 
-      const jobData = res.data.jobs
+      const jobData = res.data.jobs || []
 
-      const completeJobs = jobData.length && jobData.filter(item => item.jobStatus === 'Completed')
-      const keepFetching = jobData.length && jobData.map(item => item.jobStatus).includes('Processing' || 'In Progress')
+      if (jobData.length > 0) {
+        setNullJobDataCount(0)
+        setEmptyJobProgressCount(0)
 
-      if (completeJobs.length) {
-        completeJobs.forEach(item => {
-          toast.success(
-            t => (
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem',
-                  padding: '0.5rem',
-                  maxWidth: '300px',
-                  position: 'relative'
-                }}
-              >
-                <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}>
-                  <IconButton size='small' onClick={() => toast.dismiss(t.id)}>
-                    <CloseIcon />
-                  </IconButton>
-                </div>
-                <div style={{ marginRight: '2rem' }}>
-                  <span style={{ fontWeight: 'bold' }}>Job:</span>{' '}
-                  {!!item?.downloadLink ? item.jobName.substring(0, 20) + '...' : 'Mail sent!'}
-                </div>
-                <div style={{ marginRight: '2rem' }}>
-                  <span style={{ fontWeight: 'bold' }}>Status:</span> {item.jobStatus}
-                </div>
-                {!!item?.downloadLink && (
-                  <div>
-                    <span style={{ fontWeight: 'bold' }}>Link:</span>{' '}
-                    <a
-                      href={`${process.env.NEXT_PUBLIC_JOB_SERVER}/downloadFile/${item?.downloadLink}`}
-                      target='_blank'
-                      rel='noopener'
-                      style={{ textDecoration: 'none', color: '#1E88E5' }}
-                    >
-                      Download
-                    </a>
+        const completeJobs = jobData.filter(item => item.jobStatus === 'Completed')
+        const inProgressJobs = jobData.some(item => item.jobStatus === 'Processing' || item.jobStatus === 'In Progress')
+
+        if (completeJobs.length) {
+          completeJobs.forEach(item => {
+            toast.success(
+              t => (
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem',
+                    padding: '0.5rem',
+                    maxWidth: '300px',
+                    position: 'relative'
+                  }}
+                >
+                  <div style={{ position: 'absolute', top: '0.5rem', right: '0.5rem' }}>
+                    <IconButton size='small' onClick={() => toast.dismiss(t.id)}>
+                      <CloseIcon />
+                    </IconButton>
                   </div>
-                )}
-              </div>
-            ),
-            { duration: 10000, closeButton: true }
-          )
-        })
+                  <div style={{ marginRight: '2rem' }}>
+                    <span style={{ fontWeight: 'bold' }}>Job:</span>{' '}
+                    {!!item?.downloadLink ? item.jobName.substring(0, 20) + '...' : 'Mail sent!'}
+                  </div>
+                  <div style={{ marginRight: '2rem' }}>
+                    <span style={{ fontWeight: 'bold' }}>Status:</span> {item.jobStatus}
+                  </div>
+                  {!!item?.downloadLink && (
+                    <div>
+                      <span style={{ fontWeight: 'bold' }}>Link:</span>{' '}
+                      <a
+                        href={`${process.env.NEXT_PUBLIC_JOB_SERVER}/downloadFile/${item?.downloadLink}`}
+                        target='_blank'
+                        rel='noopener'
+                        style={{ textDecoration: 'none', color: '#1E88E5' }}
+                      >
+                        Download
+                      </a>
+                    </div>
+                  )}
+                </div>
+              ),
+              { duration: 10000, closeButton: true }
+            )
+          })
+        }
 
-        if (jobData.length && keepFetching) {
+        if (inProgressJobs) {
           dispatch(setFetchAutoStatusFlag(true))
         } else {
+          setEmptyJobProgressCount(prevCount => prevCount + 1)
+
+          if (emptyJobProgressCount >= 2) {
+            dispatch(setFetchAutoStatusFlag(false))
+            setEmptyJobProgressCount(0)
+          }
+        }
+      } else {
+        setNullJobDataCount(prevCount => prevCount + 1)
+
+        if (nullJobDataCount >= 2) {
           dispatch(setFetchAutoStatusFlag(false))
+          setNullJobDataCount(0)
         }
       }
     } catch (error) {
       console.error('Error fetching auto notification status:', error.message)
-
-      dispatch(setFetchAutoStatusFlag(false))
     }
   }
 
   useEffect(() => {
     const fetchData = async () => {
-      if (storedToken && clientId) {
+      if (storedToken && clientId && fetchAutoStatusFlag) {
         await fetchAutoNotificationStatus()
       }
     }
@@ -106,13 +121,17 @@ const useAutoNotification = () => {
     fetchData()
 
     const intervalId = setInterval(() => {
-      fetchData()
+      if (fetchAutoStatusFlag) {
+        fetchData()
+      }
     }, 10000)
 
     return () => {
       clearInterval(intervalId)
     }
-  }, [clientId, storedToken])
+  }, [clientId, storedToken, fetchAutoStatusFlag, nullJobDataCount, emptyJobProgressCount])
+
+  return null
 }
 
 export default useAutoNotification
