@@ -202,8 +202,6 @@ const TableSelection = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setSelectedArticles([])
-
     const fetchArticlesApi = async () => {
       try {
         setLoading(true)
@@ -466,7 +464,8 @@ const TableSelection = () => {
     setSelectedPublicationType([])
     setSelectedSortBy(null)
     setClearAdvancedSearchField(true)
-    setSelectedArticles([])
+
+    // setSelectedArticles([])
   }
 
   return (

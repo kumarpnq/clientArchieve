@@ -357,13 +357,11 @@ const ArticleListToolbar = ({
         setEditionTypes(data.editionTypesList)
       } catch (error) {
         console.error('Error fetching edition types:', error)
-
-        // Handle error appropriately, e.g., display an error message to the user
       }
     }
 
     fetchEditionTypes()
-  }, []) // Fetch edition types only once on component mount
+  }, [])
 
   const handleEditionTypeClick = event => {
     setEditionTypeMenuOpen(event.currentTarget)
@@ -495,7 +493,7 @@ const ArticleListToolbar = ({
           <TaggingIcon />
         </Button>
       </CustomTooltip>
-      {/* Render the TaggingDialog with the open state and onClose function */}
+
       <TaggingDialog
         open={taggingDialogOpen}
         onClose={handleTaggingDialogClose}

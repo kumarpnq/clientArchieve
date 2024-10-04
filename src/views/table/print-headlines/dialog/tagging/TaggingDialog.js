@@ -61,11 +61,12 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
       setTag('')
       setSelectedTag('')
       onClose()
-      toast.success('tag updated.', {
-        duration: 2000
-      })
+
+      // toast.success('tag updated.', {
+      //   duration: 2000
+      // })
     } catch (error) {
-      console.error('Error updating tags:', error)
+      console.error('Error updating tags:', error?.message)
       toast.error("Couldn't save the changes.", {
         duration: 2000
       })
