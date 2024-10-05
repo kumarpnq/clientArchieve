@@ -45,7 +45,7 @@ const Pagination = ({
         display='flex'
         flexDirection={{ xs: 'column', md: 'row' }} // Adjust the layout based on screen size
         alignItems='center'
-        mb={{ xs: 2, md: 0 }} // Add margin-bottom for small screens
+        mb={{ xs: 2, md: 0 }}
       >
         <RecordsPerPageSelector
           recordsPerPage={recordsPerPage}
@@ -60,7 +60,7 @@ const Pagination = ({
           startIcon={<NavigateBeforeIcon />}
           onClick={handleLeftPagination}
           disabled={currentPage === 1}
-          sx={{ marginRight: { xs: 0, md: 1 } }} // Add margin for small screens
+          sx={{ marginRight: { xs: 0, md: 1 } }}
         />
         <Button
           endIcon={<NavigateNextIcon />}
