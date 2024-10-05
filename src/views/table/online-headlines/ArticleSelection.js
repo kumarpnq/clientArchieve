@@ -150,13 +150,12 @@ const TableSelection = () => {
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
 
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const getRowId = row => row.socialFeedId
 
   const [selectedGeography, setSelectedGeography] = useState([])
   const [selectedLanguage, setSelectedLanguage] = useState([])
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectedTags, setSelectedTags] = useState([])
-  const [selectedSortBy, setSelectedSortBy] = useState(null)
+  const [selectedSortBy, setSelectedSortBy] = useState('date')
   const [currentPage, setCurrentPage] = useState(1)
   const [recordsPerPage, setRecordsPerPage] = useState(100)
   const [loading, setLoading] = useState(false)
