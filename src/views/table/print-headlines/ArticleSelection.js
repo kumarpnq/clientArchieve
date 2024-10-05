@@ -106,7 +106,7 @@ const TableSelection = () => {
   const [selectedEditionType, setSelectedEditionType] = useState([])
   const [selectedPublicationType, setSelectedPublicationType] = useState([])
 
-  const [selectedSortBy, setSelectedSortBy] = useState(null)
+  const [selectedSortBy, setSelectedSortBy] = useState('latest')
   const [pageCheck, setPageCheck] = useState(false)
   const [allCheck, setAllCheck] = useState(false)
   const [dataFetchFlag, setDataFetchFlag] = useState(false)

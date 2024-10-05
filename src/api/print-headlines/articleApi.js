@@ -68,7 +68,7 @@ export const fetchArticles = async ({
       phrase,
       editionType,
       publicationCategory,
-      sortby: sortby || 'LATEST',
+      sortby: sortby,
       language: formattedLanguage
     }
 

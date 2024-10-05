@@ -250,10 +250,8 @@ const ArticleListToolbar = ({
 
   const handleSortBySelection = sortBy => {
     if (selectedSortBy === sortBy) {
-      // If the clicked sort-by is already selected, deselect it
       setSelectedSortBy(null)
     } else {
-      // If not selected, set it as the selected sort-by
       setSelectedSortBy(sortBy)
     }
     handleSortByClose()
