@@ -290,9 +290,9 @@ const TableSelection = () => {
             publicationCategory: publicationtype
           })
 
-          const totalRecords = response.length
+          const totalRecords = response.count
 
-          const transformedArray = response.map(item => {
+          const transformedArray = response.doc.map(item => {
             const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag, children } =
               item._source
 

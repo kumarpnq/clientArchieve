@@ -340,7 +340,7 @@ const TableSelection = () => {
             }
           )
 
-          const totalRecords = response.data.data.doc.length
+          const totalRecords = response.data.data.count
 
           const transformedArray = response.data.data.doc.map(item => {
             const {
@@ -362,7 +362,7 @@ const TableSelection = () => {
               summary: feedData?.summary || articleData?.summary,
               publication: publicationInfo?.name,
               publicationId: publicationInfo?.id,
-              articleDate: `${articleInfo?.articleDate}T00:00:00`,
+              articleDate: `${articleInfo?.articleDate || feedData?.feedDate}`,
               articleUploadId: uploadInfo?.uploadId,
               articleJournalist: articleInfo?.journalist,
               companies:
@@ -460,28 +460,6 @@ const TableSelection = () => {
       setSelectedArticles([...articles])
     }
   }, [pageCheck, articles, allCheck])
-
-  const handleSelect = article => {
-    const isSelected = selectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
-    setSelectedArticles(prevSelectedArticles => {
-      let updatedSelectedArticles = []
-      if (isSelected) {
-        updatedSelectedArticles = prevSelectedArticles.filter(
-          selectedArticle => selectedArticle.articleId !== article.articleId
-        )
-      } else {
-        updatedSelectedArticles = [...prevSelectedArticles, article]
-      }
-
-      const isPageFullySelected = articles.every(article =>
-        updatedSelectedArticles.some(selectedArticle => selectedArticle.articleId === article.articleId)
-      )
-
-      setPageCheck(isPageFullySelected)
-
-      return updatedSelectedArticles
-    })
-  }
 
   const handleLeftPagination = () => {
     if (currentPage > 1) {

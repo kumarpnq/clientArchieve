@@ -16,6 +16,7 @@ import { Icon } from '@iconify/react'
 import { useState } from 'react'
 import generateLink from 'src/api/generateLink/generateLink'
 import ArticleView from '../../online-headlines/dialog/article-view/view'
+import dayjs from 'dayjs'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -158,7 +159,10 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                   >
                     {firstArticle.headline}
                   </span>
-                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{firstArticle.publication}</span>
+                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
+                    {firstArticle.publication}{' '}
+                    <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
+                  </span>
                 </div>
               </CustomTooltip>
             </td>
@@ -228,7 +232,10 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                   >
                     {secondArticle.headline}
                   </span>
-                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{secondArticle.publication}</span>
+                  <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
+                    {secondArticle.publication}
+                    <span style={{ marginLeft: '4px' }}>({dayjs(secondArticle.articleDate).format('DD-MM-YYYY')})</span>
+                  </span>
                 </div>
               </CustomTooltip>
             </td>
@@ -298,7 +305,10 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
               >
                 {article.headline}
               </span>
-              <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
+              <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
+                {article.publication}
+                <span style={{ marginLeft: '4px' }}>({dayjs(article.articleDate).format('DD-MM-YYYY')})</span>
+              </span>
             </div>
           </CustomTooltip>
         </td>

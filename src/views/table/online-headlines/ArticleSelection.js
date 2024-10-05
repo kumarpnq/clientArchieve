@@ -463,7 +463,7 @@ const TableSelection = () => {
             }
           })
 
-          const totalRecords = response.data.data.doc.length || 0
+          const totalRecords = response.data.data.count || 0
 
           setSocialFeeds(transformedArray)
 
@@ -528,29 +528,6 @@ const TableSelection = () => {
       setSelectedArticles([...socialFeeds])
     }
   }, [pageCheck, socialFeeds, allCheck])
-
-  const handleSelect = article => {
-    const isSelected = selectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
-
-    setSelectedArticles(prevSelectedArticles => {
-      let updatedSelectedArticles
-      if (isSelected) {
-        updatedSelectedArticles = prevSelectedArticles.filter(
-          selectedArticle => selectedArticle.socialFeedId !== article.socialFeedId
-        )
-      } else {
-        updatedSelectedArticles = [...prevSelectedArticles, article]
-      }
-
-      const isPageFullySelected = socialFeeds.every(article =>
-        updatedSelectedArticles.some(selectedArticle => selectedArticle.socialFeedId === article.socialFeedId)
-      )
-
-      setPageCheck(isPageFullySelected)
-
-      return updatedSelectedArticles
-    })
-  }
 
   const handleLeftPagination = () => {
     if (currentPage > 1) {

@@ -60,7 +60,7 @@ const Pagination = ({
         <Typography variant='body2' sx={{ marginLeft: { xs: 0, md: 7 } }}>
           {startRecord}-{endRecord} of {paginationModel.totalRecords}
         </Typography>
-        {/* <Button
+        <Button
           startIcon={<NavigateBeforeIcon />}
           onClick={handleLeftPagination}
           disabled={currentPage === 1}
@@ -69,8 +69,11 @@ const Pagination = ({
         <Button
           endIcon={<NavigateNextIcon />}
           onClick={handleRightPagination}
-          disabled={currentPage === Math.ceil(paginationModel.totalRecords / paginationModel.pageSize)}
-        /> */}
+          disabled={
+            currentPage === Math.ceil(paginationModel.totalRecords / paginationModel.pageSize) ||
+            endRecord === paginationModel.totalRecords
+          }
+        />
       </Box>
     </Box>
   )

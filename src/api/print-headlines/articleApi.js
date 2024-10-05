@@ -94,7 +94,7 @@ export const fetchArticles = async ({
       cancelToken: source.token
     })
 
-    return response.data.data.doc
+    return response.data.data
   } catch (error) {
     if (axios.isCancel(error)) {
       console.log('Request canceled:', error.message)
