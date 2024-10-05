@@ -293,7 +293,10 @@ const TableGrid = ({
               >
                 {article.headline}
               </span>
-              <span style={{ fontSize: '0.7em', textAlign: 'left' }}>{article.publication}</span>
+              <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
+                {article.publication}
+                <span style={{ marginLeft: '4px' }}>({dayjs(article.articleDate).format('DD-MM-YYYY')})</span>
+              </span>
             </div>
           </CustomTooltip>
         </td>

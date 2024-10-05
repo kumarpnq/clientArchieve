@@ -44,7 +44,7 @@ const PDFView = () => {
         // Format the details string as required
         const formattedDetails = `${dayjs(articleData?.articleDate).format('ddd, DD MMM YYYY')}; ${
           articleData?.publicationType
-        } - ${articleData?.publicationName}; Size : ${articleData?.space} sq.cm.; Circulation: ${
+        } - ${articleData?.publicationName}; Size : ${articleData?.space}; Circulation: ${
           articleData?.circulation
         }; Page : ${articleData?.pageNumber}`
 
@@ -52,7 +52,7 @@ const PDFView = () => {
         const textOptions = {
           size: 7,
           font: helveticaFont,
-          color: rgb(0, 0, 0)
+          color: rgb(0, 0, 139)
         }
 
         const textWidth = helveticaFont.widthOfTextAtSize(formattedDetails, textOptions.size)

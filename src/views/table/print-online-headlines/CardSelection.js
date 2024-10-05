@@ -28,13 +28,13 @@ import { BASE_URL } from 'src/api/base'
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
     [`& .${tooltipClasses.tooltip}`]: {
-      backgroundColor: theme.palette.background.default, // Use default background color for dark theme
-      color: theme.palette.text.primary, // Use primary text color for dark theme
+      backgroundColor: theme.palette.background.default,
+      color: theme.palette.text.primary,
       boxShadow: theme.shadows[1],
       fontSize: 13,
-      maxWidth: '300px', // Set the maximum width for better readability
+      maxWidth: '300px',
       '& .MuiTooltip-arrow': {
-        color: theme.palette.background.default // Use default background color for the arrow in dark theme
+        color: theme.palette.background.default
       }
     }
   })
@@ -90,29 +90,23 @@ const CardSelection = () => {
             Authorization: `Bearer ${storedToken}`
           },
           params: request_params,
-          responseType: 'json' // Set the responseType to 'json' since it's base64-encoded
+          responseType: 'json'
         })
 
-        // Check if the response contains valid content
         if (response.data && response.data.fileContent) {
           const base64Content = response.data.fileContent
 
-          // Decode the base64 content
           const decodedContent = atob(base64Content)
 
-          // Convert the decoded content to Uint8Array
           const uint8Array = new Uint8Array(decodedContent.length)
           for (let i = 0; i < decodedContent.length; i++) {
             uint8Array[i] = decodedContent.charCodeAt(i)
           }
 
-          // Create a Blob from Uint8Array
           const blob = new Blob([uint8Array], { type: 'application/pdf' })
 
-          // Create a Blob URL for the PDF
           const pdfUrl = URL.createObjectURL(blob)
 
-          // Open the PDF in a new tab
           window.open(pdfUrl, '_blank')
         } else {
           console.log('Empty or invalid content in the response.')
@@ -139,12 +133,11 @@ const CardSelection = () => {
     setLoading(true)
   }
 
-  // Function to format the date (Feb 14,24)
   const formatDate = rawDate => {
     const date = new Date(rawDate)
     const month = date.toLocaleString('default', { month: 'short' })
     const day = date.getDate()
-    const year = date.getFullYear().toString().slice(-2) // Get the last two digits of the year
+    const year = date.getFullYear().toString().slice(-2)
 
     return `${month} ${day},${year}`
   }
@@ -161,10 +154,7 @@ const CardSelection = () => {
   return (
     <Card>
       <Toolbar>
-        <Button
-          startIcon={<TrendingUpIcon />} // Icon placed inside the button
-          onClick={handleOpenContainer}
-        >
+        <Button startIcon={<TrendingUpIcon />} onClick={handleOpenContainer}>
           Latest Competitive News
         </Button>
       </Toolbar>
@@ -179,7 +169,7 @@ const CardSelection = () => {
               {companyData.length > 0 && (
                 <>
                   {companyData
-                    .filter(company => company?.articlesAndSocialFeeds?.length > 0) // Filter out companies with no articles
+                    .filter(company => company?.articlesAndSocialFeeds?.length > 0)
                     .map(company => (
                       <Grid item xs={12} sm={6} md={4} key={company.companyId}>
                         <Card sx={{ width: '100%', textAlign: 'center' }}>
@@ -193,7 +183,7 @@ const CardSelection = () => {
                                       title={article.headline}
                                       arrow
                                       arrowPlacement='bottom'
-                                      placement='bottom-start' // Adjust the placement as needed
+                                      placement='bottom-start'
                                     >
                                       <a
                                         href={article?.link}
