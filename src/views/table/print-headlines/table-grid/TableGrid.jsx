@@ -66,11 +66,11 @@ const TableGrid = ({
   const firstPortionArticles = articles.slice(0, halfIndex)
   const secondPortionArticles = articles.slice(halfIndex)
 
-  const toggleCheckboxSelection = (articleId, companies, setTableSelectFunc) => {
-    setTableSelectFunc(prev => ({
-      ...prev,
-      [articleId]: !prev[articleId] ? articleId : null
-    }))
+  const toggleCheckboxSelection = (articleId, companies) => {
+    // setTableSelectFunc(prev => ({
+    //   ...prev,
+    //   [articleId]: !prev[articleId] ? articleId : null
+    // }))
 
     setSelectedArticles(prev => {
       const updatedArticles = new Map(prev.map(article => [article.articleId, article]))
@@ -86,11 +86,11 @@ const TableGrid = ({
   }
 
   const handleCheckboxChange = (articleId, companies) => {
-    toggleCheckboxSelection(articleId, companies, setTableSelect)
+    toggleCheckboxSelection(articleId, companies)
   }
 
   const handleCheckboxChangeTwo = (articleId, companies) => {
-    toggleCheckboxSelection(articleId, companies, setTableSelectTwo)
+    toggleCheckboxSelection(articleId, companies)
   }
 
   const isArticleSelected = articleId => {
@@ -108,7 +108,7 @@ const TableGrid = ({
           <>
             <td className='table-data'>
               <Checkbox
-                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
+                checked={isArticleSelected(firstArticle.articleId)}
                 onChange={() => handleCheckboxChange(firstArticle.articleId, firstArticle.companies)}
               />
             </td>
@@ -183,7 +183,7 @@ const TableGrid = ({
           <>
             <td className='table-data'>
               <Checkbox
-                checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
+                checked={isArticleSelected(secondArticle.articleId)}
                 onChange={() => handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.companies)}
               />
             </td>
@@ -263,7 +263,7 @@ const TableGrid = ({
       <tr key={index} style={{ width: '100%', ...style }}>
         <td className='table-data'>
           <Checkbox
-            checked={Boolean(articles[article.articleId]) || isArticleSelected(article.articleId)}
+            checked={isArticleSelected(article.articleId)}
             onChange={() => handleCheckboxChangeTwo(article.articleId, article.companies)}
           />
         </td>

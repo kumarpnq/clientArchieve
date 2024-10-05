@@ -227,21 +227,8 @@ const ArticleListToolbar = ({
     setSortByMenuOpen(null)
   }
 
-  const handleSortByArticleDate = val => {
-    // Implement the logic to sort by latest
+  const handleSortBy = val => {
     setSelectedSortBy(val)
-    handleSortByClose()
-  }
-
-  const handleSortByArticleReach = val => {
-    // Implement the logic to sort by media
-    setSelectedSortBy(val)
-    handleSortByClose()
-  }
-
-  const handleSortByEngagement = val => {
-    // Implement the logic to sort by media
-    setSelectedSortBy()
     handleSortByClose()
   }
 
@@ -472,23 +459,20 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       <Menu anchorEl={isSortByMenuOpen} open={Boolean(isSortByMenuOpen)} onClose={handleSortByClose}>
-        <MenuItem onClick={() => handleSortByArticleDate('articleDate')} selected={selectedSortBy === 'articleDate'}>
+        <MenuItem onClick={() => handleSortBy('date')} selected={selectedSortBy === 'date'}>
           Sort by Article Date
         </MenuItem>
-        <MenuItem onClick={() => handleSortByArticleReach('articleReach')} selected={selectedSortBy === 'articleReach'}>
+        <MenuItem onClick={() => handleSortBy('reach')} selected={selectedSortBy === 'reach'}>
           Sort by Article Reach
         </MenuItem>
-        <MenuItem
-          onClick={() => handleSortByEngagement('articleEngagement')}
-          selected={selectedSortBy === 'articleEngagement'}
-        >
+        <MenuItem onClick={() => handleSortBy('engagement')} selected={selectedSortBy === 'engagement'}>
           Sort by Engagement
         </MenuItem>
       </Menu>
 
       <CustomTooltip title='Coming soon.'>
         {/* onClick={handlePublicationTypeClick} */}
-        <Button sx={{ color: 'text.secondary', mr: 0 }}>
+        <Button sx={{ color: '#f1e6b2', mr: 0 }}>
           <PublicationTypeIcon />
         </Button>
       </CustomTooltip>
@@ -511,7 +495,7 @@ const ArticleListToolbar = ({
 
       <CustomTooltip title='Coming soon.'>
         {/* onClick={handleEditionTypeClick} */}
-        <Button sx={{ color: 'text.secondary', mr: 0 }}>
+        <Button sx={{ color: '#f1e6b2', mr: 0 }}>
           <EditionTypeIcon />
         </Button>
       </CustomTooltip>

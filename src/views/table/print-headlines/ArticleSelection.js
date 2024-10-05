@@ -218,14 +218,6 @@ const TableSelection = () => {
             return `${isoString} ${timeString}`
           }
 
-          // const formattedStartDate = selectedFromDate ? formatDateTimes(selectedFromDate, true, false) : null
-
-          // const formattedEndDate = selectedEndDate ? formatDateTimes(selectedEndDate, true, true) : null
-
-          // * new date function for formatting
-          //  const formattedStartDateTest = selectedFromDate
-          //    ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD')
-          //    : null
           const formattedStartDateTest = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD') : null
 
           const formattedEndDateTest = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD') : null
@@ -271,7 +263,7 @@ const TableSelection = () => {
             clientIds: clientId,
             companyIds: selectedCompetitions,
 
-            dateType: selectedTypeOfDate,
+            dateType: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE',
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedStartDateTest,
             toDate: shortCutData?.searchCriteria?.toDate || formattedEndDateTest,
             page: currentPage,

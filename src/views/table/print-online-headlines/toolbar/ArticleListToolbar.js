@@ -249,14 +249,7 @@ const ArticleListToolbar = ({
     setSortByMenuOpen(null)
   }
 
-  const handleSortByArticleDate = val => {
-    // Implement the logic to sort by latest
-    setSelectedSortBy(val)
-    handleSortByClose()
-  }
-
-  const handleSortByArticleReach = val => {
-    // Implement the logic to sort by media
+  const handleSortBy = val => {
     setSelectedSortBy(val)
     handleSortByClose()
   }
@@ -501,22 +494,16 @@ const ArticleListToolbar = ({
         </Button>
       </CustomTooltip>
       <Menu anchorEl={isSortByMenuOpen} open={Boolean(isSortByMenuOpen)} onClose={handleSortByClose}>
-        <MenuItem
-          onClick={() => {
-            setSelectedSortBy(null)
-            handleSortByClose()
-          }}
-          selected={!selectedSortBy}
-        >
+        <MenuItem onClick={() => handleSortBy('all')} selected={selectedSortBy === 'all'}>
           All
         </MenuItem>
-        <MenuItem onClick={() => handleSortByArticleDate('print')} selected={selectedSortBy === 'print'}>
+        <MenuItem onClick={() => handleSortBy('print')} selected={selectedSortBy === 'print'}>
           Filter by Print
         </MenuItem>
-        <MenuItem onClick={() => handleSortByArticleReach('online')} selected={selectedSortBy === 'online'}>
+        <MenuItem onClick={() => handleSortBy('online')} selected={selectedSortBy === 'online'}>
           Filter by Online
         </MenuItem>
-        <MenuItem onClick={() => handleSortByEngagement('magazine')} selected={selectedSortBy === 'magazine'}>
+        <MenuItem onClick={() => handleSortBy('magazine')} selected={selectedSortBy === 'magazine'}>
           Filter by Magazine
         </MenuItem>
       </Menu>

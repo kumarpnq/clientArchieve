@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import Checkbox from '@mui/material/Checkbox'
 import Button from '@mui/material/Button'
-import { FormControlLabel, FormGroup, ListItem } from '@mui/material'
+import { FormControlLabel, FormGroup } from '@mui/material'
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import ArticleDialog from './dialog/ArticleDialog'
 import ArticleListToolbar from './toolbar/ArticleListToolbar'
@@ -36,14 +36,7 @@ import Grid from './data-grid/Grid'
 
 const TableSelection = () => {
   const [selectedArticle, setSelectedArticle] = useState(null)
-  const [selectedSortBy, setSelectedSortBy] = useState(null)
-
-  const handleView = row => {
-    window.open(row.socialFeedlink, '_blank')
-  }
-
-  // * temp
-  const [selectedItems, setSelectedItems] = useState([])
+  const [selectedSortBy, setSelectedSortBy] = useState('all')
 
   // ** State
   const [articles, setArticles] = useState([])
@@ -292,15 +285,6 @@ const TableSelection = () => {
             })
             .join(', ')
 
-          // * format date functions
-          // const formattedStartDateForPrint = selectedFromDate
-          //   ? dayjs(selectedFromDate).add(1, 'day').startOf('day').format('YYYY-MM-DD HH:mm:ss')
-          //   : null
-
-          // const formattedEndDateForPrint = selectedEndDate
-          //   ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss')
-          //   : null
-
           const formattedFromDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
 
           const formattedToDate = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD HH:mm:ss') : null
@@ -359,8 +343,6 @@ const TableSelection = () => {
           const totalRecords = response.data.data.doc.length
 
           const transformedArray = response.data.data.doc.map(item => {
-            const isSocialFeed = item._index === 'socialFeedId'
-
             const {
               articleId,
               socialFeedId,

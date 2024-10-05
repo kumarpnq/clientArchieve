@@ -51,7 +51,7 @@ export const fetchArticles = async ({
     const request_params = {
       clientIds,
       companyIds,
-      dateType: 'CREATED_DATE',
+      dateType,
       fromDate: formattedFromDate,
       toDate: formattedToDate,
       page,

@@ -409,7 +409,7 @@ const TableSelection = () => {
             phrase: searchParameters.exactPhrase,
 
             // sort by
-            sortby: 'FEED_DATE' || selectedSortBy,
+            sortby: selectedSortBy,
 
             // editionType: edition,
             publicationCategory: publicationtype

@@ -42,11 +42,11 @@ const PDFView = () => {
         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
         // Format the details string as required
-        const formattedDetails = `${dayjs(articleData.articleDate).format('ddd, DD MMM[-YY]')}; ${
-          articleData.publicationType
-        } - ${articleData.publicationName}; Size : ${articleData.space} sq.cm.; Circulation: ${
-          articleData.circulation
-        }; Page : ${articleData.pageNumber}`
+        const formattedDetails = `${dayjs(articleData?.articleDate).format('ddd, DD MMM YYYY')}; ${
+          articleData?.publicationType
+        } - ${articleData?.publicationName}; Size : ${articleData?.space} sq.cm.; Circulation: ${
+          articleData?.circulation
+        }; Page : ${articleData?.pageNumber}`
 
         // Define text styling
         const textOptions = {
