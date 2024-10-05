@@ -29,7 +29,7 @@ import {
 } from 'src/store/apps/user/userSlice'
 
 import toast from 'react-hot-toast'
-import { formatDateTime } from 'src/utils/formatDateTime'
+
 import dayjs from 'dayjs'
 
 const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) => {
@@ -189,13 +189,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
         .join('')
         .replace(/,+$/, '')
 
-    const sortby =
-      dataForMailDump.length &&
-      dataForMailDump
-        .map(i => i.sortby)
-        .flat()
-        .join('')
-        .replace(/,+$/, '')
+    const sortby = (dataForMailDump.find(obj => obj.sortby) || {}).sortby
 
     const publicationCategory =
       dataForMailDump.length &&

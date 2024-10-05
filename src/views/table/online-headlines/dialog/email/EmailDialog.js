@@ -136,14 +136,6 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
       .replace(/,+/g, ',')
       .replace(/,+$/, '')
 
-    // const language =
-    //   dataForMail.length &&
-    //   dataForMail
-    //     .map(i => i.language)
-    //     .flat()
-    //     .join(',')
-    //     .replace(/,+$/, '')
-
     const tags =
       dataForMail.length &&
       dataForMail
@@ -210,13 +202,7 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
         .join('')
         .replace(/,+$/, '')
 
-    const sortby =
-      dataForMail.length &&
-      dataForMail
-        .map(i => i.sortby)
-        .flat()
-        .join(',')
-        .replace(/,+$/, '')
+    const sortby = (dataForMail.find(obj => obj.sortby) || {}).sortby
 
     const publicationCategory =
       dataForMail.length &&
@@ -423,10 +409,15 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
           <MenuItem value='all'>Select All</MenuItem>
           <MenuItem value='none'>Select None</MenuItem>
         </Select> */}
-        <Button onClick={onClose} color='primary'>
+        <Button onClick={onClose} color='primary' variant='outlined'>
           Cancel
         </Button>
-        <Button onClick={handleSendEmail} color='primary' disabled={!selectedEmails.length}>
+        <Button
+          onClick={handleSendEmail}
+          variant='outlined'
+          sx={{ color: 'text.primary', backgroundColor: 'primary.main' }}
+          disabled={!selectedEmails.length}
+        >
           Send
         </Button>
       </DialogActions>

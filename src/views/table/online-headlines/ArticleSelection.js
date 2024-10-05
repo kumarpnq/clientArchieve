@@ -193,6 +193,7 @@ const TableSelection = () => {
       })
     },
     selectedEditionType && { editionType: edition },
+    selectedSortBy && { sortby: selectedSortBy },
     selectedPublicationType && { publicationCategory: publicationtype },
 
     searchParameters.searchHeadline && { headline: searchParameters.searchHeadline },

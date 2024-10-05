@@ -215,13 +215,7 @@ const DossierDialog = ({
         .join('')
         .replace(/,+$/, '')
 
-    const sortby =
-      dataForDossierDownload.length &&
-      dataForDossierDownload
-        .map(i => i.sortby)
-        .flat()
-        .join(',')
-        .replace(/,+$/, '')
+    const sortby = (dataForDossierDownload.find(obj => obj.sortby) || {}).sortby
 
     const publicationCategory =
       dataForDossierDownload.length &&

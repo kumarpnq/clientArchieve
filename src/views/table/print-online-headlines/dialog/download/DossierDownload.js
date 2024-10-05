@@ -56,9 +56,6 @@ const DossierDownload = ({
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const { response, error, sendDossierRequest } = useDossierRequest()
-  const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
-  const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join('')
-  const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
 
   const formattedFromDate = selectedStartDate ? dayjs(selectedStartDate).format('YYYY-MM-DD HH:mm:ss') : null
 
@@ -215,13 +212,7 @@ const DossierDownload = ({
         .join('')
         .replace(/,+$/, '')
 
-    const sortby =
-      dataForDossierDownload.length &&
-      dataForDossierDownload
-        .map(i => i.sortby)
-        .flat()
-        .join('')
-        .replace(/,+$/, '')
+    const sortby = (dataForDossierDownload.find(obj => obj.sortby) || {}).sortby
 
     const publicationCategory =
       dataForDossierDownload.length &&

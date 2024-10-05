@@ -31,7 +31,7 @@ import {
 
 //* third party imports
 import toast from 'react-hot-toast'
-import { formatDateTime } from 'src/utils/formatDateTime'
+
 import { styled } from '@mui/material'
 import dayjs from 'dayjs'
 
@@ -194,13 +194,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
         .join('')
         .replace(/,+$/, '')
 
-    const sortby =
-      dataForMail.length &&
-      dataForMail
-        .map(i => i.sortby)
-        .flat()
-        .join('')
-        .replace(/,+$/, '')
+    const sortby = (dataForMail.find(obj => obj.sortby) || {}).sortby
 
     const publicationCategory =
       dataForMail.length &&

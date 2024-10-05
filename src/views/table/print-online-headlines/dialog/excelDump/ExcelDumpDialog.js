@@ -21,7 +21,6 @@ import {
   setFetchAutoStatusFlag,
   selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
-import { formatDateTime } from 'src/utils/formatDateTime'
 
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
@@ -202,13 +201,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
         .join('')
         .replace(/,+$/, '')
 
-    const sortby =
-      dataForExcelDump.length &&
-      dataForExcelDump
-        .map(i => i.sortby)
-        .flat()
-        .join('')
-        .replace(/,+$/, '')
+    const sortby = (dataForExcelDump.find(obj => obj.sortby) || {}).sortby
 
     const publicationCategory =
       dataForExcelDump.length &&

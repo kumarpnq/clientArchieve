@@ -141,12 +141,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
         .replace(/,+/g, ',')
         .replace(/,+$/, '')
 
-    // const languageIds = dataForExcelDump
-    //   .find(item => item.language)
-    //   ?.language.map(lang => lang.id)
-    //   .join(',')
-    // console.log('languageIds:', languageIds)
-
     const tags =
       dataForExcelDump.length &&
       dataForExcelDump
@@ -213,13 +207,7 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
         .join('')
         .replace(/,+$/, '')
 
-    const sortby =
-      dataForExcelDump.length &&
-      dataForExcelDump
-        .map(i => i.sortby)
-        .flat()
-        .join('')
-        .replace(/,+$/, '')
+    const sortby = (dataForExcelDump.find(obj => obj.sortby) || {}).sortby
 
     const publicationCategory =
       dataForExcelDump.length &&
