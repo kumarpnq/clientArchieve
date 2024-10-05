@@ -25,18 +25,11 @@ const Grid = props => {
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
 
-  const [tableSelect, setTableSelect] = useState({})
-  const [tableSelectTwo, setTableSelectTwo] = useState({})
   const halfIndex = Math.ceil(socialFeeds.length / 2)
   const firstPortionArticles = socialFeeds.slice(0, halfIndex)
   const secondPortionArticles = socialFeeds.slice(halfIndex)
 
-  const toggleCheckboxSelection = (socialFeedId, companies, setTableSelectFunc) => {
-    setTableSelectFunc(prev => ({
-      ...prev,
-      [socialFeedId]: !prev[socialFeedId] ? socialFeedId : null
-    }))
-
+  const toggleCheckboxSelection = (socialFeedId, companies) => {
     setSelectedArticles(prev => {
       const updatedArticles = new Map(prev.map(article => [article.socialFeedId, article]))
 
@@ -51,11 +44,11 @@ const Grid = props => {
   }
 
   const handleCheckboxChange = (socialFeedId, companies) => {
-    toggleCheckboxSelection(socialFeedId, companies, setTableSelect)
+    toggleCheckboxSelection(socialFeedId, companies)
   }
 
   const handleCheckboxChangeTwo = (socialFeedId, companies) => {
-    toggleCheckboxSelection(socialFeedId, companies, setTableSelectTwo)
+    toggleCheckboxSelection(socialFeedId, companies)
   }
 
   const isArticleSelected = socialFeedId => {
@@ -110,9 +103,7 @@ const Grid = props => {
           <>
             <td className='table-data'>
               <Checkbox
-                checked={
-                  Boolean(tableSelect[firstArticle.socialFeedId]) || isArticleSelected(firstArticle.socialFeedId)
-                }
+                checked={isArticleSelected(firstArticle.socialFeedId)}
                 onChange={() => handleCheckboxChange(firstArticle.socialFeedId, firstArticle?.companies)}
               />
             </td>
@@ -178,9 +169,7 @@ const Grid = props => {
           <>
             <td className='table-data'>
               <Checkbox
-                checked={
-                  Boolean(tableSelectTwo[secondArticle.socialFeedId]) || isArticleSelected(secondArticle.socialFeedId)
-                }
+                checked={isArticleSelected(secondArticle.socialFeedId)}
                 onChange={() => handleCheckboxChangeTwo(secondArticle.socialFeedId, secondArticle.companies)}
               />
             </td>

@@ -75,19 +75,11 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
 
-  const [tableSelect, setTableSelect] = useState({})
-  const [tableSelectTwo, setTableSelectTwo] = useState({})
-
   // * article view for socialFeed
   const [openArticleView, setOpenArticleView] = useState(false)
   const [selectedArticle, setSelectedArticle] = useState(null)
 
-  const toggleCheckboxSelection = (articleId, articleType, companies, setTableSelectFunc) => {
-    setTableSelectFunc(prev => ({
-      ...prev,
-      [articleId]: !prev[articleId] ? articleId : null
-    }))
-
+  const toggleCheckboxSelection = (articleId, articleType, companies) => {
     setSelectedArticles(prev => {
       const updatedArticles = new Map(prev.map(article => [article.articleId, article]))
 
@@ -102,11 +94,11 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   }
 
   const handleCheckboxChange = (articleId, articleType, companies) => {
-    toggleCheckboxSelection(articleId, articleType, companies, setTableSelect)
+    toggleCheckboxSelection(articleId, articleType, companies)
   }
 
   const handleCheckboxChangeTwo = (articleId, articleType, companies) => {
-    toggleCheckboxSelection(articleId, articleType, companies, setTableSelectTwo)
+    toggleCheckboxSelection(articleId, articleType, companies)
   }
 
   const isArticleSelected = articleId => {
@@ -128,7 +120,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
           <>
             <td className='table-data'>
               <Checkbox
-                checked={Boolean(tableSelect[firstArticle.articleId]) || isArticleSelected(firstArticle.articleId)}
+                checked={isArticleSelected(firstArticle.articleId)}
                 onChange={() =>
                   handleCheckboxChange(firstArticle.articleId, firstArticle.articleType, firstArticle.companies)
                 }
@@ -199,7 +191,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
           <>
             <td className='table-data'>
               <Checkbox
-                checked={Boolean(tableSelectTwo[secondArticle.articleId]) || isArticleSelected(secondArticle.articleId)}
+                checked={isArticleSelected(secondArticle.articleId)}
                 onChange={() =>
                   handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.articleType, firstArticle.companies)
                 }
@@ -274,7 +266,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
       <tr key={index} style={{ width: '100%', ...style }}>
         <td className='table-data'>
           <Checkbox
-            checked={Boolean(articles[article.articleId]) || isArticleSelected(article.articleId)}
+            checked={isArticleSelected(article.articleId)}
             onChange={() => handleCheckboxChangeTwo(article.articleId, article.articleType, article.companies)}
           />
         </td>
