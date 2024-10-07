@@ -13,6 +13,8 @@ import {
 } from 'src/store/apps/user/userSlice'
 import IconifyIcon from 'src/@core/components/icon'
 
+import Badge from 'src/@core/components/mui/badge'
+
 const Competition = props => {
   const { settings } = props
 
@@ -83,7 +85,9 @@ const Competition = props => {
   return (
     <Fragment>
       <IconButton onClick={handleIconClick} color='primary' aria-haspopup='true'>
-        <IconifyIcon fontSize='1.5rem' icon='icon-park-outline:list' />
+        <Badge badgeContent={selectedCompetitions?.length || 0} color='primary' sx={{ cursor: 'pointer' }}>
+          <IconifyIcon fontSize='1.5rem' icon='icon-park-outline:list' />
+        </Badge>
       </IconButton>
       <Menu
         open={Boolean(anchorEl)}

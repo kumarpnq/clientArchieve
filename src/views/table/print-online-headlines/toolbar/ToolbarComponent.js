@@ -22,6 +22,7 @@ import { BASE_URL } from 'src/api/base'
 // ** third party imports
 import axios from 'axios'
 import { debounce } from 'lodash'
+import Badge from 'src/@core/components/mui/badge'
 
 const ToolbarComponent = ({
   // selectedCompanyId,
@@ -324,22 +325,54 @@ const ToolbarComponent = ({
             {/* <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
               Competition
             </Button> */}
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
-              Geography
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setLanguageAnchor)} color='inherit'>
-              Language
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setMediaAnchor)} color='inherit'>
-              Media
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setTagsAnchor)} color='inherit'>
-              Tags
-            </Button>
+            <Badge
+              badgeContent={selectedGeography?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedGeography([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
+                Geography
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedLanguages?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedLanguages([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setLanguageAnchor)} color='inherit'>
+                Language
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedMedia?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedMedia([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setMediaAnchor)} color='inherit'>
+                Media
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedTag?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedTag([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setTagsAnchor)} color='inherit'>
+                Tags
+              </Button>
+            </Badge>
           </>
         )}
 

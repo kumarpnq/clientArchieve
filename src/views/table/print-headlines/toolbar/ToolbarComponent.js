@@ -16,6 +16,7 @@ import { selectSelectedClient, selectShortCut } from 'src/store/apps/user/userSl
 import { BASE_URL } from 'src/api/base'
 import { Box, TextField } from '@mui/material'
 import useDebounce from 'src/hooks/useDebounce'
+import Badge from 'src/@core/components/mui/badge'
 
 const ToolbarComponent = ({
   selectedMedia,
@@ -302,21 +303,54 @@ const ToolbarComponent = ({
           </Grid>
         ) : (
           <>
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
-              Geography
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setLanguageAnchor)} color='inherit'>
-              Language
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setMediaAnchor)} color='inherit'>
-              Media
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setTagsAnchor)} color='inherit'>
-              Tags
-            </Button>
+            <Badge
+              badgeContent={selectedCities?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedCities([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
+                Geography
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedLanguages?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedLanguages([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setLanguageAnchor)} color='inherit'>
+                Language
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedMedia?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedMedia([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setMediaAnchor)} color='inherit'>
+                Media
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedTag?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedTag([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setTagsAnchor)} color='inherit'>
+                Tags
+              </Button>
+            </Badge>
           </>
         )}
 

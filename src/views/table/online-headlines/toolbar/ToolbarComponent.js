@@ -21,6 +21,7 @@ import { debounce } from 'lodash'
 
 // * third party
 import PerfectScrollbar from 'react-perfect-scrollbar'
+import Badge from 'src/@core/components/mui/badge'
 
 const ToolbarComponent = ({
   selectedCompanyId,
@@ -255,15 +256,17 @@ const ToolbarComponent = ({
         {isMobile ? (
           <Grid container spacing={1}>
             <Grid item xs={6}>
-              <Button
-                endIcon={<ExpandMoreIcon />}
-                onClick={e => openDropdown(e, setGeographyAnchor)}
-                color='inherit'
-                fullWidth
-                size='medium'
-              >
-                Geography
-              </Button>
+              <Badge badgeContent={selectedGeography?.length || 0}>
+                <Button
+                  endIcon={<ExpandMoreIcon />}
+                  onClick={e => openDropdown(e, setGeographyAnchor)}
+                  color='inherit'
+                  fullWidth
+                  size='medium'
+                >
+                  Geography
+                </Button>
+              </Badge>
             </Grid>
 
             <Grid item xs={6}>
@@ -307,22 +310,54 @@ const ToolbarComponent = ({
             {/* <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setCompetitionAnchor)} color='inherit'>
               Competition
             </Button> */}
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
-              Geography
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setLanguageAnchor)} color='inherit'>
-              Language
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setMediaAnchor)} color='inherit'>
-              Media
-            </Button>
-
-            <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setTagsAnchor)} color='inherit'>
-              Tags
-            </Button>
+            <Badge
+              badgeContent={selectedGeography?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedGeography([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
+                Geography
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedLanguage?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedLanguage([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setLanguageAnchor)} color='inherit'>
+                Language
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedMedia?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedMedia([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setMediaAnchor)} color='inherit'>
+                Media
+              </Button>
+            </Badge>
+            <Badge
+              badgeContent={selectedTags?.length || 0}
+              color='primary'
+              sx={{ cursor: 'pointer' }}
+              onClick={() => {
+                setSelectedTags([])
+              }}
+            >
+              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setTagsAnchor)} color='inherit'>
+                Tags
+              </Button>
+            </Badge>
           </>
         )}
 
