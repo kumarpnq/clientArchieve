@@ -307,11 +307,19 @@ const ToolbarComponent = ({
               badgeContent={selectedCities?.length || 0}
               color='primary'
               sx={{ cursor: 'pointer' }}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation()
                 setSelectedCities([])
               }}
             >
-              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
+              <Button
+                endIcon={<ExpandMoreIcon />}
+                onClick={e => {
+                  e.stopPropagation()
+                  openDropdown(e, setGeographyAnchor)
+                }}
+                color='inherit'
+              >
                 Geography
               </Button>
             </Badge>
@@ -319,11 +327,19 @@ const ToolbarComponent = ({
               badgeContent={selectedLanguages?.length || 0}
               color='primary'
               sx={{ cursor: 'pointer' }}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation()
                 setSelectedLanguages([])
               }}
             >
-              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setLanguageAnchor)} color='inherit'>
+              <Button
+                endIcon={<ExpandMoreIcon />}
+                onClick={e => {
+                  e.stopPropagation()
+                  openDropdown(e, setLanguageAnchor)
+                }}
+                color='inherit'
+              >
                 Language
               </Button>
             </Badge>
@@ -331,11 +347,19 @@ const ToolbarComponent = ({
               badgeContent={selectedMedia?.length || 0}
               color='primary'
               sx={{ cursor: 'pointer' }}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation()
                 setSelectedMedia([])
               }}
             >
-              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setMediaAnchor)} color='inherit'>
+              <Button
+                endIcon={<ExpandMoreIcon />}
+                onClick={e => {
+                  e.stopPropagation()
+                  openDropdown(e, setMediaAnchor)
+                }}
+                color='inherit'
+              >
                 Media
               </Button>
             </Badge>
@@ -343,11 +367,19 @@ const ToolbarComponent = ({
               badgeContent={selectedTag?.length || 0}
               color='primary'
               sx={{ cursor: 'pointer' }}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation()
                 setSelectedTag([])
               }}
             >
-              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setTagsAnchor)} color='inherit'>
+              <Button
+                endIcon={<ExpandMoreIcon />}
+                onClick={e => {
+                  e.stopPropagation()
+                  openDropdown(e, setTagsAnchor)
+                }}
+                color='inherit'
+              >
                 Tags
               </Button>
             </Badge>

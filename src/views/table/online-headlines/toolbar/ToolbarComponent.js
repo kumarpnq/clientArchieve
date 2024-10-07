@@ -22,6 +22,7 @@ import { debounce } from 'lodash'
 // * third party
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import Badge from 'src/@core/components/mui/badge'
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 const ToolbarComponent = ({
   selectedCompanyId,
@@ -313,12 +314,22 @@ const ToolbarComponent = ({
             <Badge
               badgeContent={selectedGeography?.length || 0}
               color='primary'
-              sx={{ cursor: 'pointer' }}
-              onClick={() => {
+              sx={{
+                cursor: 'pointer'
+              }}
+              onClick={event => {
+                event.stopPropagation()
                 setSelectedGeography([])
               }}
             >
-              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setGeographyAnchor)} color='inherit'>
+              <Button
+                endIcon={<ExpandMoreIcon />}
+                onClick={e => {
+                  e.stopPropagation()
+                  openDropdown(e, setGeographyAnchor)
+                }}
+                color='inherit'
+              >
                 Geography
               </Button>
             </Badge>
@@ -326,11 +337,19 @@ const ToolbarComponent = ({
               badgeContent={selectedLanguage?.length || 0}
               color='primary'
               sx={{ cursor: 'pointer' }}
-              onClick={() => {
+              onClick={event => {
+                event.stopPropagation()
                 setSelectedLanguage([])
               }}
             >
-              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setLanguageAnchor)} color='inherit'>
+              <Button
+                endIcon={<ExpandMoreIcon />}
+                onClick={e => {
+                  e.stopPropagation()
+                  openDropdown(e, setLanguageAnchor)
+                }}
+                color='inherit'
+              >
                 Language
               </Button>
             </Badge>
@@ -338,11 +357,19 @@ const ToolbarComponent = ({
               badgeContent={selectedMedia?.length || 0}
               color='primary'
               sx={{ cursor: 'pointer' }}
-              onClick={() => {
+              onClick={event => {
+                event.stopPropagation()
                 setSelectedMedia([])
               }}
             >
-              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setMediaAnchor)} color='inherit'>
+              <Button
+                endIcon={<ExpandMoreIcon />}
+                onClick={e => {
+                  e.stopPropagation()
+                  openDropdown(e, setMediaAnchor)
+                }}
+                color='inherit'
+              >
                 Media
               </Button>
             </Badge>
@@ -350,11 +377,19 @@ const ToolbarComponent = ({
               badgeContent={selectedTags?.length || 0}
               color='primary'
               sx={{ cursor: 'pointer' }}
-              onClick={() => {
+              onClick={event => {
+                event.stopPropagation()
                 setSelectedTags([])
               }}
             >
-              <Button endIcon={<ExpandMoreIcon />} onClick={e => openDropdown(e, setTagsAnchor)} color='inherit'>
+              <Button
+                endIcon={<ExpandMoreIcon />}
+                onClick={e => {
+                  e.stopPropagation()
+                  openDropdown(e, setTagsAnchor)
+                }}
+                color='inherit'
+              >
                 Tags
               </Button>
             </Badge>
