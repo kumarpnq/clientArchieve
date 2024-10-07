@@ -41,7 +41,8 @@ import FullScreenPDFDialog from './dialog/view/FullScreenPDFDialog'
 import FullScreenEditDetailsDialog from './dialog/view/FullScreenEditDetailsDialog'
 import TableGrid from './table-grid/TableGrid'
 import Pagination from './Pagination'
-import ResetPrintFields from './reset/resetPrintFields'
+
+import ResetPrintFilters from './reset/ResetPrintFilters'
 
 const TableSelection = () => {
   const [selectedArticle, setSelectedArticle] = useState({})
@@ -465,7 +466,7 @@ const TableSelection = () => {
     <Card>
       <Typography variant='title-lg' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Button onClick={handleReset}>{priorityCompanyName}</Button>
-        <ResetPrintFields
+        <ResetPrintFilters
           setSelectedGeography={setSelectedCities}
           setSelectedLanguage={setSelectedLanguages}
           setSelectedMedia={setSelectedMedia}

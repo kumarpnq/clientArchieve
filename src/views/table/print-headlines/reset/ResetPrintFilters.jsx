@@ -8,7 +8,7 @@ import {
   setSelectedCompetitions
 } from 'src/store/apps/user/userSlice'
 
-function ResetPrintFields(props) {
+function ResetPrintFilters(props) {
   const { setSelectedGeography, setSelectedLanguage, setSelectedMedia, setSelectedTags, setSelectedArticles } = props
   const dispatch = useDispatch()
   const selectedClient = useSelector(selectSelectedClient)
@@ -28,4 +28,4 @@ function ResetPrintFields(props) {
   return <Button onClick={handleClear}>CLEAR</Button>
 }
 
-export default ResetPrintFields
+export default ResetPrintFilters
