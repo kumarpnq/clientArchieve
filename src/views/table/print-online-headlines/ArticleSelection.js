@@ -33,6 +33,7 @@ import {
 } from 'src/store/apps/user/userSlice'
 
 import Grid from './data-grid/Grid'
+import ResetBothFields from './reset/ResetBothFields'
 
 const TableSelection = () => {
   const [selectedArticle, setSelectedArticle] = useState(null)
@@ -516,14 +517,17 @@ const TableSelection = () => {
 
   return (
     <Card>
-      <CardHeader
-        title={
-          <Typography variant='title-lg' sx={{ cursor: 'pointer' }}>
-            {' '}
-            <Button onClick={handleReset}>{priorityCompanyName}</Button>
-          </Typography>
-        }
-      />
+      <Typography variant='title-lg' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {' '}
+        <Button onClick={handleReset}>{priorityCompanyName}</Button>
+        <ResetBothFields
+          setSelectedGeography={setSelectedGeography}
+          setSelectedLanguage={setSelectedLanguages}
+          setSelectedMedia={setSelectedMedia}
+          setSelectedTags={setSelectedTags}
+          setSelectedArticles={setSelectedArticles}
+        />
+      </Typography>
       {/* Top Toolbar */}
       <ToolbarComponent
         selectedGeography={selectedGeography}

@@ -46,6 +46,7 @@ import ArticleView from './dialog/article-view/view'
 import Grid from './table-grid/Grid'
 import DateType from 'src/@core/layouts/components/shared-components/DateType'
 import Pagination from './OnlineHeadlinePagination'
+import ResetOnlineFields from './reset/ResetOnlineFields'
 
 const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
   ({ theme }) => ({
@@ -592,31 +593,25 @@ const TableSelection = () => {
     }
   }
 
-  const SelectAllModal = () => {
-    return (
-      <>
-        {socialFeeds.length > 0 && (
-          <Box pl={3}>
-            <FormGroup sx={{ display: 'flex', alignItems: 'center', gap: 2, flexDirection: 'row' }}>
-              <FormControlLabel
-                control={<Checkbox checked={pageCheck} onChange={handlePageCheckChange} />}
-                label='Page'
-              />
-              <FormControlLabel
-                control={<Checkbox checked={allCheck} onChange={handleAllCheckChange} />}
-                label='All Articles'
-              />
-            </FormGroup>
-          </Box>
-        )}
-      </>
-    )
-  }
-
   return (
     <Card>
-      <Typography sx={{ cursor: 'pointer', color: 'primary' }}>
+      <Typography
+        sx={{
+          cursor: 'pointer',
+          color: 'primary',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}
+      >
         <Button onClick={handleResetValues}>{priorityCompanyName}</Button>
+        <ResetOnlineFields
+          setSelectedGeography={setSelectedGeography}
+          setSelectedLanguage={setSelectedLanguage}
+          setSelectedMedia={setSelectedMedia}
+          setSelectedTags={setSelectedTags}
+          setSelectedArticles={setSelectedArticles}
+        />
       </Typography>
       {/* Top Toolbar */}
       <ToolbarComponent

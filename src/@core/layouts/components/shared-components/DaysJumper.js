@@ -1,6 +1,11 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectShortCut, setSelectedDateRange } from 'src/store/apps/user/userSlice'
+import {
+  clearDateFilter,
+  selectShortCut,
+  setClearDateFilter,
+  setSelectedDateRange
+} from 'src/store/apps/user/userSlice'
 import SvgIcon from '@mui/material/SvgIcon'
 import dayjs from 'dayjs'
 import IconButton from '@mui/material/IconButton'
@@ -25,6 +30,7 @@ const DaysJumper = ({ settings }) => {
   const { direction } = settings
   const dispatch = useDispatch()
   const shortCutData = useSelector(selectShortCut)
+  const clearDateFlag = useSelector(clearDateFilter)
   const router = useRouter()
   const currentRoute = router.pathname
 
@@ -53,7 +59,15 @@ const DaysJumper = ({ settings }) => {
     const endDate = dayjs()
     dispatch(setSelectedDateRange({ startDate, endDate }))
     setSelectedDayFilter(label)
+    dispatch(setClearDateFilter(false))
   }
+
+  useEffect(() => {
+    if (clearDateFlag) {
+      setSelectedDayFilter('1D')
+      handleFilterChange(1, '1D')
+    }
+  }, [clearDateFlag])
 
   useEffect(() => {
     if (shortCutData?.searchCriteria?.fromDate && shortCutData?.searchCriteria?.toDate) {

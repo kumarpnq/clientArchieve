@@ -1,6 +1,5 @@
 import { useState, Fragment, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import BusinessIcon from '@mui/icons-material/Business'
 import { IconButton, Menu, ListItem, MenuItem, Button } from '@mui/material'
 import useFetchCompetition from 'src/api/global/useFetchCompetitions'
 
@@ -41,10 +40,8 @@ const Competition = props => {
       const isAlreadySelected = prevSelected.includes(selectedComp)
 
       if (isAlreadySelected) {
-        // If already selected, remove from the list
         return prevSelected.filter(id => id !== selectedComp)
       } else {
-        // If not selected, add to the list
         return [...prevSelected, selectedComp]
       }
     })
@@ -53,10 +50,8 @@ const Competition = props => {
     const allCompanyIds = competitions.map(company => company.companyId)
     const defaultSelection = competitionSelection === 'All' ? allCompanyIds : [priorityCompanyId]
 
-    // Check if the company ID is present in the search criteria
     const companyIdsInSearchCriteria = shortCutData?.searchCriteria?.companyIds?.split(',').map(id => id.trim())
 
-    // If the company ID is present in the search criteria, prefill it
     if (companyIdsInSearchCriteria && companyIdsInSearchCriteria.includes(priorityCompanyId)) {
       setLocaleComps([priorityCompanyId])
     } else {

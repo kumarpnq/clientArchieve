@@ -16,7 +16,8 @@ const userSlice = createSlice({
     customDashboardScreens: false,
     fetchAfterReportsChange: false,
     userDashboardId: '',
-    selectedDateType: 'AD'
+    selectedDateType: 'AD',
+    clearDateFilter: false
   },
   reducers: {
     setShotCutPrint: (state, action) => {
@@ -74,6 +75,9 @@ const userSlice = createSlice({
     },
     setUserDashboardId: (state, action) => {
       state.userDashboardId = action.payload
+    },
+    setClearDateFilter: (state, action) => {
+      state.clearDateFilter = action.payload
     }
   }
 })
@@ -95,7 +99,8 @@ export const {
   setCustomDashboardScreens,
   removeChart,
   setFetchAfterReportsChange,
-  setUserDashboardId
+  setUserDashboardId,
+  setClearDateFilter
 } = userSlice.actions
 
 export const selectUserData = state => state.user.data
@@ -125,5 +130,7 @@ export const customDashboardsScreensWithCharts = state => state.user.customDashb
 export const fetchAfterReportsChanges = state => state.user.fetchAfterReportsChange
 
 export const userDashboardId = state => state.user.userDashboardId
+
+export const clearDateFilter = state => state.user.clearDateFilter
 
 export default userSlice.reducer
