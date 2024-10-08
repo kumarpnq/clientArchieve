@@ -381,37 +381,25 @@ const TableSelection = () => {
   const [isPopupOpen, setPopupOpen] = useState(false)
 
   const handlePageCheckChange = event => {
-    if (event.target.checked) {
-      // Keep the previously selected articles and add the current page's articles
-      setSelectedArticles(prevSelected => {
-        const selectedMap = new Map(prevSelected.map(article => [article.articleId, article]))
-
-        articles.forEach(article => {
-          if (!selectedMap.has(article.articleId)) {
-            selectedMap.set(article.articleId, article)
-          }
-        })
-
-        return Array.from(selectedMap.values())
-      })
+    if (allCheck && event.target.checked) {
+      setAllCheck(false)
+      setPageCheck(true)
+      setSelectedArticles([...articles])
     } else {
-      // Remove the current page's articles from the selected list
-      setSelectedArticles(prevSelected => {
-        return prevSelected.filter(article => !articles.some(a => a.articleId === article.articleId))
-      })
+      setPageCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
     }
-    setPageCheck(event.target.checked)
   }
 
   const handleAllCheckChange = event => {
-    if (event.target.checked) {
-      // Select all articles (retain any previously selected articles)
+    if (pageCheck && event.target.checked) {
+      setPageCheck(false)
+      setAllCheck(true)
       setSelectedArticles([...articles])
     } else {
-      // Deselect all articles
-      setSelectedArticles([])
+      setAllCheck(event.target.checked)
+      setSelectedArticles(event.target.checked ? [...articles] : [])
     }
-    setAllCheck(event.target.checked)
   }
 
   useEffect(() => {
