@@ -25,9 +25,16 @@ const Grid = props => {
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
 
-  const halfIndex = Math.ceil(socialFeeds.length / 2)
-  const firstPortionArticles = socialFeeds.slice(0, halfIndex)
-  const secondPortionArticles = socialFeeds.slice(halfIndex)
+  const firstPortionArticles = []
+  const secondPortionArticles = []
+
+  socialFeeds.forEach((article, index) => {
+    if (index % 2 === 0) {
+      firstPortionArticles.push(article)
+    } else {
+      secondPortionArticles.push(article)
+    }
+  })
 
   const toggleCheckboxSelection = (socialFeedId, companies) => {
     setSelectedArticles(prev => {

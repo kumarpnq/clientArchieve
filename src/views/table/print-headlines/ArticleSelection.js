@@ -204,27 +204,20 @@ const TableSelection = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    const controller = new AbortController()
+    const { signal } = controller
+
     const fetchArticlesApi = async () => {
       try {
         setLoading(true)
+        setSelectedArticles([])
+        setArticles([])
         const storedToken = localStorage.getItem('accessToken')
 
         if (storedToken) {
-          // Format start and end dates
-          const formatDateTimes = (date, setTime, isEnd) => {
-            let formattedDate = date
-
-            const isoString = formattedDate.toISOString().slice(0, 10)
-            const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
-            return `${isoString} ${timeString}`
-          }
-
           const formattedStartDateTest = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD') : null
 
           const formattedEndDateTest = selectedEndDate ? dayjs(selectedEndDate).format('YYYY-MM-DD') : null
-
-          const selectedCompaniesString = selectedCompetitions.join(', ')
 
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
             const lastChar = item.slice(-1)
@@ -289,12 +282,14 @@ const TableSelection = () => {
             editionType: edition,
             sortby: selectedSortBy,
 
-            publicationCategory: publicationtype
+            publicationCategory: publicationtype,
+            signal
           })
 
           const totalRecords = response.count
+          const articleData = response.doc.length ? response.doc : []
 
-          const transformedArray = response.doc.map(item => {
+          const transformedArray = articleData.map(item => {
             const { articleId, articleInfo, articleData, uploadInfo, publicationInfo, companyTag, children } =
               item._source
 
@@ -322,8 +317,8 @@ const TableSelection = () => {
               language: articleData.language,
               size: articleData.space,
               pageNumber: articleData.pageNumber,
-              children: children || [], // assuming no children for simplicity
-              link: '' // no information available in input
+              children: children || [],
+              link: ''
             }
           })
 
@@ -342,12 +337,15 @@ const TableSelection = () => {
         }
       } catch (error) {
         console.error('Error fetching articles:', error)
+        setArticles([])
       } finally {
         setLoading(false)
         setFetchTagsFlag(false)
       }
     }
     fetchArticlesApi()
+
+    return () => controller.abort()
   }, [
     selectedEndDate,
     selectedFromDate,
@@ -369,11 +367,6 @@ const TableSelection = () => {
     shortCutData?.searchCriteria?.tags,
     shortCutData?.searchCriteria?.toDate
   ])
-
-  // Open the date filter popover
-  const openFilterPopover = event => {
-    setFilterPopoverAnchor(event.currentTarget)
-  }
 
   // Close the date filter popover
   const closeFilterPopover = () => {
@@ -458,8 +451,7 @@ const TableSelection = () => {
     setSelectedPublicationType([])
     setSelectedSortBy(null)
     setClearAdvancedSearchField(true)
-
-    // setSelectedArticles([])
+    setSelectedArticles([])
   }
 
   return (
@@ -472,6 +464,7 @@ const TableSelection = () => {
           setSelectedMedia={setSelectedMedia}
           setSelectedTags={setSelectedTag}
           setSelectedArticles={setSelectedArticles}
+          setArticles={setArticles}
         />
       </Typography>
       {/* Top Toolbar */}

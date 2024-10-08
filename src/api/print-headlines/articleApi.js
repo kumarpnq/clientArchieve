@@ -33,10 +33,9 @@ export const fetchArticles = async ({
   editionType,
   publicationCategory,
   sortby,
-  language
+  language,
+  signal
 }) => {
-  const source = axios.CancelToken.source()
-
   try {
     const storedToken = localStorage.getItem('accessToken')
 
@@ -91,7 +90,7 @@ export const fetchArticles = async ({
 
         return str.join('&')
       },
-      cancelToken: source.token
+      signal
     })
 
     return response.data.data

@@ -59,12 +59,16 @@ const TableGrid = ({
   const isMobileView = useMediaQuery('(max-width: 530px)')
   const isNavCollapsed = JSON.parse(localStorage.getItem('settings'))
 
-  const [tableSelect, setTableSelect] = useState({})
-  const [tableSelectTwo, setTableSelectTwo] = useState({})
+  const firstPortionArticles = []
+  const secondPortionArticles = []
 
-  const halfIndex = Math.ceil(articles.length / 2)
-  const firstPortionArticles = articles.slice(0, halfIndex)
-  const secondPortionArticles = articles.slice(halfIndex)
+  articles.forEach((article, index) => {
+    if (index % 2 === 0) {
+      firstPortionArticles.push(article)
+    } else {
+      secondPortionArticles.push(article)
+    }
+  })
 
   const toggleCheckboxSelection = (articleId, companies) => {
     // setTableSelectFunc(prev => ({

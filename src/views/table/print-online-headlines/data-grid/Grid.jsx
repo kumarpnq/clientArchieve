@@ -80,6 +80,17 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const [openArticleView, setOpenArticleView] = useState(false)
   const [selectedArticle, setSelectedArticle] = useState(null)
 
+  const firstPortionArticles = []
+  const secondPortionArticles = []
+
+  articles.forEach((article, index) => {
+    if (index % 2 === 0) {
+      firstPortionArticles.push(article)
+    } else {
+      secondPortionArticles.push(article)
+    }
+  })
+
   const toggleCheckboxSelection = (articleId, articleType, companies) => {
     setSelectedArticles(prev => {
       const updatedArticles = new Map(prev.map(article => [article.articleId, article]))
@@ -105,10 +116,6 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const isArticleSelected = articleId => {
     return selectedArticles.some(article => article.articleId === articleId)
   }
-
-  const halfIndex = Math.ceil(articles.length / 2)
-  const firstPortionArticles = articles.slice(0, halfIndex)
-  const secondPortionArticles = articles.slice(halfIndex)
 
   const Row = ({ index, style }) => {
     const firstArticle = firstPortionArticles[index]

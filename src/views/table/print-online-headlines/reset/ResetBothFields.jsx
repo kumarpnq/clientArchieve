@@ -1,6 +1,6 @@
 import { Button } from '@mui/material'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+
 import {
   clearDateFilter,
   selectSelectedClient,
@@ -9,7 +9,14 @@ import {
 } from 'src/store/apps/user/userSlice'
 
 function ResetBothFields(props) {
-  const { setSelectedGeography, setSelectedLanguage, setSelectedMedia, setSelectedTags, setSelectedArticles } = props
+  const {
+    setSelectedGeography,
+    setSelectedLanguage,
+    setSelectedMedia,
+    setSelectedTags,
+    setSelectedArticles,
+    setArticles
+  } = props
   const dispatch = useDispatch()
   const selectedClient = useSelector(selectSelectedClient)
   const clearDateFlag = useSelector(clearDateFilter)
@@ -23,6 +30,7 @@ function ResetBothFields(props) {
     setSelectedMedia([])
     setSelectedTags([])
     setSelectedArticles([])
+    setArticles([])
   }
 
   return <Button onClick={handleClear}>CLEAR</Button>

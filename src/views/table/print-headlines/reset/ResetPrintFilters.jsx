@@ -9,7 +9,14 @@ import {
 } from 'src/store/apps/user/userSlice'
 
 function ResetPrintFilters(props) {
-  const { setSelectedGeography, setSelectedLanguage, setSelectedMedia, setSelectedTags, setSelectedArticles } = props
+  const {
+    setSelectedGeography,
+    setSelectedLanguage,
+    setSelectedMedia,
+    setSelectedTags,
+    setSelectedArticles,
+    setArticles
+  } = props
   const dispatch = useDispatch()
   const selectedClient = useSelector(selectSelectedClient)
   const clearDateFlag = useSelector(clearDateFilter)
@@ -23,6 +30,7 @@ function ResetPrintFilters(props) {
     setSelectedMedia([])
     setSelectedTags([])
     setSelectedArticles([])
+    setArticles([])
   }
 
   return <Button onClick={handleClear}>CLEAR</Button>

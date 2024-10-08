@@ -340,15 +340,17 @@ const TableSelection = () => {
   }, [shortCutFlags])
 
   useEffect(() => {
+    setSelectedArticles([])
+    setSocialFeeds([])
+
+    const controller = new AbortController()
+    const { signal } = controller
+
     const fetchSocialFeeds = async () => {
       try {
         setLoading(true)
         const storedToken = localStorage.getItem('accessToken')
         if (storedToken) {
-          const base_url = process.env.NEXT_PUBLIC_BASE_URL
-
-          const selectedCompaniesString = selectedCompetitions.join(', ')
-
           const selectedMediaWithoutLastDigit = selectedMedia.map(item => {
             const lastChar = item.slice(-1)
             if (!isNaN(parseInt(lastChar))) {
@@ -434,10 +436,12 @@ const TableSelection = () => {
               }
 
               return str.join('&')
-            }
+            },
+            signal
           })
+          const socialFeedData = (await response.data.data.doc.length) ? response.data.data.doc : []
 
-          const transformedArray = response.data.data.doc.map(item => {
+          const transformedArray = socialFeedData.map(item => {
             const { socialFeedId, feedInfo, feedData, uploadInfo, publicationInfo, companyTag, children } = item._source
 
             return {
@@ -477,11 +481,14 @@ const TableSelection = () => {
         }
       } catch (error) {
         console.error('Error fetching social feeds:', error)
+        setSocialFeeds([])
       } finally {
         setLoading(false)
       }
     }
     fetchSocialFeeds()
+
+    return () => controller.abort()
   }, [
     clientId,
     selectedCompetitions,
@@ -521,10 +528,6 @@ const TableSelection = () => {
 
   const [selectedArticle, setSelectedArticle] = useState(null)
 
-  const handleRowClick = params => {
-    setSelectedArticle(params.row)
-  }
-
   useEffect(() => {
     if (pageCheck || allCheck) {
       setSelectedArticles([...socialFeeds])
@@ -554,7 +557,7 @@ const TableSelection = () => {
   }
 
   const handleResetValues = () => {
-    // setSelectedCompanyId([])
+    setSelectedCompanyId([])
     setSelectedGeography([])
     setSelectedLanguage([])
     setSelectedMedia([])
@@ -611,6 +614,7 @@ const TableSelection = () => {
           setSelectedMedia={setSelectedMedia}
           setSelectedTags={setSelectedTags}
           setSelectedArticles={setSelectedArticles}
+          setSocialFeeds={setSocialFeeds}
         />
       </Typography>
       {/* Top Toolbar */}

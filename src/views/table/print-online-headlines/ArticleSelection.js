@@ -259,6 +259,11 @@ const TableSelection = () => {
 
   // Fetch social feeds based on the provided API
   useEffect(() => {
+    const controller = new AbortController()
+    const { signal } = controller
+
+    setArticles([])
+
     const fetchArticles = async () => {
       try {
         setLoading(true)
@@ -338,7 +343,8 @@ const TableSelection = () => {
                 }
 
                 return str.join('&')
-              }
+              },
+              signal
             }
           )
 
@@ -402,6 +408,8 @@ const TableSelection = () => {
       }
     }
     fetchArticles()
+
+    return () => controller.abort()
   }, [
     selectedEndDate,
     selectedFromDate,
@@ -526,6 +534,7 @@ const TableSelection = () => {
           setSelectedMedia={setSelectedMedia}
           setSelectedTags={setSelectedTags}
           setSelectedArticles={setSelectedArticles}
+          setArticles={setArticles}
         />
       </Typography>
       {/* Top Toolbar */}
