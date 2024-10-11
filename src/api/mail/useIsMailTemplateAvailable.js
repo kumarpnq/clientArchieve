@@ -5,7 +5,7 @@ import useConfigUtils from 'src/utils/configUtils'
 
 const useIsMailTemplate = () => {
   const [isTemplate, setIsTemplate] = useState(null)
-  const { storedToken, clientId } = useConfigUtils()
+  const { clientId } = useConfigUtils()
 
   const checkMailTemplate = async requestEntity => {
     try {
@@ -15,13 +15,10 @@ const useIsMailTemplate = () => {
       }
 
       const response = await axios.get(`${JOB_SERVER}/checkMailerFormat`, {
-        headers: {
-          Authorization: `Bearer ${storedToken}`
-        },
         params
       })
 
-      setIsTemplate(response.data.isTemplate)
+      setIsTemplate(response.data.status)
 
       return response.data.status
     } catch (error) {

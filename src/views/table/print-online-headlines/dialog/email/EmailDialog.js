@@ -74,10 +74,11 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
   }
 
   const handleSendEmail = async () => {
-    await checkMailTemplate({ requestEntity: 'both' })
+    const templateResponse = await checkMailTemplate('both')
 
-    if (!isTemplate) {
+    if (!templateResponse) {
       toast.error('Mailer format not configured for this client.')
+      onClose()
 
       return
     }
