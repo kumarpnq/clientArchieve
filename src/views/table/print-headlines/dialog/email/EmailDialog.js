@@ -34,6 +34,7 @@ import toast from 'react-hot-toast'
 
 import { styled } from '@mui/material'
 import dayjs from 'dayjs'
+import useIsMailTemplate from 'src/api/mail/useIsMailTemplateAvailable'
 
 const PerfectScrollbar = styled(PerfectScrollbarComponent)({
   maxHeight: 349
@@ -58,6 +59,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   const [selectAll, setSelectAll] = useState(false)
   const [selectedEmails, setSelectedEmails] = useState([])
 
+  const { isTemplate, checkMailTemplate } = useIsMailTemplate()
   const { mailList } = useClientMailerList()
   const { response, error, sendMailRequest } = useMailRequest('print')
 
@@ -83,7 +85,15 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
     setSelectedEmails(selectAll ? [] : mailList)
   }
 
-  const handleSendEmail = () => {
+  const handleSendEmail = async () => {
+    await checkMailTemplate({ requestEntity: 'print' })
+
+    if (!isTemplate) {
+      toast.error('Mailer format not configured for this client.')
+
+      return
+    }
+
     // setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
     const recipients = selectedEmails.map(id => ({ id, recipientType: emailType[id] || 'to' }))

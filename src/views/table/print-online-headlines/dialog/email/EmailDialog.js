@@ -31,6 +31,7 @@ import {
 import toast from 'react-hot-toast'
 
 import dayjs from 'dayjs'
+import useIsMailTemplate from 'src/api/mail/useIsMailTemplateAvailable'
 
 const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) => {
   const [emailType, setEmailType] = useState({})
@@ -46,6 +47,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
 
+  const { isTemplate, checkMailTemplate } = useIsMailTemplate()
   const { mailList } = useClientMailerList(fetchEmailFlag)
   const { response, error, sendMailRequest } = useMailRequest('both')
   const formattedFromDate = selectedFromDate ? dayjs(selectedFromDate).format('YYYY-MM-DD HH:mm:ss') : null
@@ -71,7 +73,14 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
     setSelectedEmails(selectAll ? [] : mailList)
   }
 
-  const handleSendEmail = () => {
+  const handleSendEmail = async () => {
+    await checkMailTemplate({ requestEntity: 'both' })
+
+    if (!isTemplate) {
+      toast.error('Mailer format not configured for this client.')
+
+      return
+    }
     setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
     const recipients = selectedEmails.map(email => ({ id: email, recipientType: emailType[email] || 'to' }))
