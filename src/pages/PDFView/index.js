@@ -6,7 +6,7 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import { Box, CircularProgress } from '@mui/material'
 import dayjs from 'dayjs'
 
-const logoUrl = 'https://perceptionandquant.com/logo2.png'
+const logoUrl = '/images/logo.jpg'
 
 const PDFView = () => {
   const router = useRouter()
@@ -40,6 +40,28 @@ const PDFView = () => {
         const page = pdfDoc.addPage()
         const { width, height } = page.getSize()
         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
+
+        // Embed the logo
+        const logoImageBytes = await axios.get(logoUrl, { responseType: 'arraybuffer' }).then(res => res.data)
+        const logoImage = await pdfDoc.embedJpg(logoImageBytes)
+        const logoWidth = 50 // Adjust width as needed
+        const logoHeight = (logoImage.height / logoImage.width) * logoWidth
+
+        // Place the logo in the top left corner
+        page.drawImage(logoImage, {
+          x: 10, // 10 points from the left edge
+          y: height - logoHeight - 10, // 10 points from the top edge
+          width: logoWidth,
+          height: logoHeight
+        })
+
+        // Place the logo in the top right corner
+        page.drawImage(logoImage, {
+          x: width - logoWidth - 10, // 10 points from the right edge
+          y: height - logoHeight - 10, // 10 points from the top edge
+          width: logoWidth,
+          height: logoHeight
+        })
 
         // Format the details string as required
         const formattedDetails = `${dayjs(articleData?.articleDate).format('ddd, DD MMM YYYY')}; ${
