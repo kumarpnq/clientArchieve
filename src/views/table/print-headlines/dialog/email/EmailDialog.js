@@ -391,7 +391,7 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
               />
               <RadioGroup
                 row
-                value={emailType[email]}
+                value={emailType[email] || 'to'}
                 onChange={e => handleEmailTypeChange(e, email)}
                 style={{ marginLeft: '10px' }}
               >
