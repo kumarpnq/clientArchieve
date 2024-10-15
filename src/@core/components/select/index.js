@@ -1,24 +1,30 @@
 import { Box, IconButton, Menu, MenuItem, Checkbox, ListItemText } from '@mui/material'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const SelectBox = props => {
   const { icon, iconButtonProps, menuItems = [], selectedItems = [], setSelectedItems, renderItem, renderKey } = props
 
   const [anchorEl, setAnchorEl] = useState(null)
+  const [localSelectedItems, setLocalSelectedItems] = useState(selectedItems)
+
+  useEffect(() => {
+    setLocalSelectedItems(selectedItems)
+  }, [selectedItems])
 
   const handleToggle = item => {
     const itemKey = item[renderKey]
-    const isSelected = selectedItems.some(selectedItem => selectedItem[renderKey] === itemKey)
+    const isSelected = localSelectedItems.some(selectedItem => selectedItem[renderKey] === itemKey)
 
     const updatedSelectedItems = isSelected
-      ? selectedItems.filter(selectedItem => selectedItem[renderKey] !== itemKey)
-      : [...selectedItems, item]
+      ? localSelectedItems.filter(selectedItem => selectedItem[renderKey] !== itemKey)
+      : [...localSelectedItems, item]
 
-    setSelectedItems(updatedSelectedItems)
+    setLocalSelectedItems(updatedSelectedItems)
   }
 
   const handleMenuClose = () => {
     setAnchorEl(null)
+    setSelectedItems(localSelectedItems)
   }
 
   return (
@@ -36,11 +42,8 @@ const SelectBox = props => {
         {menuItems.map(item => (
           <MenuItem key={item[renderKey]} disableRipple>
             <Checkbox
-              checked={selectedItems.some(selectedItem => selectedItem[renderKey] === item[renderKey])}
-              onChange={event => {
-                event.stopPropagation()
-                handleToggle(item)
-              }}
+              checked={localSelectedItems.some(selectedItem => selectedItem[renderKey] === item[renderKey])}
+              onChange={() => handleToggle(item)}
             />
             <ListItemText primary={item[renderItem]} />
           </MenuItem>
