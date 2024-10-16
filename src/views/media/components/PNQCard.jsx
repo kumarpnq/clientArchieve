@@ -11,22 +11,22 @@ const Logo = () => {
   )
 }
 
-const PNQCard = ({ clientName }) => {
-  const ClientName = () => {
-    return (
-      <Typography variant='body1' color={'primary'} sx={{ textTransform: 'uppercase', letterSpacing: '1px' }}>
-        {clientName}
-      </Typography>
-    )
-  }
+const ClientName = ({ clientName }) => {
+  return (
+    <Typography variant='body1' color={'primary'} sx={{ textTransform: 'uppercase', letterSpacing: '1px' }}>
+      {clientName}
+    </Typography>
+  )
+}
 
+const PNQCard = ({ clientName }) => {
   return (
     <Box
       sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', py: 1, my: 1, px: 3 }}
       component={Paper}
     >
       <Logo />
-      <ClientName />
+      <ClientName clientName={clientName} />
       <Logo />
     </Box>
   )
