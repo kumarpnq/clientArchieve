@@ -24,6 +24,7 @@ const SharedDashboard = () => {
   const [value, setValue] = useState('all')
   const [error, setError] = useState('')
   const [cardData, setCardData] = useState([])
+  const [user, setUser] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage] = useState(40)
 
@@ -39,7 +40,9 @@ const SharedDashboard = () => {
         const response = await axios.get(`${BASE_URL}/socialMediaData`, {
           params
         })
+
         setCardData(response.data.socialMediaData)
+        setUser(response.data.clientName)
       } catch (err) {
         setCardData([])
         setError(err)
@@ -66,7 +69,7 @@ const SharedDashboard = () => {
 
   return (
     <Fragment>
-      <PNQCard />
+      <PNQCard clientName={user} />
       {/* stepper */}
       <Stepper
         setCardData={setCardData}

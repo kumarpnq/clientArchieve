@@ -10,7 +10,6 @@ import {
   selectSelectedEndDate,
   selectSelectedStartDate
 } from 'src/store/apps/user/userSlice'
-import { formatDateTime } from 'src/utils/formatDateTime'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import dayjs from 'dayjs'
