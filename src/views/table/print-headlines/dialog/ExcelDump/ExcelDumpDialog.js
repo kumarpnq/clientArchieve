@@ -155,6 +155,7 @@ const ExcelDumpDialog = ({
       requestEntity: 'print',
       ...(selectPageOrAll !== 'A' && { page: Number(page), recordsPerPage: Number(recordsPerPage) }),
       clientIds: clientId,
+      companyIds: selectedCompanyIds.join(','),
       ...(editionType && { editionType }),
       ...(publicationCategory && { publicationCategory }),
       ...(sortby && { sortby }),

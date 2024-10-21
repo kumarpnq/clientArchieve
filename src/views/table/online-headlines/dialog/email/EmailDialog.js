@@ -28,7 +28,8 @@ import {
   setFetchAutoStatusFlag,
   setNotificationFlag,
   selectNotificationFlag,
-  selectFetchAutoStatusFlag
+  selectFetchAutoStatusFlag,
+  selectSelectedCompetitions
 } from 'src/store/apps/user/userSlice'
 
 //* third party imports
@@ -40,6 +41,7 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   //redux state
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const notificationFlag = useSelector(selectNotificationFlag)
@@ -239,7 +241,8 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
       ...(selectPageOrAll !== 'A' && { page: Number(page) }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage: Number(recordsPerPage) }),
       requestEntity,
-      clientIds: clientId
+      clientIds: clientId,
+      companyIds: selectedCompanyIds?.join(',')
     }
 
     if (editionType !== '') {

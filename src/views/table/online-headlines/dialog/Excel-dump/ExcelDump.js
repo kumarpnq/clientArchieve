@@ -27,7 +27,6 @@ import {
   selectFetchAutoStatusFlag
 } from 'src/store/apps/user/userSlice'
 import { getArticleFieldList } from 'src/api/print-headlines/dialog/ExcelDump/ExcelDumpDialogApi'
-import { formatDateTime } from 'src/utils/formatDateTime'
 import useExcelDump from 'src/api/dump/useExcelDump'
 import { Box, DialogContentText } from '@mui/material'
 import dayjs from 'dayjs'
@@ -52,7 +51,6 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
   const { responseData, loading, error, postData } = useExcelDump('online')
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
-  const articleIds = dataForExcelDump.length > 0 && dataForExcelDump.flatMap(item => item.articleId)
 
   useEffect(() => {
     const fetchFieldList = async () => {
@@ -234,7 +232,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
       requestEntity,
       ...(selectPageOrAll !== 'A' && { page: Number(page) }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage: Number(recordsPerPage) }),
-      clientIds: clientId
+      clientIds: clientId,
+      companyIds: selectedCompanyIds.join(',')
     }
 
     if (editionType !== '') {

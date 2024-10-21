@@ -228,7 +228,8 @@ const ExcelDumpDialog = ({ open, handleClose, dataForExcelDump, pageCheck, allCh
       requestEntity,
       ...(selectPageOrAll !== 'A' && { page: Number(page) }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage: Number(recordsPerPage) }),
-      clientIds: clientId
+      clientIds: clientId,
+      companyIds: selectedCompanyIds.join(',')
     }
 
     if (editionType !== '') {

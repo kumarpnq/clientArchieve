@@ -27,7 +27,8 @@ import {
   setNotificationFlag,
   selectNotificationFlag,
   setFetchAutoStatusFlag,
-  selectFetchAutoStatusFlag
+  selectFetchAutoStatusFlag,
+  selectSelectedCompetitions
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 import dayjs from 'dayjs'
@@ -45,6 +46,7 @@ const DossierDialog = ({
 }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const clientName = selectedClient ? selectedClient.clientName : null
 
   const [email, setEmail] = useState('')
@@ -244,7 +246,8 @@ const DossierDialog = ({
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       requestEntity,
-      clientIds: clientId
+      clientIds: clientId,
+      companyIds: selectedCompanyIds.join(',')
     }
 
     if (editionType !== '') {

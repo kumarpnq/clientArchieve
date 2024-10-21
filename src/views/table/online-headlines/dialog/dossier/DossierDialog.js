@@ -26,7 +26,8 @@ import {
   setNotificationFlag,
   selectNotificationFlag,
   setFetchAutoStatusFlag,
-  selectFetchAutoStatusFlag
+  selectFetchAutoStatusFlag,
+  selectSelectedCompetitions
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 import toast from 'react-hot-toast'
@@ -44,6 +45,7 @@ const DossierDialog = ({
   allCheck
 }) => {
   const selectedClient = useSelector(selectSelectedClient)
+  const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const clientId = selectedClient ? selectedClient.clientId : null
   const clientName = selectedClient ? selectedClient.clientName : null
 
@@ -56,9 +58,6 @@ const DossierDialog = ({
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
   const { response, error, sendDossierRequest } = useDossierRequest()
-  const articleIds = dataForDossierDownload.length > 0 && dataForDossierDownload.flatMap(item => item.articleId)
-  const selectPageOrAll = dataForDossierDownload.length && dataForDossierDownload.map(i => i.selectPageorAll).join('')
-  const pageLimit = dataForDossierDownload.length && dataForDossierDownload.map(i => i.pageLimit).join('')
 
   const formattedFromDate = selectedStartDate ? dayjs(selectedStartDate).format('YYYY-MM-DD HH:mm:ss') : null
 
@@ -242,7 +241,8 @@ const DossierDialog = ({
       requestEntity,
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
-      clientIds: clientId
+      clientIds: clientId,
+      companyIds: selectedCompanyIds.join(',')
     }
 
     if (editionType !== '') {

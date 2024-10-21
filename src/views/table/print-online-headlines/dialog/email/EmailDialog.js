@@ -25,7 +25,8 @@ import {
   setNotificationFlag,
   selectNotificationFlag,
   setFetchAutoStatusFlag,
-  selectFetchAutoStatusFlag
+  selectFetchAutoStatusFlag,
+  selectSelectedCompetitions
 } from 'src/store/apps/user/userSlice'
 
 import toast from 'react-hot-toast'
@@ -41,6 +42,7 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
 
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const dispatch = useDispatch()
@@ -226,7 +228,8 @@ const EmailDialog = ({ open, onClose, dataForMailDump, pageCheck, allCheck }) =>
       requestEntity,
       ...(selectPageOrAll !== 'A' && { page: Number(page) }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage: Number(recordsPerPage) }),
-      clientIds: clientId
+      clientIds: clientId,
+      companyIds: selectedCompanyIds.join(',')
     }
 
     if (editionType !== '') {

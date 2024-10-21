@@ -27,7 +27,8 @@ import {
   setNotificationFlag,
   selectNotificationFlag,
   setFetchAutoStatusFlag,
-  selectFetchAutoStatusFlag
+  selectFetchAutoStatusFlag,
+  selectSelectedCompetitions
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 import toast from 'react-hot-toast'
@@ -45,6 +46,7 @@ const DossierDownload = ({
 }) => {
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
+  const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const clientName = selectedClient ? selectedClient.clientName : null
 
   const [email, setEmail] = useState('')
@@ -239,7 +241,8 @@ const DossierDownload = ({
       requestEntity,
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
-      clientIds: clientId
+      clientIds: clientId,
+      companyIds: selectedCompanyIds.join(',')
     }
 
     if (editionType !== '') {
