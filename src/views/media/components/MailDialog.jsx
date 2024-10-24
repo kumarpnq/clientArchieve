@@ -9,16 +9,16 @@ import {
   Radio,
   RadioGroup,
   TextField,
-  Typography,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  CircularProgress
+  CircularProgress,
+  Checkbox
 } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import useClientMailerList from 'src/api/global/useClientMailerList '
-import { generateTableHtml } from './emailFormat'
+
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import { generateTableHTML2 } from './emailFormat2'
@@ -30,13 +30,14 @@ import {
   selectSelectedEndDate,
   selectSelectedStartDate
 } from 'src/store/apps/user/userSlice'
-import { formatDateTime } from 'src/utils/formatDateTime'
+
 import dayjs from 'dayjs'
 
 const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, setIsSelectCard, setIsChecked }) => {
   //states
   const [emailType, setEmailType] = useState({})
-  const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
+  const [selectedEmails, setSelectedEmails] = useState([])
+  const [selectAll, setSelectAll] = useState(false)
   const [mailSubject, setMailSubject] = useState('')
   const [showHelperText, setShowHelperText] = useState(false)
   const [MailerFormat, setMailerFormat] = useState('dbWithoutDetails')
@@ -69,7 +70,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       let url
 
       const params = {
-        clientIds: clientId,
+        clientId: clientId,
         companyIds: selectedCompaniesString,
         fromDate: formattedStartDate,
         toDate: formattedEndDate
@@ -107,29 +108,18 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       const tableHtmlLink = generateTableHTML2(link, selectedClient?.clientName)
       sendEmail(tableHtmlLink)
     }
-
-    // else {
-    //   const tableHtml = generateTableHtml(selectedCards)
-    //   sendEmail(tableHtml)
-    // }
   }
 
   const sendEmail = async htmlContent => {
     try {
       setSendMailLoading(true)
-      const toEmails = Object.keys(emailType).filter(email => emailType[email] === 'to')
-      const ccEmails = Object.keys(emailType).filter(email => emailType[email] === 'cc')
-      const bccEmails = Object.keys(emailType).filter(email => emailType[email] === 'bcc')
+      const recipients = selectedEmails.map(email => ({ id: email, recipientType: emailType[email] || 'to' }))
+      const ccEmails = recipients.filter(i => i.recipientType === 'cc')
+      const toEmails = recipients.filter(i => i.recipientType === 'to')
+      const bccEmails = recipients.filter(i => i.recipientType === 'bcc')
 
       const requestData = {
         subject: mailSubject,
-
-        // emailAddresses: [
-        //   'swapniltiwari47@hotmail.com',
-        //   'siddeekshaikh97@gmail.com',
-        //   'kumar@pnq.co.in',
-        //   'tusharvispute07@gmail.com'
-        // ],
 
         emailAddresses: toEmails,
         htmlTemplate: htmlContent,
@@ -155,21 +145,28 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
     }
   }
 
+  const handleChange = event => {
+    setMailerFormat(event.target.value)
+  }
+
   const handleEmailTypeChange = (event, email) => {
-    const selectedValue = event.target.value
-
-    setEmailType(prevState => {
-      const newEmailType = { ...prevState, [email]: selectedValue }
-      if (selectedValue === 'none') {
-        delete newEmailType[email]
-      }
-
-      return newEmailType
+    setEmailType({
+      ...emailType,
+      [email]: event.target.value
     })
   }
 
-  const handleChange = event => {
-    setMailerFormat(event.target.value)
+  const handleCheckboxChange = email => {
+    if (selectedEmails.includes(email)) {
+      setSelectedEmails(selectedEmails.filter(selected => selected !== email))
+    } else {
+      setSelectedEmails([...selectedEmails, email])
+    }
+  }
+
+  const handleSelectAllChange = () => {
+    setSelectAll(!selectAll)
+    setSelectedEmails(selectAll ? [] : mailList)
   }
 
   return (
@@ -177,16 +174,31 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       <DialogTitle color='primary'>Send Email</DialogTitle>
 
       <FormGroup style={{ marginLeft: '20px', marginRight: '20px' }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={selectAll}
+              onChange={handleSelectAllChange}
+              indeterminate={selectedEmails.length > 0 && selectedEmails.length < mailList.length}
+            />
+          }
+          label='Select All'
+        />
         {mailList?.map(email => (
           <div key={email} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography>{email}</Typography>
+            <FormControlLabel
+              control={
+                <Checkbox checked={selectedEmails.includes(email)} onChange={() => handleCheckboxChange(email)} />
+              }
+              label={email}
+            />
+
             <RadioGroup
               row
-              value={emailType[email] || 'none'}
+              value={emailType[email] || 'to'}
               onChange={e => handleEmailTypeChange(e, email)}
               style={{ marginLeft: '10px' }}
             >
-              <FormControlLabel value='none' control={<Radio />} label='None' />
               <FormControlLabel value='to' control={<Radio />} label='To' />
               <FormControlLabel value='cc' control={<Radio />} label='Cc' />
               <FormControlLabel value='bcc' control={<Radio />} label='Bcc' />

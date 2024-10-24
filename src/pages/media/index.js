@@ -21,7 +21,7 @@ const MediaAnalysis = () => {
   const [error, setError] = useState(null)
   const [cardData, setCardData] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage] = useState(40)
+  const [itemsPerPage] = useState(20)
 
   const [value, setValue] = useState('all')
   const selectedClient = useSelector(selectSelectedClient)

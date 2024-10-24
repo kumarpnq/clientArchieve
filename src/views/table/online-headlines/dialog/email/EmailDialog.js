@@ -55,6 +55,9 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   const [selectedEmails, setSelectedEmails] = useState([])
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
 
+  console.log(selectedEmails)
+  console.log(emailType)
+
   // customs
   const articleIdsPlain = dataForMail.length
     ? dataForMail
@@ -340,14 +343,6 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
       setSelectedEmails([])
       setEmailType({})
       toast.success('Email request taken successfully.')
-    }
-  }
-
-  const handleAllDropdownChange = value => {
-    if (value === 'all') {
-      setSelectedEmails([...mailList])
-    } else if (value === 'none') {
-      setSelectedEmails([])
     }
   }
 
