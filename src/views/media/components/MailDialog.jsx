@@ -232,7 +232,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
           onClick={handleSendEmail}
           variant='outlined'
           sx={{ backgroundColor: sendMailLoading ? '' : 'primary.main', color: 'text.primary' }}
-          disabled={Object.keys(emailType).length === 0}
+          disabled={!selectedEmails.length}
         >
           {sendMailLoading && <CircularProgress size={'1em'} sx={{ mr: 1 }} />}
           Send
