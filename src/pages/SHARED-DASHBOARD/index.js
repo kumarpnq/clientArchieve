@@ -42,7 +42,7 @@ const SharedDashboard = () => {
         })
 
         setCardData(response.data.socialMediaData)
-        setUser(response.data.clientName)
+        setUser(response.data?.clientName)
       } catch (err) {
         setCardData([])
         setError(err)

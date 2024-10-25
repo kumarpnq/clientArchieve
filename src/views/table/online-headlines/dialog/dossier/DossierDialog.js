@@ -47,7 +47,7 @@ const DossierDialog = ({
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const clientId = selectedClient ? selectedClient.clientId : null
-  const clientName = selectedClient ? selectedClient.clientName : null
+  const clientName = selectedClient ? selectedClient?.clientName : null
 
   const [email, setEmail] = useState('')
   const [companyName, setCompanyName] = useState('')

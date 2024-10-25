@@ -13,7 +13,7 @@ const DataGrid = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const screenPermissions = useScreenPermissions()
   const hasAccess = screenPermissions['onlineHeadlines']
-  const clientName = selectedClient ? selectedClient.clientName : ''
+  const clientName = selectedClient ? selectedClient?.clientName : ''
 
   if (!hasAccess) {
     return <div>You don't have access to this page.</div>

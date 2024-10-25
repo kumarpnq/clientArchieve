@@ -25,7 +25,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const DataGrid = () => {
   const selectedClient = useSelector(selectSelectedClient)
-  const clientName = selectedClient ? selectedClient.clientName : ''
+  const clientName = selectedClient ? selectedClient?.clientName : ''
 
   const screenPermissions = useScreenPermissions()
   const hasAccess = screenPermissions['bothHeadlines']

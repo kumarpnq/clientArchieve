@@ -47,7 +47,7 @@ const DossierDownload = ({
   const selectedClient = useSelector(selectSelectedClient)
   const clientId = selectedClient ? selectedClient.clientId : null
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
-  const clientName = selectedClient ? selectedClient.clientName : null
+  const clientName = selectedClient ? selectedClient?.clientName : null
 
   const [email, setEmail] = useState('')
   const [companyName, setCompanyName] = useState('')

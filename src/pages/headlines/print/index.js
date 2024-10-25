@@ -34,7 +34,7 @@ const DataGrid = () => {
   }
 
   // Access priorityCompanyName from selectedClient
-  const clientName = selectedClient ? selectedClient.clientName : ''
+  const clientName = selectedClient ? selectedClient?.clientName : ''
 
   return (
     <Grid container spacing={2}>

@@ -39,7 +39,7 @@ const ClientListDropdown = () => {
   }, [clientList, dispatch, selectedClient])
 
   const options = clientList?.map((client, index) => ({
-    text: client.clientName,
+    text: client?.clientName,
     menuItemProps: {
       key: index,
       sx: { py: 2 },
