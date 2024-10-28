@@ -355,7 +355,6 @@ const AutocompleteComponent = ({ hidden, settings }) => {
     return (
       <Box
         ref={wrapper}
-        // onClick={() => !openDialog && setOpenDialog(true)}
         onClick={() => setOpenDialog(false)}
         sx={{ display: 'flex', cursor: 'pointer', alignItems: 'center' }}
       >
