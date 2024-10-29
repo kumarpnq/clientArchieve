@@ -7,18 +7,7 @@ import axios from 'axios'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
 import Button from '@mui/material/Button'
-import {
-  FormControlLabel,
-  FormGroup,
-  List,
-  ListItem,
-  Tooltip,
-  Checkbox,
-  CardHeader,
-  Typography,
-  Card,
-  Box
-} from '@mui/material'
+import { FormControlLabel, FormGroup, List, ListItem, Tooltip, Checkbox, Typography, Card, Box } from '@mui/material'
 
 import ToolbarComponent from './toolbar/ToolbarComponent'
 import EditDialog from './dialog/EditDialog'
@@ -38,13 +27,12 @@ import {
   selectShortCut,
   selectedDateType
 } from 'src/store/apps/user/userSlice'
-import OptionsMenu from 'src/@core/components/option-menu'
+
 import { BASE_URL, ELASTIC_SERVER } from 'src/api/base'
-import { Icon } from '@iconify/react'
-import SelectBox from 'src/@core/components/select'
+
 import ArticleView from './dialog/article-view/view'
 import Grid from './table-grid/Grid'
-import DateType from 'src/@core/layouts/components/shared-components/DateType'
+
 import Pagination from './OnlineHeadlinePagination'
 import ResetOnlineFields from './reset/ResetOnlineFields'
 
@@ -63,50 +51,6 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
   })
 )
 
-// ** Renders social feed column
-const renderSocialFeed = params => {
-  const { row } = params
-
-  const formattedDate = dayjs(row.feedDate).format('DD-MM-YYYY')
-
-  // Function to generate tooltip content using List
-  const getTooltipContent = row => (
-    <List>
-      <ListItem>
-        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-          Summary :{' '}
-          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-            {row.summary}
-          </Typography>
-        </Typography>
-      </ListItem>
-
-      <ListItem>
-        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-          Companies :{' '}
-          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-            {row.companies.length > 1 ? row.companies.map(company => company.name).join(', ') : row.companies[0]?.name}
-          </Typography>
-        </Typography>
-      </ListItem>
-    </List>
-  )
-
-  return (
-    <CustomTooltip title={getTooltipContent(row)} arrow>
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography noWrap variant='body2' sx={{ color: 'text.primary', fontWeight: 600 }}>
-          {row.headline}
-        </Typography>
-        <Typography noWrap variant='caption'>
-          {row.publisher}
-          <span style={{ marginLeft: '4px' }}>({formattedDate})</span>
-        </Typography>
-      </Box>
-    </CustomTooltip>
-  )
-}
-
 const TableSelection = () => {
   // * temp
   const [selectedItems, setSelectedItems] = useState([])
@@ -120,8 +64,8 @@ const TableSelection = () => {
 
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize: 0, // Default pageSize
-    totalRecords: 0 // New state for totalRecords
+    pageSize: 0,
+    totalRecords: 0
   })
 
   const [searchParameters, setSearchParameters] = useState({

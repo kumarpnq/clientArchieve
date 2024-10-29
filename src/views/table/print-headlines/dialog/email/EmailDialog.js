@@ -88,14 +88,14 @@ const EmailDialog = ({ open, handleClose, onClose, dataForMail, pageCheck, allCh
   }
 
   const handleSendEmail = async () => {
-    const templateResponse = await checkMailTemplate('print')
+    // const templateResponse = await checkMailTemplate('print')
 
-    if (!templateResponse) {
-      toast.error('Mailer format not configured for this client.')
-      handleClose()
+    // if (!templateResponse) {
+    //   toast.error('Mailer format not configured for this client.')
+    //   handleClose()
 
-      return
-    }
+    //   return
+    // }
 
     // setFetchEmailFlag(!fetchEmailFlag)
     dispatch(setNotificationFlag(!notificationFlag))
