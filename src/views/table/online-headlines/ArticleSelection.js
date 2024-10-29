@@ -89,7 +89,7 @@ const TableSelection = () => {
   const shortCutData = useSelector(selectShortCut)
 
   const clientId = selectedClient ? selectedClient.clientId : null
-  const clientName = selectedClient?.clientName
+  const clientName = selectedClient ? selectedClient.clientName : null
 
   // Access priorityCompanyName from selectedClient
   const priorityCompanyName = selectedClient ? selectedClient.priorityCompanyName : ''
