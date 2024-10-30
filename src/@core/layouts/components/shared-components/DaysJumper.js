@@ -2,6 +2,8 @@ import React, { Fragment, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
   clearDateFilter,
+  selectSelectedEndDate,
+  selectSelectedStartDate,
   selectShortCut,
   setClearDateFilter,
   setSelectedDateRange
@@ -10,6 +12,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 import dayjs from 'dayjs'
 import IconButton from '@mui/material/IconButton'
 import { useRouter } from 'next/router'
+import { validateDateRange } from 'src/utils/isValidDayJumper'
 
 const GenericIcon = ({ label, component: IconComponent, ...props }) => (
   <SvgIcon {...props} sx={{ background: 'primary' }}>
@@ -31,12 +34,17 @@ const DaysJumper = ({ settings }) => {
   const dispatch = useDispatch()
   const shortCutData = useSelector(selectShortCut)
   const clearDateFlag = useSelector(clearDateFilter)
+  const selectedStartDate = useSelector(selectSelectedStartDate)
+  const selectedEndDate = useSelector(selectSelectedEndDate)
+
   const router = useRouter()
   const currentRoute = router.pathname
 
   const isPrintScreen = currentRoute === '/headlines/print'
 
   const [selectedDayFilter, setSelectedDayFilter] = useState('1D')
+
+  const isValidJumper = validateDateRange(selectedStartDate, selectedEndDate, currentRoute, selectedDayFilter)
 
   const handleFilterChange = (days, label) => {
     let startDate
@@ -115,7 +123,7 @@ const DaysJumper = ({ settings }) => {
           onClick={() => handleFilterChange(days, label)}
           sx={{
             backgroundColor:
-              selectedDayFilter === label ||
+              (isValidJumper && selectedDayFilter === label) ||
               (label === '1D' &&
                 shortCutData?.searchCriteria?.fromDate ===
                   dayjs()
@@ -124,7 +132,7 @@ const DaysJumper = ({ settings }) => {
                 shortCutData?.searchCriteria?.toDate === dayjs().format('YYYY-MM-DD HH:mm:ss'))
                 ? 'primary.main'
                 : '',
-            color: selectedDayFilter === label ? 'inherit' : 'primary.main'
+            color: isValidJumper && selectedDayFilter === label ? 'inherit' : 'primary.main'
           }}
         >
           <IconComponent label={label} component={GenericIcon} />
