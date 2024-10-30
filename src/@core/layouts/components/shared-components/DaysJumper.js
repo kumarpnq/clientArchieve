@@ -46,6 +46,17 @@ const DaysJumper = ({ settings }) => {
 
   const isValidJumper = validateDateRange(selectedStartDate, selectedEndDate, currentRoute, selectedDayFilter)
 
+  function getDaysDifference(fromDate, endDate) {
+    const start = dayjs(fromDate).startOf('day')
+    const end = dayjs(endDate).startOf('day')
+
+    const diff = end.diff(start, 'day')
+
+    return diff >= 1 ? diff : 1
+  }
+
+  const defaultDays = getDaysDifference(selectedStartDate, selectedEndDate)
+
   const handleFilterChange = (days, label) => {
     let startDate
 
@@ -109,7 +120,7 @@ const DaysJumper = ({ settings }) => {
         break
       case '1D':
       default:
-        days = 1
+        days = defaultDays
     }
 
     handleFilterChange(days, selectedDayFilter)
