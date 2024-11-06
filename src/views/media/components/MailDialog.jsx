@@ -114,13 +114,12 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
     try {
       setSendMailLoading(true)
       const recipients = selectedEmails.map(email => ({ id: email, recipientType: emailType[email] || 'to' }))
-      const ccEmails = recipients.filter(i => i.recipientType === 'cc')
-      const toEmails = recipients.filter(i => i.recipientType === 'to')
-      const bccEmails = recipients.filter(i => i.recipientType === 'bcc')
+      const ccEmails = recipients.filter(i => i.recipientType === 'cc').map(i => i.id)
+      const toEmails = recipients.filter(i => i.recipientType === 'to').map(i => i.id)
+      const bccEmails = recipients.filter(i => i.recipientType === 'bcc').map(i => i.id)
 
       const requestData = {
         subject: mailSubject,
-
         emailAddresses: toEmails,
         htmlTemplate: htmlContent,
         cc_email: ccEmails,
