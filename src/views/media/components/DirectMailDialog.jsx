@@ -214,8 +214,9 @@ const DirectMailDialog = ({ open, setOpen, link, setLink }) => {
       const response = await axios.post(`${BASE_URL}/sendPnQmail`, requestData, {
         headers: { Authorization: `Bearer ${userToken}` }
       })
-
-      toast.success('Email sent successfully:')
+      if (response) {
+        toast.success('Email sent successfully:')
+      }
       handleClose()
     } catch (error) {
       toast.error('Error sending email')

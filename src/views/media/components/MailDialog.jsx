@@ -70,7 +70,7 @@ const MailDialog = ({ open, setOpen, selectedCards, setSelectedCards, value, set
       let url
 
       const params = {
-        clientId: clientId,
+        clientIds: clientId,
         companyIds: selectedCompaniesString,
         fromDate: formattedStartDate,
         toDate: formattedEndDate
