@@ -361,7 +361,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <table className='main-table'>
                           <List
-                            height={500}
+                            height={550}
                             itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
                             itemSize={50}
                             width={'100%'}
@@ -384,7 +384,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                   <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     {/* Mobile table rendering */}
                     <table className='main-table'>
-                      <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
+                      <List height={550} itemCount={articles.length} itemSize={50} width={'100%'}>
                         {singleRow}
                       </List>
                     </table>

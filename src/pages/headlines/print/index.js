@@ -57,10 +57,10 @@ const DataGrid = () => {
       <Grid item xs={12}>
         <ArticleSelection />
       </Grid>
-
+      {/*
       <Grid item xs={12}>
         <CardSelection />
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 }

@@ -352,7 +352,7 @@ const TableGrid = ({
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <table className='main-table'>
                         <List
-                          height={500}
+                          height={550}
                           itemCount={Math.max(firstPortionArticles.length, secondPortionArticles.length)}
                           itemSize={50}
                           width={'100%'}
@@ -373,7 +373,7 @@ const TableGrid = ({
             <Box>
               {articles.length > 0 ? (
                 <table className='main-table'>
-                  <List height={500} itemCount={articles.length} itemSize={50} width={'100%'}>
+                  <List height={550} itemCount={articles.length} itemSize={50} width={'100%'}>
                     {singleRow}
                   </List>
                 </table>

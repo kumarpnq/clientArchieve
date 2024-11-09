@@ -83,6 +83,7 @@ const TableSelection = () => {
   const selectedClient = useSelector(selectSelectedClient)
   const selectedCompetitions = useSelector(selectSelectedCompetitions)
   const selectedTypeOfDate = useSelector(selectedDateType)
+
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
   const shortCutFlags = useSelector(selectShortCutFlag)
@@ -336,7 +337,7 @@ const TableSelection = () => {
             companyIds: selectedCompetitions,
 
             // DateType:'articleInfo.articleDate',
-            // DateTye: selectedTypeOfDate,
+            DateTye: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE',
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
             toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
             page: currentPage,
