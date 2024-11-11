@@ -337,7 +337,7 @@ const TableSelection = () => {
             companyIds: selectedCompetitions,
 
             // DateType:'articleInfo.articleDate',
-            DateTye: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE',
+            dateTye: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE',
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
             toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
             page: currentPage,
