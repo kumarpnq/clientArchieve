@@ -31,7 +31,7 @@ const useJournalistVscore = props => {
     const fetchData = async () => {
       const requestParams = {
         media: media,
-        clientIds: clientId,
+        clientIds: 'HDFCERG',
 
         // companyIds: selectedCompetitions,
         fromDate: formattedStartDate,

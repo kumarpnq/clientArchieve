@@ -9,7 +9,7 @@ import {
   selectSelectedStartDate,
   selectSelectedEndDate
 } from 'src/store/apps/user/userSlice'
-import { formatDateTime } from 'src/utils/formatDateTime'
+import { formatDateFromM } from 'src/utils/formatDateIso'
 
 const useTonality = props => {
   const { media, endpoint, idType, isCompanyIds } = props
@@ -18,8 +18,8 @@ const useTonality = props => {
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
 
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+  const formattedStartDate = formatDateFromM(selectedFromDate)
+  const formattedEndDate = formatDateFromM(selectedEndDate)
 
   const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(true)
@@ -32,11 +32,11 @@ const useTonality = props => {
     const fetchData = async () => {
       const requestParams = {
         media: media,
-        [idType]: clientId,
+        [idType]: 'HDFCERG',
 
         // companyIds: selectedCompetitions,
-        fromDate: formattedStartDate, //'2024-02-26 00:00:00',
-        toDate: formattedEndDate //'2024-02-27 00:00:00'
+        fromDate: formattedStartDate,
+        toDate: formattedEndDate
       }
       if (isCompanyIds) {
         requestParams.companyIds = selectedCompetitions

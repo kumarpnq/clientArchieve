@@ -8,7 +8,8 @@ import {
   selectSelectedStartDate,
   selectSelectedEndDate
 } from 'src/store/apps/user/userSlice'
-import { formatDateTime } from 'src/utils/formatDateTime'
+
+import { formatDateFromM } from 'src/utils/formatDateIso'
 
 const usePeersData = props => {
   const { media, endpoint, idType, isCompanyIds, isMedia } = props
@@ -17,8 +18,8 @@ const usePeersData = props => {
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
 
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+  const formattedStartDate = formatDateFromM(selectedFromDate)
+  const formattedEndDate = formatDateFromM(selectedEndDate)
 
   const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(true)
@@ -30,11 +31,11 @@ const usePeersData = props => {
   useEffect(() => {
     const fetchData = async () => {
       const requestParams = {
-        [idType]: clientId,
+        [idType]: 'HDFCERG',
 
         // companyIds: selectedCompetitions,
-        fromDate: formattedStartDate, //'2024-02-26 00:00:00',
-        toDate: formattedEndDate //'2024-02-27 00:00:00'
+        fromDate: formattedStartDate,
+        toDate: formattedEndDate
       }
       if (isCompanyIds) {
         requestParams.companyIds = selectedCompetitions
