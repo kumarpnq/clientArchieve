@@ -8,7 +8,7 @@ import {
   selectSelectedStartDate,
   selectSelectedEndDate
 } from 'src/store/apps/user/userSlice'
-import { formatDateTime } from 'src/utils/formatDateTime'
+import { formatDateFromM } from 'src/utils/formatDateIso'
 
 const useJournalistVscore = props => {
   const { media, endpoint } = props
@@ -17,8 +17,8 @@ const useJournalistVscore = props => {
   const selectedFromDate = useSelector(selectSelectedStartDate)
   const selectedEndDate = useSelector(selectSelectedEndDate)
 
-  const formattedStartDate = selectedFromDate ? formatDateTime(selectedFromDate, true, false) : null
-  const formattedEndDate = selectedEndDate ? formatDateTime(selectedEndDate, true, true) : null
+  const formattedStartDate = formatDateFromM(selectedFromDate)
+  const formattedEndDate = formatDateFromM(selectedEndDate)
 
   const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(true)

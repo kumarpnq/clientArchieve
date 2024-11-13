@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -71,7 +71,7 @@ const MultipleCharts = props => {
   function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1))
-        ;[array[i], array[j]] = [array[j], array[i]]
+      ;[array[i], array[j]] = [array[j], array[i]]
     }
 
     return array
@@ -83,7 +83,7 @@ const MultipleCharts = props => {
 
   const getRandomColor = () => {
     const color = backgroundColors[colorIndex]
-    colorIndex = (colorIndex + 1) % backgroundColors.length // Move to the next color
+    colorIndex = (colorIndex + 1) % backgroundColors.length
 
     return color
   }
