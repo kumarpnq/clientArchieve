@@ -523,9 +523,7 @@ const ArticleListToolbar = ({
           <MenuItem
             key={publicationType.publicationTypeId}
             onClick={() => handlePublicationTypeSelection(publicationType)}
-            selected={
-              selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId
-            }
+            selected={selectedPublicationType?.includes(publicationType)}
           >
             {publicationType.publicationTypeName}
           </MenuItem>
@@ -542,7 +540,7 @@ const ArticleListToolbar = ({
           <MenuItem
             key={editionType.editionTypeId}
             onClick={() => handleEditionTypeSelection(editionType)}
-            selected={selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId}
+            selected={selectedEditionType?.includes(editionType)}
           >
             {editionType.editionTypeName}
           </MenuItem>

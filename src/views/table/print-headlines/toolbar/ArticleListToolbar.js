@@ -293,20 +293,6 @@ const ArticleListToolbar = ({
     setPublicationTypeMenuOpen(null)
   }
 
-  const handleMediaSelect = (publicationId, itemIndex) => {
-    setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
-
-      if (isAlreadySelected) {
-        // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationId + itemIndex)
-      } else {
-        // If not selected, add to the list
-        return [...prevSelected, publicationId + itemIndex]
-      }
-    })
-  }
-
   const handlePublicationTypeSelection = publicationType => {
     setSelectedPublicationType(prevSelected => {
       const isAlreadySelected = prevSelected.includes(publicationType)

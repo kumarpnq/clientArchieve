@@ -553,6 +553,7 @@ const TableSelection = () => {
       />
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
+        selectedEditionType={selectedEditionType}
         setSelectedEditionType={setSelectedEditionType}
         selectedPublicationType={selectedPublicationType}
         setSearchQuery={setSearchQuery}
