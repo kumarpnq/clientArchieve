@@ -52,7 +52,7 @@ const ToolbarComponent = ({
   const shortCutData = useSelector(selectShortCut)
 
   const handleSelectAllMedia = () => {
-    const allMediaIds = media.map((item, index) => item.publicationId + index)
+    const allMediaIds = media.map((item, index) => item.publicationGroupId + index)
     setSelectedMedia(allMediaIds)
   }
 
@@ -109,16 +109,16 @@ const ToolbarComponent = ({
 
   let index = 0
 
-  const handleMediaSelect = (publicationId, itemIndex) => {
+  const handleMediaSelect = (publicationGroupId, itemIndex) => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
+      const isAlreadySelected = prevSelected.includes(publicationGroupId + itemIndex)
 
       if (isAlreadySelected) {
         // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationId + itemIndex)
+        return prevSelected.filter(id => id !== publicationGroupId + itemIndex)
       } else {
         // If not selected, add to the list
-        return [...prevSelected, publicationId + itemIndex]
+        return [...prevSelected, publicationGroupId + itemIndex]
       }
     })
   }
@@ -211,8 +211,8 @@ const ToolbarComponent = ({
         // Pre-select media based on shortCutData
         if (shortCutData?.screenName == 'printHeadlines') {
           const selectedMediaIds = mediaResponse.data.mediaList
-            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
-            .map((item, index) => item.publicationId + index)
+            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationGroupId))
+            .map((item, index) => item.publicationGroupId + index)
           setSelectedMedia(selectedMediaIds)
         }
       } catch (error) {
@@ -459,15 +459,15 @@ const ToolbarComponent = ({
             </ListItem>
           }
           {media.map((item, index) => (
-            <div key={`${item.publicationId}-${index}`}>
+            <div key={`${item.publicationGroupId}-${index}`}>
               <MenuItem
-                onClick={() => handleMediaSelect(item.publicationId, index)}
+                onClick={() => handleMediaSelect(item.publicationGroupId, index)}
                 selected={
-                  selectedMedia.includes(item.publicationId + index) ||
-                  shortCutData?.searchCriteria?.media?.includes(item.publicationId)
+                  selectedMedia.includes(item.publicationGroupId + index) ||
+                  shortCutData?.searchCriteria?.media?.includes(item.publicationGroupId)
                 }
               >
-                {item.publicationName}
+                {item.publicationGroupName}
               </MenuItem>
             </div>
           ))}

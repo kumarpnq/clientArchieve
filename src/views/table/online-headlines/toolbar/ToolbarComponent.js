@@ -139,14 +139,14 @@ const ToolbarComponent = ({
     setSearchTermtags(event.target.value)
   }
 
-  const handleMediaSelect = (publicationId, itemIndex) => {
+  const handleMediaSelect = (publicationGroupId, itemIndex) => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
+      const isAlreadySelected = prevSelected.includes(publicationGroupId + itemIndex)
 
       if (isAlreadySelected) {
-        return prevSelected.filter(id => id !== publicationId + itemIndex)
+        return prevSelected.filter(id => id !== publicationGroupId + itemIndex)
       } else {
-        return [...prevSelected, publicationId + itemIndex]
+        return [...prevSelected, publicationGroupId + itemIndex]
       }
     })
   }
@@ -466,15 +466,15 @@ const ToolbarComponent = ({
             </ListItem>
           }
           {media.map((item, index) => (
-            <div key={`${item.publicationId}-${index}`}>
+            <div key={`${item.publicationGroupId}-${index}`}>
               <MenuItem
-                onClick={() => handleMediaSelect(item.publicationId, index)}
+                onClick={() => handleMediaSelect(item.publicationGroupId, index)}
                 selected={
-                  selectedMedia?.includes(item.publicationId + index) ||
-                  shortCutData?.searchCriteria?.media?.includes(item.publicationId)
+                  selectedMedia?.includes(item.publicationGroupId + index) ||
+                  shortCutData?.searchCriteria?.media?.includes(item.publicationGroupId)
                 }
               >
-                {item.publicationName}
+                {item.publicationGroupName}
               </MenuItem>
             </div>
           ))}

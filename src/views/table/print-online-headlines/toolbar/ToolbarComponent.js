@@ -221,8 +221,8 @@ const ToolbarComponent = ({
 
         if (shortCutData?.screenName == 'bothHeadlines') {
           const selectedMediaIds = mediaResponse.data.mediaList
-            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
-            .map((item, index) => item.publicationId + index)
+            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationGroupId))
+            .map((item, index) => item.publicationGroupId + index)
           setSelectedMedia(selectedMediaIds)
         }
       } catch (error) {
@@ -482,15 +482,15 @@ const ToolbarComponent = ({
             </ListItem>
           }
           {media.map((item, index) => (
-            <div key={`${item.publicationId}-${index}`}>
+            <div key={`${item.publicationGroupId}-${index}`}>
               <MenuItem
-                onClick={() => handleMediaSelect(item.publicationId, index)}
+                onClick={() => handleMediaSelect(item.publicationGroupId, index)}
                 selected={
-                  selectedMedia?.includes(item.publicationId) ||
-                  shortCutData?.searchCriteria?.media?.includes(item.publicationId)
+                  selectedMedia?.includes(item.publicationGroupId) ||
+                  shortCutData?.searchCriteria?.media?.includes(item.publicationGroupId)
                 }
               >
-                {item.publicationName}
+                {item.publicationGroupName}
               </MenuItem>
             </div>
           ))}
