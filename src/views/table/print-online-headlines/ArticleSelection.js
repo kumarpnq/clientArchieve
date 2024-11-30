@@ -390,7 +390,7 @@ const TableSelection = () => {
               pageNumber: articleData?.pageNumber,
               children: children || [],
               link: feedInfo?.link || '',
-              articleType: item?._index === 'printarticle' ? 'print' : 'online'
+              articleType: item?._index === 'printarticleindex' ? 'print' : 'online'
             }
           })
 
