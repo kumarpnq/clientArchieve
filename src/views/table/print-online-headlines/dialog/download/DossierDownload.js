@@ -90,6 +90,11 @@ const DossierDownload = ({
     setSelectedEmail(event.target.value)
   }
 
+  const articleIds =
+    dataForDossierDownload.length && dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'p' })))
+
+  console.log(articleIds)
+
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
 
@@ -118,7 +123,9 @@ const DossierDownload = ({
 
     const articleIds =
       dataForDossierDownload.length &&
-      dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'p' })))
+      dataForDossierDownload?.flatMap(i =>
+        i?.articleId?.map(id => ({ id: Number(id.articleId), type: id.articleType === 'print' ? 'p' : 'o' }))
+      )
 
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
 
@@ -381,7 +388,7 @@ const DossierDownload = ({
             onChange={handleDossierTypeChange}
           >
             <FormControlLabel value='word' control={<Radio />} label='Word Dossier' />
-            <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' />
+            {/* <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' disabled /> */}
           </RadioGroup>
         </FormControl>
         <Grid container spacing={2}>

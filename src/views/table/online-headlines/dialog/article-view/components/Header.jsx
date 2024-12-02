@@ -15,11 +15,11 @@ const Logo = () => (
 const Header = ({ article }) => {
   const details = [
     { label: 'News Date', value: formatDate(article?.feedDate) },
-    { label: 'Media Type', value: 'Online' },
-    { label: 'Publication', value: article?.publisher },
-    { label: 'Language', value: 'English' },
+    { label: 'Media Type', value: article?.articleType },
+    { label: 'Publication', value: article?.publication },
+    { label: 'Language', value: article?.language },
     { label: 'Author', value: article?.socialFeedAuthorName },
-    { label: 'Edition', value: 'Online Web' }
+    { label: 'Edition', value: article?.editionTypeName }
   ]
 
   return (
