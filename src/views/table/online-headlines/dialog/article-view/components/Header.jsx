@@ -18,8 +18,9 @@ const Header = ({ article }) => {
     { label: 'Media Type', value: article?.articleType },
     { label: 'Publication', value: article?.publication },
     { label: 'Language', value: article?.language },
-    { label: 'Author', value: article?.socialFeedAuthorName },
-    { label: 'Edition', value: article?.editionTypeName }
+    { label: 'Author', value: article?.socialFeedAuthorName }
+
+    // { label: 'Edition', value: article?.editionTypeName }
   ]
 
   return (

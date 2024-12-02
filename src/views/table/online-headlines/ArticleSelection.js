@@ -397,7 +397,7 @@ const TableSelection = () => {
               socialFeedlink: feedInfo?.link,
               feedDate: `${feedData.feedDate}`,
               articleUploadId: uploadInfo?.uploadId,
-              socialFeedAuthorName: '',
+              socialFeedAuthorName: feedData?.journalist,
               companies:
                 item.fields?.company?.map(company => ({
                   id: company.id,
@@ -414,10 +414,11 @@ const TableSelection = () => {
               editionType: publicationInfo?.editionType,
               editionTypeName: publicationInfo?.editionTypeName,
               publicationCategory: publicationInfo?.publicationCategory,
-              language: feedInfo.language,
+              language: feedData.language,
               articleJournalist: feedInfo?.journalist,
               publication: publicationInfo.name,
-              publicationId: publicationInfo.id
+              publicationId: publicationInfo.id,
+              articleType: 'online'
             }
           })
 
