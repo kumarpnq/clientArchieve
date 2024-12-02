@@ -20,6 +20,8 @@ const PublicationInfo = ({ articles }) => {
     edition: articles.editionTypeName
   })
 
+  console.log(articles)
+
   const formattedDate = new Date(articles.articleDate).toLocaleDateString('en-US', {
     day: 'numeric',
     month: 'short',
@@ -105,7 +107,7 @@ const PublicationInfo = ({ articles }) => {
             Edition :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {publicationInfo.edition}
+            {publicationInfo.publication}
           </Typography>
         </Grid>
       </Grid>

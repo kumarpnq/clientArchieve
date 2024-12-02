@@ -301,7 +301,7 @@ const TableSelection = () => {
               publicationId: publicationInfo.id,
               articleDate: `${articleInfo.articleDate}`,
               articleUploadId: uploadInfo.uploadId,
-              articleJournalist: '',
+              articleJournalist: articleInfo?.journalist,
               companies:
                 item.fields?.companyTag?.map(company => ({
                   id: company.id,
@@ -309,11 +309,11 @@ const TableSelection = () => {
                 })) || [],
               clientId: '', // no information available in input
               clientName: '', // no information available in input
-              editionType: '', // no information available in input
-              editionTypeName: '', // no information available in input
-              publicationCategory: '', // no information available in input
-              circulation: 0, // no information available in input
-              publicationType: '', // no information available in input
+              editionType: publicationInfo?.editionType, // no information available in input
+              editionTypeName: publicationInfo?.editionTypeName, // no information available in input
+              publicationCategory: publicationInfo?.publicationCategory, // no information available in input
+              circulation: publicationInfo?.circulation, // no information available in input
+              publicationType: publicationInfo?.publicationType, // no information available in input
               language: articleData.language,
               size: articleData.space,
               pageNumber: articleData.pageNumber,

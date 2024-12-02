@@ -22,6 +22,7 @@ const PDFView = () => {
         const response = await axios.get(`${BASE_URL}/articleView/?articleCode=${articleId}`)
         setArticleData(response.data)
       } catch (error) {
+        console.error(error)
         console.error('Error fetching article data:', error.message)
       }
     }
@@ -127,12 +128,7 @@ const PDFView = () => {
   )
 }
 
-let isAuthenticated = false
-if (typeof window !== 'undefined') {
-  isAuthenticated = Boolean(window.localStorage.getItem('userData'))
-}
-
 PDFView.getLayout = page => <BlankLayout>{page}</BlankLayout>
-PDFView.guestGuard = !isAuthenticated
+PDFView.guestGuard = false
 
 export default PDFView

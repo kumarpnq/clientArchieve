@@ -139,14 +139,14 @@ const ToolbarComponent = ({
     setSearchTermtags(event.target.value)
   }
 
-  const handleMediaSelect = (publicationGroupId, itemIndex) => {
+  const handleMediaSelect = (publicationId, itemIndex) => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationGroupId + itemIndex)
+      const isAlreadySelected = prevSelected.includes(publicationId + itemIndex)
 
       if (isAlreadySelected) {
-        return prevSelected.filter(id => id !== publicationGroupId + itemIndex)
+        return prevSelected.filter(id => id !== publicationId + itemIndex)
       } else {
-        return [...prevSelected, publicationGroupId + itemIndex]
+        return [...prevSelected, publicationId + itemIndex]
       }
     })
   }
@@ -453,28 +453,34 @@ const ToolbarComponent = ({
           onClose={() => closeDropdown(setMediaAnchor)}
           PaperProps={{ style: { maxHeight: 300 } }}
         >
-          {
+          {/* {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          }
+          } */}
 
           {
             <ListItem>
-              <TextField placeholder='Search Media' size='small' value={searchTerm} onChange={handleSearchChange} />
+              <TextField
+                placeholder='Search Media'
+                size='small'
+                value={searchTerm}
+                onChange={handleSearchChange}
+                fullWidth
+              />
             </ListItem>
           }
           {media.map((item, index) => (
-            <div key={`${item.publicationGroupId}-${index}`}>
+            <div key={`${item.publicationId}-${index}`}>
               <MenuItem
-                onClick={() => handleMediaSelect(item.publicationGroupId, index)}
+                onClick={() => handleMediaSelect(item.publicationId, index)}
                 selected={
-                  selectedMedia?.includes(item.publicationGroupId + index) ||
-                  shortCutData?.searchCriteria?.media?.includes(item.publicationGroupId)
+                  selectedMedia?.includes(item.publicationId + index) ||
+                  shortCutData?.searchCriteria?.media?.includes(item.publicationId)
                 }
               >
-                {item.publicationGroupName}
+                {item.publicationName}
               </MenuItem>
             </div>
           ))}

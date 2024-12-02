@@ -89,7 +89,7 @@ const ToolbarComponent = ({
   }
 
   const handleSelectAllMedia = () => {
-    const allMediaIds = media.map(item => item.publicationGroupId)
+    const allMediaIds = media.map(item => item.publicationId)
     setSelectedMedia(allMediaIds)
   }
 
@@ -107,16 +107,16 @@ const ToolbarComponent = ({
     })
   }
 
-  const handleMediaSelect = publicationGroupId => {
+  const handleMediaSelect = publicationId => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationGroupId)
+      const isAlreadySelected = prevSelected.includes(publicationId)
 
       if (isAlreadySelected) {
         // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationGroupId)
+        return prevSelected.filter(id => id !== publicationId)
       } else {
         // If not selected, add to the list
-        return [...prevSelected, publicationGroupId]
+        return [...prevSelected, publicationId]
       }
     })
   }
@@ -221,8 +221,8 @@ const ToolbarComponent = ({
 
         if (shortCutData?.screenName == 'bothHeadlines') {
           const selectedMediaIds = mediaResponse.data.mediaList
-            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationGroupId))
-            .map((item, index) => item.publicationGroupId + index)
+            .filter(item => shortCutData?.searchCriteria?.media?.includes(item.publicationId))
+            .map((item, index) => item.publicationId + index)
           setSelectedMedia(selectedMediaIds)
         }
       } catch (error) {
@@ -469,28 +469,34 @@ const ToolbarComponent = ({
           onClose={() => closeDropdown(setMediaAnchor)}
           PaperProps={{ style: { maxHeight: 300 } }}
         >
-          {
+          {/* {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          }
+          } */}
 
           {
             <ListItem>
-              <TextField placeholder='Search Media' size='small' value={searchTerm} onChange={handleSearchChange} />
+              <TextField
+                placeholder='Search Media'
+                size='small'
+                value={searchTerm}
+                onChange={handleSearchChange}
+                fullWidth
+              />
             </ListItem>
           }
           {media.map((item, index) => (
-            <div key={`${item.publicationGroupId}-${index}`}>
+            <div key={`${item.publicationId}-${index}`}>
               <MenuItem
-                onClick={() => handleMediaSelect(item.publicationGroupId, index)}
+                onClick={() => handleMediaSelect(item.publicationId, index)}
                 selected={
-                  selectedMedia?.includes(item.publicationGroupId) ||
-                  shortCutData?.searchCriteria?.media?.includes(item.publicationGroupId)
+                  selectedMedia?.includes(item.publicationId) ||
+                  shortCutData?.searchCriteria?.media?.includes(item.publicationId)
                 }
               >
-                {item.publicationGroupName}
+                {item.publicationName}
               </MenuItem>
             </div>
           ))}
