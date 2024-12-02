@@ -410,7 +410,14 @@ const TableSelection = () => {
                 })) || [],
               clientId: '',
               clientName: '',
-              children: children || []
+              children: children || [],
+              editionType: publicationInfo?.editionType,
+              editionTypeName: publicationInfo?.editionTypeName,
+              publicationCategory: publicationInfo?.publicationCategory,
+              language: articleData.language,
+              articleJournalist: articleInfo?.journalist,
+              publication: publicationInfo.name,
+              publicationId: publicationInfo.id
             }
           })
 
