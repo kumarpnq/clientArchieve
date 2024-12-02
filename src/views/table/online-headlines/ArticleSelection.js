@@ -414,8 +414,8 @@ const TableSelection = () => {
               editionType: publicationInfo?.editionType,
               editionTypeName: publicationInfo?.editionTypeName,
               publicationCategory: publicationInfo?.publicationCategory,
-              language: articleData.language,
-              articleJournalist: articleInfo?.journalist,
+              language: feedInfo.language,
+              articleJournalist: feedInfo?.journalist,
               publication: publicationInfo.name,
               publicationId: publicationInfo.id
             }
