@@ -361,7 +361,8 @@ const TableSelection = () => {
               companyTag,
               children,
               feedData,
-              feedInfo
+              feedInfo,
+              author
             } = item._source
 
             return {
@@ -372,7 +373,7 @@ const TableSelection = () => {
               publicationId: publicationInfo?.id,
               articleDate: `${articleInfo?.articleDate || feedData?.feedDate}`,
               articleUploadId: uploadInfo?.uploadId,
-              articleJournalist: articleInfo?.journalist,
+              articleJournalist: articleInfo?.journalist || author?.name,
               companies:
                 item.fields?.companyTag?.map(company => ({
                   id: company.id,
@@ -385,7 +386,7 @@ const TableSelection = () => {
               publicationCategory: publicationInfo?.publicationCategory,
               circulation: publicationInfo?.circulation,
               publicationType: publicationInfo?.publicationType,
-              language: articleData?.language,
+              language: articleData?.language || feedData?.language,
               size: articleData?.space,
               pageNumber: articleData?.pageNumber,
               children: children || [],

@@ -387,7 +387,8 @@ const TableSelection = () => {
           const socialFeedData = (await response.data.data.doc.length) ? response.data.data.doc : []
 
           const transformedArray = socialFeedData.map(item => {
-            const { socialFeedId, feedInfo, feedData, uploadInfo, publicationInfo, companyTag, children } = item._source
+            const { socialFeedId, feedInfo, feedData, uploadInfo, publicationInfo, companyTag, children, author } =
+              item._source
 
             return {
               socialFeedId: socialFeedId,
@@ -415,7 +416,7 @@ const TableSelection = () => {
               editionTypeName: publicationInfo?.editionTypeName,
               publicationCategory: publicationInfo?.publicationCategory,
               language: feedData.language,
-              articleJournalist: feedInfo?.journalist,
+              articleJournalist: feedInfo?.journalist || author?.name,
               publication: publicationInfo.name,
               publicationId: publicationInfo.id,
               articleType: 'online'
