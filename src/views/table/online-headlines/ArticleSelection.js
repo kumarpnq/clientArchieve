@@ -658,7 +658,10 @@ const TableSelection = () => {
 
       <EditDialog
         fetchTagsFlag={fetchTagsFlag}
-        handleClose={() => setIsEditDialogOpen(false)}
+        handleClose={() => {
+          setIsEditDialogOpen(false)
+          setSelectedArticle(null)
+        }}
         setFetchTagsFlag={setFetchTagsFlag}
         open={isEditDialogOpen}
         socialFeed={selectedArticle}

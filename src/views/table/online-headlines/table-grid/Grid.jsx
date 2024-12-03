@@ -217,7 +217,7 @@ const Grid = props => {
                     text: 'View Article',
                     menuItemProps: {
                       onClick: () => {
-                        setSelectedArticle(firstArticle)
+                        setSelectedArticle(secondArticle)
                         setOpenArticleView(true)
                       }
                     }
