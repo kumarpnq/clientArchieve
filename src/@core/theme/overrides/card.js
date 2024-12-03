@@ -3,7 +3,9 @@ const Card = skin => {
     MuiCard: {
       styleOverrides: {
         root: ({ theme }) => ({
-          ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` }),
+          ...(skin === 'bordered'
+            ? { border: `1px solid ${theme.palette.divider}` }
+            : { boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }),
           '& .card-more-options': {
             marginTop: theme.spacing(-1),
             marginRight: theme.spacing(-3)

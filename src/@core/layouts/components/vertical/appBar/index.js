@@ -78,7 +78,7 @@ const LayoutAppBar = props => {
       <Toolbar
         className='navbar-content-container'
         sx={{
-          ...(appBarBlur && { backdropFilter: 'blur(6px)' }),
+          // ...(appBarBlur && { backdropFilter: 'blur(6px)' }),
           minHeight: theme => `${theme.mixins.toolbar.minHeight}px !important`,
           backgroundColor: theme => hexToRGBA(theme.palette.background.paper, appBarBlur ? 0.95 : 1),
           ...(skin === 'bordered' ? { border: theme => `1px solid ${theme.palette.divider}` } : { boxShadow: 2 }),

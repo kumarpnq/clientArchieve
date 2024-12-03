@@ -17,7 +17,8 @@ const screens = [
   'kpiPeers',
   'publication',
   'journalist',
-  'socialMedia'
+  'socialMedia',
+  'comparativeKeyHighlights'
 ]
 
 const useScreenPermissions = () => {

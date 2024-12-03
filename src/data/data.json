@@ -1,0 +1,291 @@
+{
+    "companies": {
+        "labels": ["LIC", "HDFC LIFE", "TATA AIA", "CANARA HSBC", "ICICI PRU LIFE", "AEGON", "FUTURE GENERALI"],
+        "data": {
+            "Visbility": ["7412", "1803", "1407", "652", "338", "305", "278"],
+            "Image": ["12713", "3417", "2815", "1303", "676", "610", "555"]
+        },
+        "data2": {
+            "type": "line",
+            "QE": [172, 189, 200, 200, 95, 200, 200]
+        },
+        "backgroundColor": ["#08c1d6", "#3366ef"]
+    },
+    "tonality": {
+        "data1": {
+            "print": {
+                "labels": ["MARICO", "HUL", "DABUR", "TATA", "GODREJ", "BRITANNIA", "P&G"],
+                "data": {
+                    "Positive": [40192, 42909, 20772, 15306, 14904, 12201, 10582],
+                    "Neutral": [10266, 11100, 15035, 10554, 10009, 11063, 16091],
+                    "Negative": [2518, 5653, 5105, 1419, 1482, 1503, 2047]
+                },
+                "backgroundColor": ["#3e8ef1", "#75b5f6", "#badbfa"]
+            }
+        },
+        "data2": {
+            "print": {
+                "labels": ["COL-PAL", "DABUR", "ORAL-B", "PATANJALI", "PEPSODENT", "SENSODYNE", "CLOSE-UP", "PERFORA"],
+                "data": {
+                    "Positive": [47192, 22909, 20772, 25306, 14904, 12201, 10582, 14804],
+                    "Neutral": [13266, 17000, 5035, 11554, 1409, 1063, 1691, 1540],
+                    "Negative": [4418, 5653, 5105, 1419, 1482, 1503, 247, 2000]
+                },
+                "backgroundColor": ["#255fa5", "#2f99dc", "#26619f"]
+            },
+            "online": {
+                "labels": ["COL-PAL", "DABUR", "ORAL-B", "PATANJALI", "PEPSODENT", "SENSODYNE", "CLOSE-UP", "PERFORA"],
+                "data": {
+                    "Positive": [47192, 22909, 20772, 25306, 14904, 12201, 10582, 14804],
+                    "Neutral": [13266, 17000, 5035, 11554, 1409, 1063, 1691, 1540],
+                    "Negative": [4418, 5653, 5105, 1419, 1482, 1503, 247, 2000]
+                },
+                "backgroundColor": ["#255fa5", "#2f99dc", "#26619f"]
+            }
+        }
+    },
+    "publications": {
+        "data1": {
+            "print": {
+                "labels": ["MARICO", "HUL", "DABUR", "TATA", "GODREJ", "BRITANNIA", "P&G"],
+                "data": {
+                    "Positive": [47192, 22909, 20772, 25306, 14904, 12201, 10582],
+                    "Neutral": [13266, 17000, 5035, 11554, 1409, 1063, 1691],
+                    "Negative": [4418, 5653, 5105, 1419, 1482, 1503, 247]
+                },
+                "backgroundColor": ["#2e5aca", "#91bdf5", "#1f4394"]
+            }
+        },
+        "data2": {
+            "print": {
+                "labels": ["COL-PAL", "DABUR", "ORAL-B", "PATANJALI", "PEPSODENT", "SENSODYNE", "CLOSE-UP", "PERFORA"],
+                "data": {
+                    "Positive": [15536, 3070, 20, 13040, 187, 54, 0, 0],
+                    "Neutral": [602, 120, 0, 0, 0, 0, 0],
+                    "Negative": [810, 176, 0, 40, 0, 0, 0]
+                },
+                "backgroundColor": ["#2e5aca", "#91bdf5", "#1f4394"]
+            }
+        }
+    },
+    "journalist": {
+        "data1": {
+            "print": {
+                "labels": ["MARICO", "HUL", "DABUR", "TATA", "GODREJ", "BRITANNIA", "P&G"],
+                "data": {
+                    "Positive": [47192, 42909, 20772, 15306, 14904, 12201, 10582],
+                    "Neutral": [3266, 100, 5035, 554, 1409, 1063, 1691],
+                    "Negative": [1418, 5653, 5105, 1419, 1482, 1503, 247]
+                },
+                "backgroundColor": ["#3966b6", "#459fdb", "#90d0ed"]
+            }
+        },
+        "data2": {
+            "print": {
+                "labels": ["COL-PAL", "DABUR", "ORAL-B", "PATANJALI", "PEPSODENT", "SENSODYNE", "CLOSE-UP", "PERFORA"],
+                "data": {
+                    "Positive": [15536, 3070, 20, 13040, 187, 54, 0, 0],
+                    "Neutral": [602, 120, 0, 0, 0, 0, 0],
+                    "Negative": [810, 176, 0, 40, 0, 0, 0]
+                },
+                "backgroundColor": ["#3966b6", "#459fdb", "#90d0ed"]
+            }
+        }
+    },
+    "mainlines": {
+        "data1": {
+            "print": {
+                "labels": ["The Times Of India", "Hindustan Times", "The Indian Express", "The Hindu", "The New Indian Express", "Asian Age"],
+                "data": {
+                    "BRITANIA": [47192, 42909, 20772, 15306, 14904, 12201, 10582],
+                    "DABUR": [3266, 100, 5035, 554, 1409, 1063, 1691],
+                    "CGPL": [1418, 5653, 5105, 1419, 1482, 1503, 247],
+                    "HUL": [47192, 42909, 20772, 15306, 14904, 12201, 10582],
+                    "MARICO": [3266, 100, 5035, 554, 1409, 1063, 1691],
+                    "MARICO BANK": [1418, 5653, 5105, 1419, 1482, 1503, 247],
+                    "P&G": [1418, 5653, 5105, 1419, 1482, 1503, 247],
+                    "TATA": [1418, 5653, 5105, 1419, 1482, 1503, 247]
+                },
+                "backgroundColor": ["#1d4474", "#1c517d", "#24588e", "#31699e", "#3c7bb5", "#478ec1", "#599dcf", "#6ab4e2"]
+            }
+        }
+    },
+    "businessDailies": {
+        "data1": {
+            "print": {
+                "labels": [
+                    "The Financial Express",
+                    "The Economics Times",
+                    "conomic Times",
+                    "Business Standard",
+                    "Mint",
+                    "The Hindu",
+                    "Business Line"
+                ],
+                "data": {
+                    "BRITANIA": [47192, 42909, 20772, 15306, 14904, 12201, 18752],
+                    "DABUR": [3266, 100, 5035, 554, 1409, 1063, 17851],
+                    "CGPL": [1418, 5653, 5105, 1419, 1482, 1503, 1575],
+                    "HUL": [47192, 42909, 20772, 15306, 14904, 12201, 7828],
+                    "MARICO": [3266, 100, 5035, 554, 14009, 10163, 1896],
+                    "MARICO BANK": [1418, 5653, 5105, 14109, 10182, 1503, 10481],
+                    "P&G": [1908, 5653, 5105, 1419, 7782, 1703, 7785],
+                    "TATA": [2718, 5653, 5105, 1419, 9482, 1603, 1548]
+                },
+                "backgroundColor": ["#1d4474", "#1c517d", "#24588e", "#31699e", "#3c7bb5", "#478ec1", "#599dcf", "#6ab4e2"]
+            }
+        }
+    },
+    "table": {
+        "table1": {
+            "columns": [
+                "COMPANY",
+                "Volume",
+                "Positivity",
+                "Visibility",
+                "SOV",
+                "Volume",
+                "Positivity",
+                "Visibility",
+                "SOV",
+                "Volume",
+                "Positivity",
+                "Visibility",
+                "SOV"
+            ],
+
+            "companies": [
+                "ABSU",
+                "AEGON",
+                "AGEAS",
+                "AVIVA",
+                "BAJAJ ALLIANZ",
+                "BHARTI AXA",
+                "CANARA HSBC",
+                "DHFL PRAMERICA",
+                "EDELWEISS TOKIO",
+                "EXIDE LIFE",
+                "FUTURE GENERALI",
+                "HDFC LIFE",
+                "ICICI PRU LIFE",
+                "KOTAK LIFE",
+                "UC",
+                "LIFE",
+                "PNB METLIFE",
+                "RELIANCE",
+                "SBI LIFE",
+                "AR UNION DAIICHI"
+            ],
+            "visibility": [0, 0, 0, 0, 0, 261, 0, 156, 52, 0, 0, 234]
+        },
+        "table2": {
+            "columns": [
+                "COMPANY",
+                "Volume",
+                "Positivity",
+                "Visibility",
+                "SOV",
+                "Volume",
+                "Positivity",
+                "Visibility",
+                "SOV",
+                "Volume",
+                "Positivity",
+                "Visibility",
+                "SOV",
+                "Volume",
+                "Positivity",
+                "Visibility",
+                "SOV",
+                "Volume",
+                "Positivity",
+                "Visibility",
+                "SOV"
+            ],
+
+            "companies": [
+                "ABSU",
+                "AEGON",
+                "AGEAS",
+                "AVIVA",
+                "BAJAJ ALLIANZ",
+                "BHARTI AXA",
+                "CANARA HSBC",
+                "DHFL PRAMERICA",
+                "EDELWEISS TOKIO",
+                "EXIDE LIFE",
+                "FUTURE GENERALI",
+                "HDFC LIFE",
+                "ICICI PRU LIFE",
+                "KOTAK LIFE",
+                "UC",
+                "LIFE",
+                "PNB METLIFE",
+                "RELIANCE",
+                "SBI LIFE",
+                "AR UNION DAIICHI"
+            ],
+            "visibility": [0, 0, 0, 0, 0, 261, 0, 156, 52, 0, 0, 234, 0, 750, 52, 0, 0, 0, 0, 3]
+        },
+        "table3": {
+            "columns": [
+                "COMPANY",
+                "Volume",
+                "Visibility",
+                "Positivity",
+                "Volume",
+                "Visibility",
+                "Positivity",
+                "Volume",
+                "Visibility",
+                "Positivity",
+                "Volume",
+                "Visibility",
+                "Positivity",
+                "Volume",
+                "Visibility",
+                "Positivity"
+            ],
+
+            "companies": [
+                "AVIVA",
+                "BAJAJ ALLIANZ",
+                "BHARTI AXA",
+                "CANARA HSBC",
+                "EDELWEISS TOKIO",
+                "FUTURE GENERALI",
+                "HDFC LIFE",
+                "ICICI PRU LIFE",
+                "KOTAK LIFE",
+                "LIC",
+                "MAX LIFE",
+                "SBl LIFE",
+                "TATA AJA"
+            ],
+            "visibility": [261, 0, 156, 52, 0, 0, 234, 0, 750, 52, 0, 0, 0, 43, 89]
+        },
+        "table4": {
+            "companies": ["msn", "liveminf", "timesofindia", "economictimes", "investing", "hindustantimes", "indiatimes", "Ndfv", "rediff"],
+            "visibility": [0, 0, 0, 0, 0, 261, 0, 156, 52, 0, 0, 234, 0, 750, 52, 0, 0, 0, 34, 54, 48, 5, 89, 15]
+        },
+        "table5": {
+            "companies": [
+                "Ravi Hari (money control)",
+                "Asmita Defy (TOI)",
+                "Riya R Alex (!uenint)",
+                "Jocelyn Fernandes (fiveminf)",
+                "Khushboo Rai (moneycontrol)",
+                "Variika Rawat (moneyconfrol)",
+                "Pallavi (!xemlQt)",
+                "Namit Singh (News 1 8)",
+                "Suneera Tandon",
+                "Toshita Sahni (ndtv)"
+            ],
+            "visibility": [0, 0, 0, 0, 0, 261, 0, 156, 52, 0, 0, 234, 0, 750, 52, 0, 0, 0, 34, 54, 48, 5, 89, 15]
+        },
+        "table6": {
+            "companies": ["Colgate-Palmolive", "Dabur", "Godrej", "Haleon", "HUL", "ITC", "Marico", "Nestle", "Patanjali", "Proctor", "Tata"],
+            "visibility": [261, 156, 52, 234, 750, 52, 34, 54]
+        }
+    }
+}

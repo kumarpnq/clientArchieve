@@ -53,6 +53,9 @@ import 'prismjs/components/prism-tsx'
 import 'react-perfect-scrollbar/dist/css/styles.css'
 import 'src/iconify-bundle/icons-bundle-react'
 
+// ** ChartJS
+import 'src/lib/chart'
+
 // ** Global css styles
 import '../../styles/globals.css'
 

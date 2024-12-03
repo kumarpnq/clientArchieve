@@ -47,6 +47,7 @@ import styled from '@emotion/styled'
 import toast from 'react-hot-toast'
 import { CloseOutlined } from '@mui/icons-material'
 import dayjs from 'dayjs'
+import Filters from 'src/@core/layouts/components/filters'
 
 const notifications = [
   {
@@ -186,7 +187,7 @@ const AppBarContent = props => {
       {auth.user && (
         <>
           <Divider sx={{ mt: 1 }} />
-          <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <Box>
               <Competition settings={settings} />
 
@@ -220,9 +221,11 @@ const AppBarContent = props => {
               <DaysJumper settings={settings} />
               {!isMedia && <DateType settings={settings} />}
             </Box>
-          </Container>
+          </Box>
         </>
       )}
+
+      <Filters />
     </Box>
   )
 }

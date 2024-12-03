@@ -54,6 +54,11 @@ const UserLayout = ({ children, contentHeightFixed }) => {
             path: '/dashboards/clouds',
             icon: 'clarity:analytics-line'
           },
+          {
+            title: 'Comparative Highlights',
+            path: '/dashboards/comparative-highlights',
+            icon: 'clarity:analytics-line'
+          },
           screenPermissions.printDashboard && {
             title: 'Print',
             path: '/dashboards/print',

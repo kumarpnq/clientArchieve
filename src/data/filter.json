@@ -1,0 +1,78 @@
+{
+  "Company/Topic Name": {
+    "search": true,
+    "values": [
+      "Topic 1",
+      "Topic 2",
+      "Topic 3"
+    ]
+  },
+  "Share of Voice": null,
+  "Edition Type": {
+    "search": false,
+    "values": [
+      "Edition 1",
+      "Edition 2",
+      "Edition 3"
+    ]
+  },
+  "Media Type": {
+    "search": false,
+    "values": [
+      "Media 1",
+      "Media 2",
+      "Media 3"
+    ]
+  },
+  "Publication": {
+    "search": false,
+    "values": [
+      "Publication 1",
+      "Publication 2",
+      "Publication 3"
+    ]
+  },
+  "Journalist": {
+    "search": true,
+    "values": [
+      "Journalist 1",
+      "Journalist 2",
+      "Journalist 3"
+    ]
+  },
+  "Geography": {
+    "search": true,
+    "values": [
+      "Geography 1",
+      "Geography 2",
+      "Geography 3"
+    ]
+  },
+  "Language": {
+    "search": true,
+    "values": [
+      "Language 1",
+      "Language 2",
+      "Language 3"
+    ]
+  },
+  "Prominence": null,
+  "Tonality": null,
+  "Theme": {
+    "search": true,
+    "values": [
+      "Theme 1",
+      "Theme 2",
+      "Theme 3"
+    ]
+  },
+  "Article Size": null,
+  "Tags": {
+    "search": true,
+    "values": [
+      "Tags 1",
+      "Tags 2",
+      "Tags 3"
+    ]
+  }
+}
