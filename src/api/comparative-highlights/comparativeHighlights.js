@@ -1,11 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { BASE_URL } from '../base'
+import useLoader from 'src/hooks/useLoader'
 
 export const useGetComparativeChart = () => {
   const [data, setData] = useState(null)
+  const { loading, start, end } = useLoader()
 
   const fetchData = useCallback(async () => {
+    start()
     const storedToken = localStorage.getItem('accessToken')
     try {
       let headers = {
@@ -27,20 +30,24 @@ export const useGetComparativeChart = () => {
       setData(response.data?.data?.doc?.Report?.Company?.buckets || [])
     } catch (error) {
       console.error('Error fetching articles stats for competition:', error)
+    } finally {
+      end()
     }
-  }, [])
+  }, [start, end])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  return data
+  return { data, loading }
 }
 
 export const useTonalityDistribution = () => {
   const [data, setData] = useState(null)
+  const { loading, start, end } = useLoader()
 
   const fetchData = useCallback(async () => {
+    start()
     const storedToken = localStorage.getItem('accessToken')
     try {
       let headers = {
@@ -49,7 +56,7 @@ export const useTonalityDistribution = () => {
       }
 
       const params = {
-        type: 'VISIBILITY_IMAGE_SCORE',
+        type: 'VOLUME_RANKING',
         indicis: 'Online',
         range: 7,
         fromDate: '2024-06-21',
@@ -62,12 +69,14 @@ export const useTonalityDistribution = () => {
       setData(response.data?.data?.doc?.Report?.Company?.buckets || [])
     } catch (error) {
       console.error('Error fetching articles stats for competition:', error)
+    } finally {
+      end()
     }
-  }, [])
+  }, [start, end])
 
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  return data
+  return { data, loading }
 }

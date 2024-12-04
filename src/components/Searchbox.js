@@ -2,7 +2,7 @@ import { IconButton, InputBase, Paper } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import React from 'react'
 
-const Search = props => {
+const Searchbox = props => {
   const { placeholder, sx, ...rest } = props
 
   return (
@@ -42,4 +42,4 @@ const Search = props => {
   )
 }
 
-export default Search
+export default Searchbox

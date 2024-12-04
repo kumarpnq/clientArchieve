@@ -5,7 +5,7 @@ const colors = ['#8ab7e1', '#a1bea7', '#1d4388', '#8b8d8c']
 const rotate = () => (Math.random() > 0.5 ? 90 : 0)
 const fillColor = () => colors[Math.floor(Math.random() * colors.length)]
 function WordCloud(props) {
-  const { data, width = 1100, height = 400 } = props
+  const { data, width = 1300, height = 500 } = props
 
   return (
     <Cloud

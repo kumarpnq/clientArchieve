@@ -12,9 +12,8 @@ import {
   Typography
 } from '@mui/material'
 
-import Android12Switch from 'src/components/switch'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import NotesIcon from '@mui/icons-material/Notes'
+import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
 import EqualizerIcon from '@mui/icons-material/Equalizer'
 import { useToggle } from '@mantine/hooks'
 import React, { useMemo, useState } from 'react'
@@ -34,11 +33,11 @@ const icons = {
   doughnut: <DonutLargeIcon />,
   bubble: <BubbleChartIcon />,
   stacked: <StackedBarChartIcon />,
-  table: <NotesIcon />
+  table: <GridViewOutlinedIcon />
 }
 
 function Widget(props) {
-  const { title, openMenu: openOptions, charts, table, height } = props
+  const { title, openMenu: openOptions, charts, table, height, loading } = props
   const chartKeys = useMemo(() => Object.keys(charts || {}), [charts])
 
   const defaultChart = useMemo(() => {
@@ -58,7 +57,14 @@ function Widget(props) {
   if (chartKeys.length === 0) return null
 
   return (
-    <Card elevation={0} sx={{ p: 4, resize: 'both', boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px' }}>
+    <Card
+      elevation={0}
+      sx={{
+        p: 4,
+        height: '100%',
+        boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
+      }}
+    >
       <Stack direction='row' justifyContent='space-between' alignItems='center' mb={1}>
         <Typography
           variant='subtitle1'
@@ -67,7 +73,7 @@ function Widget(props) {
         >
           {title}
         </Typography>
-        <Stack direction='row' alignItems='center' spacing={1}>
+        <Stack direction='row' alignItems='center' spacing={1} className='cancelSelection'>
           <Switch />
 
           <Button
@@ -102,7 +108,7 @@ function Widget(props) {
               }}
               color={value === 'table' ? 'primary' : 'disabled'}
             >
-              <NotesIcon />
+              <GridViewOutlinedIcon />
             </IconButton>
           )}
 
@@ -111,7 +117,8 @@ function Widget(props) {
           </IconButton>
         </Stack>
       </Stack>
-      <Box id='chart-container' position='relative' sx={{ height: height || { xs: 250, md: 300 }, overflow: 'auto' }}>
+
+      <Box id='chart-container' position='relative' sx={{ height: 320, overflow: 'auto' }}>
         {value === 'charts' ? <Chart.component {...(Chart.props ?? {})} /> : table}
       </Box>
 

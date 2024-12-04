@@ -54,11 +54,28 @@ const UserLayout = ({ children, contentHeightFixed }) => {
             path: '/dashboards/clouds',
             icon: 'clarity:analytics-line'
           },
+          { title: 'News', path: '/dashboards/news', icon: 'clarity:analytics-line' },
+          { title: 'Client Highlights', path: '/dashboards/client', icon: 'clarity:analytics-line' },
           {
             title: 'Comparative Highlights',
             path: '/dashboards/comparative-highlights',
             icon: 'clarity:analytics-line'
           },
+          { title: 'Publication / Media Type', path: '/dashboards/publication', icon: 'clarity:analytics-line' },
+          { title: 'Journalist', path: '/dashboards/journalist', icon: 'clarity:analytics-line' },
+          { title: 'Genre / Theme', path: '/dashboards/genre', icon: 'clarity:analytics-line' },
+          { title: 'Stock Movement', path: '/dashboards/stack', icon: 'clarity:analytics-line' },
+          { title: 'Headlines', path: '/dashboards/headlines', icon: 'clarity:analytics-line' },
+          { title: 'Social Media', path: '/dashboards/social', icon: 'clarity:analytics-line' },
+          { title: 'Geography', path: '/dashboards/geography', icon: 'clarity:analytics-line' },
+          { title: 'Language', path: '/dashboards/language', icon: 'clarity:analytics-line' },
+          { title: 'Top Management', path: '/dashboards/top-management', icon: 'clarity:analytics-line' },
+          { title: 'Prominence', path: '/dashboards/prominence', icon: 'clarity:analytics-line' },
+          { title: 'Article Size', path: '/dashboards/article', icon: 'clarity:analytics-line' },
+          { title: 'Key Stories', path: '/dashboards/stories', icon: 'clarity:analytics-line' },
+          { title: 'Cat A', path: '/dashboards/cat-a', icon: 'clarity:analytics-line' },
+          { title: 'Cat B', path: '/dashboards/cat-b', icon: 'clarity:analytics-line' },
+
           screenPermissions.printDashboard && {
             title: 'Print',
             path: '/dashboards/print',
