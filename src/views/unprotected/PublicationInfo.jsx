@@ -1,6 +1,3 @@
-// PublicationInfo.js
-
-import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
@@ -106,7 +103,7 @@ const PublicationInfo = ({ articles }) => {
             Edition :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {articles.publicationName}
+            {articles.city}
           </Typography>
         </Grid>
       </Grid>

@@ -373,6 +373,7 @@ const TableSelection = () => {
               publicationId: publicationInfo?.id,
               articleDate: `${articleInfo?.articleDate || feedData?.feedDate}`,
               articleUploadId: uploadInfo?.uploadId,
+              city: uploadInfo?.city || feedInfo?.city,
               articleJournalist: articleInfo?.journalist || author?.name,
               companies:
                 item.fields?.companyTag?.map(company => ({
