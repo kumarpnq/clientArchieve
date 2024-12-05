@@ -1,6 +1,5 @@
 import { Box, Checkbox, CircularProgress, Tooltip, tooltipClasses, Typography, useMediaQuery } from '@mui/material'
 import React from 'react'
-import Pagination from '../Pagination'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
@@ -40,6 +39,18 @@ const getTooltipContent = row => {
         Companies :{' '}
         <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
           {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
+        </Typography>
+      </Typography>
+      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+        Edition :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.city || 'N/A'}
+        </Typography>
+      </Typography>
+      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+        Page :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.pageNumber || 'N/A'}
         </Typography>
       </Typography>
     </Box>
