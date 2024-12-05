@@ -1,4 +1,3 @@
-import filters from 'src/data/filter.json'
 import {
   Box,
   Button,
@@ -6,34 +5,163 @@ import {
   Chip,
   Collapse,
   ListItemButton,
-  Menu,
   MenuItem,
   OutlinedInput,
   Slide,
   Stack,
   Typography
 } from '@mui/material'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
+
+// * Mui Icons
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import SearchIcon from '@mui/icons-material/Search'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
+import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 
-const filterNames = Object.keys(filters)
+// * Static Values
+import { articleSize, prominence, tonality } from 'src/data/filter'
+
+// * Components
+import Menu from 'src/@core/components/filter-menu'
+import { selectSelectedClient } from 'src/store/apps/user/userSlice'
+import { useSelector } from 'react-redux'
+import axios from 'axios'
+import { BASE_URL } from 'src/api/base'
+
+function filterReducer(prevState, action) {
+  switch (action.type) {
+    case 'company':
+      return { ...prevState, company: { ...prevState.company, ...action.payload } }
+
+    case 'editionType':
+      return { ...prevState, editionType: { ...prevState.editionType, ...action.payload } }
+
+    case 'media':
+      return { ...prevState, media: { ...prevState.media, ...action.payload } }
+
+    case 'publication':
+      return { ...prevState, publication: { ...prevState.publication, ...action.payload } }
+
+    case 'geography':
+      return { ...prevState, geography: { ...prevState.geography, ...action.payload } }
+
+    case 'language':
+      return { ...prevState, language: { ...prevState.language, ...action.payload } }
+
+    case 'prominence':
+      return { ...prevState, prominence: { ...prevState.prominence, ...action.payload } }
+
+    case 'tonality':
+      return { ...prevState, tonality: { ...prevState.tonality, ...action.payload } }
+
+    case 'theme':
+      return { ...prevState, theme: { ...prevState.theme, ...action.payload } }
+
+    case 'articleSize':
+      return { ...prevState, articleSize: { ...prevState.articleSize, ...action.payload } }
+
+    case 'tags':
+      return { ...prevState, tags: { ...prevState.tags, ...action.payload } }
+
+    default:
+      return prevState
+  }
+}
+
+const defaultFilter = {
+  company: {
+    title: 'Company/Topic name',
+    search: '',
+    values: [],
+    name: 'companyName',
+    value: 'companyId'
+  },
+  editionType: {
+    title: 'Edition Type',
+    values: [],
+    name: 'editionTypeName',
+    value: 'editionTypeId'
+  },
+  media: {
+    title: 'Media',
+    values: [],
+    name: 'publicationName',
+    value: 'publicationId'
+  },
+  publication: {
+    title: 'Publication',
+    values: [],
+    name: 'publicationTypeName',
+    value: 'publicationTypeId'
+  },
+
+  geography: {
+    title: 'Geography',
+    search: '',
+    values: [],
+    name: 'cityName',
+    value: 'cityId'
+  },
+  language: {
+    title: 'Language',
+    search: '',
+    values: [],
+    name: 'name',
+    value: 'id'
+  },
+  prominence: {
+    title: 'Prominence',
+    values: prominence,
+    name: 'prominenceName',
+    value: 'prominenceId'
+  },
+  tonality: {
+    title: 'Tonality',
+    values: tonality,
+    name: 'tonalityName',
+    value: 'tonalityId'
+  },
+  theme: {
+    title: 'Theme',
+    search: '',
+    values: [],
+    name: 'themeName',
+    value: 'themeId'
+  },
+  articleSize: {
+    title: 'Article Size',
+    values: articleSize,
+    name: 'articleSizeName',
+    value: 'articleSizeId'
+  },
+  tags: {
+    title: 'Tags',
+    search: '',
+    values: [],
+    name: 'tagsName',
+    value: 'tagsId'
+  }
+}
+
+const filterNames = Object.keys(defaultFilter)
 
 function createMenuState() {
   const menuItems = {}
   filterNames.forEach(key => {
-    if (filters[key] !== null) menuItems[key] = { anchorEl: null, selected: [] }
+    menuItems[key] = { anchorEl: null, selected: [] }
   })
 
   return menuItems
 }
 
 function Filter() {
+  const [filterState, filterDispatch] = useReducer(filterReducer, defaultFilter)
   const [menuState, setMenuState] = useState(() => createMenuState())
   const [mapData, setMapData] = useState(new Map())
   const [collapse, setCollapse] = useState(false)
+  const selectedClient = useSelector(selectSelectedClient)
+  const clientId = selectedClient ? selectedClient.clientId : null
 
   function openMenu(e, menuName) {
     setMenuState(prev => ({ ...prev, [menuName]: { ...prev[menuName], anchorEl: e.currentTarget } }))
@@ -72,85 +200,188 @@ function Filter() {
     setMenuState(prev => ({ ...prev, [category]: { ...prev[category], selected } }))
   }
 
+  // * Data fetching functions
+  const fetchCompany = useCallback(async () => {
+    try {
+      const storedToken = localStorage.getItem('accessToken')
+
+      // Fetch companies
+      const responseCompanies = await axios.get(`${BASE_URL}/companyListByClient/`, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`
+        },
+        params: {
+          clientId: clientId
+        }
+      })
+
+      filterDispatch({ type: 'company', payload: { values: responseCompanies.data.companies } })
+    } catch (error) {
+      console.error('Error in fetchCompany :', error)
+    }
+  }, [clientId])
+
+  const fetchEditionType = useCallback(async () => {
+    try {
+      const storedToken = localStorage.getItem('accessToken')
+
+      // Fetch edition types
+      const editionTypeResponse = await axios.get(`${BASE_URL}/editionTypesList/`, {
+        headers: { Authorization: `Bearer ${storedToken}` }
+      })
+
+      filterDispatch({ type: 'editionType', payload: { values: editionTypeResponse.data.editionTypesList } })
+    } catch (error) {
+      console.error('Error in fetchEditionType :', error)
+    }
+  }, [])
+
+  const fetchPublication = useCallback(async () => {
+    try {
+      const storedToken = localStorage.getItem('accessToken')
+
+      // Fetch publication
+      const publicationResponse = await axios.get(`${BASE_URL}/printMediaList`, {
+        headers: { Authorization: `Bearer ${storedToken}` },
+        params: { clientId }
+      })
+      filterDispatch({ type: 'media', payload: { values: publicationResponse.data.mediaList } })
+    } catch (error) {
+      console.error('Error in fetchPublication :', error)
+    }
+  }, [clientId])
+
+  const fetchPublicationTypes = useCallback(async () => {
+    const storedToken = localStorage.getItem('accessToken')
+    try {
+      const response = await axios.get(`${BASE_URL}/publicationCategoryList/`, {
+        headers: { Authorization: `Bearer ${storedToken}` }
+      })
+
+      filterDispatch({ type: 'publication', payload: { values: response.data.publicationsTypeList } })
+    } catch (error) {
+      console.error('Error in fetchPublicationType :', error)
+    }
+  }, [])
+
+  const fetchCities = useCallback(async () => {
+    try {
+      const storedToken = localStorage.getItem('accessToken')
+
+      // Fetch cities
+      const citiesResponse = await axios.get(`${BASE_URL}/citieslist/`, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`
+        }
+      })
+
+      filterDispatch({ type: 'geography', payload: { values: citiesResponse.data.cities } })
+    } catch (error) {
+      console.error('Error in fetchCities :', error)
+    }
+  }, [])
+
+  const fetchLanguage = useCallback(async () => {
+    try {
+      const storedToken = localStorage.getItem('accessToken')
+
+      // Fetch languages
+      const languageResponse = await axios.get(`${BASE_URL}/languagelist/`, {
+        headers: {
+          Authorization: `Bearer ${storedToken}`
+        }
+      })
+      filterDispatch({ type: 'language', payload: { values: languageResponse.data.languages } })
+    } catch (error) {
+      console.error('Error in fetchLanguage :', error)
+    }
+  }, [])
+
+  const fetchTags = useCallback(async () => {
+    const storedToken = localStorage.getItem('accessToken')
+    try {
+      const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
+        headers: { Authorization: `Bearer ${storedToken}` },
+        params: { clientId }
+      })
+
+      filterDispatch({ type: 'tags', payload: { values: tagsResponse.data.clientTags } })
+    } catch (error) {
+      console.error('Error in fetchTags :', error)
+    }
+  }, [clientId])
+
+  // * useEffect hooks
+  useEffect(() => {
+    fetchCompany()
+  }, [fetchCompany])
+
+  useEffect(() => {
+    fetchEditionType()
+  }, [fetchEditionType])
+
+  useEffect(() => {
+    fetchPublication()
+  }, [fetchPublication])
+
+  useEffect(() => {
+    fetchPublicationTypes()
+  }, [fetchPublicationTypes])
+
+  useEffect(() => {
+    fetchCities()
+  }, [fetchCities])
+
+  useEffect(() => {
+    fetchLanguage()
+  }, [fetchLanguage])
+
+  useEffect(() => {
+    fetchTags()
+  }, [fetchTags])
+
   return (
     <Box py={2} px={3}>
       <Stack direction='row' gap={2} flexWrap='wrap'>
-        {filterNames.map(filter => (
-          <Fragment key={filter}>
+        {filterNames.map(filterKey => (
+          <Fragment key={filterKey}>
             <Button
               variant='text'
               sx={{ py: 0.5, px: 1, borderRadius: 2, color: 'text.secondary' }}
-              endIcon={filter in menuState ? <KeyboardArrowDownIcon fontSize='small' /> : null}
+              endIcon={<KeyboardArrowDownIcon fontSize='small' />}
               onClick={e => {
-                if (filter in menuState) openMenu(e, filter)
+                openMenu(e, filterKey)
               }}
             >
-              {filter}
+              {defaultFilter[filterKey].title}
             </Button>
-            {filter in menuState && (
-              <Menu
-                anchorEl={menuState[filter].anchorEl}
-                open={Boolean(menuState[filter].anchorEl)}
-                onClose={() => closeMenu(filter)}
-                disableScrollLock
-                sx={{
-                  '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-                    width: 'min(100%, 380px)',
-                    backgroundColor: 'transparent',
-                    boxShadow: 'none'
-                  },
-                  '& .MuiButtonBase-root:hover': {
-                    backgroundColor: 'background.default'
-                  }
-                }}
-              >
-                {filters[filter]?.search && (
-                  <Card
-                    elevation={0}
-                    sx={{
-                      borderRadius: 2,
-                      boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-                      mb: 1
-                    }}
-                  >
-                    <OutlinedInput
-                      fullWidth
-                      size='small'
-                      placeholder='Search'
-                      startAdornment={<SearchIcon fontSize='small' sx={{ color: 'text.tertiary' }} />}
-                      sx={{ borderRadius: 2, '& .MuiInputBase-input.MuiOutlinedInput-input': { pl: 1 } }}
-                    />
-                  </Card>
-                )}
-                <Card
-                  elevation={0}
-                  sx={{
-                    py: 2,
-                    borderRadius: 2,
-                    boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-                    backdropFilter: 'blur(2px)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
 
-                    // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-                    border: '1px solid',
-                    borderColor: 'divider'
-                  }}
-                >
-                  {filters[filter]?.values.map(item => (
-                    <MenuItem
-                      key={item}
-                      onClick={() => {
-                        handleSelection(item, item)
-                        handleSelectedFilter(filter, item)
-                      }}
-                      selected={mapData?.has(item)}
-                    >
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Card>
-              </Menu>
-            )}
+            <Menu
+              search={'search' in filterState[filterKey]}
+              anchorEl={menuState[filterKey].anchorEl}
+              open={Boolean(menuState[filterKey].anchorEl)}
+              onClose={() => closeMenu(filterKey)}
+              disableScrollLock
+            >
+              {filterState[filterKey].values.map(val => {
+                const name = val[filterState[filterKey].name]
+                const value = val[filterState[filterKey].value]
+
+                return (
+                  <MenuItem
+                    key={value}
+                    onClick={() => {
+                      // handleSelection(item, item)
+                      // handleSelectedFilter(filterKey, item)
+                    }}
+
+                    // selected={mapData?.has(item)}
+                  >
+                    {name}
+                  </MenuItem>
+                )
+              })}
+            </Menu>
           </Fragment>
         ))}
       </Stack>
@@ -158,17 +389,16 @@ function Filter() {
       <Slide direction='up' in={mapData.size > 0} mountOnEnter unmountOnExit>
         <Box
           position='fixed'
-          bottom={25}
+          top={180}
           display='flex'
           justifyContent='center'
           alignItems='center'
-          right={0}
-          left={260}
+          right={30}
           zIndex={1400}
         >
           <Card
             sx={{
-              width: 'min(776px, 95%)',
+              width: 'min(376px, 95%)',
               borderRadius: 2,
               boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;',
               border: '1px solid',

@@ -78,13 +78,13 @@ const Page = () => {
   const toggleCollapse = name => setCollapse(prev => ({ ...prev, [name]: !prev[name] }))
   const { data: comparative, loading: comparativeLoading } = useGetComparativeChart()
 
-  // const [layouts, setLayouts] = useLocalStorage({
-  //   key: 'comparative',
-  //   defaultValue: defaultLayouts,
-  //   getInitialValueInEffect: false
-  // })
+  const [layouts, setLayouts] = useLocalStorage({
+    key: 'comparative',
+    defaultValue: defaultLayouts,
+    getInitialValueInEffect: false
+  })
 
-  const [layouts, setLayouts] = useState(defaultLayouts)
+  // const [layouts, setLayouts] = useState(defaultLayouts)
 
   const [tabSelected, setTabSelected] = useState(0)
 
@@ -95,7 +95,7 @@ const Page = () => {
   // const [currentLayout, setCurrentLayout] = useState([])
 
   const onLayoutChange = (curr, all) => {
-    // setCurrentLayout(curr)
+    if (layouts === defaultLayouts) return
     setLayouts(all)
   }
 
@@ -883,7 +883,12 @@ const Page = () => {
                       'P&G',
                       'TATA'
                     ].map(col => (
-                      <TableCell colSpan={2} align='center' sx={{ fontWeight: 500, letterSpacing: 2 }} key={col}>
+                      <TableCell
+                        colSpan={2}
+                        align='center'
+                        sx={{ fontWeight: 500, letterSpacing: 2, minWidth: 250 }}
+                        key={col}
+                      >
                         {col}
                       </TableCell>
                     ))}
@@ -1499,7 +1504,7 @@ const Page = () => {
 
           <Divider sx={{ my: 4 }} />
           <TableContainer style={{ height: 420 }}>
-            <Table>
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
                   <TableCell sx={{ fontWeight: 500, letterSpacing: 2 }}>MEDIA TYPE</TableCell>

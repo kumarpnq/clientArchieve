@@ -76,6 +76,11 @@ html {
 .react-grid-layout {
   position: relative;
 }
+
+.react-grid-item {
+  will-change: transform !important;
+}
+
 .react-grid-item.react-grid-placeholder {
   background-color: rgba(0, 128, 255, 0.5) !important; /* Custom light blue color */
   border: 2px dashed rgba(0, 128, 255, 0.7) !important; /* Optional: Add a dashed border */

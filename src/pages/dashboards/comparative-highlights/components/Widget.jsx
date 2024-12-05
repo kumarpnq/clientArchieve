@@ -118,7 +118,7 @@ function Widget(props) {
         </Stack>
       </Stack>
 
-      <Box id='chart-container' position='relative' sx={{ height: 320, overflow: 'auto' }}>
+      <Box id='chart-container' className='cancelSelection' position='relative' sx={{ height: 320, overflow: 'auto' }}>
         {value === 'charts' ? <Chart.component {...(Chart.props ?? {})} /> : table}
       </Box>
 

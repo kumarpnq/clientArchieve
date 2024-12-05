@@ -61,6 +61,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
             path: '/dashboards/comparative-highlights',
             icon: 'clarity:analytics-line'
           },
+          { title: 'Share of Voice', path: '/dashboards/share-of-voice', icon: 'clarity:analytics-line' },
           { title: 'Publication / Media Type', path: '/dashboards/publication', icon: 'clarity:analytics-line' },
           { title: 'Journalist', path: '/dashboards/journalist', icon: 'clarity:analytics-line' },
           { title: 'Genre / Theme', path: '/dashboards/genre', icon: 'clarity:analytics-line' },
