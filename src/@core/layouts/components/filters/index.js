@@ -1,10 +1,23 @@
-import { Box, Button, Card, Chip, Collapse, ListItemButton, MenuItem, Slide, Stack, Typography } from '@mui/material'
-import React, { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
+import {
+  Box,
+  Button,
+  Card,
+  Chip,
+  Collapse,
+  Divider,
+  ListItemButton,
+  MenuItem,
+  Slide,
+  Stack,
+  Typography
+} from '@mui/material'
+import React, { Fragment, useCallback, useEffect, useMemo, useReducer, useState } from 'react'
 
 // * Mui Icons
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import CloseIcon from '@mui/icons-material/Close'
+import FilterAltIcon from '@mui/icons-material/FilterAlt'
 
 // * Static Values
 import { articleSize, prominence, tonality } from 'src/data/filter'
@@ -15,14 +28,14 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
-import { useDebouncedCallback, useMap } from '@mantine/hooks'
-import { updateFilters } from 'src/store/apps/filters/filterSlice'
+import { useDebouncedCallback } from '@mantine/hooks'
+import { setInitialState, updateFilters } from 'src/store/apps/filters/filterSlice'
 import { useDispatch } from 'react-redux'
 
 function filterReducer(prevState, action) {
   switch (action.type) {
-    case 'company':
-      return { ...prevState, company: { ...prevState.company, ...action.payload } }
+    case 'companyIds':
+      return { ...prevState, companyIds: { ...prevState.companyIds, ...action.payload } }
 
     case 'editionType':
       return { ...prevState, editionType: { ...prevState.editionType, ...action.payload } }
@@ -60,7 +73,7 @@ function filterReducer(prevState, action) {
 }
 
 const defaultFilter = {
-  company: {
+  companyIds: {
     title: 'Company/Topic name',
     search: '',
     values: [],
@@ -140,7 +153,7 @@ const filterNames = Object.keys(defaultFilter)
 function createMenuState() {
   const menuItems = {}
   filterNames.forEach(key => {
-    menuItems[key] = { anchorEl: null, selected: [] }
+    menuItems[key] = { anchorEl: null, selected: new Map() }
   })
 
   return menuItems
@@ -149,15 +162,10 @@ function createMenuState() {
 function Filter() {
   const [filterState, filterDispatch] = useReducer(filterReducer, defaultFilter)
   const [menuState, setMenuState] = useState(() => createMenuState())
-  const Map = useMap()
   const [collapse, setCollapse] = useState(false)
   const selectedClient = useSelector(selectSelectedClient)
-  const dispatch = useDispatch()
   const clientId = selectedClient ? selectedClient.clientId : null
-
-  const searchTerm = useDebouncedCallback((filterType, search) => {
-    filterDispatch({ type: filterType, payload: { search } })
-  }, 500)
+  const dispatch = useDispatch()
 
   function openMenu(e, menuName) {
     setMenuState(prev => ({ ...prev, [menuName]: { ...prev[menuName], anchorEl: e.currentTarget } }))
@@ -169,41 +177,54 @@ function Filter() {
 
   const toggleCollapse = () => setCollapse(!collapse)
 
+  const searchTerm = useDebouncedCallback((filterType, search) => {
+    filterDispatch({ type: filterType, payload: { search } })
+  }, 500)
+
+  const filterApplied = useMemo(
+    () => Object.values(menuState).reduce((applied, value) => (applied += value.selected.size), 0),
+    [menuState]
+  )
+
+  // * Filter actions methods
   const toggleSelection = filterKey => {
-    const { values, key } = filterState[filterKey]
-    if (menuState[filterKey].selected.length === values.length) {
-      const selected = values.map(v => v[key])
-      setMenuState(prev => ({ ...prev, [filterKey]: { selected } }))
-    } else {
-      setMenuState(prev => ({ ...prev, [filterKey]: { selected: [] } }))
+    const { values, key, value } = filterState[filterKey]
+    const selected = menuState[filterKey].selected
+    if (selected.size === values.length) {
+      setMenuState(prev => ({ ...prev, [filterKey]: { ...prev[filterKey], selected: new Map() } }))
+      dispatch(updateFilters({ type: filterKey, payload: '' }))
+
+      return
     }
+
+    const selectAll = []
+    values.forEach(v => {
+      selectAll.push([v[key], v[value]])
+    })
+
+    const selectAllMap = new Map(selectAll)
+
+    dispatch(updateFilters({ type: filterKey, payload: Array.from(selectAllMap.keys()).join(',') }))
+    setMenuState(prev => ({ ...prev, [filterKey]: { ...prev[filterKey], selected: selectAllMap } }))
   }
 
-  const handleSelection = (key, value) => {
-    if (Map.has(key)) {
-      Map.delete(key)
-    } else {
-      Map.set(key, value)
-    }
+  const deleteSelectedFilter = (filterKey, key) => {
+    const selected = menuState[filterKey].selected
+    selected.delete(key)
+    setMenuState(prev => ({ ...prev, [filterKey]: { ...prev[filterKey], selected } }))
+    dispatch(updateFilters({ type: filterKey, payload: Array.from(selected.keys()).join(',') }))
   }
 
-  const deleteSelectedFilter = (category, i) => {
-    const selected = [...menuState[category].selected]
-    const key = selected.splice(i, 1)[0]
-    Map.delete(key)
-    setMenuState(prev => ({ ...prev, [category]: { ...prev[category], selected } }))
-  }
-
-  const handleSelectedFilter = (category, key) => {
-    const selected = [...menuState[category].selected]
-    if (selected.includes(key)) {
-      selected.splice(selected.indexOf(key), 1)
+  const handleSelectedFilter = (filterKey, key, value) => {
+    const selected = menuState[filterKey].selected
+    if (selected.has(key)) {
+      selected.delete(key)
     } else {
-      selected.push(key)
+      selected.set(key, value)
     }
-    setMenuState(prev => ({ ...prev, [category]: { ...prev[category], selected } }))
 
-    dispatch(updateFilters({ type: category, payload: selected.join(',') }))
+    setMenuState(prev => ({ ...prev, [filterKey]: { ...prev[filterKey], selected } }))
+    dispatch(updateFilters({ type: filterKey, payload: Array.from(selected.keys()).join(',') }))
   }
 
   // * Data fetching functions
@@ -217,16 +238,25 @@ function Filter() {
           Authorization: `Bearer ${storedToken}`
         },
         params: {
-          clientId: clientId,
-          searchTerm: 'IKEA'
+          clientId: clientId
         }
       })
+      const companies = responseCompanies.data.companies
+      filterDispatch({ type: 'companyIds', payload: { values: companies } })
+      const company = companies[0]
 
-      filterDispatch({ type: 'company', payload: { values: responseCompanies.data.companies } })
+      if (!company) return
+
+      const selectedCompany = [company['companyId'], company['companyName']]
+
+      const selected = new Map([selectedCompany])
+
+      dispatch(updateFilters({ type: 'companyIds', payload: company['companyId'] }))
+      setMenuState(prev => ({ ...prev, companyIds: { ...prev.companyIds, selected } }))
     } catch (error) {
       console.error('Error in fetchCompany :', error)
     }
-  }, [clientId])
+  }, [clientId, dispatch])
 
   const fetchEditionType = useCallback(async () => {
     try {
@@ -369,6 +399,7 @@ function Filter() {
               open={Boolean(menuState[filterKey].anchorEl)}
               onClose={() => closeMenu(filterKey)}
               toggleSelection={() => toggleSelection(filterKey)}
+              checked={menuState[filterKey].selected.size === filterState[filterKey].values.length}
               disableScrollLock
               search={{
                 display: 'search' in filterState[filterKey],
@@ -387,10 +418,10 @@ function Filter() {
                   <MenuItem
                     key={value}
                     onClick={() => {
-                      handleSelection(key, value)
-                      handleSelectedFilter(filterKey, key)
+                      // handleSelection(key, value)
+                      handleSelectedFilter(filterKey, key, value)
                     }}
-                    selected={Map?.has(key)}
+                    selected={menuState[filterKey]?.selected?.has(key)}
                     sx={{
                       overflow: 'hidden',
                       display: '-webkit-box',
@@ -408,7 +439,7 @@ function Filter() {
         ))}
       </Stack>
 
-      <Slide direction='up' in={Map.size > 0} mountOnEnter unmountOnExit>
+      <Slide direction='up' in={filterApplied} mountOnEnter unmountOnExit>
         <Box
           position='fixed'
           bottom={25}
@@ -429,9 +460,10 @@ function Filter() {
             }}
           >
             <ListItemButton onClick={toggleCollapse}>
-              <Stack direction='row' justifyContent='space-between' alignItems='center' width={'100%'}>
-                <Typography variant='subtitle1' color='primary.main'>
-                  {Map.size} Filter applied
+              <Stack direction='row' justifyContent='space-between' alignItems='center' width={'100%'} spacing={2}>
+                <FilterAltIcon />
+                <Typography variant='subtitle1' color='primary.main' fontWeight={500}>
+                  FILTER
                 </Typography>
 
                 {collapse ? <KeyboardArrowDownIcon fontSize='small' /> : <KeyboardArrowUpIcon size='small' />}
@@ -439,24 +471,37 @@ function Filter() {
             </ListItemButton>
             <Collapse direction='up' in={collapse}>
               <Box px={2} py={1} sx={{ maxHeight: 400, overflowY: 'auto' }}>
+                <Stack direction='row' justifyContent='space-between' alignItems='center' width={'100%'} spacing={2}>
+                  <Typography variant='subtitle2'>Filters</Typography>
+
+                  <Button
+                    color='primary'
+                    sx={{ py: 0.1 }}
+                    onClick={() => {
+                      setMenuState(createMenuState())
+                      setInitialState()
+                    }}
+                  >
+                    Clear all
+                  </Button>
+                </Stack>
+
+                <Divider sx={{ my: 2 }} />
+
                 {Object.keys(menuState).map(menu => {
-                  if (menuState[menu].selected.length === 0) return null
+                  if (menuState[menu].selected.size === 0) return null
 
                   return (
                     <Fragment key={menu}>
-                      <Stack direction='row' justifyContent='space-between' alignItems='center'>
-                        <Typography variant='subtitle1' fontWeight={500} gutterBottom>
-                          {filterState[menu].title}
-                        </Typography>
-                        <Button variant='outlined' color='primary' sx={{ py: 0.1 }}>
-                          Clear all
-                        </Button>
-                      </Stack>
-                      <Stack direction='row' spacing={1} mb={2}>
-                        {menuState[menu].selected.map((item, i) => (
+                      <Typography variant='subtitle1' fontWeight={500} gutterBottom>
+                        {filterState[menu].title}
+                      </Typography>
+
+                      <Stack direction='row' gap={3} mb={2} flexWrap='wrap'>
+                        {Array.from(menuState[menu].selected.entries()).map(([key, value], i) => (
                           <Chip
-                            label={Map.get(item)}
-                            key={item}
+                            label={value}
+                            key={key}
                             size='small'
                             variant='outlined'
                             sx={{
@@ -466,7 +511,7 @@ function Filter() {
                               borderColor: 'divider',
                               boxShadow: 'rgba(0, 0, 0, 0.16) 0px 1px 4px;'
                             }}
-                            onDelete={() => deleteSelectedFilter(menu, i)}
+                            onDelete={() => deleteSelectedFilter(menu, key)}
                             deleteIcon={<CloseIcon sx={{ cursor: 'pointer' }} />}
                           />
                         ))}

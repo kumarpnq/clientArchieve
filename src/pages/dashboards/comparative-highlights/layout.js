@@ -1,11 +1,11 @@
 const defaultLayouts = {
   lg: [
-    { i: '0', x: 0, y: 0, w: 6, h: 25 }, // lg width is 10
-    { i: '1', x: 6, y: 0, w: 6, h: 25 },
-    { i: '2', x: 12, y: 0, w: 4, h: 50 },
-    { i: '3', x: 0, y: 25, w: 12, h: 25 },
-    { i: '4', x: 0, y: 50, w: 8, h: 25 },
-    { i: '5', x: 8, y: 50, w: 8, h: 25 },
+    { i: '0', x: 0, y: 0, w: 6, h: 28 }, // lg width is 10
+    { i: '1', x: 6, y: 0, w: 6, h: 28 },
+    { i: '2', x: 12, y: 28, w: 4, h: 56 },
+    { i: '3', x: 0, y: 28, w: 12, h: 28 },
+    { i: '4', x: 0, y: 58, w: 8, h: 28 },
+    { i: '5', x: 8, y: 58, w: 8, h: 28 },
     { i: '6', x: 0, y: 75, w: 16, h: 35, maxH: 35, minH: 35 },
     { i: '7', x: 0, y: 110, w: 16, h: 35, isResizable: false, isDraggable: true },
     { i: '8', x: 0, y: 145, w: 16, h: 35, isResizable: false, isDraggable: true },

@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack'
 import { Checkbox, FormControlLabel } from '@mui/material'
 
 function Menu(props) {
-  const { search, toggleSelection, children, ...rest } = props
+  const { search, toggleSelection, checked, children, ...rest } = props
 
   return (
     <MuiMenu
@@ -56,7 +56,7 @@ function Menu(props) {
         <Stack direction='row' px={4}>
           <FormControlLabel
             sx={{ width: '100%' }}
-            control={<Checkbox size='small' onClick={toggleSelection} />}
+            control={<Checkbox size='small' checked={checked} onClick={toggleSelection} />}
             label='Select All'
           />
         </Stack>

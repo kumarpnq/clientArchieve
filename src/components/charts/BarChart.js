@@ -3,7 +3,7 @@ import React, { memo } from 'react'
 import { Bar } from 'react-chartjs-2'
 
 function BarChart(props) {
-  const { data, categoryPercentage, barPercentage, barThickness } = props
+  const { data, ...rest } = props
   const customTooltip = useCustomTooltip()
 
   if (!data) return null
@@ -18,9 +18,7 @@ function BarChart(props) {
           label,
           data: data.data[label],
           backgroundColor: data.backgroundColor[i],
-          categoryPercentage,
-          barPercentage,
-          barThickness
+          ...rest
         }))
       }}
       options={{

@@ -23,7 +23,8 @@ const Tabs = styled(props => (
   '& .MuiTabs-indicator': {
     display: 'flex',
     justifyContent: 'center',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    height: 3
   },
   '& .MuiTabs-indicatorSpan': {
     width: '65%',
@@ -39,9 +40,12 @@ const Tab = styled(props => <MuiTab disableRipple {...props} />)(({ theme }) => 
   [theme.breakpoints.up('md')]: {
     marginInline: theme.spacing(5)
   },
+  minHeight: 33,
+
   padding: 0,
   '&.Mui-selected': {
-    color: theme.palette.primary
+    color: theme.palette.primary.main,
+    fontWeight: 600
   },
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)'

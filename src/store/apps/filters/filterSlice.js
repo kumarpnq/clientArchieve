@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  company: '',
+  companyIds: '',
   editionType: '',
   media: '',
   publication: '',
@@ -18,6 +18,9 @@ export const filterSlice = createSlice({
   name: 'filter',
   initialState,
   reducers: {
+    setInitialState: () => {
+      return initialState
+    },
     updateFilters: (state, action) => {
       const { type, payload } = action.payload
       if (type in state) {
@@ -29,6 +32,6 @@ export const filterSlice = createSlice({
   }
 })
 
-export const { updateFilters } = filterSlice.actions
+export const { updateFilters, setInitialState } = filterSlice.actions
 
 export default filterSlice.reducer

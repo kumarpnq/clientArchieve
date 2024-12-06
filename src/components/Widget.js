@@ -7,6 +7,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Skeleton,
   Stack,
   Switch,
   Typography
@@ -25,6 +26,11 @@ import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart'
 import useMenu from 'src/hooks/useMenu'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
+import { Tabs, Tab } from 'src/components/Tabs'
+import { All, Online, Print } from 'src/constants/filters'
+
+import Lottie from 'lottie-react'
+import loader from 'public/loader.json'
 
 const icons = {
   bar: <EqualizerIcon />,
@@ -37,7 +43,7 @@ const icons = {
 }
 
 function Widget(props) {
-  const { title, openMenu: openOptions, charts, table, height, loading } = props
+  const { title, openMenu: openOptions, charts, table, data, mediaType, changeMediaType, loading = false } = props
   const chartKeys = useMemo(() => Object.keys(charts || {}), [charts])
 
   const defaultChart = useMemo(() => {
@@ -80,8 +86,8 @@ function Widget(props) {
             variant='outlined'
             onClick={e => {
               if (chartKeys.length > 1) return openMenu(e)
-              const chart = chartKeys.at(0)
-              setChart({ ...charts[chart], icon: icons[chart] })
+              const name = chartKeys.at(0)
+              setChart({ ...charts[name], icon: icons[name], name })
               toggle('charts')
             }}
             startIcon={value === 'charts' ? Chart.icon : defaultChart.icon}
@@ -117,10 +123,36 @@ function Widget(props) {
           </IconButton>
         </Stack>
       </Stack>
+      <Tabs
+        value={mediaType}
+        onChange={changeMediaType}
+        className='cancelSelection'
+        sx={{
+          mt: 0,
+          mb: 2,
 
-      <Box id='chart-container' className='cancelSelection' position='relative' sx={{ height: 320, overflow: 'auto' }}>
-        {value === 'charts' ? <Chart.component {...(Chart.props ?? {})} /> : table}
-      </Box>
+          '& .MuiTab-root': {
+            m: 0,
+            mr: 6,
+            minWidth: 50,
+            fontSize: 13
+          }
+        }}
+      >
+        <Tab label={'All'} value={All} />
+        <Tab label={'Print'} value={Print} />
+        <Tab label={'Online'} value={Online} />
+      </Tabs>
+
+      <Stack id='chart-container' className='cancelSelection' sx={{ height: 335, overflow: 'auto' }}>
+        {loading ? (
+          <Loading />
+        ) : value === 'charts' ? (
+          <Chart.component data={data ?? []} {...(Chart.props ?? {})} />
+        ) : (
+          table
+        )}
+      </Stack>
 
       <Menu
         anchorEl={anchorEl}
@@ -164,6 +196,16 @@ function Widget(props) {
         ))}
       </Menu>
     </Card>
+  )
+}
+
+function Loading() {
+  return (
+    <Stack alignItems='center' justifyContent='center' flexGrow={1} width='100%'>
+      <Box width={200}>
+        <Lottie animationData={loader} />
+      </Box>
+    </Stack>
   )
 }
 

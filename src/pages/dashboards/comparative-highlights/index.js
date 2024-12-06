@@ -36,17 +36,18 @@ import Searchbox from 'src/components/Searchbox'
 import words from 'src/data/word.json'
 
 import useMenu from 'src/hooks/useMenu'
-import Widget from './components/Widget'
+import Widget from '../../../components/Widget'
 import WordCloud from 'src/components/charts/WordCloud'
-import { useGetComparativeChart } from 'src/api/comparative-highlights/comparativeHighlights'
-import Lottie from 'lottie-react'
-import loader from 'public/loader.json'
+import { useChartAndGraphApi } from 'src/api/comparative-highlights'
+
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
 import { useLocalStorage } from '@mantine/hooks'
 import { Tab, TabPanel, Tabs } from 'src/components/Tabs'
 import defaultLayouts from './layout'
+import { All, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
+import Comparative from './components/Comparative'
 
 const bgColor = ['#fc8166', '#fbd059', '#58d8ff', '#5d87fd', '#57c0bd', '#8acd82', '#2f839e']
 const pieData = [42, 11, 4, 8, 8, 9, 10, 8]
@@ -76,7 +77,8 @@ const Page = () => {
     t13: false
   })
   const toggleCollapse = name => setCollapse(prev => ({ ...prev, [name]: !prev[name] }))
-  const { data: comparative, loading: comparativeLoading } = useGetComparativeChart()
+
+  // const { data: comparative, loading: comparativeLoading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, All)
 
   const [layouts, setLayouts] = useLocalStorage({
     key: 'comparative',
@@ -114,105 +116,15 @@ const Page = () => {
         cols={cols}
       >
         <Box key='0'>
-          {comparative ? (
-            <Widget
-              title='Comparative Key Highlights'
-              openMenu={openMenu}
-              loading={comparativeLoading}
-              charts={{
-                bar: { component: MixedChart, props: { data: comparative } }
-              }}
-              table={
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        {[
-                          { title: 'Company', width: 130, align: 'left' },
-                          { title: 'Volume', width: 100, align: 'center' },
-                          { title: 'Volume SOV', width: 100, align: 'center' },
-                          { title: 'Visibility', width: 100, align: 'center' },
-                          { title: 'Visibility SOV', width: 100, align: 'center' }
-                        ].map(col => (
-                          <TableCell key={col.title} style={{ minWidth: col.width }} align={col.align}>
-                            {col.title}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {companies.labels.map((label, i) => (
-                        <TableRow key={label} hover sx={{ cursor: 'pointer' }}>
-                          <TableCell component='th' scope='row'>
-                            {label}
-                          </TableCell>
-
-                          <TableCell component='th' scope='row' align='center'>
-                            <Typography variant='caption'>{companies.data.Visbility[i]}</Typography>
-                          </TableCell>
-                          <TableCell component='th' scope='row' align='center'>
-                            <Typography variant='caption'>{companies.data.Image[i]}</Typography>
-                          </TableCell>
-                          <TableCell component='th' scope='row' align='center'>
-                            <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
-                          </TableCell>
-                          <TableCell component='th' scope='row' align='center'>
-                            <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              }
-            />
-          ) : (
-            <Card
-              elevation={0}
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                p: 4,
-                resize: 'both',
-                boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px',
-                height: '100%',
-                overflow: 'auto'
-              }}
-            >
-              <Stack direction='row' justifyContent='space-between' alignItems='center' mb={1}>
-                <Typography
-                  variant='subtitle1'
-                  fontWeight={500}
-                  sx={{
-                    overflow: 'hidden',
-                    display: '-webkit-box',
-                    WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: '1'
-                  }}
-                >
-                  <Skeleton width={200} />
-                </Typography>
-
-                <Stack direction='row' alignItems='center' spacing={1}>
-                  <Skeleton variant='rounded' height={25} width={28} />
-                  <Skeleton variant='rounded' height={25} width={120} />
-                  <Skeleton variant='rounded' height={25} width={28} />
-                </Stack>
-              </Stack>
-              <Stack alignItems='center' justifyContent='center' flexGrow={1} width='100%'>
-                <Box width={200}>
-                  <Lottie animationData={loader} />
-                </Box>
-              </Stack>
-            </Card>
-          )}
+          <Comparative openMenu={openMenu} />
         </Box>
         <Box key='1'>
           <Widget
             title='  Tonality Distribution: Industry - Print'
             openMenu={openMenu}
+            data={tonality.data1.print}
             charts={{
-              stacked: { component: StackChart, props: { data: tonality.data1.print, barPercentage: 0.2 } }
+              stacked: { component: StackChart, props: { barPercentage: 0.2 } }
             }}
             table={
               <TableContainer>
@@ -328,10 +240,11 @@ const Page = () => {
             height={320}
             title='Colgate-Palmolive vs. Peers – Tonality Break-up'
             openMenu={openMenu}
+            data={tonality.data2.online}
             charts={{
-              bar: { component: BarChart, props: { data: tonality.data2.online, barPercentage: 0.3 } },
-              line: { component: LineChart, props: { data: tonality.data2.online } },
-              stacked: { component: StackChart, props: { data: tonality.data2.print, barPercentage: 0.1 } }
+              bar: { component: BarChart, props: { barPercentage: 0.3 } },
+              line: { component: LineChart },
+              stacked: { component: StackChart, props: { barPercentage: 0.1 } }
             }}
           />
         </Box>
@@ -340,10 +253,11 @@ const Page = () => {
           <Widget
             title='Industry Visibility in Mainlines – Print'
             openMenu={openMenu}
+            data={publications.data1.print}
             charts={{
-              bar: { component: BarChart, props: { data: publications.data1.print, barPercentage: 0.3 } },
-              line: { component: LineChart, props: { data: publications.data1.print } },
-              stacked: { component: StackChart, props: { data: publications.data1.print, barPercentage: 0.15 } }
+              bar: { component: BarChart, props: { barPercentage: 0.3 } },
+              line: { component: LineChart },
+              stacked: { component: StackChart, props: { barPercentage: 0.15 } }
             }}
             table={
               <TableContainer>
@@ -401,10 +315,11 @@ const Page = () => {
           <Widget
             title='Industry Visibility in Business Dailies – Print'
             openMenu={openMenu}
+            data={publications.data2.print}
             charts={{
-              bar: { component: BarChart, props: { data: publications.data2.print, barPercentage: 0.3 } },
-              line: { component: LineChart, props: { data: publications.data2.print } },
-              stacked: { component: StackChart, props: { data: publications.data2.print, barPercentage: 0.15 } }
+              bar: { component: BarChart, props: { barPercentage: 0.3 } },
+              line: { component: LineChart },
+              stacked: { component: StackChart, props: { barPercentage: 0.15 } }
             }}
             table={
               <TableContainer>
@@ -488,6 +403,7 @@ const Page = () => {
           <Tabs value={tabSelected} onChange={handleChange} sx={{ mb: 4 }} className='cancelSelection'>
             <Tab label={'Print'} value={0} />
             <Tab label={'Online'} value={1} />
+            <Tab label={'Both'} value={1} />
           </Tabs>
           <TabPanel value={tabSelected} index={0}>
             <TableContainer style={{ height: 380 }}>
