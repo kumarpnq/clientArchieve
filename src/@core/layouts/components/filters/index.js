@@ -1,22 +1,9 @@
-import {
-  Box,
-  Button,
-  Card,
-  Chip,
-  Collapse,
-  ListItemButton,
-  MenuItem,
-  OutlinedInput,
-  Slide,
-  Stack,
-  Typography
-} from '@mui/material'
+import { Box, Button, Card, Chip, Collapse, ListItemButton, MenuItem, Slide, Stack, Typography } from '@mui/material'
 import React, { Fragment, useCallback, useEffect, useReducer, useState } from 'react'
 
 // * Mui Icons
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 
 // * Static Values
@@ -28,6 +15,9 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
+import { useDebouncedCallback, useMap } from '@mantine/hooks'
+import { updateFilters } from 'src/store/apps/filters/filterSlice'
+import { useDispatch } from 'react-redux'
 
 function filterReducer(prevState, action) {
   switch (action.type) {
@@ -74,73 +64,74 @@ const defaultFilter = {
     title: 'Company/Topic name',
     search: '',
     values: [],
-    name: 'companyName',
-    value: 'companyId'
+    value: 'companyName',
+    key: 'companyId'
   },
   editionType: {
     title: 'Edition Type',
     values: [],
-    name: 'editionTypeName',
-    value: 'editionTypeId'
+    value: 'editionTypeName',
+    key: 'editionTypeId'
   },
   media: {
     title: 'Media',
     values: [],
-    name: 'publicationName',
-    value: 'publicationId'
+    search: '',
+    value: 'publicationName',
+    key: 'publicationId'
   },
   publication: {
     title: 'Publication',
     values: [],
-    name: 'publicationTypeName',
-    value: 'publicationTypeId'
+    value: 'publicationTypeName',
+    key: 'publicationTypeId'
   },
 
   geography: {
     title: 'Geography',
     search: '',
     values: [],
-    name: 'cityName',
-    value: 'cityId'
+    value: 'cityName',
+    key: 'cityId'
   },
   language: {
     title: 'Language',
     search: '',
     values: [],
-    name: 'name',
-    value: 'id'
+    value: 'name',
+    key: 'id'
   },
   prominence: {
     title: 'Prominence',
     values: prominence,
-    name: 'prominenceName',
-    value: 'prominenceId'
+    value: 'prominenceName',
+    key: 'prominenceId'
   },
   tonality: {
     title: 'Tonality',
     values: tonality,
-    name: 'tonalityName',
-    value: 'tonalityId'
+    value: 'tonalityName',
+    key: 'tonalityId'
   },
   theme: {
     title: 'Theme',
     search: '',
     values: [],
-    name: 'themeName',
-    value: 'themeId'
+    value: 'themeName',
+    key: 'themeId'
   },
   articleSize: {
     title: 'Article Size',
     values: articleSize,
-    name: 'articleSizeName',
-    value: 'articleSizeId'
+    value: 'articleSizeName',
+    key: 'articleSizeId'
   },
   tags: {
     title: 'Tags',
     search: '',
     values: [],
-    name: 'tagsName',
-    value: 'tagsId'
+    value: 'tagsName',
+    key: 'tagsId'
   }
 }
 
@@ -158,10 +149,15 @@ function createMenuState() {
 function Filter() {
   const [filterState, filterDispatch] = useReducer(filterReducer, defaultFilter)
   const [menuState, setMenuState] = useState(() => createMenuState())
-  const [mapData, setMapData] = useState(new Map())
+  const Map = useMap()
   const [collapse, setCollapse] = useState(false)
   const selectedClient = useSelector(selectSelectedClient)
+  const dispatch = useDispatch()
   const clientId = selectedClient ? selectedClient.clientId : null
+
+  const searchTerm = useDebouncedCallback((filterType, search) => {
+    filterDispatch({ type: filterType, payload: { search } })
+  }, 500)
 
   function openMenu(e, menuName) {
     setMenuState(prev => ({ ...prev, [menuName]: { ...prev[menuName], anchorEl: e.currentTarget } }))
@@ -173,20 +169,28 @@ function Filter() {
 
   const toggleCollapse = () => setCollapse(!collapse)
 
-  const handleSelection = (key, value) => {
-    if (mapData.has(key)) {
-      mapData.delete(key)
-      setMapData(new Map(mapData))
+  const toggleSelection = filterKey => {
+    const { values, key } = filterState[filterKey]
+    if (menuState[filterKey].selected.length === values.length) {
+      const selected = values.map(v => v[key])
+      setMenuState(prev => ({ ...prev, [filterKey]: { selected } }))
     } else {
-      setMapData(new Map(mapData.set(key, value)))
+      setMenuState(prev => ({ ...prev, [filterKey]: { selected: [] } }))
+    }
+  }
+
+  const handleSelection = (key, value) => {
+    if (Map.has(key)) {
+      Map.delete(key)
+    } else {
+      Map.set(key, value)
     }
   }
 
   const deleteSelectedFilter = (category, i) => {
     const selected = [...menuState[category].selected]
     const key = selected.splice(i, 1)[0]
-    mapData.delete(key)
-    setMapData(new Map(mapData))
+    Map.delete(key)
     setMenuState(prev => ({ ...prev, [category]: { ...prev[category], selected } }))
   }
 
@@ -198,6 +202,8 @@ function Filter() {
       selected.push(key)
     }
     setMenuState(prev => ({ ...prev, [category]: { ...prev[category], selected } }))
+
+    dispatch(updateFilters({ type: category, payload: selected.join(',') }))
   }
 
   // * Data fetching functions
@@ -211,7 +217,8 @@ function Filter() {
           Authorization: `Bearer ${storedToken}`
         },
         params: {
-          clientId: clientId
+          clientId: clientId,
+          searchTerm: 'IKEA'
         }
       })
 
@@ -236,20 +243,20 @@ function Filter() {
     }
   }, [])
 
-  const fetchPublication = useCallback(async () => {
+  const fetchMedia = useCallback(async () => {
     try {
       const storedToken = localStorage.getItem('accessToken')
 
       // Fetch publication
       const publicationResponse = await axios.get(`${BASE_URL}/printMediaList`, {
         headers: { Authorization: `Bearer ${storedToken}` },
-        params: { clientId }
+        params: { clientId, searchTerm: filterState.media.search }
       })
       filterDispatch({ type: 'media', payload: { values: publicationResponse.data.mediaList } })
     } catch (error) {
-      console.error('Error in fetchPublication :', error)
+      console.error('Error in fetchMedia :', error)
     }
-  }, [clientId])
+  }, [clientId, filterState.media.search])
 
   const fetchPublicationTypes = useCallback(async () => {
     const storedToken = localStorage.getItem('accessToken')
@@ -289,27 +296,28 @@ function Filter() {
       const languageResponse = await axios.get(`${BASE_URL}/languagelist/`, {
         headers: {
           Authorization: `Bearer ${storedToken}`
-        }
+        },
+        params: { searchTerm: filterState.language.search }
       })
       filterDispatch({ type: 'language', payload: { values: languageResponse.data.languages } })
     } catch (error) {
       console.error('Error in fetchLanguage :', error)
     }
-  }, [])
+  }, [filterState.language.search])
 
   const fetchTags = useCallback(async () => {
     const storedToken = localStorage.getItem('accessToken')
     try {
       const tagsResponse = await axios.get(`${BASE_URL}/getTagListForClient`, {
         headers: { Authorization: `Bearer ${storedToken}` },
-        params: { clientId }
+        params: { clientId, searchTerm: filterState.tags.search }
       })
 
       filterDispatch({ type: 'tags', payload: { values: tagsResponse.data.clientTags } })
     } catch (error) {
       console.error('Error in fetchTags :', error)
     }
-  }, [clientId])
+  }, [clientId, filterState.tags.search])
 
   // * useEffect hooks
   useEffect(() => {
@@ -321,8 +329,8 @@ function Filter() {
   }, [fetchEditionType])
 
   useEffect(() => {
-    fetchPublication()
-  }, [fetchPublication])
+    fetchMedia()
+  }, [fetchMedia])
 
   useEffect(() => {
     fetchPublicationTypes()
@@ -346,8 +354,8 @@ function Filter() {
         {filterNames.map(filterKey => (
           <Fragment key={filterKey}>
             <Button
-              variant='text'
-              sx={{ py: 0.5, px: 1, borderRadius: 2, color: 'text.secondary' }}
+              variant={'text'}
+              sx={{ py: 0.5, px: 2, borderRadius: 2, color: 'text.secondary' }}
               endIcon={<KeyboardArrowDownIcon fontSize='small' />}
               onClick={e => {
                 openMenu(e, filterKey)
@@ -357,27 +365,41 @@ function Filter() {
             </Button>
 
             <Menu
-              search={'search' in filterState[filterKey]}
               anchorEl={menuState[filterKey].anchorEl}
               open={Boolean(menuState[filterKey].anchorEl)}
               onClose={() => closeMenu(filterKey)}
+              toggleSelection={() => toggleSelection(filterKey)}
               disableScrollLock
+              search={{
+                display: 'search' in filterState[filterKey],
+                props: {
+                  onChange: e => {
+                    searchTerm(filterKey, e.target.value)
+                  }
+                }
+              }}
             >
               {filterState[filterKey].values.map(val => {
-                const name = val[filterState[filterKey].name]
+                const key = val[filterState[filterKey].key]
                 const value = val[filterState[filterKey].value]
 
                 return (
                   <MenuItem
                     key={value}
                     onClick={() => {
-                      // handleSelection(item, item)
-                      // handleSelectedFilter(filterKey, item)
+                      handleSelection(key, value)
+                      handleSelectedFilter(filterKey, key)
                     }}
-
-                    // selected={mapData?.has(item)}
+                    selected={Map?.has(key)}
+                    sx={{
+                      overflow: 'hidden',
+                      display: '-webkit-box',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: '1',
+                      textOverflow: 'ellipsis'
+                    }}
                   >
-                    {name}
+                    {value}
                   </MenuItem>
                 )
               })}
@@ -386,19 +408,20 @@ function Filter() {
         ))}
       </Stack>
 
-      <Slide direction='up' in={mapData.size > 0} mountOnEnter unmountOnExit>
+      <Slide direction='up' in={Map.size > 0} mountOnEnter unmountOnExit>
         <Box
           position='fixed'
-          top={180}
+          bottom={25}
           display='flex'
           justifyContent='center'
           alignItems='center'
-          right={30}
+          left={{ xs: 0, lg: 260 }}
+          right={0}
           zIndex={1400}
         >
           <Card
             sx={{
-              width: 'min(376px, 95%)',
+              width: 'min(776px, 95%)',
               borderRadius: 2,
               boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;',
               border: '1px solid',
@@ -408,7 +431,7 @@ function Filter() {
             <ListItemButton onClick={toggleCollapse}>
               <Stack direction='row' justifyContent='space-between' alignItems='center' width={'100%'}>
                 <Typography variant='subtitle1' color='primary.main'>
-                  {mapData.size} Filter applied
+                  {Map.size} Filter applied
                 </Typography>
 
                 {collapse ? <KeyboardArrowDownIcon fontSize='small' /> : <KeyboardArrowUpIcon size='small' />}
@@ -423,7 +446,7 @@ function Filter() {
                     <Fragment key={menu}>
                       <Stack direction='row' justifyContent='space-between' alignItems='center'>
                         <Typography variant='subtitle1' fontWeight={500} gutterBottom>
-                          {menu}
+                          {filterState[menu].title}
                         </Typography>
                         <Button variant='outlined' color='primary' sx={{ py: 0.1 }}>
                           Clear all
@@ -432,7 +455,7 @@ function Filter() {
                       <Stack direction='row' spacing={1} mb={2}>
                         {menuState[menu].selected.map((item, i) => (
                           <Chip
-                            label={mapData.get(item)}
+                            label={Map.get(item)}
                             key={item}
                             size='small'
                             variant='outlined'

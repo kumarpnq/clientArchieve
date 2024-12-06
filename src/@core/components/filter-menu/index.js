@@ -3,9 +3,11 @@ import Card from '@mui/material/Card'
 import MuiMenu from '@mui/material/Menu'
 import React from 'react'
 import SearchIcon from '@mui/icons-material/Search'
+import Stack from '@mui/material/Stack'
+import { Checkbox, FormControlLabel } from '@mui/material'
 
 function Menu(props) {
-  const { search = false, children, ...rest } = props
+  const { search, toggleSelection, children, ...rest } = props
 
   return (
     <MuiMenu
@@ -22,7 +24,7 @@ function Menu(props) {
       }}
       {...rest}
     >
-      {search && (
+      {search.display && (
         <Card
           elevation={0}
           sx={{
@@ -36,10 +38,29 @@ function Menu(props) {
             size='small'
             placeholder='Search'
             startAdornment={<SearchIcon fontSize='small' sx={{ color: 'text.tertiary' }} />}
-            sx={{ borderRadius: 2, '& .MuiInputBase-input.MuiOutlinedInput-input': { pl: 1 } }}
+            sx={{ borderRadius: 2, '& .MuiInputBase-input.MuiOutlinedInput-input': { pl: 2 } }}
+            {...search.props}
           />
         </Card>
       )}
+      <Card
+        elevation={0}
+        sx={{
+          borderRadius: 2,
+          boxShadow: 'rgba(0, 0, 0, 0.1) 0px 10px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+          mb: 1,
+          border: '1px solid',
+          borderColor: 'divider'
+        }}
+      >
+        <Stack direction='row' px={4}>
+          <FormControlLabel
+            sx={{ width: '100%' }}
+            control={<Checkbox size='small' onClick={toggleSelection} />}
+            label='Select All'
+          />
+        </Stack>
+      </Card>
       <Card
         elevation={0}
         sx={{
