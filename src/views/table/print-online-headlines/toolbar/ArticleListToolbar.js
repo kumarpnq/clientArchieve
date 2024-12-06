@@ -503,9 +503,9 @@ const ArticleListToolbar = ({
         <MenuItem onClick={() => handleSortBy('online')} selected={selectedSortBy === 'online'}>
           Filter by Online
         </MenuItem>
-        <MenuItem onClick={() => handleSortBy('magazine')} selected={selectedSortBy === 'magazine'}>
+        {/* <MenuItem onClick={() => handleSortBy('magazine')} selected={selectedSortBy === 'magazine'}>
           Filter by Magazine
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
 
       <CustomTooltip title='Publication'>
