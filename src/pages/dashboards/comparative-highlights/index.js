@@ -46,11 +46,10 @@ import 'react-resizable/css/styles.css'
 import { useLocalStorage } from '@mantine/hooks'
 import { Tab, TabPanel, Tabs } from 'src/components/Tabs'
 import defaultLayouts from './layout'
-import { All, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
-import Comparative from './components/Comparative'
-
-const bgColor = ['#fc8166', '#fbd059', '#58d8ff', '#5d87fd', '#57c0bd', '#8acd82', '#2f839e']
-const pieData = [42, 11, 4, 8, 8, 9, 10, 8]
+import Comparative from './components/comparative/ComparativeChart'
+import ComparativeTable from './components/comparative/ComparativeTable'
+import ComparativePie from './components/comparative/ComparativePie'
+import ComparativeDataGrid from './components/comparative/ComparativeDataGrid'
 
 // Breakpoints and column definitions
 const breakpoints = { lg: 1256, md: 1024, sm: 768, xs: 480, xxs: 0 }
@@ -80,13 +79,13 @@ const Page = () => {
 
   // const { data: comparative, loading: comparativeLoading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, All)
 
-  const [layouts, setLayouts] = useLocalStorage({
-    key: 'comparative',
-    defaultValue: defaultLayouts,
-    getInitialValueInEffect: false
-  })
+  // const [layouts, setLayouts] = useLocalStorage({
+  //   key: 'comparative',
+  //   defaultValue: defaultLayouts,
+  //   getInitialValueInEffect: false
+  // })
 
-  // const [layouts, setLayouts] = useState(defaultLayouts)
+  const [layouts, setLayouts] = useState(defaultLayouts)
 
   const [tabSelected, setTabSelected] = useState(0)
 
@@ -119,121 +118,11 @@ const Page = () => {
           <Comparative openMenu={openMenu} />
         </Box>
         <Box key='1'>
-          <Widget
-            title='  Tonality Distribution: Industry - Print'
-            openMenu={openMenu}
-            data={tonality.data1.print}
-            charts={{
-              stacked: { component: StackChart, props: { barPercentage: 0.2 } }
-            }}
-            table={
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      {[
-                        { title: 'Company', width: 130, align: 'left' },
-                        { title: 'Volume', width: 100, align: 'center' },
-                        { title: 'Volume SOV', width: 100, align: 'center' },
-                        { title: 'Visibility', width: 100, align: 'center' },
-                        { title: 'Visibility SOV', width: 100, align: 'center' }
-                      ].map(col => (
-                        <TableCell key={col.title} style={{ minWidth: col.width }} align={col.align}>
-                          {col.title}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {companies.labels.map((label, i) => (
-                      <TableRow
-                        key={label}
-                        sx={{
-                          '&:last-child td, &:last-child th': {
-                            border: 0
-                          }
-                        }}
-                      >
-                        <TableCell component='th' scope='row'>
-                          {label}
-                        </TableCell>
-
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data.Visbility[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data.Image[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            }
-          />
+          <ComparativeTable />
         </Box>
 
         <Box key='2'>
-          <Card elevation={0} sx={{ height: '100%', p: 4 }}>
-            <Typography
-              variant='subtitle1'
-              fontWeight={500}
-              sx={{ overflow: 'hidden', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: '1' }}
-            >
-              Tonality Break-up
-            </Typography>
-            <Box sx={{ height: { xs: 250, md: 300 }, overflow: 'auto' }}>
-              <DoughnutChart
-                labels={['COL-PAL', 'DABUR', 'ORAL-B', 'PATANJALI', 'PEPSODENT', 'SENSODYNE', 'CLOSE-UP', 'PERFORA']}
-                data={pieData}
-                cutout={120}
-                radius={135}
-              />
-            </Box>
-
-            <Box mt={4}>
-              {['Col-Pal', 'Dabur', 'Oral-B', 'Patanjali', 'Pepsodent', 'Sensodyne', 'Close-UP', 'Performa'].map(
-                (label, i) => (
-                  <Box key={label}>
-                    <Typography variant='subtitle2' color='text.secondary' textTransform='capitalize' gutterBottom>
-                      {label}
-                    </Typography>
-
-                    <Grid container spacing={4} mb={1} alignItems='center'>
-                      <Grid item xs={10}>
-                        <LinearProgress
-                          variant='determinate'
-                          value={pieData[i]}
-                          sx={{
-                            height: 10,
-                            borderRadius: '5px',
-                            [`&.${linearProgressClasses.colorPrimary}`]: {
-                              backgroundColor: '#f7f9fa'
-                            },
-                            [`& .${linearProgressClasses.bar}`]: {
-                              borderRadius: '5px',
-                              backgroundColor: bgColor[i]
-                            }
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={2}>
-                        <Typography variant='body2' fontSize={13}>
-                          {pieData[i] + '%'}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                )
-              )}
-            </Box>
-          </Card>
+          <ComparativePie />
         </Box>
         <Box key='3'>
           <Widget
@@ -374,186 +263,9 @@ const Page = () => {
           />
         </Box>
 
-        <Card elevation={0} sx={{ p: 4 }} key='6'>
-          <Stack direction='row' justifyContent='space-between' alignItems='center'>
-            <Stack>
-              <Typography
-                variant='h5'
-                fontWeight={500}
-                sx={{ overflow: 'hidden', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: '1' }}
-              >
-                Comparative Key Highlights
-              </Typography>
-              <Typography
-                variant='body2'
-                color='text.tertiary'
-                sx={{ overflow: 'hidden', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: '1' }}
-              >
-                Keep track of companies and their reputation
-              </Typography>
-            </Stack>
-            <Stack direction='row' alignItems='center' spacing={1.5} className='cancelSelection'>
-              <Searchbox placeholder='Search' />
-              <Button variant='outlined' startIcon={<FilterListIcon />} sx={{ borderRadius: 2, px: 6 }}>
-                Filters
-              </Button>
-            </Stack>
-          </Stack>
-
-          <Tabs value={tabSelected} onChange={handleChange} sx={{ mb: 4 }} className='cancelSelection'>
-            <Tab label={'Print'} value={0} />
-            <Tab label={'Online'} value={1} />
-            <Tab label={'Both'} value={1} />
-          </Tabs>
-          <TabPanel value={tabSelected} index={0}>
-            <TableContainer style={{ height: 380 }}>
-              <Table stickyHeader sx={{ transition: 'height 1.5s ease, max-height 1.5s ease' }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell />
-                    <TableCell colSpan={4} align='center' sx={{ fontWeight: 500, letterSpacing: 2 }}>
-                      OVERALL
-                    </TableCell>
-                    <TableCell colSpan={4} align='center' sx={{ fontWeight: 500, letterSpacing: 2 }}>
-                      PRINT
-                    </TableCell>
-                    <TableCell colSpan={4} align='center' sx={{ fontWeight: 500, letterSpacing: 2 }}>
-                      ONLINE
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    {table.table1.columns.map((col, i) => (
-                      <TableCell key={i} style={{ minWidth: i === 0 ? 130 : 100 }} align={i === 0 ? 'left' : 'center'}>
-                        {col}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody sx={{ transition: 'all ease-in 6s' }}>
-                  {table.table1.companies.slice(0, 5).map(company => (
-                    <TableRow
-                      key={company}
-                      sx={{
-                        '&:last-child td, &:last-child th': {
-                          border: 0
-                        }
-                      }}
-                    >
-                      <TableCell component='th' scope='row'>
-                        {company}
-                      </TableCell>
-
-                      {table.table1.visibility.map((v, i) => (
-                        <TableCell component='th' scope='row' key={i} align='center'>
-                          <Typography variant='caption'>{v}</Typography>
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-
-                  {collapse.t1 &&
-                    table.table1.companies.slice(5).map(company => (
-                      <TableRow
-                        key={company}
-                        sx={{
-                          '&:last-child td, &:last-child th': {
-                            border: 0
-                          }
-                        }}
-                      >
-                        <TableCell component='th' scope='row'>
-                          {company}
-                        </TableCell>
-
-                        {table.table1.visibility.map((v, i) => (
-                          <TableCell component='th' scope='row' key={i} align='center'>
-                            <Typography variant='caption'>{v}</Typography>
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </TabPanel>
-          <TabPanel value={tabSelected} index={1}>
-            <TableContainer style={{ height: 380 }}>
-              <Table stickyHeader sx={{ transition: 'height 1.5s ease, max-height 1.5s ease' }}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell />
-                    <TableCell colSpan={4} align='center' sx={{ fontWeight: 500, letterSpacing: 2 }}>
-                      OVERALL
-                    </TableCell>
-                    <TableCell colSpan={4} align='center' sx={{ fontWeight: 500, letterSpacing: 2 }}>
-                      PRINT
-                    </TableCell>
-                    <TableCell colSpan={4} align='center' sx={{ fontWeight: 500, letterSpacing: 2 }}>
-                      ONLINE
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    {table.table1.columns.map((col, i) => (
-                      <TableCell key={i} style={{ minWidth: i === 0 ? 130 : 100 }} align={i === 0 ? 'left' : 'center'}>
-                        {col}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody sx={{ transition: 'all ease-in 6s' }}>
-                  {table.table1.companies.slice(0, 5).map(company => (
-                    <TableRow
-                      key={company}
-                      sx={{
-                        '&:last-child td, &:last-child th': {
-                          border: 0
-                        }
-                      }}
-                    >
-                      <TableCell component='th' scope='row'>
-                        {company}
-                      </TableCell>
-
-                      {table.table1.visibility.map((v, i) => (
-                        <TableCell component='th' scope='row' key={i} align='center'>
-                          <Typography variant='caption'>{v}</Typography>
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-
-                  {collapse.t1 &&
-                    table.table1.companies.slice(5).map(company => (
-                      <TableRow
-                        key={company}
-                        sx={{
-                          '&:last-child td, &:last-child th': {
-                            border: 0
-                          }
-                        }}
-                      >
-                        <TableCell component='th' scope='row'>
-                          {company}
-                        </TableCell>
-
-                        {table.table1.visibility.map((v, i) => (
-                          <TableCell component='th' scope='row' key={i} align='center'>
-                            <Typography variant='caption'>{v}</Typography>
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </TabPanel>
-          <Button variant='text' className='cancelSelection' fullWidth onClick={() => toggleCollapse('t1')}>
-            <Typography variant='subtitle1' color='primary.main'>
-              {collapse.t1 ? 'Show less' : 'Show more'}
-            </Typography>
-          </Button>
-        </Card>
-
+        <Box key='6'>
+          <ComparativeDataGrid />
+        </Box>
         <Card elevation={0} sx={{ p: 4 }} key='7'>
           <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
             <Stack>
@@ -2674,6 +2386,67 @@ const Page = () => {
             </Typography>
           </Button>
         </Card>
+
+        <Box key='24'>
+          <Widget
+            title='  Tonality Distribution: Industry - Print'
+            openMenu={openMenu}
+            data={tonality.data1.print}
+            charts={{
+              stacked: { component: StackChart, props: { barPercentage: 0.2 } }
+            }}
+            table={
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      {[
+                        { title: 'Company', width: 130, align: 'left' },
+                        { title: 'Volume', width: 100, align: 'center' },
+                        { title: 'Volume SOV', width: 100, align: 'center' },
+                        { title: 'Visibility', width: 100, align: 'center' },
+                        { title: 'Visibility SOV', width: 100, align: 'center' }
+                      ].map(col => (
+                        <TableCell key={col.title} style={{ minWidth: col.width }} align={col.align}>
+                          {col.title}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {companies.labels.map((label, i) => (
+                      <TableRow
+                        key={label}
+                        sx={{
+                          '&:last-child td, &:last-child th': {
+                            border: 0
+                          }
+                        }}
+                      >
+                        <TableCell component='th' scope='row'>
+                          {label}
+                        </TableCell>
+
+                        <TableCell component='th' scope='row' align='center'>
+                          <Typography variant='caption'>{companies.data.Visbility[i]}</Typography>
+                        </TableCell>
+                        <TableCell component='th' scope='row' align='center'>
+                          <Typography variant='caption'>{companies.data.Image[i]}</Typography>
+                        </TableCell>
+                        <TableCell component='th' scope='row' align='center'>
+                          <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
+                        </TableCell>
+                        <TableCell component='th' scope='row' align='center'>
+                          <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            }
+          />
+        </Box>
       </ReactGridLayout>
 
       <Menu

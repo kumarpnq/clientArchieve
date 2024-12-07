@@ -4,14 +4,27 @@ import MixedChart from 'src/components/charts/MixedChart'
 import Widget from 'src/components/Widget'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import { All, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
+import { useSelector } from 'react-redux'
+import { getMediaType, setMediaType } from 'src/store/apps/filters/filterSlice'
+import { useDispatch } from 'react-redux'
+import { selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/user/userSlice'
 
 function Comparative(props) {
-  const { openMenu, height } = props
-  const [mediaType, setMediaType] = useState(All)
-  const { data, loading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, mediaType)
+  const { openMenu } = props
+  const [selectMediaType, setSelectMediaType] = useState(All)
+  const startDate = useSelector(selectSelectedStartDate)
+  const endDate = useSelector(selectSelectedEndDate)
+  const { data, loading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, selectMediaType, startDate, endDate)
+  const mediaType = useSelector(getMediaType)
+  const dispatch = useDispatch()
 
   const changeMediaType = (event, newValue) => {
-    setMediaType(newValue)
+    console.log('New Value: ', newValue)
+    setSelectMediaType(newValue)
+
+    // if (mediaType !== newValue) {
+    //   dispatch(setMediaType(newValue))
+    // }
   }
 
   return (
@@ -20,8 +33,7 @@ function Comparative(props) {
       openMenu={openMenu}
       loading={loading}
       data={data}
-      mediaType={mediaType}
-      height={height}
+      mediaType={selectMediaType}
       changeMediaType={changeMediaType}
       charts={{
         bar: { component: MixedChart }

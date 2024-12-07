@@ -11,7 +11,8 @@ const initialState = {
   tonality: '',
   theme: '',
   articleSize: '',
-  tags: ''
+  tags: '',
+  mediaType: 'All'
 }
 
 export const filterSlice = createSlice({
@@ -28,10 +29,15 @@ export const filterSlice = createSlice({
       } else {
         console.warn('Invalid field type: ' + type)
       }
+    },
+    setMediaType: (state, action) => {
+      state.mediaType = action.payload
     }
   }
 })
 
-export const { updateFilters, setInitialState } = filterSlice.actions
+export const { updateFilters, setInitialState, setMediaType } = filterSlice.actions
+
+export const getMediaType = state => state.filter.mediaType
 
 export default filterSlice.reducer

@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import DateRangeIcon from '@mui/icons-material/DateRange'
 import { IconButton, Popover, Stack, Box, Button, Typography } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -11,13 +11,23 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectSelectedStartDate, selectSelectedEndDate, setSelectedDateRange } from 'src/store/apps/user/userSlice'
 import dayjs from 'dayjs'
 import { useRouter } from 'next/router'
+import { Online } from 'src/constants/filters'
 
 const DateBar = () => {
   const router = useRouter()
   const currentRoute = router.pathname
+  const { media, mediaType } = useSelector(state => state.filter)
+  console.log({ media, mediaType })
 
-  const isShowDateTime =
-    currentRoute === '/media' || currentRoute === '/headlines/online' || currentRoute === '/headlines/print-online'
+  const isShowDateTime = useMemo(
+    () =>
+      mediaType === Online ||
+      media === 'online' ||
+      currentRoute === '/media' ||
+      currentRoute === '/headlines/online' ||
+      currentRoute === '/headlines/print-online',
+    [media, currentRoute, mediaType]
+  )
 
   const dispatch = useDispatch()
   const selectedStartDate = useSelector(selectSelectedStartDate)

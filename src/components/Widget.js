@@ -139,9 +139,9 @@ function Widget(props) {
           }
         }}
       >
-        <Tab label={'All'} value={All} />
-        <Tab label={'Print'} value={Print} />
-        <Tab label={'Online'} value={Online} />
+        <Tab label={All} value={All} />
+        <Tab label={Print} value={Print} />
+        <Tab label={Online} value={Online} />
       </Tabs>
 
       <Stack id='chart-container' className='cancelSelection' sx={{ height: 335, overflow: 'auto' }}>

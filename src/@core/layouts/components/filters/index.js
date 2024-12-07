@@ -89,15 +89,15 @@ const defaultFilter = {
   media: {
     title: 'Media',
     values: [],
-    search: '',
-    value: 'publicationName',
-    key: 'publicationId'
+    value: 'publicationTypeName',
+    key: 'publicationTypeId'
   },
   publication: {
     title: 'Publication',
     values: [],
-    value: 'publicationTypeName',
-    key: 'publicationTypeId'
+    search: '',
+    value: 'publicationName',
+    key: 'publicationId'
   },
 
   geography: {
@@ -243,15 +243,12 @@ function Filter() {
       })
       const companies = responseCompanies.data.companies
       filterDispatch({ type: 'companyIds', payload: { values: companies } })
-      const company = companies[0]
 
-      if (!company) return
+      const selectedCompany = companies.map(company => [company['companyId'], company['companyName']])
 
-      const selectedCompany = [company['companyId'], company['companyName']]
+      const selected = new Map(selectedCompany)
 
-      const selected = new Map([selectedCompany])
-
-      dispatch(updateFilters({ type: 'companyIds', payload: company['companyId'] }))
+      dispatch(updateFilters({ type: 'companyIds', payload: Array.from(selected.keys()).join(',') }))
       setMenuState(prev => ({ ...prev, companyIds: { ...prev.companyIds, selected } }))
     } catch (error) {
       console.error('Error in fetchCompany :', error)
@@ -273,29 +270,29 @@ function Filter() {
     }
   }, [])
 
-  const fetchMedia = useCallback(async () => {
+  const fetchPublication = useCallback(async () => {
     try {
       const storedToken = localStorage.getItem('accessToken')
 
       // Fetch publication
       const publicationResponse = await axios.get(`${BASE_URL}/printMediaList`, {
         headers: { Authorization: `Bearer ${storedToken}` },
-        params: { clientId, searchTerm: filterState.media.search }
+        params: { clientId, searchTerm: filterState.publication.search }
       })
-      filterDispatch({ type: 'media', payload: { values: publicationResponse.data.mediaList } })
+      filterDispatch({ type: 'publication', payload: { values: publicationResponse.data.mediaList } })
     } catch (error) {
       console.error('Error in fetchMedia :', error)
     }
-  }, [clientId, filterState.media.search])
+  }, [clientId, filterState.publication.search])
 
-  const fetchPublicationTypes = useCallback(async () => {
+  const fetchMedia = useCallback(async () => {
     const storedToken = localStorage.getItem('accessToken')
     try {
       const response = await axios.get(`${BASE_URL}/publicationCategoryList/`, {
         headers: { Authorization: `Bearer ${storedToken}` }
       })
 
-      filterDispatch({ type: 'publication', payload: { values: response.data.publicationsTypeList } })
+      filterDispatch({ type: 'media', payload: { values: response.data.publicationsTypeList } })
     } catch (error) {
       console.error('Error in fetchPublicationType :', error)
     }
@@ -363,8 +360,8 @@ function Filter() {
   }, [fetchMedia])
 
   useEffect(() => {
-    fetchPublicationTypes()
-  }, [fetchPublicationTypes])
+    fetchPublication()
+  }, [fetchPublication])
 
   useEffect(() => {
     fetchCities()

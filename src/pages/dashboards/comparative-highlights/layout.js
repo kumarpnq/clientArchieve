@@ -23,7 +23,8 @@ const defaultLayouts = {
     { i: '20', x: 0, y: 565, w: 16, h: 35, isResizable: false, isDraggable: true },
     { i: '21', x: 0, y: 600, w: 16, h: 35, isResizable: false, isDraggable: true },
     { i: '22', x: 0, y: 635, w: 16, h: 35, isResizable: false, isDraggable: true },
-    { i: '23', x: 0, y: 670, w: 16, h: 35, isResizable: false, isDraggable: true }
+    { i: '23', x: 0, y: 670, w: 16, h: 35, isResizable: false, isDraggable: true },
+    { i: '23', x: 0, y: 710, w: 16, h: 28 }
   ],
   md: [
     { i: '0', x: 0, y: 0, w: 10, h: 25 }, // lg width is 10
