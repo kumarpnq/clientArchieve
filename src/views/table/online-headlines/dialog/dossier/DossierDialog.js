@@ -27,7 +27,8 @@ import {
   selectNotificationFlag,
   setFetchAutoStatusFlag,
   selectFetchAutoStatusFlag,
-  selectSelectedCompetitions
+  selectSelectedCompetitions,
+  selectedDateType
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 import toast from 'react-hot-toast'
@@ -48,6 +49,7 @@ const DossierDialog = ({
   const selectedCompanyIds = useSelector(selectSelectedCompetitions)
   const clientId = selectedClient ? selectedClient.clientId : null
   const clientName = selectedClient ? selectedClient?.clientName : null
+  const selectedTypeOfDate = useSelector(selectedDateType)
 
   const [email, setEmail] = useState('')
   const [companyName, setCompanyName] = useState('')
@@ -242,7 +244,8 @@ const DossierDialog = ({
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       clientIds: clientId,
-      companyIds: selectedCompanyIds.join(',')
+      companyIds: selectedCompanyIds.join(','),
+      dateType: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE'
     }
 
     if (editionType !== '') {

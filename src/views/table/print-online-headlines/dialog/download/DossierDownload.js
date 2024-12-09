@@ -68,6 +68,7 @@ const DossierDownload = ({
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
+  const selectedTypeOfDate = useSelector(selectedDateType)
 
   const handleEmailChange = event => {
     const { value } = event.target
@@ -92,8 +93,6 @@ const DossierDownload = ({
 
   const articleIds =
     dataForDossierDownload.length && dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'p' })))
-
-  console.log(articleIds)
 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
@@ -249,7 +248,8 @@ const DossierDownload = ({
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       clientIds: clientId,
-      companyIds: selectedCompanyIds.join(',')
+      companyIds: selectedCompanyIds.join(','),
+      dateType: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE'
     }
 
     if (editionType !== '') {
