@@ -17,7 +17,6 @@ const DateBar = () => {
   const router = useRouter()
   const currentRoute = router.pathname
   const { media, mediaType } = useSelector(state => state.filter)
-  console.log({ media, mediaType })
 
   const isShowDateTime = useMemo(
     () =>

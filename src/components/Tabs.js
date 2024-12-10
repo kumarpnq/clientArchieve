@@ -6,14 +6,9 @@ import React from 'react'
 const Tabs = styled(props => (
   <MuiTabs {...props} TabIndicatorProps={{ children: <span className='MuiTabs-indicatorSpan' /> }} />
 ))(({ theme }) => ({
-  // [theme.breakpoints.down('sm')]: {
   width: '100%',
-
-  // },
-  marginTop: 24,
   minHeight: theme.spacing(4),
-  borderBottom: '1px solid',
-  borderColor: theme.palette.divider,
+  border: 'none !important',
   transition: 'all ease-in-out 0.3s',
 
   '& .MuiTabs-scrollButtons.Mui-disabled': {
@@ -21,31 +16,35 @@ const Tabs = styled(props => (
   },
 
   '& .MuiTabs-indicator': {
-    display: 'flex',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    height: 3
-  },
-  '& .MuiTabs-indicatorSpan': {
-    width: '65%',
-    backgroundColor: theme.palette.primary.main
+    // display: 'none'
+    borderRadius: '8px',
+    height: '100%',
+
+    // backgroundColor: theme.palette.customColors.tableHeaderBg,
+    border: '1px solid',
+    backgroundColor: '#f5f2fe',
+    borderColor: '#a488f33b'
   }
+
+  // '& .MuiTabs-indicatorSpan': {
+  //   width: '65%',
+  //   height: '100%',
+  //   backgroundColor: theme.palette.customColors.tableHeaderBg
+  // }
 }))
 
 const Tab = styled(props => <MuiTab disableRipple {...props} />)(({ theme }) => ({
   textTransform: 'capitalize',
-  fontWeight: 500,
   fontSize: theme.typography.pxToRem(16),
-  marginInline: theme.spacing(2),
-  [theme.breakpoints.up('md')]: {
-    marginInline: theme.spacing(5)
-  },
-  minHeight: 33,
+  minWidth: 85,
+  minHeight: '100%',
+  color: theme.palette.text.secondary,
+  zIndex: 100,
+  transition: 'all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
 
-  padding: 0,
   '&.Mui-selected': {
     color: theme.palette.primary.main,
-    fontWeight: 600
+    backgroundColor: 'transparent'
   },
   '&.Mui-focusVisible': {
     backgroundColor: 'rgba(100, 95, 228, 0.32)'

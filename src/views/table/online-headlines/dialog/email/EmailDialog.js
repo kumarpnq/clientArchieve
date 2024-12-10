@@ -55,8 +55,8 @@ const EmailDialog = ({ open, onClose, dataForMail, pageCheck, allCheck }) => {
   const [selectedEmails, setSelectedEmails] = useState([])
   const [fetchEmailFlag, setFetchEmailFlag] = useState(false)
 
-  console.log(selectedEmails)
-  console.log(emailType)
+  // console.log(selectedEmails)
+  // console.log(emailType)
 
   // customs
   const articleIdsPlain = dataForMail.length

@@ -4,7 +4,7 @@ export const articleSize = [
   { articleSizeName: 'Medium', articleSizeId: 'Medium' },
   { articleSizeName: 'Big', articleSizeId: 'Big' },
   { articleSizeName: 'Large', articleSizeId: 'Large' },
-  { articleSizeName: 'Major Feature', articleSizeId: 'Major Feature' }
+  { articleSizeName: 'Major Feature', articleSizeId: 'Major feature' }
 ]
 
 export const tonality = [

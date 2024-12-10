@@ -125,17 +125,7 @@ const Page = () => {
           <ComparativePie />
         </Box>
         <Box key='3'>
-          <Widget
-            height={320}
-            title='Colgate-Palmolive vs. Peers – Tonality Break-up'
-            openMenu={openMenu}
-            data={tonality.data2.online}
-            charts={{
-              bar: { component: BarChart, props: { barPercentage: 0.3 } },
-              line: { component: LineChart },
-              stacked: { component: StackChart, props: { barPercentage: 0.1 } }
-            }}
-          />
+          <ComparativeDataGrid />
         </Box>
 
         <Box key='4'>
@@ -264,7 +254,17 @@ const Page = () => {
         </Box>
 
         <Box key='6'>
-          <ComparativeDataGrid />
+          <Widget
+            height={320}
+            title='Colgate-Palmolive vs. Peers – Tonality Break-up'
+            openMenu={openMenu}
+            data={tonality.data2.online}
+            charts={{
+              bar: { component: BarChart, props: { barPercentage: 0.3 } },
+              line: { component: LineChart },
+              stacked: { component: StackChart, props: { barPercentage: 0.1 } }
+            }}
+          />
         </Box>
         <Card elevation={0} sx={{ p: 4 }} key='7'>
           <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>

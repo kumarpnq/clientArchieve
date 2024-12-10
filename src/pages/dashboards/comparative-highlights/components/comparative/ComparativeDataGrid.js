@@ -1,16 +1,5 @@
-import {
-  Button,
-  Card,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Stack
-} from '@mui/material'
-import React, { useState } from 'react'
+import { Button, Card, Typography, Stack, Box, Divider } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import Searchbox from 'src/components/Searchbox'
 import { Tab, Tabs } from 'src/components/Tabs'
 import { All, Online, PEERS_VOLUME_VISIBILITY, Print } from 'src/constants/filters'
@@ -18,23 +7,54 @@ import { selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/u
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { useSelector } from 'react-redux'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
+import DataGrid from 'src/components/datagrid/DataGrid'
+import { GridToolbar } from '@mui/x-data-grid'
+import Toolbar from 'src/components/datagrid/Toolbar'
+
+const columns = [
+  { field: 'id', headerName: 'Id', minWidth: 130, align: 'left' },
+  { field: 'key', headerName: 'Company', minWidth: 200, align: 'left' },
+  { field: 'volRank', headerName: 'Volume Rank', minWidth: 150, align: 'left' },
+  { field: 'volScore', headerName: 'Volume', minWidth: 150, align: 'left' },
+  { field: 'volSov', headerName: 'Volume SOV', minWidth: 150, align: 'left' },
+  { field: 'visRank', headerName: 'Visibility Rank', minWidth: 150, align: 'left' },
+  { field: 'visScore', headerName: 'Visibility', minWidth: 150, align: 'left' },
+  { field: 'visSov', headerName: 'Visibility SOV', minWidth: 150, align: 'left' }
+]
 
 function ComparativeDataGrid() {
   const [selectMediaType, setSelectMediaType] = useState(All)
+  const [modifiedData, setModifiedData] = useState([])
   const startDate = useSelector(selectSelectedStartDate)
   const endDate = useSelector(selectSelectedEndDate)
   const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType, startDate, endDate)
-  const [collapse, setCollapse] = useState(false)
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)
   }
 
-  const toggleCollapse = () => setCollapse(!collapse)
+  useEffect(() => {
+    if (!data) return
+
+    const newData = data.map((d, i) => {
+      return {
+        id: d.key,
+        key: d.key,
+        volRank: i + 1,
+        volScore: d.doc_count,
+        volSov: Math.trunc(d.doc_sov),
+        visRank: i + 1,
+        visScore: Math.trunc(d.V_Score.value),
+        visSov: Math.trunc(d.V_Sov.value)
+      }
+    })
+
+    setModifiedData(newData)
+  }, [data])
 
   return (
-    <Card elevation={0} sx={{ p: 4 }} key='6'>
-      <Stack direction='row' justifyContent='space-between' alignItems='center'>
+    <Card elevation={0} sx={{ p: 4, display: 'flex', flexDirection: 'column', height: '100%' }} key='6'>
+      <Stack direction='row' justifyContent='space-between' alignItems='flex-end'>
         <div>
           <Typography
             variant='h5'
@@ -52,117 +72,25 @@ function ComparativeDataGrid() {
           </Typography>
         </div>
         <Stack direction='row' alignItems='center' spacing={1.5} className='cancelSelection'>
-          <Searchbox placeholder='Search' />
-          <Button variant='outlined' startIcon={<FilterListIcon />} sx={{ borderRadius: 2, px: 6 }}>
-            Filters
-          </Button>
+          <Tabs value={selectMediaType} onChange={changeMediaType} sx={{ mb: 4 }} className='cancelSelection'>
+            <Tab label={All} value={All} />
+            <Tab label={Print} value={Print} />
+            <Tab label={Online} value={Online} />
+          </Tabs>
         </Stack>
       </Stack>
 
-      <Tabs value={selectMediaType} onChange={changeMediaType} sx={{ mb: 4 }} className='cancelSelection'>
-        <Tab label={All} value={All} />
-        <Tab label={Print} value={Print} />
-        <Tab label={Online} value={Online} />
-      </Tabs>
-      <TableContainer style={{ height: 380 }}>
-        <Table stickyHeader sx={{ transition: 'height 1.5s ease, max-height 1.5s ease' }}>
-          <TableHead>
-            <TableRow>
-              {[
-                { title: 'Company', width: 130, align: 'left' },
-                { title: 'Volume Rank', width: 100, align: 'center' },
-                { title: 'Volume', width: 100, align: 'center' },
-                { title: 'Volume SOV', width: 100, align: 'center' },
-                { title: 'Visibility Rank', width: 100, align: 'center' },
-                { title: 'Visibility', width: 100, align: 'center' },
-                { title: 'Visibility SOV', width: 100, align: 'center' }
-              ].map(col => (
-                <TableCell key={col.title} style={{ minWidth: col.width }} align={col.align}>
-                  {col.title}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody sx={{ transition: 'all ease-in 6s' }}>
-            {data?.slice(0, 5).map((company, i) => (
-              <TableRow
-                key={company.key}
-                sx={{
-                  '&:last-child td, &:last-child th': {
-                    border: 0
-                  }
-                }}
-              >
-                <TableCell component='th' scope='row'>
-                  {company.key}
-                </TableCell>
+      <Divider sx={{ my: 3 }} />
 
-                <TableCell component='th' scope='row' align='center'>
-                  <Typography variant='caption'>{i + 1}</Typography>
-                </TableCell>
-                <TableCell component='th' scope='row' align='center'>
-                  <Typography variant='caption'>{Math.trunc(company.doc_count)}</Typography>
-                </TableCell>
-                <TableCell component='th' scope='row' align='center'>
-                  <Typography variant='caption'>{Math.trunc(company.doc_sov)}</Typography>
-                </TableCell>
-
-                <TableCell component='th' scope='row' align='center'>
-                  <Typography variant='caption'>{i + 1}</Typography>
-                </TableCell>
-                <TableCell component='th' scope='row' align='center'>
-                  <Typography variant='caption'>{Math.trunc(company.V_Score.value)}</Typography>
-                </TableCell>
-                <TableCell component='th' scope='row' align='center'>
-                  <Typography variant='caption'>{Math.trunc(company.V_Sov.value)}</Typography>
-                </TableCell>
-              </TableRow>
-            ))}
-
-            {collapse &&
-              data?.slice(5).map((company, i) => (
-                <TableRow
-                  key={company.kay}
-                  sx={{
-                    '&:last-child td, &:last-child th': {
-                      border: 0
-                    }
-                  }}
-                >
-                  <TableCell component='th' scope='row'>
-                    {company.kay}
-                  </TableCell>
-
-                  <TableCell component='th' scope='row' align='center'>
-                    <Typography variant='caption'>{i + 1}</Typography>
-                  </TableCell>
-                  <TableCell component='th' scope='row' align='center'>
-                    <Typography variant='caption'>{Math.trunc(company.doc_count)}</Typography>
-                  </TableCell>
-                  <TableCell component='th' scope='row' align='center'>
-                    <Typography variant='caption'>{Math.trunc(company.doc_sov)}</Typography>
-
-                    <TableCell component='th' scope='row' align='center'>
-                      <Typography variant='caption'>{i + 1}</Typography>
-                    </TableCell>
-                  </TableCell>
-                  <TableCell component='th' scope='row' align='center'>
-                    <Typography variant='caption'>{Math.trunc(company.V_Score.value)}</Typography>
-                  </TableCell>
-                  <TableCell component='th' scope='row' align='center'>
-                    <Typography variant='caption'>{Math.trunc(company.V_Sov.value)}</Typography>
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <Button variant='text' className='cancelSelection' fullWidth onClick={toggleCollapse}>
-        <Typography variant='subtitle1' color='primary.main'>
-          {collapse ? 'Show less' : 'Show more'}
-        </Typography>
-      </Button>
+      <Box flexGrow={1} className='cancelSelection'>
+        <DataGrid
+          columns={columns}
+          rows={modifiedData}
+          slots={{
+            toolbar: Toolbar
+          }}
+        />
+      </Box>
     </Card>
   )
 }

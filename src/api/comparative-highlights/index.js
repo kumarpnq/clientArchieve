@@ -9,7 +9,7 @@ const URL = 'http://51.222.9.159:5000/api/v1/report/getChartAndGraphData'
 
 export const useChartAndGraphApi = (reportType, mediaType) => {
   const [data, setData] = useState(null)
-  const { loading, start, end } = useLoader()
+  const { loading, start, end } = useLoader({ initial: true })
   const filter = useSelector(state => state.filter)
   const selectedClient = useSelector(selectSelectedClient)
   const startDate = useSelector(selectSelectedStartDate)
@@ -29,8 +29,8 @@ export const useChartAndGraphApi = (reportType, mediaType) => {
 
   const formatDateTime = useCallback((mediaType, from, to) => {
     const dates = {
-      fromDate: new Date(from),
-      toDate: new Date(to)
+      fromDate: new Date('2024-10-01'),
+      toDate: new Date('2024-11-11')
     }
 
     if (mediaType === Online || mediaType === All) {
@@ -58,9 +58,10 @@ export const useChartAndGraphApi = (reportType, mediaType) => {
   const fetchData = useCallback(async () => {
     if (!(clientId && filter?.companyIds)) return
     if (!(startDate && endDate)) return
-    console.log('Media Type: ', mediaType)
 
+    setData(null)
     start()
+
     try {
       const headers = {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
@@ -68,9 +69,10 @@ export const useChartAndGraphApi = (reportType, mediaType) => {
       }
 
       const urlParams = new URLSearchParams()
-      const { companyIds, ...filters } = filterParams(filter)
+      const { companyIds, articleSize, ...filters } = filterParams(filter)
       const dates = formatDateTime(mediaType, startDate, endDate)
-      companyIds.split(',').forEach(id => urlParams.append('companyIds', id))
+      companyIds?.split(',').forEach(id => urlParams.append('companyIds', id))
+      articleSize?.split(',').forEach(id => urlParams.append('articleSize', id))
 
       const params = {
         ...dates,

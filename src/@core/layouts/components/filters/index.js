@@ -1,4 +1,5 @@
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -382,7 +383,13 @@ function Filter() {
           <Fragment key={filterKey}>
             <Button
               variant={'text'}
-              sx={{ py: 0.5, px: 2, borderRadius: 2, color: 'text.secondary' }}
+              sx={{
+                py: 0.5,
+                px: 2,
+                borderRadius: 2,
+                color: menuState[filterKey].selected.size > 0 ? 'text.primary' : 'text.secondary',
+                fontWeight: menuState[filterKey].selected.size > 0 ? 700 : 500
+              }}
               endIcon={<KeyboardArrowDownIcon fontSize='small' />}
               onClick={e => {
                 openMenu(e, filterKey)
@@ -495,7 +502,7 @@ function Filter() {
                       </Typography>
 
                       <Stack direction='row' gap={3} mb={2} flexWrap='wrap'>
-                        {Array.from(menuState[menu].selected.entries()).map(([key, value], i) => (
+                        {Array.from(menuState[menu].selected.entries()).map(([key, value]) => (
                           <Chip
                             label={value}
                             key={key}

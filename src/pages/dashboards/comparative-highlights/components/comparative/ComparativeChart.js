@@ -1,19 +1,28 @@
-import React, { useState } from 'react'
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import MixedChart from 'src/components/charts/MixedChart'
 import Widget from 'src/components/Widget'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
-import { All, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
+import { All, Print, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
 import { useSelector } from 'react-redux'
-import { getMediaType, setMediaType } from 'src/store/apps/filters/filterSlice'
+import { getMediaType } from 'src/store/apps/filters/filterSlice'
 import { useDispatch } from 'react-redux'
 import { selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/user/userSlice'
+import DataGrid from 'src/components/datagrid/DataGrid'
+
+const columns = [
+  { field: 'id', headerName: 'Id', minWidth: 100, align: 'left' },
+  { field: 'key', headerName: 'Company', minWidth: 150, align: 'left' },
+  { field: 'visScore', headerName: 'V Score', minWidth: 130, align: 'left' },
+  { field: 'imageScore', headerName: 'I Score', minWidth: 130, align: 'left' },
+  { field: 'qe', headerName: 'QE', minWidth: 130, align: 'left' }
+]
 
 function Comparative(props) {
   const { openMenu } = props
-  const [selectMediaType, setSelectMediaType] = useState(All)
+  const [selectMediaType, setSelectMediaType] = useState(Print)
   const startDate = useSelector(selectSelectedStartDate)
   const endDate = useSelector(selectSelectedEndDate)
+  const [modifiedData, setModifiedData] = useState([])
   const { data, loading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, selectMediaType, startDate, endDate)
   const mediaType = useSelector(getMediaType)
   const dispatch = useDispatch()
@@ -27,6 +36,22 @@ function Comparative(props) {
     // }
   }
 
+  useEffect(() => {
+    if (!data) return
+
+    const newData = data.map((d, i) => {
+      return {
+        id: d.key,
+        key: d.key,
+        visScore: Math.trunc(d.V_Score.value),
+        imageScore: Math.trunc(d.I_Score.value),
+        qe: Math.trunc(d.QE.value)
+      }
+    })
+
+    setModifiedData(newData)
+  }, [data])
+
   return (
     <Widget
       title='Comparative Key Highlights'
@@ -38,45 +63,7 @@ function Comparative(props) {
       charts={{
         bar: { component: MixedChart }
       }}
-      table={
-        <TableContainer>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                {[
-                  { title: 'Company', width: 130, align: 'left' },
-                  { title: 'V Score', width: 100, align: 'center' },
-                  { title: 'I Score', width: 100, align: 'center' },
-                  { title: 'QE', width: 100, align: 'center' }
-                ].map(col => (
-                  <TableCell key={col.title} style={{ minWidth: col.width }} align={col.align}>
-                    {col.title}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data?.map(d => (
-                <TableRow key={d.key} hover sx={{ cursor: 'pointer' }}>
-                  <TableCell component='th' scope='row'>
-                    {d.key}
-                  </TableCell>
-
-                  <TableCell component='th' scope='row' align='center'>
-                    <Typography variant='caption'>{Math.trunc(d.V_Score.value)}</Typography>
-                  </TableCell>
-                  <TableCell component='th' scope='row' align='center'>
-                    <Typography variant='caption'>{Math.trunc(d.I_Score.value)}</Typography>
-                  </TableCell>
-                  <TableCell component='th' scope='row' align='center'>
-                    <Typography variant='caption'>{Math.trunc(d.QE.value)}</Typography>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      }
+      table={<DataGrid columns={columns} rows={modifiedData} />}
     />
   )
 }

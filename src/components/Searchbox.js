@@ -13,12 +13,10 @@ const Searchbox = props => {
       sx={{
         display: 'flex',
         alignItems: 'center',
-        border: '1px solid',
-        borderColor: 'divider',
         minHeight: '36px',
         maxWidth: '300px',
         width: '100%',
-        borderRadius: 2,
+        borderRadius: '8px',
         px: 1,
         ...sx
       }}
