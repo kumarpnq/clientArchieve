@@ -8,16 +8,6 @@ export const PEERS_VOLUME_VISIBILITY = 'PEERS_VOLUME_VISIBILITY'
 
 export const PEERS_RANKING_KPI = 'PEERS_RANKING_KPI'
 
-export const PEERS_RANKING_KPI_VISIBILITY = 'PEERS_RANKING_KPI_VISIBILITY'
-
-export const SUBJECT_VOLUME_VISIBILITY = 'SUBJECT_VOLUME_VISIBILITY'
-
-export const LANGUAGE_VOLUME_VISIBILITY = 'LANGUAGE_VOLUME_VISIBILITY'
-
-export const PUBLICATIONCITY_VOLUME_VISIBILITY = 'PUBLICATIONCITY_VOLUME_VISIBILITY'
-
-export const PUBLICATION_PERFORMANCE = 'PUBLICATION_PERFORMANCE'
-
 export const Online = 'Online'
 
 export const Print = 'Print'
@@ -25,3 +15,21 @@ export const Print = 'Print'
 export const All = 'All'
 
 export const Merge = 'Merge'
+
+export const City = 'City'
+
+export const Region = 'Region'
+
+export const Journalist = 'Journalist'
+
+export const EditionType = 'EditionType'
+
+export const PublicationGroup = 'PublicationGroup'
+
+export const PublicationName = 'PublicationName'
+
+export const ReportingTone = 'ReportingTone'
+
+export const Prominence = 'Prominence'
+
+export const Language = 'Language'

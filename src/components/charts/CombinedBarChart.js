@@ -63,8 +63,8 @@ const CombinedBarChart = () => {
       const { x, y } = scales
       const dataPointsLength = regions.length
       const segment = width / dataPointsLength
-      const segmentCenter = segment / 4
-      const paddingBottom = bottom + 60
+      const segmentCenter = segment / 4 + 15
+      const paddingBottom = bottom + 50
 
       // ctx.save();
 
@@ -101,59 +101,57 @@ const CombinedBarChart = () => {
   }
 
   return (
-    <div style={{ width: '90%', height: '500px', marginTop: 100, marginLeft: 50 }}>
-      <Chart
-        plugins={[customScale]}
-        type='bar'
-        data={{
-          labels: Array.from({ length: regions.length }, () => manufacturers.map(v => v)).flat(),
-          datasets // All datasets (one per manufacturer)
-        }}
-        options={{
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false,
-              position: 'top'
-            },
-            tooltip: {
-              display: false,
-              callbacks: {
-                label: context => `${context.dataset.label}: ${context.raw}`
-              }
-            }
+    <Chart
+      plugins={[customScale]}
+      type='bar'
+      data={{
+        labels: Array.from({ length: regions.length }, () => manufacturers.map(v => v)).flat(),
+        datasets // All datasets (one per manufacturer)
+      }}
+      options={{
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+            position: 'top'
           },
-          layout: {
-            padding: { bottom: 100 }
-          },
-          scales: {
-            x: {
-              beginAtZero: true,
-              grid: {
-                drawOnChartArea: false
-              }
-            },
-            y: {
-              beginAtZero: true,
-              grid: {
-                drawOnChartArea: false
-              }
-            },
-            y1: {
-              type: 'linear',
-              display: true,
-              position: 'right',
-
-              // grid line settings
-              grid: {
-                drawOnChartArea: false // only want the grid lines for one axis to show up
-              }
+          tooltip: {
+            display: false,
+            callbacks: {
+              label: context => `${context.dataset.label}: ${context.raw}`
             }
           }
-        }}
-      />
-    </div>
+        },
+        layout: {
+          padding: { bottom: 30 }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            grid: {
+              drawOnChartArea: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            grid: {
+              drawOnChartArea: false
+            }
+          },
+          y1: {
+            type: 'linear',
+            display: true,
+            position: 'right',
+
+            // grid line settings
+            grid: {
+              drawOnChartArea: false // only want the grid lines for one axis to show up
+            }
+          }
+        }
+      }}
+    />
   )
 }
 

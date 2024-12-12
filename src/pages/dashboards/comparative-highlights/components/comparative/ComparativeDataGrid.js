@@ -1,33 +1,26 @@
-import { Button, Card, Typography, Stack, Box, Divider } from '@mui/material'
+import { Card, Typography, Stack, Box, Divider } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import Searchbox from 'src/components/Searchbox'
 import { Tab, Tabs } from 'src/components/Tabs'
 import { All, Online, PEERS_VOLUME_VISIBILITY, Print } from 'src/constants/filters'
-import { selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/user/userSlice'
-import FilterListIcon from '@mui/icons-material/FilterList'
-import { useSelector } from 'react-redux'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import DataGrid from 'src/components/datagrid/DataGrid'
-import { GridToolbar } from '@mui/x-data-grid'
 import Toolbar from 'src/components/datagrid/Toolbar'
 
 const columns = [
   { field: 'id', headerName: 'Id', minWidth: 130, align: 'left' },
   { field: 'key', headerName: 'Company', minWidth: 200, align: 'left' },
-  { field: 'volRank', headerName: 'Volume Rank', minWidth: 150, align: 'left' },
-  { field: 'volScore', headerName: 'Volume', minWidth: 150, align: 'left' },
-  { field: 'volSov', headerName: 'Volume SOV', minWidth: 150, align: 'left' },
-  { field: 'visRank', headerName: 'Visibility Rank', minWidth: 150, align: 'left' },
-  { field: 'visScore', headerName: 'Visibility', minWidth: 150, align: 'left' },
-  { field: 'visSov', headerName: 'Visibility SOV', minWidth: 150, align: 'left' }
+  { field: 'volRank', headerName: 'Vol Rank', minWidth: 100, align: 'left' },
+  { field: 'volScore', headerName: 'Vol', minWidth: 100, align: 'left' },
+  { field: 'volSov', headerName: 'Vol SOV', minWidth: 100, align: 'left' },
+  { field: 'visRank', headerName: 'Vis Rank', minWidth: 100, align: 'left' },
+  { field: 'visScore', headerName: 'Vis', minWidth: 100, align: 'left' },
+  { field: 'visSov', headerName: 'Vis SOV', minWidth: 100, align: 'left' }
 ]
 
 function ComparativeDataGrid() {
   const [selectMediaType, setSelectMediaType] = useState(All)
   const [modifiedData, setModifiedData] = useState([])
-  const startDate = useSelector(selectSelectedStartDate)
-  const endDate = useSelector(selectSelectedEndDate)
-  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType, startDate, endDate)
+  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType)
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)

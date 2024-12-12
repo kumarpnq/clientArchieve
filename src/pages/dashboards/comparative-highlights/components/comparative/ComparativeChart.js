@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import MixedChart from 'src/components/charts/MixedChart'
-import Widget from 'src/components/Widget'
+import Widget from 'src/components/widgets/Widget'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import { All, Print, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
 import { useSelector } from 'react-redux'
@@ -23,7 +23,7 @@ function Comparative(props) {
   const startDate = useSelector(selectSelectedStartDate)
   const endDate = useSelector(selectSelectedEndDate)
   const [modifiedData, setModifiedData] = useState([])
-  const { data, loading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, selectMediaType, startDate, endDate)
+  const { data, loading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, selectMediaType)
   const mediaType = useSelector(getMediaType)
   const dispatch = useDispatch()
 

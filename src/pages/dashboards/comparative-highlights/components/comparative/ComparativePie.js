@@ -15,7 +15,7 @@ function ComparativePie() {
   const startDate = useSelector(selectSelectedStartDate)
   const endDate = useSelector(selectSelectedEndDate)
   const [values, setValues] = useState({ labels: [], V_Score: [], doc_count: [] })
-  const { data, loading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, Print, startDate, endDate)
+  const { data, loading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, Print)
 
   const onChangeTab = (e, newValue) => {
     setTabSelected(newValue)

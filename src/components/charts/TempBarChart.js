@@ -2,25 +2,24 @@ import useCustomTooltip from 'src/hooks/useCustomTooltip'
 import React, { memo } from 'react'
 import { Bar } from 'react-chartjs-2'
 
-const backgroundColor = ['#3e8ef1', '#75b5f6', '#badbfa']
-
 function BarChart(props) {
-  const { metrics } = props
+  const { data, ...rest } = props
   const customTooltip = useCustomTooltip()
 
-  if (!metrics) return null
+  if (!data) return null
+
+  const labels = Object.keys(data.data)
 
   return (
     <Bar
       data={{
-        labels: metrics.labels,
-        datasets: [
-          ...Object.keys(metrics.bar).map((label, i) => ({
-            label,
-            data: metrics.bar[label],
-            backgroundColor: backgroundColor[i]
-          }))
-        ]
+        labels: data.labels,
+        datasets: labels.map((label, i) => ({
+          label,
+          data: data.data[label],
+          backgroundColor: data.backgroundColor[i],
+          ...rest
+        }))
       }}
       options={{
         responsive: true,
@@ -43,7 +42,7 @@ function BarChart(props) {
             ticks: {
               font: { size: 11 },
               callback: function (label) {
-                const labels = metrics.labels
+                const labels = data.labels
 
                 return /\s/.test(labels[label]) ? labels[label].split(' ') : labels[label]
               }

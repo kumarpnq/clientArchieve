@@ -6,7 +6,10 @@ import {
   Chip,
   Collapse,
   Divider,
+  Grid,
+  IconButton,
   ListItemButton,
+  Menu,
   MenuItem,
   Slide,
   Stack,
@@ -19,19 +22,29 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import CloseIcon from '@mui/icons-material/Close'
 import FilterAltIcon from '@mui/icons-material/FilterAlt'
+import DateRangeIcon from '@mui/icons-material/DateRange'
 
 // * Static Values
 import { articleSize, prominence, tonality } from 'src/data/filter'
 
 // * Components
-import Menu from 'src/@core/components/filter-menu'
+import FilterMenu from 'src/@core/components/filter-menu'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
 import { useDebouncedCallback } from '@mantine/hooks'
-import { setInitialState, updateFilters } from 'src/store/apps/filters/filterSlice'
+import {
+  getDateRange,
+  setDateFrom,
+  setDateTo,
+  setInitialState,
+  updateFilters
+} from 'src/store/apps/filters/filterSlice'
 import { useDispatch } from 'react-redux'
+import useMenu from 'src/hooks/useMenu'
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers-pro'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 function filterReducer(prevState, action) {
   switch (action.type) {
@@ -76,8 +89,9 @@ function filterReducer(prevState, action) {
 const defaultFilter = {
   companyIds: {
     title: 'Company/Topic name',
-    search: '',
+    filter: '',
     values: [],
+    backup: [],
     value: 'companyName',
     key: 'companyId'
   },
@@ -103,14 +117,16 @@ const defaultFilter = {
 
   geography: {
     title: 'Geography',
-    search: '',
+    filter: '',
+    backup: [],
     values: [],
     value: 'cityName',
     key: 'cityId'
   },
   language: {
     title: 'Language',
-    search: '',
+    filter: '',
+    backup: [],
     values: [],
     value: 'name',
     key: 'id'
@@ -165,7 +181,9 @@ function Filter() {
   const [menuState, setMenuState] = useState(() => createMenuState())
   const [collapse, setCollapse] = useState(false)
   const selectedClient = useSelector(selectSelectedClient)
+  const { anchorEl: anchorElDate, openMenu: openDate, closeMenu: closeDate } = useMenu()
   const clientId = selectedClient ? selectedClient.clientId : null
+  const { from, to } = useSelector(getDateRange)
   const dispatch = useDispatch()
 
   function openMenu(e, menuName) {
@@ -180,7 +198,14 @@ function Filter() {
 
   const searchTerm = useDebouncedCallback((filterType, search) => {
     filterDispatch({ type: filterType, payload: { search } })
-  }, 500)
+  }, 400)
+
+  const filterTerm = useDebouncedCallback((filterType, search) => {
+    const { backup, value } = filterState[filterType]
+
+    const filtered = backup.filter(v => v[value].toLowerCase().includes(search.toLowerCase()))
+    filterDispatch({ type: filterType, payload: { values: filtered } })
+  }, 400)
 
   const filterApplied = useMemo(
     () => Object.values(menuState).reduce((applied, value) => (applied += value.selected.size), 0),
@@ -243,7 +268,7 @@ function Filter() {
         }
       })
       const companies = responseCompanies.data.companies
-      filterDispatch({ type: 'companyIds', payload: { values: companies } })
+      filterDispatch({ type: 'companyIds', payload: { values: companies, backup: companies } })
 
       const selectedCompany = companies.map(company => [company['companyId'], company['companyName']])
 
@@ -310,7 +335,9 @@ function Filter() {
         }
       })
 
-      filterDispatch({ type: 'geography', payload: { values: citiesResponse.data.cities } })
+      const geography = citiesResponse.data.cities
+
+      filterDispatch({ type: 'geography', payload: { values: geography, backup: geography } })
     } catch (error) {
       console.error('Error in fetchCities :', error)
     }
@@ -327,7 +354,9 @@ function Filter() {
         },
         params: { searchTerm: filterState.language.search }
       })
-      filterDispatch({ type: 'language', payload: { values: languageResponse.data.languages } })
+
+      const language = languageResponse.data.languages
+      filterDispatch({ type: 'language', payload: { values: language, backup: language } })
     } catch (error) {
       console.error('Error in fetchLanguage :', error)
     }
@@ -377,71 +406,89 @@ function Filter() {
   }, [fetchTags])
 
   return (
-    <Box py={2} px={3}>
-      <Stack direction='row' gap={2} flexWrap='wrap'>
-        {filterNames.map(filterKey => (
-          <Fragment key={filterKey}>
-            <Button
-              variant={'text'}
-              sx={{
-                py: 0.5,
-                px: 2,
-                borderRadius: 2,
-                color: menuState[filterKey].selected.size > 0 ? 'text.primary' : 'text.secondary',
-                fontWeight: menuState[filterKey].selected.size > 0 ? 700 : 500
-              }}
-              endIcon={<KeyboardArrowDownIcon fontSize='small' />}
-              onClick={e => {
-                openMenu(e, filterKey)
-              }}
-            >
-              {defaultFilter[filterKey].title}
-            </Button>
+    <Box py={2}>
+      <Grid container spacing={2} alignItems='center'>
+        <Grid item xs>
+          <Stack direction='row' gap={2} flexWrap='wrap'>
+            {filterNames.map(filterKey => (
+              <Fragment key={filterKey}>
+                <Button
+                  variant={'text'}
+                  sx={{
+                    py: 0.5,
+                    px: 2,
+                    borderRadius: 2,
+                    color: menuState[filterKey].selected.size > 0 ? 'text.primary' : 'text.secondary',
+                    fontWeight: menuState[filterKey].selected.size > 0 ? 700 : 500
+                  }}
+                  endIcon={<KeyboardArrowDownIcon fontSize='small' />}
+                  onClick={e => {
+                    openMenu(e, filterKey)
+                  }}
+                >
+                  {defaultFilter[filterKey].title}
+                </Button>
 
-            <Menu
-              anchorEl={menuState[filterKey].anchorEl}
-              open={Boolean(menuState[filterKey].anchorEl)}
-              onClose={() => closeMenu(filterKey)}
-              toggleSelection={() => toggleSelection(filterKey)}
-              checked={menuState[filterKey].selected.size === filterState[filterKey].values.length}
-              disableScrollLock
-              search={{
-                display: 'search' in filterState[filterKey],
-                props: {
-                  onChange: e => {
-                    searchTerm(filterKey, e.target.value)
-                  }
-                }
-              }}
-            >
-              {filterState[filterKey].values.map(val => {
-                const key = val[filterState[filterKey].key]
-                const value = val[filterState[filterKey].value]
+                <FilterMenu
+                  anchorEl={menuState[filterKey].anchorEl}
+                  open={Boolean(menuState[filterKey].anchorEl)}
+                  onClose={() => closeMenu(filterKey)}
+                  toggleSelection={() => toggleSelection(filterKey)}
+                  checked={menuState[filterKey].selected.size === filterState[filterKey].values.length}
+                  disableScrollLock
+                  search={{
+                    display: 'search' in filterState[filterKey] || 'filter' in filterState[filterKey],
+                    props: {
+                      onChange: e => {
+                        const value = e.target.value
+                        'search' in filterState[filterKey] ? searchTerm(filterKey, value) : filterTerm(filterKey, value)
+                      }
+                    }
+                  }}
+                >
+                  {filterState[filterKey].values.map(val => {
+                    const key = val[filterState[filterKey].key]
+                    const value = val[filterState[filterKey].value]
 
-                return (
-                  <MenuItem
-                    key={value}
-                    onClick={() => {
-                      // handleSelection(key, value)
-                      handleSelectedFilter(filterKey, key, value)
-                    }}
-                    selected={menuState[filterKey]?.selected?.has(key)}
-                    sx={{
-                      overflow: 'hidden',
-                      display: '-webkit-box',
-                      WebkitBoxOrient: 'vertical',
-                      WebkitLineClamp: '1',
-                      textOverflow: 'ellipsis'
-                    }}
-                  >
-                    {value}
-                  </MenuItem>
-                )
-              })}
-            </Menu>
-          </Fragment>
-        ))}
-      </Stack>
+                    return (
+                      <MenuItem
+                        key={value}
+                        onClick={() => {
+                          // handleSelection(key, value)
+                          handleSelectedFilter(filterKey, key, value)
+                        }}
+                        selected={menuState[filterKey]?.selected?.has(key)}
+                        sx={{
+                          overflow: 'hidden',
+                          display: '-webkit-box',
+                          WebkitBoxOrient: 'vertical',
+                          WebkitLineClamp: '1',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {value}
+                      </MenuItem>
+                    )
+                  })}
+                </FilterMenu>
+              </Fragment>
+            ))}
+          </Stack>
+        </Grid>
+        <Grid item>
+          <Button
+            startIcon={<DateRangeIcon />}
+            variant={'outlined'}
+            onClick={openDate}
+            sx={{
+              py: 1,
+              px: 2
+            }}
+          >
+            Date Range
+          </Button>
+        </Grid>
+      </Grid>
 
       <Slide direction='up' in={filterApplied} mountOnEnter unmountOnExit>
         <Box
@@ -528,6 +575,62 @@ function Filter() {
           </Card>
         </Box>
       </Slide>
+
+      <Menu
+        anchorEl={anchorElDate}
+        open={Boolean(anchorElDate)}
+        onClose={closeDate}
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 300px)',
+            px: 4,
+            pt: 1,
+            pb: 2,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            maxHeight: 450,
+            overflow: 'auto',
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          }
+        }}
+      >
+        <Stack direction='row' justifyContent='space-between' alignItems='center'>
+          <Typography variant='subtitle01' fontWeight={500}>
+            Date Range
+          </Typography>
+          <IconButton onClick={closeDate}>
+            <CloseIcon fontSize='small' />
+          </IconButton>
+        </Stack>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Typography variant='body2' color='text.tertiary' fontWeight={500} gutterBottom>
+            From
+          </Typography>
+          <DateTimePicker
+            slotProps={{
+              textField: { size: 'small', fullWidth: true }
+            }}
+            sx={{ mb: 2 }}
+            value={from}
+            onChange={date => dispatch(setDateFrom(date))}
+          />
+          <Typography variant='body2' color='text.tertiary' fontWeight={500} gutterBottom>
+            To
+          </Typography>
+          <DateTimePicker
+            slotProps={{
+              textField: { size: 'small', fullWidth: true }
+            }}
+            value={to}
+            onChange={date => dispatch(setDateTo(date))}
+          />
+        </LocalizationProvider>
+      </Menu>
     </Box>
   )
 }

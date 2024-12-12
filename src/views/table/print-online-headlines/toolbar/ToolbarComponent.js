@@ -305,7 +305,7 @@ const ToolbarComponent = ({
                 color='inherit'
                 fullWidth
               >
-                Media
+                Publication
               </Button>
             </Grid>
 
@@ -382,7 +382,7 @@ const ToolbarComponent = ({
                 }}
                 color='inherit'
               >
-                Media
+                Publication
               </Button>
             </Badge>
             <Badge

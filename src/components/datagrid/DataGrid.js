@@ -38,7 +38,7 @@ const StyledDataGrid = styled(MuiDataGrid)(({ theme }) => ({
 }))
 
 const DataGrid = props => {
-  return <StyledDataGrid {...props} />
+  return <StyledDataGrid {...props} disableColumnFilter disableColumnSelector />
 }
 
 export default DataGrid

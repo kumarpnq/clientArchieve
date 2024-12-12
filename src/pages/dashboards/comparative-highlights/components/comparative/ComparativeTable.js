@@ -1,27 +1,9 @@
-import {
-  Box,
-  Button,
-  Card,
-  IconButton,
-  Stack,
-  Switch,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography
-} from '@mui/material'
+import { Box, Button, Card, IconButton, Stack, Switch, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import { All, Online, Print, PEERS_VOLUME_VISIBILITY } from 'src/constants/filters'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
-import { useDispatch } from 'react-redux'
-import { getMediaType } from 'src/store/apps/filters/filterSlice'
-import { useSelector } from 'react-redux'
-import { selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/user/userSlice'
 import SearchIcon from '@mui/icons-material/Search'
 import { Tab, Tabs } from 'src/components/Tabs'
 import DataGrid from 'src/components/datagrid/DataGrid'
@@ -38,11 +20,7 @@ const columns = [
 function ComparativeTable() {
   const [selectMediaType, setSelectMediaType] = useState(All)
   const [modifiedData, setModifiedData] = useState([])
-  const startDate = useSelector(selectSelectedStartDate)
-  const endDate = useSelector(selectSelectedEndDate)
-  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType, startDate, endDate)
-  const mediaType = useSelector(getMediaType)
-  const dispatch = useDispatch()
+  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType)
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)
