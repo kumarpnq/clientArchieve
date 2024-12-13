@@ -4,16 +4,30 @@ import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import MixedChart from 'src/components/charts/MixedChart'
 
 // import MixedChart from 'src/components/charts/MixedChart'
 
 const columns = [
-  { field: 'key', headerName: 'Publication', minWidth: 150 },
-  { field: 'volScore', headerName: 'Vol', minWidth: 100 },
-  { field: 'volSov', headerName: 'Vol SOV', minWidth: 100 },
-  { field: 'visScore', headerName: 'Vis', minWidth: 100 },
-  { field: 'visSov', headerName: 'Vis SOV', minWidth: 100 },
-  { field: 'qe', headerName: 'QE', minWidth: 100 }
+  { field: 'key', headerName: 'Company', minWidth: 300 },
+  { field: 'volScore', headerName: 'Vol', minWidth: 100, description: 'Volume' },
+  {
+    field: 'volSov',
+    headerName: 'Vol SOV',
+    minWidth: 100,
+    description: 'Volume Share of Voice',
+    renderCell: params => `${params.row.volSov}%`
+  },
+  { field: 'visScore', headerName: 'Vis', minWidth: 100, description: 'Visibility' },
+  {
+    field: 'visSov',
+    headerName: 'Vis SOV',
+    minWidth: 100,
+    description: 'Visibility Share of Voice',
+    renderCell: params => `${params.row.visSov}%`
+  },
+  { field: 'qe', headerName: 'QE', minWidth: 100, description: 'Quality of Exposure' }
 ]
 
 const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] }, line: { QE: [] } }
@@ -23,7 +37,13 @@ function TopPublication() {
   const [rows, setRows] = useState([])
   const [metrics, setMetrics] = useState(initialMetrics)
 
-  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType, EditionType, PublicationName)
+  const { data, loading } = useChartAndGraphApi({
+    reportType: PEERS_VOLUME_VISIBILITY,
+    mediaType: selectMediaType,
+    category: EditionType,
+    subCategory: PublicationName,
+    path: `data.doc.Report.${EditionType}.buckets`
+  })
   const { anchorEl: categoryAnchorEl, openMenu: openCategory, closeMenu: closeCategory } = useMenu()
   const { anchorEl: subCategoryAnchorEl, openMenu: openSubCategory, closeMenu: closeSubCategory } = useMenu()
   const [selectedCategory, setSelectedCategory] = useState({ category: 0, subCategory: 0 })
@@ -69,12 +89,12 @@ function TopPublication() {
   const apiActions = data ? (
     <Stack direction='row' spacing={2}>
       {data[selectedCategory.category] && (
-        <Button size='small' onClick={openCategory}>
+        <Button size='small' onClick={openCategory} endIcon={<KeyboardArrowDown />}>
           {data[selectedCategory.category].key}
         </Button>
       )}
       {data[selectedCategory.category]?.PublicationName?.buckets[selectedCategory.subCategory] && (
-        <Button size='small' onClick={openSubCategory}>
+        <Button size='small' onClick={openSubCategory} endIcon={<KeyboardArrowDown />}>
           {data[selectedCategory.category]?.PublicationName?.buckets[selectedCategory.subCategory].key}
         </Button>
       )}
@@ -166,10 +186,10 @@ function TopPublication() {
       apiActions={apiActions}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
+      height={280}
       datagrid={{ columns, rows }}
-
-      // metrics={metrics}
-      // charts={{ bar: { component: MixedChart, props: { barPercentage: 0.3 } } }}
+      metrics={metrics}
+      charts={{ bar: { component: MixedChart } }}
     />
   )
 }

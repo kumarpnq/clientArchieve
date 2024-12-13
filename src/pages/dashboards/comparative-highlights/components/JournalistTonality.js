@@ -1,44 +1,57 @@
 import React, { useEffect, useState } from 'react'
-import { Journalist, PEERS_VOLUME_VISIBILITY, Print } from 'src/constants/filters'
+import { Journalist, Print, TONALITY_BREAKUP } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
+import StackChart from 'src/components/charts/StackChart'
 
 const columns = [
-  { field: 'key', headerName: 'Company', minWidth: 300 },
-  { field: 'visScore', headerName: 'Vis', minWidth: 130 },
-  { field: 'qe', headerName: 'QE', minWidth: 130 }
+  { field: 'key', headerName: 'Company', minWidth: 200 },
+  { field: 'positive', headerName: 'Positive', minWidth: 150, description: 'Positive' },
+  { field: 'neutral', headerName: 'Neutral', minWidth: 150, description: 'Neutral' },
+  { field: 'negative', headerName: 'Negative', minWidth: 150, description: 'Negative' }
 ]
 
-// const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
+const initialMetrics = { labels: [], stack: { Positive: [], Neutral: [], Negative: [] } }
 
-function JournalistPerformance() {
+function JournalistTonality() {
   const [selectMediaType, setSelectMediaType] = useState(Print)
   const [rows, setRows] = useState([])
-  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType, Journalist)
+
+  const { data, loading } = useChartAndGraphApi({
+    reportType: TONALITY_BREAKUP,
+    mediaType: selectMediaType,
+    category: Journalist,
+    path: `data.doc.Report.CompanyTag.FilterCompany.Company.buckets`
+  })
   const [selectedCategory, setSelectedCategory] = useState(0)
   const { anchorEl, openMenu, closeMenu } = useMenu()
+  const [metrics, setMetrics] = useState(initialMetrics)
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)
   }
 
   useEffect(() => {
-    if (!(data && data[selectedCategory])) return
+    if (!data) return
+    const metrics = structuredClone(initialMetrics)
 
-    const newData = data[selectedCategory].CompanyTag?.FilterCompany?.Company?.buckets.map(data => {
+    const newData = data.map(data => {
+      metrics.labels.push(data.key)
+      metrics.stack.Positive.push(Math.trunc(data.Positive.value))
+      metrics.stack.Neutral.push(Math.trunc(data.Neutral.value))
+      metrics.stack.Negative.push(Math.trunc(data.Negative.value))
+
       return {
         id: data.key,
         key: data.key,
-        volScore: data.doc_count,
-        volSov: Math.trunc(data.doc_sov),
-        visScore: Math.trunc(data.V_Score.value),
-        visSov: Math.trunc(data.V_Sov.value),
-        qe: Math.trunc(data.QE.value)
+        positive: Math.trunc(data.Positive?.value),
+        neutral: Math.trunc(data.Neutral?.value),
+        negative: Math.trunc(data.Negative?.value)
       }
     })
-
+    setMetrics(metrics)
     setRows(newData)
   }, [data, selectedCategory])
 
@@ -96,15 +109,14 @@ function JournalistPerformance() {
       title='Colgate-Palmolive vs. Peers – Tonality Break-up'
       description='Keep track of companies and their reputation'
       loading={loading}
-      data={data}
+      metrics={metrics}
       apiActions={apiActions}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
       datagrid={{ columns, rows }}
-
-      // charts={{ bar: { component: BarChart, props: { barPercentage: 0.3 } } }}
+      charts={{ stack: { component: StackChart } }}
     />
   )
 }
 
-export default JournalistPerformance
+export default JournalistTonality

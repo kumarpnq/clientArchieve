@@ -8,6 +8,12 @@ export const PEERS_VOLUME_VISIBILITY = 'PEERS_VOLUME_VISIBILITY'
 
 export const PEERS_RANKING_KPI = 'PEERS_RANKING_KPI'
 
+export const GENRE_THEME = 'GENRE_THEME'
+
+export const PROMINENCE = 'PROMINANCE'
+
+export const ARTICLE_SIZE = 'ARTICLE_SIZE'
+
 export const Online = 'Online'
 
 export const Print = 'Print'
@@ -20,7 +26,7 @@ export const City = 'City'
 
 export const Region = 'Region'
 
-export const Journalist = 'Journalist'
+export const Journalist = 'Journlist'
 
 export const EditionType = 'EditionType'
 
@@ -29,7 +35,5 @@ export const PublicationGroup = 'PublicationGroup'
 export const PublicationName = 'PublicationName'
 
 export const ReportingTone = 'ReportingTone'
-
-export const Prominence = 'Prominence'
 
 export const Language = 'Language'

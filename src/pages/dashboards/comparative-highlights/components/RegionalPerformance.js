@@ -4,14 +4,27 @@ import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 
 const columns = [
-  { field: 'key', headerName: 'Company', minWidth: 300, align: 'left' },
-  { field: 'volScore', headerName: 'Vol', minWidth: 130, align: 'left' },
-  { field: 'volSov', headerName: 'Vol SOV', minWidth: 130, align: 'left' },
-  { field: 'visScore', headerName: 'Vis', minWidth: 130, align: 'left' },
-  { field: 'visSov', headerName: 'Vis SOV', minWidth: 130, align: 'left' },
-  { field: 'qe', headerName: 'QE', minWidth: 130, align: 'left' }
+  { field: 'key', headerName: 'Company', minWidth: 300 },
+  { field: 'volScore', headerName: 'Vol', minWidth: 100, description: 'Volume' },
+  {
+    field: 'volSov',
+    headerName: 'Vol SOV',
+    minWidth: 100,
+    description: 'Volume Share of Voice',
+    renderCell: params => `${params.row.volSov}%`
+  },
+  { field: 'visScore', headerName: 'Vis', minWidth: 100, description: 'Visibility' },
+  {
+    field: 'visSov',
+    headerName: 'Vis SOV',
+    minWidth: 100,
+    description: 'Visibility Share of Voice',
+    renderCell: params => `${params.row.visSov}%`
+  },
+  { field: 'qe', headerName: 'QE', minWidth: 100, description: 'Quality of Exposure' }
 ]
 
 // const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
@@ -19,7 +32,13 @@ const columns = [
 function RegionalPerformance() {
   const [selectMediaType, setSelectMediaType] = useState(Print)
   const [rows, setRows] = useState([])
-  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType, Region)
+
+  const { data, loading } = useChartAndGraphApi({
+    reportType: PEERS_VOLUME_VISIBILITY,
+    mediaType: selectMediaType,
+    category: Region,
+    path: `data.doc.Report.${Region}.buckets`
+  })
   const [selectedCategory, setSelectedCategory] = useState(0)
   const { anchorEl, openMenu, closeMenu } = useMenu()
 
@@ -48,7 +67,7 @@ function RegionalPerformance() {
   const apiActions = data ? (
     <Stack direction='row' spacing={2}>
       {data[selectedCategory] && (
-        <Button size='small' onClick={openMenu}>
+        <Button size='small' onClick={openMenu} endIcon={<KeyboardArrowDown />}>
           {data[selectedCategory].key}
         </Button>
       )}
@@ -81,7 +100,7 @@ function RegionalPerformance() {
         {data?.map((category, i) => (
           <MenuItem
             key={category.key}
-            selected={selectedCategory.category === i}
+            selected={selectedCategory === i}
             onClick={() => {
               setSelectedCategory(i)
               closeMenu()

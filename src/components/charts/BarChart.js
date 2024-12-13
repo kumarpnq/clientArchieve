@@ -5,7 +5,7 @@ import { Bar } from 'react-chartjs-2'
 const backgroundColor = ['#3e8ef1', '#75b5f6', '#badbfa']
 
 function BarChart(props) {
-  const { metrics } = props
+  const { metrics, ...rest } = props
   const customTooltip = useCustomTooltip()
 
   if (!metrics) return null
@@ -18,7 +18,9 @@ function BarChart(props) {
           ...Object.keys(metrics.bar).map((label, i) => ({
             label,
             data: metrics.bar[label],
-            backgroundColor: backgroundColor[i]
+            backgroundColor: backgroundColor[i],
+            barPercentage: 0.3,
+            ...rest
           }))
         ]
       }}
@@ -37,6 +39,11 @@ function BarChart(props) {
             rotation: -90
           }
         },
+        layout: {
+          padding: {
+            bottom: 35
+          }
+        },
         scales: {
           x: {
             beginAtZero: true,
@@ -45,7 +52,7 @@ function BarChart(props) {
               callback: function (label) {
                 const labels = metrics.labels
 
-                return /\s/.test(labels[label]) ? labels[label].split(' ') : labels[label]
+                return /\s/.test(labels[label]) ? labels[label].split(' ').slice(0, 2) : labels[label]
               }
             },
             grid: {

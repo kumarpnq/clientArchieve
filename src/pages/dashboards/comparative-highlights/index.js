@@ -1,31 +1,10 @@
 import React, { useState } from 'react'
-import {
-  Box,
-  Card,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography
-} from '@mui/material'
-import BarChart from 'src/components/charts/BarChart'
-import TempBarChart from 'src/components/charts/TempBarChart'
-
-import StackChart from 'src/components/charts/StackChart'
+import { Box, Card, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
 import data from 'src/data/data.json'
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
-import LineChart from 'src/components/charts/LineChart'
 import words from 'src/data/word.json'
-
 import useMenu from 'src/hooks/useMenu'
-import Widget from '../../../components/widgets/Widget'
 import WordCloud from 'src/components/charts/WordCloud'
 
 import { Responsive, WidthProvider } from 'react-grid-layout'
@@ -43,9 +22,10 @@ import RegionalPerformance from './components/RegionalPerformance'
 import CityPerformance from './components/CityPerformance'
 import ThemePerformance from './components/ThemePerformance'
 import ProminencePresence from './components/Prominence'
-import JournalistTonality from './components/Journalist'
-import JournalistPerformance from './components/JournalistTonality'
+import JournalistTonality from './components/JournalistTonality'
+import JournalistPerformance from './components/JournalistPerformance'
 import LanguagePerformance from './components/LanguagePerformance'
+import ArticleSize from './components/ArticleSize'
 
 // Breakpoints and column definitions
 const breakpoints = { lg: 1256, md: 1024, sm: 768, xs: 480, xxs: 0 }
@@ -56,23 +36,6 @@ const Page = () => {
   const { companies, tonality, publications, journalist, mainlines, businessDailies, table } = data
   const { anchorEl, openMenu, closeMenu } = useMenu()
 
-  const [collapse, setCollapse] = useState({
-    t1: false,
-    t2: false,
-    t3: false,
-    t4: false,
-    t5: false,
-    t6: false,
-    t7: false,
-    t8: false,
-    t9: false,
-    t10: false,
-    t11: false,
-    t12: false,
-    t13: false
-  })
-  const toggleCollapse = name => setCollapse(prev => ({ ...prev, [name]: !prev[name] }))
-
   // const { data: comparative, loading: comparativeLoading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, All)
 
   // const [layouts, setLayouts] = useLocalStorage({
@@ -82,12 +45,6 @@ const Page = () => {
   // })
 
   const [layouts, setLayouts] = useState(defaultLayouts)
-
-  const [tabSelected, setTabSelected] = useState(0)
-
-  const handleChange = (event, newValue) => {
-    setTabSelected(newValue)
-  }
 
   // const [currentLayout, setCurrentLayout] = useState([])
 
@@ -123,7 +80,7 @@ const Page = () => {
         <Box key='3'>
           <ComparativeDataGrid />
         </Box>
-
+        {/*
         <Box key='4'>
           <Widget
             title='Industry Visibility in Mainlines – Print'
@@ -247,21 +204,21 @@ const Page = () => {
               </TableContainer>
             }
           />
-        </Box>
+        </Box> */}
 
-        <Box key='6'>
+        <Box key='4'>
           <MediaType />
         </Box>
 
-        <Box key='7'>
+        <Box key='5'>
           <TopPublication />
         </Box>
 
-        <Box key='8'>
+        <Box key='6'>
           <RegionalPerformance />
         </Box>
 
-        <Box key='9'>
+        <Box key='7'>
           <CityPerformance />
         </Box>
 
@@ -510,31 +467,31 @@ const Page = () => {
           <MultiLabelBarChart data={businessDailies.data1.print} barPercentage={0.3} />
         </Card> */}
 
-        <Box key='10'>
+        <Box key='8'>
           <ThemePerformance />
         </Box>
 
-        <Card elevation={0} sx={{ p: 4 }} key='11'>
-          <WordCloud data={words.words} />
-        </Card>
-
-        <Box key='12'>
+        <Box key='9'>
           <ProminencePresence />
         </Box>
 
-        <Box key='13'>
+        <Card elevation={0} sx={{ p: 4 }} key='10'>
+          <WordCloud data={words.words} />
+        </Card>
+
+        <Box key='11'>
           <JournalistTonality />
         </Box>
 
-        <Box key='14'>
+        <Box key='12'>
           <JournalistPerformance />
         </Box>
 
-        <Card elevation={0} sx={{ p: 4 }} key='15'>
-          Article Size
-        </Card>
+        <Box key='13'>
+          <ArticleSize />
+        </Box>
 
-        <Box key='16'>
+        <Box key='14'>
           <LanguagePerformance />
         </Box>
 

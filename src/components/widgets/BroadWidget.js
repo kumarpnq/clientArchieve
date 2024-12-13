@@ -46,6 +46,7 @@ function BroadWidget(props) {
     title,
     description,
     charts,
+    height,
     datagrid,
     apiActions,
     metrics,
@@ -84,7 +85,7 @@ function BroadWidget(props) {
       </Stack>
 
       <Divider sx={{ my: 3 }} />
-      <Box flexGrow={1} className='cancelSelection'>
+      <Box flexGrow={1} className='cancelSelection' height={height || 400}>
         {loading ? (
           <Loading />
         ) : value === 'charts' ? (
@@ -157,9 +158,7 @@ function Chart(props) {
   return (
     <Fragment>
       <slots.toolbar {...slotProps.toolbar} actions={actions} />
-      <Box height={430}>
-        <SelectedChart.component metrics={metrics} {...(SelectedChart.props ?? {})} />
-      </Box>
+      <SelectedChart.component metrics={metrics} {...(SelectedChart.props ?? {})} />
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

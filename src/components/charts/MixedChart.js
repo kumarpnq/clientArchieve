@@ -1,12 +1,12 @@
-import React, { memo, useEffect, useState } from 'react'
+import React, { memo } from 'react'
 import { Chart } from 'react-chartjs-2'
 
 let delayed = false
-const colors = ['#08c1d6', '#3366ef']
+const barColors = ['#08c1d6', '#3366ef']
+const lineColors = ['#5b9afd', '#3366ef']
 
 function MixedChart(props) {
-  const data = props.data
-  const [metrics, setMetrics] = useState({ labels: [], QE: [], bar: { Visibility: [], Image: [] } })
+  const { metrics, ...rest } = props
 
   // const labels = Object.keys(data.data)
 
@@ -23,33 +23,19 @@ function MixedChart(props) {
     }
   }
 
-  useEffect(() => {
-    const metrics = { labels: [], QE: [], bar: { Visibility: [], Image: [] } }
-    data.forEach(d => {
-      metrics.labels.push(d.key)
-      metrics.QE.push(Math.trunc(d.QE.value) || 0)
-      metrics.bar.Visibility.push(Math.trunc(d.V_Score.value) || 0)
-      metrics.bar.Image.push(Math.trunc(d.I_Score.value) || 0)
-    })
-
-    setMetrics(metrics)
-  }, [data])
-
-  if (!data) return null
-
   return (
     <Chart
       plugins={[legendMargin]}
       data={{
         labels: metrics.labels,
         datasets: [
-          {
+          ...Object.keys(metrics.line).map((label, i) => ({
             type: 'line',
             label: 'QE',
-            data: metrics.QE,
+            data: metrics.line[label],
             yAxisID: 'y1',
-            backgroundColor: ['#5b9afd'],
-            borderColor: '#5b9afd',
+            backgroundColor: lineColors[i],
+            borderColor: lineColors[i],
             borderWidth: 1,
             borderDash: [5, 5],
             datalabels: {
@@ -58,13 +44,13 @@ function MixedChart(props) {
               anchor: 'end',
               clamp: true
             }
-          },
+          })),
           ...Object.keys(metrics.bar).map((label, i) => {
             return {
               type: 'bar',
               label,
               data: metrics.bar[label],
-              backgroundColor: colors[i],
+              backgroundColor: barColors[i],
               yAxisID: 'y',
               barPercentage: 0.3,
               borderRadius: 8,
@@ -101,6 +87,11 @@ function MixedChart(props) {
           delay: 1000
         },
 
+        layout: {
+          padding: {
+            bottom: 35
+          }
+        },
         scales: {
           x: {
             ticks: {
@@ -109,7 +100,7 @@ function MixedChart(props) {
               callback: function (label) {
                 const labels = metrics.labels
                 if (/\s/.test(labels[label])) {
-                  return labels[label].split(' ')[0]
+                  return labels[label].split(' ').slice(0, 2)
                 } else {
                   return labels[label]
                 }

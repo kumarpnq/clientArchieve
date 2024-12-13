@@ -7,7 +7,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Skeleton,
   Stack,
   Switch,
   Typography
@@ -43,7 +42,17 @@ const icons = {
 }
 
 function Widget(props) {
-  const { title, openMenu: openOptions, charts, table, data, mediaType, changeMediaType, loading = false } = props
+  const {
+    title,
+    openMenu: openOptions,
+    charts,
+    table,
+    metrics,
+    mediaType,
+    changeMediaType,
+    height,
+    loading = false
+  } = props
   const chartKeys = useMemo(() => Object.keys(charts || {}), [charts])
 
   const defaultChart = useMemo(() => {
@@ -144,11 +153,11 @@ function Widget(props) {
         <Tab label={Online} value={Online} />
       </Tabs>
 
-      <Stack id='chart-container' className='cancelSelection' sx={{ height: 335, overflow: 'auto' }}>
+      <Stack id='chart-container' className='cancelSelection' sx={{ height: height || 400, overflow: 'auto' }}>
         {loading ? (
           <Loading />
         ) : value === 'charts' ? (
-          <Chart.component data={data ?? []} {...(Chart.props ?? {})} />
+          <Chart.component metrics={metrics} {...(Chart.props ?? {})} />
         ) : (
           table
         )}

@@ -1,17 +1,30 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { EditionType, PEERS_VOLUME_VISIBILITY, Print, Publication, PublicationGroup } from 'src/constants/filters'
+import { EditionType, PEERS_VOLUME_VISIBILITY, Print, PublicationGroup } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import BroadWidget from 'src/components/widgets/BroadWidget'
 import BarChart from 'src/components/charts/BarChart'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
-  { field: 'volScore', headerName: 'Vol', minWidth: 130 },
-  { field: 'volSov', headerName: 'Vol SOV', minWidth: 130 },
-  { field: 'visScore', headerName: 'Vis', minWidth: 130 },
-  { field: 'visSov', headerName: 'Vis SOV', minWidth: 130 }
+  { field: 'volScore', headerName: 'Vol', minWidth: 100, description: 'Volume' },
+  {
+    field: 'volSov',
+    headerName: 'Vol SOV',
+    minWidth: 100,
+    description: 'Volume Share of Voice',
+    renderCell: params => `${params.row.volSov}%`
+  },
+  { field: 'visScore', headerName: 'Vis', minWidth: 100, description: 'Visibility' },
+  {
+    field: 'visSov',
+    headerName: 'Vis SOV',
+    minWidth: 100,
+    description: 'Visibility Share of Voice',
+    renderCell: params => `${params.row.visSov}%`
+  }
 ]
 
 const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
@@ -20,7 +33,14 @@ function MediaType() {
   const [selectMediaType, setSelectMediaType] = useState(Print)
   const [rows, setRows] = useState([])
   const [metrics, setMetrics] = useState(initialMetrics)
-  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType, EditionType, PublicationGroup)
+
+  const { data, loading } = useChartAndGraphApi({
+    reportType: PEERS_VOLUME_VISIBILITY,
+    mediaType: selectMediaType,
+    category: EditionType,
+    subCategory: PublicationGroup,
+    path: `data.doc.Report.${EditionType}.buckets`
+  })
   const { anchorEl: categoryAnchorEl, openMenu: openCategory, closeMenu: closeCategory } = useMenu()
   const { anchorEl: subCategoryAnchorEl, openMenu: openSubCategory, closeMenu: closeSubCategory } = useMenu()
   const [selectedCategory, setSelectedCategory] = useState({ category: 0, subCategory: 0 })
@@ -64,12 +84,12 @@ function MediaType() {
   const apiActions = data ? (
     <Stack direction='row' spacing={2}>
       {data[selectedCategory.category] && (
-        <Button size='small' onClick={openCategory}>
+        <Button size='small' onClick={openCategory} endIcon={<KeyboardArrowDown />}>
           {data[selectedCategory.category].key}
         </Button>
       )}
       {data[selectedCategory.category]?.PublicationGroup?.buckets[selectedCategory.subCategory] && (
-        <Button size='small' onClick={openSubCategory}>
+        <Button size='small' onClick={openSubCategory} endIcon={<KeyboardArrowDown />}>
           {data[selectedCategory.category]?.PublicationGroup?.buckets[selectedCategory.subCategory].key}
         </Button>
       )}
@@ -157,6 +177,7 @@ function MediaType() {
     <BroadWidget
       title='Media Type Performance'
       description='Keep track of companies and their reputation'
+      height={280}
       loading={loading}
       metrics={metrics}
       mediaType={selectMediaType}

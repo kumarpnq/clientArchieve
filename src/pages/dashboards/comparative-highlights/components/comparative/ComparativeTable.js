@@ -9,18 +9,22 @@ import { Tab, Tabs } from 'src/components/Tabs'
 import DataGrid from 'src/components/datagrid/DataGrid'
 
 const columns = [
-  { field: 'id', headerName: 'Id', minWidth: 100, align: 'left' },
-  { field: 'key', headerName: 'Company', minWidth: 150, align: 'left' },
-  { field: 'volScore', headerName: 'Volume', minWidth: 130, align: 'left' },
-  { field: 'volSov', headerName: 'Volume SOV', minWidth: 130, align: 'left' },
-  { field: 'visScore', headerName: 'V Score', minWidth: 130, align: 'left' },
-  { field: 'visSov', headerName: 'Visibility SOV', minWidth: 130, align: 'left' }
+  { field: 'key', headerName: 'Company', minWidth: 200 },
+  { field: 'volScore', headerName: 'Vol', minWidth: 100, description: 'Volume' },
+  { field: 'volSov', headerName: 'Vol SOV', minWidth: 100, description: 'Volume Share of Voice' },
+  { field: 'visScore', headerName: 'Vis', minWidth: 100, description: 'Visibility' },
+  { field: 'visSov', headerName: 'Vis SOV', minWidth: 100, description: 'Visibility Share of Voice' }
 ]
 
 function ComparativeTable() {
   const [selectMediaType, setSelectMediaType] = useState(All)
   const [modifiedData, setModifiedData] = useState([])
-  const { data, loading } = useChartAndGraphApi(PEERS_VOLUME_VISIBILITY, selectMediaType)
+
+  const { data, loading } = useChartAndGraphApi({
+    reportType: PEERS_VOLUME_VISIBILITY,
+    mediaType: selectMediaType,
+    path: 'data.doc.Report.CompanyTag.FilterCompany.Company.buckets'
+  })
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)

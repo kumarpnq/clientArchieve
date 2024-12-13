@@ -145,10 +145,11 @@ const defaultFilter = {
   },
   theme: {
     title: 'Theme',
-    search: '',
+    filter: '',
+    backup: [],
     values: [],
-    value: 'themeName',
-    key: 'themeId'
+    value: 'name',
+    key: 'name'
   },
   articleSize: {
     title: 'Article Size',
@@ -314,7 +315,7 @@ function Filter() {
   const fetchMedia = useCallback(async () => {
     const storedToken = localStorage.getItem('accessToken')
     try {
-      const response = await axios.get(`${BASE_URL}/publicationCategoryList/`, {
+      const response = await axios.get(`${BASE_URL}/publicationCategoryAllList/`, {
         headers: { Authorization: `Bearer ${storedToken}` }
       })
 
@@ -362,6 +363,22 @@ function Filter() {
     }
   }, [filterState.language.search])
 
+  const fetchTheme = useCallback(async () => {
+    const storedToken = localStorage.getItem('accessToken')
+    try {
+      const response = await axios.get(`${BASE_URL}/reportingSubjectList`, {
+        headers: { Authorization: `Bearer ${storedToken}` },
+        params: { clientId }
+      })
+
+      const themes = response.data.reportingSubjects
+
+      filterDispatch({ type: 'theme', payload: { values: themes, backup: themes } })
+    } catch (error) {
+      console.error('Error in fetchTags :', error)
+    }
+  }, [clientId])
+
   const fetchTags = useCallback(async () => {
     const storedToken = localStorage.getItem('accessToken')
     try {
@@ -400,6 +417,10 @@ function Filter() {
   useEffect(() => {
     fetchLanguage()
   }, [fetchLanguage])
+
+  useEffect(() => {
+    fetchTheme()
+  }, [fetchTheme])
 
   useEffect(() => {
     fetchTags()

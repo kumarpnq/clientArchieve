@@ -3,12 +3,14 @@ import axios from 'axios'
 import useLoader from 'src/hooks/useLoader'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
-import { Print } from 'src/constants/filters'
+import { GENRE_THEME, Print } from 'src/constants/filters'
 import { getDateRange } from 'src/store/apps/filters/filterSlice'
+import { getValueFromPath } from 'src/utils/helper'
 
 const URL = 'http://51.222.9.159:5000/api/v1/report/getChartAndGraphData'
 
-export const useChartAndGraphApi = (reportType, mediaType, category, subCategory, range = 7) => {
+export const useChartAndGraphApi = config => {
+  const { reportType, mediaType, category, subCategory, range = 10, path } = config
   const [data, setData] = useState(null)
   const { loading, start, end } = useLoader({ initial: true })
   const filter = useSelector(state => state.filter)
@@ -16,17 +18,6 @@ export const useChartAndGraphApi = (reportType, mediaType, category, subCategory
   const { from, to } = useSelector(getDateRange)
 
   const clientId = selectedClient ? selectedClient.clientId : null
-
-  const formatTime = (date, setTime, isEnd) => {
-    let formattedDate = date
-    if (isEnd) {
-      formattedDate = date.add(1, 'day')
-    }
-    const isoString = formattedDate.toISOString().slice(0, 10)
-    const timeString = setTime ? (isEnd ? '23:59:59' : '12:00:00') : date.toISOString().slice(11, 19)
-
-    return `${isoString} ${timeString}`
-  }
 
   const formatDateTime = (mediaType, from, to) =>
     mediaType === Print
@@ -46,6 +37,7 @@ export const useChartAndGraphApi = (reportType, mediaType, category, subCategory
   const fetchData = useCallback(async () => {
     if (!(clientId && filter?.companyIds)) return
     if (!(from && to)) return
+    if (!path) return
 
     setData(null)
     start()
@@ -77,9 +69,7 @@ export const useChartAndGraphApi = (reportType, mediaType, category, subCategory
 
       const { data } = await axios.get(`${URL}/?${urlParams}`, { params, headers })
 
-      const result = category
-        ? data?.data?.doc?.Report[category]?.buckets
-        : data?.data?.doc?.Report?.CompanyTag?.FilterCompany?.Company?.buckets
+      const result = getValueFromPath(data, path)
 
       setData(result || [])
     } catch (error) {
@@ -87,7 +77,7 @@ export const useChartAndGraphApi = (reportType, mediaType, category, subCategory
     } finally {
       end()
     }
-  }, [start, end, clientId, filter, reportType, mediaType, from, to, range, category, subCategory])
+  }, [start, end, clientId, filter, reportType, mediaType, from, to, range, category, subCategory, path])
 
   useEffect(() => {
     fetchData()

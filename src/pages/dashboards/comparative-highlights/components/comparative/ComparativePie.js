@@ -12,10 +12,13 @@ const initialValues = { labels: [], V_Score: [], doc_count: [] }
 
 function ComparativePie() {
   const [tabSelected, setTabSelected] = useState('V_Score')
-  const startDate = useSelector(selectSelectedStartDate)
-  const endDate = useSelector(selectSelectedEndDate)
   const [values, setValues] = useState({ labels: [], V_Score: [], doc_count: [] })
-  const { data, loading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, Print)
+
+  const { data, loading } = useChartAndGraphApi({
+    reportType: VISIBILITY_IMAGE_SCORE,
+    mediaType: Print,
+    path: 'data.doc.Report.CompanyTag.FilterCompany.Company.buckets'
+  })
 
   const onChangeTab = (e, newValue) => {
     setTabSelected(newValue)
@@ -49,7 +52,7 @@ function ComparativePie() {
   }, [data])
 
   return (
-    <Card elevation={0} sx={{ height: '100%', p: 4 }}>
+    <Card elevation={0} sx={{ height: '100%', p: 4, display: 'flex', flexDirection: 'column' }}>
       <Typography
         variant='subtitle1'
         fontWeight={500}
@@ -91,11 +94,22 @@ function ComparativePie() {
                 <DoughnutChart labels={values.labels} data={values[tabSelected]} cutout={120} radius={135} />
               </Box>
 
-              <Box mt={4}>
+              <Box mt={4} flexGrow={1} sx={{ overflowY: 'auto' }}>
                 {values.labels.map((company, i) => {
                   return (
                     <Box key={i}>
-                      <Typography variant='subtitle2' color='text.secondary' textTransform='capitalize' gutterBottom>
+                      <Typography
+                        variant='subtitle2'
+                        color='text.secondary'
+                        textTransform='capitalize'
+                        gutterBottom
+                        sx={{
+                          overflow: 'hidden',
+                          display: '-webkit-box',
+                          WebkitBoxOrient: 'vertical',
+                          WebkitLineClamp: '1'
+                        }}
+                      >
                         {company}
                       </Typography>
 

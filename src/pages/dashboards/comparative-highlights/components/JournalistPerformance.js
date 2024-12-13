@@ -1,38 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import { Language, PEERS_VOLUME_VISIBILITY, Print } from 'src/constants/filters'
+import { Journalist, PEERS_VOLUME_VISIBILITY, Print, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
-import MixedChart from 'src/components/charts/MixedChart'
+import BarChart from 'src/components/charts/BarChart'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
-  { field: 'volScore', headerName: 'Vol', minWidth: 100, description: 'Volume' },
-  { field: 'visScore', headerName: 'Vis', minWidth: 100, description: 'Visibility' },
-  { field: 'qe', headerName: 'QE', minWidth: 100, description: 'Quality of Exposure' },
-  {
-    field: 'visSov',
-    headerName: 'Vis SOV',
-    minWidth: 100,
-    description: 'Visibility Share of Voice',
-    renderCell: params => `${params.row.visSov}%`
-  }
+  { field: 'visScore', headerName: 'Vis', minWidth: 150, description: 'Visibility' },
+  { field: 'qe', headerName: 'QE', minWidth: 150, description: 'Quality of Exposure' }
 ]
 
-const initialMetrics = { labels: [], line: { QE: [] }, bar: { Image: [], Visibility: [] } }
+const initialMetrics = { labels: [], bar: { QE: [], Visibility: [] } }
 
-function LanguagePerformance() {
+function JournalistPerformance() {
   const [selectMediaType, setSelectMediaType] = useState(Print)
   const [rows, setRows] = useState([])
 
   const { data, loading } = useChartAndGraphApi({
-    reportType: PEERS_VOLUME_VISIBILITY,
+    reportType: VISIBILITY_IMAGE_SCORE,
     mediaType: selectMediaType,
-    category: Language,
-    path: `data.doc.Report.${Language}.buckets`
+    category: Journalist,
+    path: `data.doc.Report.${Journalist}.buckets`
   })
+
   const [selectedCategory, setSelectedCategory] = useState(0)
   const { anchorEl, openMenu, closeMenu } = useMenu()
   const [metrics, setMetrics] = useState(initialMetrics)
@@ -43,23 +35,18 @@ function LanguagePerformance() {
 
   useEffect(() => {
     if (!(data && data[selectedCategory])) return
-
     const metrics = structuredClone(initialMetrics)
 
-    const newData = data[selectedCategory].CompanyTag?.FilterCompany?.Company?.buckets.map(data => {
+    const newData = data[selectedCategory]?.CompanyTag?.FilterCompany?.Company?.buckets?.map(data => {
       metrics.labels.push(data.key)
-      metrics.bar.Visibility.push(Math.trunc(data.V_Score.value))
-      metrics.bar.Image.push(Math.trunc(data.I_Score.value))
-      metrics.line.QE.push(Math.trunc(data.QE.value))
+      metrics.bar.Visibility.push(Math.trunc(data.V_Score?.value))
+      metrics.bar.QE.push(Math.trunc(data.QE?.value))
 
       return {
         id: data.key,
         key: data.key,
-        volScore: data.doc_count,
-        volSov: Math.trunc(data.doc_sov),
-        visScore: Math.trunc(data.V_Score.value),
-        visSov: Math.trunc(data.V_Sov.value),
-        qe: Math.trunc(data.QE.value)
+        visScore: Math.trunc(data.V_Score?.value),
+        qe: Math.trunc(data.QE?.value)
       }
     })
 
@@ -70,7 +57,7 @@ function LanguagePerformance() {
   const apiActions = data ? (
     <Stack direction='row' spacing={2}>
       {data[selectedCategory] && (
-        <Button size='small' onClick={openMenu} endIcon={<KeyboardArrowDown />}>
+        <Button size='small' onClick={openMenu}>
           {data[selectedCategory].key}
         </Button>
       )}
@@ -103,7 +90,7 @@ function LanguagePerformance() {
         {data?.map((category, i) => (
           <MenuItem
             key={category.key}
-            selected={selectedCategory === i}
+            selected={selectedCategory.category === i}
             onClick={() => {
               setSelectedCategory(i)
               closeMenu()
@@ -118,7 +105,7 @@ function LanguagePerformance() {
 
   return (
     <BroadWidget
-      title='Language Performance'
+      title='Colgate-Palmolive vs. Peers – Tonality Break-up'
       description='Keep track of companies and their reputation'
       loading={loading}
       metrics={metrics}
@@ -126,9 +113,9 @@ function LanguagePerformance() {
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
       datagrid={{ columns, rows }}
-      charts={{ bar: { component: MixedChart } }}
+      charts={{ bar: { component: BarChart } }}
     />
   )
 }
 
-export default LanguagePerformance
+export default JournalistPerformance
