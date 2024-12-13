@@ -22,7 +22,6 @@ const PDFView = () => {
         const response = await axios.get(`${BASE_URL}/articleView/?articleCode=${articleId}`)
         setArticleData(response.data)
       } catch (error) {
-        console.error(error)
         console.error('Error fetching article data:', error.message)
       }
     }
@@ -45,37 +44,33 @@ const PDFView = () => {
         // Embed the logo
         const logoImageBytes = await axios.get(logoUrl, { responseType: 'arraybuffer' }).then(res => res.data)
         const logoImage = await pdfDoc.embedJpg(logoImageBytes)
-        const logoWidth = 50 // Adjust width as needed
+        const logoWidth = 50
         const logoHeight = (logoImage.height / logoImage.width) * logoWidth
 
-        // Place the logo in the top left corner
         page.drawImage(logoImage, {
-          x: 10, // 10 points from the left edge
-          y: height - logoHeight - 10, // 10 points from the top edge
+          x: 10,
+          y: height - logoHeight - 10,
           width: logoWidth,
           height: logoHeight
         })
 
-        // Place the logo in the top right corner
         page.drawImage(logoImage, {
-          x: width - logoWidth - 10, // 10 points from the right edge
-          y: height - logoHeight - 10, // 10 points from the top edge
+          x: width - logoWidth - 10,
+          y: height - logoHeight - 10,
           width: logoWidth,
           height: logoHeight
         })
 
-        // Format the details string as required
         const formattedDetails = `${dayjs(articleData?.articleDate).format('ddd, DD MMM YYYY')}; ${
           articleData?.publicationType
         } - ${articleData?.publicationName}; Size : ${articleData?.space}; Circulation: ${
           articleData?.circulation
         }; Page : ${articleData?.pageNumber}`
 
-        // Define text styling
         const textOptions = {
           size: 7,
           font: helveticaFont,
-          color: rgb(0, 0, 139)
+          color: rgb(0, 0, 139 / 255)
         }
 
         const textWidth = helveticaFont.widthOfTextAtSize(formattedDetails, textOptions.size)
@@ -100,7 +95,6 @@ const PDFView = () => {
           height: imageHeight
         })
 
-        // Serialize the PDF
         const pdfBytes = await pdfDoc.save()
         const blob = new Blob([pdfBytes], { type: 'application/pdf' })
         const pdfUrl = URL.createObjectURL(blob)

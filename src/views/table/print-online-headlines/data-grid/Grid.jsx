@@ -164,7 +164,10 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 >
                   <span
                     className='headline'
-                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    style={{
+                      width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                      cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default'
+                    }}
                     onClick={async () => {
                       if (firstArticle.articleType === 'print') {
                         const articleCode = await generateLink(firstArticle?.articleId)
@@ -237,7 +240,10 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 >
                   <span
                     className='headline'
-                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    style={{
+                      width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                      cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default'
+                    }}
                     onClick={async () => {
                       if (secondArticle.articleType === 'print') {
                         const articleCode = await generateLink(secondArticle?.articleId)
@@ -318,6 +324,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                     window.open(url, '_blank')
                   }
                 }}
+                style={{ cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default' }}
               >
                 {article.headline}
               </span>

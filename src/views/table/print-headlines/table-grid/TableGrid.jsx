@@ -146,7 +146,7 @@ const TableGrid = ({
                 <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
                   <span
                     className='headline'
-                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem', cursor: 'pointer' }}
                     onClick={async () => {
                       const articleCode = await generateLink(firstArticle?.articleId)
                       const url = `/PDFView?articleId=${articleCode}`
@@ -220,7 +220,7 @@ const TableGrid = ({
                 <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
                   <span
                     className='headline'
-                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem', cursor: 'pointer' }}
                     onClick={async () => {
                       const articleCode = await generateLink(secondArticle?.articleId)
                       const url = `/PDFView?articleId=${articleCode}`
@@ -305,6 +305,7 @@ const TableGrid = ({
                   const url = `/PDFView?articleId=${articleCode}`
                   window.open(url, '_blank')
                 }}
+                style={{ cursor: 'pointer' }}
               >
                 {article.headline}
               </span>
