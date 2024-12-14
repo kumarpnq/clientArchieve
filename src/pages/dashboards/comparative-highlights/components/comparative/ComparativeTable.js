@@ -7,6 +7,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SearchIcon from '@mui/icons-material/Search'
 import { Tab, Tabs } from 'src/components/Tabs'
 import DataGrid from 'src/components/datagrid/DataGrid'
+import Loading from 'src/components/Loading'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 200 },
@@ -18,7 +19,7 @@ const columns = [
 
 function ComparativeTable() {
   const [selectMediaType, setSelectMediaType] = useState(All)
-  const [modifiedData, setModifiedData] = useState([])
+  const [rows, setRows] = useState([])
 
   const { data, loading } = useChartAndGraphApi({
     reportType: PEERS_VOLUME_VISIBILITY,
@@ -35,6 +36,8 @@ function ComparativeTable() {
   }
 
   useEffect(() => {
+    setRows([])
+
     if (!data) return
 
     const newData = data.map((d, i) => {
@@ -48,7 +51,7 @@ function ComparativeTable() {
       }
     })
 
-    setModifiedData(newData)
+    setRows(newData)
   }, [data])
 
   return (
@@ -88,29 +91,35 @@ function ComparativeTable() {
         </Stack>
       </Stack>
 
-      <Tabs
-        value={selectMediaType}
-        onChange={changeMediaType}
-        className='cancelSelection'
-        sx={{
-          mt: 0,
-          mb: 2,
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Tabs
+            value={selectMediaType}
+            onChange={changeMediaType}
+            className='cancelSelection'
+            sx={{
+              mt: 0,
+              mb: 2,
 
-          '& .MuiTab-root': {
-            m: 0,
-            mr: 6,
-            minWidth: 50,
-            fontSize: 13
-          }
-        }}
-      >
-        <Tab label={All} value={All} />
-        <Tab label={Print} value={Print} />
-        <Tab label={Online} value={Online} />
-      </Tabs>
-      <Box flexGrow={1} className='cancelSelection'>
-        <DataGrid columns={columns} rows={modifiedData} />
-      </Box>
+              '& .MuiTab-root': {
+                m: 0,
+                mr: 6,
+                minWidth: 50,
+                fontSize: 13
+              }
+            }}
+          >
+            <Tab label={All} value={All} />
+            <Tab label={Print} value={Print} />
+            <Tab label={Online} value={Online} />
+          </Tabs>
+          <Box flexGrow={1} className='cancelSelection'>
+            <DataGrid columns={columns} rows={rows} />
+          </Box>
+        </>
+      )}
     </Card>
   )
 }

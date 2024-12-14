@@ -19,7 +19,7 @@ const initialMetrics = { labels: [], line: { QE: [] }, bar: { Image: [], Visibil
 function Comparative(props) {
   const { openMenu } = props
   const [selectMediaType, setSelectMediaType] = useState(Print)
-  const [modifiedData, setModifiedData] = useState([])
+  const [rows, setRows] = useState([])
   const [metrics, setMetrics] = useState(initialMetrics)
 
   const { data, loading } = useChartAndGraphApi({
@@ -29,15 +29,12 @@ function Comparative(props) {
   })
 
   const changeMediaType = (event, newValue) => {
-    console.log('New Value: ', newValue)
     setSelectMediaType(newValue)
-
-    // if (mediaType !== newValue) {
-    //   dispatch(setMediaType(newValue))
-    // }
   }
 
   useEffect(() => {
+    setRows([])
+    setMetrics(initialMetrics)
     if (!data) return
 
     const metrics = structuredClone(initialMetrics)
@@ -59,7 +56,7 @@ function Comparative(props) {
 
     setMetrics(metrics)
 
-    setModifiedData(newData)
+    setRows(newData)
   }, [data])
 
   return (
@@ -74,7 +71,7 @@ function Comparative(props) {
       charts={{
         bar: { component: MixedChart }
       }}
-      table={<DataGrid columns={columns} rows={modifiedData} />}
+      table={<DataGrid columns={columns} rows={rows} />}
     />
   )
 }

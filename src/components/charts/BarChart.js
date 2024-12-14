@@ -19,7 +19,6 @@ function BarChart(props) {
             label,
             data: metrics.bar[label],
             backgroundColor: backgroundColor[i],
-            barPercentage: 0.3,
             ...rest
           }))
         ]
@@ -44,6 +43,13 @@ function BarChart(props) {
             bottom: 35
           }
         },
+        datasets: {
+          bar: {
+            maxBarThickness: 9,
+            categoryPercentage: 0.6
+          }
+        },
+
         scales: {
           x: {
             beginAtZero: true,

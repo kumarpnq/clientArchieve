@@ -33,6 +33,8 @@ function ThemeWordCloud() {
   }
 
   useEffect(() => {
+    setMetrics([])
+
     if (!(data && data[selectedCategory])) return
 
     const totalFrequency = data[selectedCategory]?.WordClouds?.buckets?.reduce(
@@ -65,6 +67,7 @@ function ThemeWordCloud() {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
         disableScrollLock
+        className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
             width: 'min(100%, 380px)',

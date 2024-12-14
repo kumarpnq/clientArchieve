@@ -51,8 +51,10 @@ function MixedChart(props) {
               label,
               data: metrics.bar[label],
               backgroundColor: barColors[i],
+
               yAxisID: 'y',
-              barPercentage: 0.3,
+
+              // barThickness: 10,
               borderRadius: 8,
               datalabels: {
                 display: true,
@@ -92,6 +94,13 @@ function MixedChart(props) {
             bottom: 35
           }
         },
+        datasets: {
+          bar: {
+            maxBarThickness: 9,
+            categoryPercentage: 0.6
+          }
+        },
+
         scales: {
           x: {
             ticks: {
@@ -114,12 +123,14 @@ function MixedChart(props) {
             ticks: {},
             grid: {
               drawOnChartArea: false
-            }
+            },
+            beginAtZero: true
           },
           y1: {
             type: 'linear',
             display: true,
             position: 'right',
+            beginAtZero: true,
 
             // grid line settings
             grid: {

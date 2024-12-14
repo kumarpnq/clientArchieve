@@ -53,6 +53,8 @@ function TopPublication() {
   }
 
   useEffect(() => {
+    setRows([])
+    setMetrics(initialMetrics)
     if (
       !(
         data &&
@@ -103,6 +105,7 @@ function TopPublication() {
         open={Boolean(categoryAnchorEl)}
         onClose={closeCategory}
         disableScrollLock
+        className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
             width: 'min(100%, 380px)',

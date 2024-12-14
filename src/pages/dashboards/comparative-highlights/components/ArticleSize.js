@@ -57,6 +57,8 @@ function ArticleSize() {
   }
 
   useEffect(() => {
+    setRows([])
+
     if (!(data && data[selectedCategory])) return
 
     const newData = data[selectedCategory]?.Company?.buckets.map(data => {
@@ -89,6 +91,7 @@ function ArticleSize() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
+        className='cancelSelection'
         disableScrollLock
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {

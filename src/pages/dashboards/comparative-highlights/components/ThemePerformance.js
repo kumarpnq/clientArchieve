@@ -36,6 +36,8 @@ function ThemePerformance() {
   }
 
   useEffect(() => {
+    setRows([])
+    setMetrics(initialMetrics)
     if (!(data && data[selectedCategory])) return
     const metrics = structuredClone(initialMetrics)
 
@@ -71,6 +73,7 @@ function ThemePerformance() {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
         disableScrollLock
+        className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
             width: 'min(100%, 380px)',

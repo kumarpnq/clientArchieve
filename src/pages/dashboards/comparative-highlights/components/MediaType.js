@@ -50,6 +50,8 @@ function MediaType() {
   }
 
   useEffect(() => {
+    setRows([])
+    setMetrics(initialMetrics)
     if (
       !(
         data &&
@@ -98,6 +100,7 @@ function MediaType() {
         open={Boolean(categoryAnchorEl)}
         onClose={closeCategory}
         disableScrollLock
+        className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
             width: 'min(100%, 380px)',

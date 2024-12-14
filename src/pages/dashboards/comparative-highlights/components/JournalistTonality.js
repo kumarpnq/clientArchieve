@@ -34,6 +34,9 @@ function JournalistTonality() {
   }
 
   useEffect(() => {
+    setRows([])
+    setMetrics(initialMetrics)
+
     if (!data) return
     const metrics = structuredClone(initialMetrics)
 
@@ -67,6 +70,7 @@ function JournalistTonality() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
+        className='cancelSelection'
         disableScrollLock
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {

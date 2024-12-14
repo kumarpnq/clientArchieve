@@ -32,6 +32,7 @@ function ComparativeDataGrid() {
   }
 
   useEffect(() => {
+    setRows([])
     if (!data) return
 
     const newData = data.map((d, i) => {

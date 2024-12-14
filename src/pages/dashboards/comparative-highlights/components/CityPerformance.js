@@ -5,6 +5,7 @@ import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import MixedChart from 'src/components/charts/MixedChart'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
@@ -27,7 +28,7 @@ const columns = [
   { field: 'qe', headerName: 'QE', minWidth: 100, description: 'Quality of Exposure' }
 ]
 
-// const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
+const initialMetrics = { labels: [], line: { QE: [] }, bar: { Volume: [], Visibility: [] } }
 
 function CityPerformance() {
   const [selectMediaType, setSelectMediaType] = useState(Print)
@@ -41,15 +42,25 @@ function CityPerformance() {
   })
   const [selectedCategory, setSelectedCategory] = useState(0)
   const { anchorEl, openMenu, closeMenu } = useMenu()
+  const [metrics, setMetrics] = useState(initialMetrics)
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)
   }
 
   useEffect(() => {
+    setRows([])
+    setMetrics(initialMetrics)
     if (!(data && data[selectedCategory])) return
 
-    const newData = data[selectedCategory].CompanyTag?.FilterCompany?.Company?.buckets.map(data => {
+    const metrics = structuredClone(initialMetrics)
+
+    const newData = data[selectedCategory].CompanyTag?.FilterCompany?.Company?.buckets?.map(data => {
+      metrics.labels.push(data.key)
+      metrics.bar.Volume.push(Math.trunc(data.doc_count))
+      metrics.bar.Visibility.push(Math.trunc(data.V_Score.value))
+      metrics.line.QE.push(Math.trunc(data.QE.value))
+
       return {
         id: data.key,
         key: data.key,
@@ -61,6 +72,7 @@ function CityPerformance() {
       }
     })
 
+    setMetrics(metrics)
     setRows(newData)
   }, [data, selectedCategory])
 
@@ -76,6 +88,7 @@ function CityPerformance() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
+        className='cancelSelection'
         disableScrollLock
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
@@ -120,10 +133,10 @@ function CityPerformance() {
       loading={loading}
       mediaType={selectMediaType}
       apiActions={apiActions}
+      metrics={metrics}
       changeMediaType={changeMediaType}
       datagrid={{ columns, rows }}
-
-      // charts={{ bar: { component: BarChart, props: { barPercentage: 0.3 } } }}
+      charts={{ bar: { component: MixedChart } }}
     />
   )
 }
