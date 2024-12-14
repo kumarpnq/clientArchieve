@@ -1,6 +1,7 @@
 import React from 'react'
-import { DataGrid as MuiDataGrid } from '@mui/x-data-grid'
+import { GridOverlay, DataGrid as MuiDataGrid } from '@mui/x-data-grid'
 import styled from '@emotion/styled'
+import Typography from '@mui/material/Typography'
 
 const StyledDataGrid = styled(MuiDataGrid)(({ theme }) => ({
   width: '100%',
@@ -38,7 +39,25 @@ const StyledDataGrid = styled(MuiDataGrid)(({ theme }) => ({
 }))
 
 const DataGrid = props => {
-  return <StyledDataGrid {...props} disableColumnFilter disableColumnSelector />
+  const { slots, ...rest } = props
+
+  return (
+    <StyledDataGrid
+      disableColumnFilter
+      disableColumnSelector
+      slots={{
+        ...slots,
+        noRowsOverlay: () => (
+          <GridOverlay>
+            <Typography variant='h4' color='text.secondary' textAlign='center' sx={{ wordSpacing: '2px' }}>
+              No data available
+            </Typography>
+          </GridOverlay>
+        )
+      }}
+      {...rest}
+    />
+  )
 }
 
 export default DataGrid

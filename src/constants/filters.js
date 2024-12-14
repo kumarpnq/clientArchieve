@@ -10,6 +10,8 @@ export const PEERS_RANKING_KPI = 'PEERS_RANKING_KPI'
 
 export const GENRE_THEME = 'GENRE_THEME'
 
+export const WORD_CLOUDS = 'WORD_CLOUDS'
+
 export const PROMINENCE = 'PROMINANCE'
 
 export const ARTICLE_SIZE = 'ARTICLE_SIZE'

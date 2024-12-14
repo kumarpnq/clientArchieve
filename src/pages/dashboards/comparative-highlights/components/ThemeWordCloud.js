@@ -1,80 +1,55 @@
 import React, { useEffect, useState } from 'react'
-import { ARTICLE_SIZE, Print, Region } from 'src/constants/filters'
-import { useChartAndGraphApi } from 'src/api/comparative-highlights'
+import { Print, WORD_CLOUDS } from 'src/constants/filters'
 import BroadWidget from 'src/components/widgets/BroadWidget'
-import { Button, Menu, MenuItem, Stack } from '@mui/material'
-import useMenu from 'src/hooks/useMenu'
+import WordCloud from 'src/components/charts/WordCloud'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import { Button, Menu, MenuItem, Stack } from '@mui/material'
+import { useChartAndGraphApi } from 'src/api/comparative-highlights'
+import useMenu from 'src/hooks/useMenu'
 
-const columns = [
-  { field: 'key', headerName: 'Company', minWidth: 300 },
-  {
-    field: 'headline',
-    headerName: 'Headline',
-    minWidth: 100,
-    description: 'Headline',
-    renderCell: params => `${params.row.headline}%`
-  },
-  {
-    field: 'prominent',
-    headerName: 'Prominent',
-    minWidth: 100,
-    description: 'Prominent',
-    renderCell: params => `${params.row.prominent}%`
-  },
-  {
-    field: 'passing',
-    headerName: 'Passing',
-    minWidth: 100,
-    description: 'Passing',
-    renderCell: params => `${params.row.passing}%`
-  },
-  {
-    field: 'total',
-    headerName: 'Total',
-    minWidth: 100,
-    description: 'Total',
-    renderCell: params => `${params.row.total}%`
-  }
-]
+const fontSizes = [16, 100]
 
-// const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
-
-function ArticleSize() {
+function ThemeWordCloud() {
   const [selectMediaType, setSelectMediaType] = useState(Print)
-  const [rows, setRows] = useState([])
 
   const { data, loading } = useChartAndGraphApi({
-    reportType: ARTICLE_SIZE,
+    reportType: WORD_CLOUDS,
     mediaType: selectMediaType,
-    path: `data.doc.Report.CompanyTag.FilterCompany.ArticleSize.buckets`
+    path: `data.doc.Report.CompanyTag.FilterCompany.Company.buckets`
   })
   const [selectedCategory, setSelectedCategory] = useState(0)
   const { anchorEl, openMenu, closeMenu } = useMenu()
+  const [metrics, setMetrics] = useState([])
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)
   }
 
+  const calculateFontSize = (totalFrequency, doc_count) => {
+    const max = fontSizes[1]
+    const value = Math.trunc((doc_count / totalFrequency) * 100) || 0
+
+    return Math.floor((max / 100) * value)
+  }
+
   useEffect(() => {
     if (!(data && data[selectedCategory])) return
 
-    const newData = data[selectedCategory]?.Company?.buckets.map(data => {
-      const { Passing, Prominent, Headline } = data
+    const totalFrequency = data[selectedCategory]?.WordClouds?.buckets?.reduce(
+      (acc, data) => (acc += data.doc_count),
+      0
+    )
 
-      const total = Math.trunc(Passing?.value + Prominent?.value, Headline?.value)
+    const newData = data[selectedCategory]?.WordClouds?.buckets?.map(data => {
+      const value = calculateFontSize(totalFrequency, data.doc_count)
 
       return {
-        id: data.key,
-        key: data.key,
-        headline: Math.trunc(Headline?.value),
-        passing: Math.trunc(Passing?.value),
-        prominent: Math.trunc(Prominent?.value),
-        total
+        text: data.key,
+        value
       }
     })
 
-    setRows(newData)
+    setMetrics(newData)
   }, [data, selectedCategory])
 
   const apiActions = data ? (
@@ -128,17 +103,17 @@ function ArticleSize() {
 
   return (
     <BroadWidget
-      title='Article Size'
+      title='Theme Cloud'
       description='Keep track of companies and their reputation'
-      loading={loading}
-      data={data}
-      apiActions={apiActions}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
-      datagrid={{ columns, rows }}
-      render={['table']}
+      render={['charts']}
+      loading={loading}
+      apiActions={apiActions}
+      metrics={metrics}
+      charts={{ wordCloud: { component: WordCloud, props: { options: { fontSizes } } } }}
     />
   )
 }
 
-export default ArticleSize
+export default ThemeWordCloud

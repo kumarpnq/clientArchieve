@@ -5,6 +5,7 @@ import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import MixedChart from 'src/components/charts/MixedChart'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
@@ -27,7 +28,7 @@ const columns = [
   { field: 'qe', headerName: 'QE', minWidth: 100, description: 'Quality of Exposure' }
 ]
 
-// const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
+const initialMetrics = { labels: [], line: { QE: [] }, bar: { Volume: [], Visibility: [] } }
 
 function RegionalPerformance() {
   const [selectMediaType, setSelectMediaType] = useState(Print)
@@ -41,6 +42,7 @@ function RegionalPerformance() {
   })
   const [selectedCategory, setSelectedCategory] = useState(0)
   const { anchorEl, openMenu, closeMenu } = useMenu()
+  const [metrics, setMetrics] = useState(initialMetrics)
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)
@@ -48,8 +50,14 @@ function RegionalPerformance() {
 
   useEffect(() => {
     if (!(data && data[selectedCategory])) return
+    const metrics = structuredClone(initialMetrics)
 
     const newData = data[selectedCategory].CompanyTag?.FilterCompany?.Company?.buckets.map(data => {
+      metrics.labels.push(data.key)
+      metrics.bar.Volume.push(data.doc_count)
+      metrics.bar.Visibility.push(Math.trunc(data.V_Score.value))
+      metrics.line.QE.push(Math.trunc(data.QE.value))
+
       return {
         id: data.key,
         key: data.key,
@@ -61,6 +69,7 @@ function RegionalPerformance() {
       }
     })
 
+    setMetrics(metrics)
     setRows(newData)
   }, [data, selectedCategory])
 
@@ -118,13 +127,12 @@ function RegionalPerformance() {
       title='Regional Performance'
       description='Keep track of companies and their reputation'
       loading={loading}
-      data={data}
+      metrics={metrics}
       apiActions={apiActions}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
       datagrid={{ columns, rows }}
-
-      // charts={{ bar: { component: BarChart, props: { barPercentage: 0.3 } } }}
+      charts={{ bar: { component: MixedChart } }}
     />
   )
 }

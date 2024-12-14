@@ -21,6 +21,7 @@ import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import PieChartIcon from '@mui/icons-material/PieChart'
 import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart'
+import AbcIcon from '@mui/icons-material/Abc'
 import useMenu from 'src/hooks/useMenu'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { Tabs, Tab } from 'src/components/Tabs'
@@ -30,6 +31,7 @@ import Lottie from 'lottie-react'
 import loader from 'public/loader.json'
 import WidgetToolbar from './actions/WidgetToolbar'
 import DataGrid from '../datagrid/DataGrid'
+import Loading from '../Loading'
 
 const icons = {
   bar: <EqualizerIcon />,
@@ -38,7 +40,13 @@ const icons = {
   doughnut: <DonutLargeIcon />,
   bubble: <BubbleChartIcon />,
   stacked: <StackedBarChartIcon />,
+  wordCloud: <AbcIcon />,
   table: <GridViewOutlinedIcon />
+}
+
+const lookup = {
+  table: DataGrid,
+  charts: Chart
 }
 
 function BroadWidget(props) {
@@ -52,9 +60,13 @@ function BroadWidget(props) {
     metrics,
     mediaType,
     changeMediaType,
+    render,
     loading = false
   } = props
-  const [value, toggle] = useToggle(['table', 'charts'])
+
+  const components = useMemo(() => render || Object.keys(lookup), [render])
+  const [value, toggle] = useToggle(components)
+  const Component = useMemo(() => lookup[value], [value])
 
   return (
     <Card elevation={0} sx={{ p: 4, display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -87,19 +99,14 @@ function BroadWidget(props) {
       <Divider sx={{ my: 3 }} />
       <Box flexGrow={1} className='cancelSelection' height={height || 400}>
         {loading ? (
-          <Loading />
-        ) : value === 'charts' ? (
-          <Chart
+          <Loading width={250} />
+        ) : (
+          <Component
+            {...datagrid}
             charts={charts}
             metrics={metrics}
             slots={{ toolbar: WidgetToolbar }}
-            slotProps={{ toolbar: { value, toggle, apiActions, charts: !!metrics } }}
-          />
-        ) : (
-          <DataGrid
-            {...datagrid}
-            slots={{ toolbar: WidgetToolbar }}
-            slotProps={{ toolbar: { value, toggle, apiActions, charts: !!metrics } }}
+            slotProps={{ toolbar: { value, toggle, components, apiActions } }}
           />
         )}
       </Box>
@@ -201,16 +208,6 @@ function Chart(props) {
         ))}
       </Menu>
     </Fragment>
-  )
-}
-
-function Loading() {
-  return (
-    <Stack alignItems='center' justifyContent='center' flexGrow={1} width='100%'>
-      <Box width={200}>
-        <Lottie animationData={loader} />
-      </Box>
-    </Stack>
   )
 }
 

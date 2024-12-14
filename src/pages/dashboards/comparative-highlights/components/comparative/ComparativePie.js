@@ -1,11 +1,13 @@
 import { Box, Card, Grid, LinearProgress, linearProgressClasses, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import DoughnutChart from 'src/components/charts/DoughnutChart'
 import { Tab, Tabs } from 'src/components/Tabs'
 import { Print, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
-import { selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/user/userSlice'
+
+import Lottie from 'lottie-react'
+import loader from 'public/loader.json'
+import Loading from 'src/components/Loading'
 
 const bgColor = ['#fc8166', '#fbd059', '#58d8ff', '#5d87fd', '#57c0bd', '#8acd82', '#2f839e']
 const initialValues = { labels: [], V_Score: [], doc_count: [] }
@@ -63,9 +65,7 @@ function ComparativePie() {
       </Typography>
 
       {loading ? (
-        <Typography variant='subtitle1' fontWeight={500}>
-          Loading...
-        </Typography>
+        <Loading />
       ) : (
         <>
           <Tabs
@@ -90,8 +90,8 @@ function ComparativePie() {
 
           {data && values.labels.length > 0 ? (
             <>
-              <Box sx={{ height: { xs: 250, md: 300 }, overflow: 'auto' }}>
-                <DoughnutChart labels={values.labels} data={values[tabSelected]} cutout={120} radius={135} />
+              <Box sx={{ height: 300, width: '100%', overflow: 'auto' }}>
+                <DoughnutChart labels={values.labels} data={values[tabSelected]} cutout='80%' radius='85%' />
               </Box>
 
               <Box mt={4} flexGrow={1} sx={{ overflowY: 'auto' }}>

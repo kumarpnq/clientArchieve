@@ -28,8 +28,7 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { Tabs, Tab } from 'src/components/Tabs'
 import { All, Online, Print } from 'src/constants/filters'
 
-import Lottie from 'lottie-react'
-import loader from 'public/loader.json'
+import Loading from '../Loading'
 
 const icons = {
   bar: <EqualizerIcon />,
@@ -75,6 +74,8 @@ function Widget(props) {
     <Card
       elevation={0}
       sx={{
+        display: 'flex',
+        flexDirection: 'column',
         p: 4,
         height: '100%',
         boxShadow: 'rgba(149, 157, 165, 0.2) 0px 8px 24px'
@@ -132,28 +133,29 @@ function Widget(props) {
           </IconButton>
         </Stack>
       </Stack>
-      <Tabs
-        value={mediaType}
-        onChange={changeMediaType}
-        className='cancelSelection'
-        sx={{
-          mt: 0,
-          mb: 2,
 
-          '& .MuiTab-root': {
-            m: 0,
-            mr: 6,
-            minWidth: 50,
-            fontSize: 13
-          }
-        }}
-      >
-        <Tab label={All} value={All} />
-        <Tab label={Print} value={Print} />
-        <Tab label={Online} value={Online} />
-      </Tabs>
+      <Box flexGrow={1} className='cancelSelection' height={height || 400}>
+        <Tabs
+          value={mediaType}
+          onChange={changeMediaType}
+          className='cancelSelection'
+          sx={{
+            mt: 0,
+            mb: 2,
 
-      <Stack id='chart-container' className='cancelSelection' sx={{ height: height || 400, overflow: 'auto' }}>
+            '& .MuiTab-root': {
+              m: 0,
+              mr: 6,
+              minWidth: 50,
+              fontSize: 13
+            }
+          }}
+        >
+          <Tab label={All} value={All} />
+          <Tab label={Print} value={Print} />
+          <Tab label={Online} value={Online} />
+        </Tabs>
+
         {loading ? (
           <Loading />
         ) : value === 'charts' ? (
@@ -161,7 +163,7 @@ function Widget(props) {
         ) : (
           table
         )}
-      </Stack>
+      </Box>
 
       <Menu
         anchorEl={anchorEl}
@@ -205,16 +207,6 @@ function Widget(props) {
         ))}
       </Menu>
     </Card>
-  )
-}
-
-function Loading() {
-  return (
-    <Stack alignItems='center' justifyContent='center' flexGrow={1} width='100%'>
-      <Box width={200}>
-        <Lottie animationData={loader} />
-      </Box>
-    </Stack>
   )
 }
 

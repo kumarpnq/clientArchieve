@@ -1,6 +1,6 @@
 import { Button, Grid, Menu, MenuItem, Stack } from '@mui/material'
 import { GridToolbarColumnsButton, GridToolbarDensitySelector } from '@mui/x-data-grid'
-import React, { Fragment } from 'react'
+import React, { Fragment, useMemo } from 'react'
 import useMenu from 'src/hooks/useMenu'
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
 import EqualizerIcon from '@mui/icons-material/Equalizer'
@@ -11,7 +11,9 @@ const icons = {
 }
 
 function WidgetToolbar(props) {
-  const { charts, apiActions, value, toggle, actions } = props
+  const { apiActions, value, toggle, components, actions } = props
+
+  const index = useMemo(() => components.indexOf(value), [components, value])
 
   return (
     <Fragment>
@@ -48,9 +50,13 @@ function WidgetToolbar(props) {
                 <GridToolbarDensitySelector size='small' />
               </Fragment>
             )}
-            {charts ? (
-              <Button startIcon={icons[value === 'charts' ? 'table' : 'charts']} size='small' onClick={toggle}>
-                {value === 'charts' ? 'Table' : 'Charts'}
+            {components.length > 1 ? (
+              <Button
+                startIcon={icons[index === components.length - 1 ? components[0] : components[index + 1]]}
+                size='small'
+                onClick={toggle}
+              >
+                {index === components.length - 1 ? components[0] : components[index + 1]}
               </Button>
             ) : null}
           </Stack>

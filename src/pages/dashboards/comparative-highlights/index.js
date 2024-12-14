@@ -3,7 +3,7 @@ import { Box, Card, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/mate
 import data from 'src/data/data.json'
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
-import words from 'src/data/word.json'
+
 import useMenu from 'src/hooks/useMenu'
 import WordCloud from 'src/components/charts/WordCloud'
 
@@ -26,6 +26,7 @@ import JournalistTonality from './components/JournalistTonality'
 import JournalistPerformance from './components/JournalistPerformance'
 import LanguagePerformance from './components/LanguagePerformance'
 import ArticleSize from './components/ArticleSize'
+import ThemeWordCloud from './components/ThemeWordCloud'
 
 // Breakpoints and column definitions
 const breakpoints = { lg: 1256, md: 1024, sm: 768, xs: 480, xxs: 0 }
@@ -33,10 +34,7 @@ const cols = { lg: 16, md: 16, sm: 16, xs: 16, xxs: 16 }
 const ReactGridLayout = WidthProvider(Responsive)
 
 const Page = () => {
-  const { companies, tonality, publications, journalist, mainlines, businessDailies, table } = data
   const { anchorEl, openMenu, closeMenu } = useMenu()
-
-  // const { data: comparative, loading: comparativeLoading } = useChartAndGraphApi(VISIBILITY_IMAGE_SCORE, All)
 
   // const [layouts, setLayouts] = useLocalStorage({
   //   key: 'comparative',
@@ -475,9 +473,9 @@ const Page = () => {
           <ProminencePresence />
         </Box>
 
-        <Card elevation={0} sx={{ p: 4 }} key='10'>
-          <WordCloud data={words.words} />
-        </Card>
+        <Box key='10'>
+          <ThemeWordCloud />
+        </Box>
 
         <Box key='11'>
           <JournalistTonality />
