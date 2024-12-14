@@ -5,6 +5,7 @@ import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import BarChart from 'src/components/charts/BarChart'
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
@@ -36,6 +37,7 @@ function JournalistPerformance() {
   useEffect(() => {
     setRows([])
     setMetrics(initialMetrics)
+    setSelectedCategory(0)
     if (!(data && data[selectedCategory])) return
     const metrics = structuredClone(initialMetrics)
 
@@ -59,7 +61,7 @@ function JournalistPerformance() {
   const apiActions = data ? (
     <Stack direction='row' spacing={2}>
       {data[selectedCategory] && (
-        <Button size='small' onClick={openMenu}>
+        <Button size='small' onClick={openMenu} endIcon={<KeyboardArrowDown />}>
           {data[selectedCategory].key}
         </Button>
       )}
@@ -93,7 +95,7 @@ function JournalistPerformance() {
         {data?.map((category, i) => (
           <MenuItem
             key={category.key}
-            selected={selectedCategory.category === i}
+            selected={selectedCategory === i}
             onClick={() => {
               setSelectedCategory(i)
               closeMenu()
@@ -108,7 +110,7 @@ function JournalistPerformance() {
 
   return (
     <BroadWidget
-      title='Colgate-Palmolive vs. Peers – Tonality Break-up'
+      title='Journalist Performance'
       description='Keep track of companies and their reputation'
       loading={loading}
       metrics={metrics}

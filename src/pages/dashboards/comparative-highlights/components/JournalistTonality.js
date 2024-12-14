@@ -5,6 +5,7 @@ import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import StackChart from 'src/components/charts/StackChart'
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 200 },
@@ -36,6 +37,7 @@ function JournalistTonality() {
   useEffect(() => {
     setRows([])
     setMetrics(initialMetrics)
+    setSelectedCategory(0)
 
     if (!data) return
     const metrics = structuredClone(initialMetrics)
@@ -61,7 +63,7 @@ function JournalistTonality() {
   const apiActions = data ? (
     <Stack direction='row' spacing={2}>
       {data[selectedCategory] && (
-        <Button size='small' onClick={openMenu}>
+        <Button size='small' onClick={openMenu} endIcon={<KeyboardArrowDown />}>
           {data[selectedCategory].key}
         </Button>
       )}
@@ -95,7 +97,7 @@ function JournalistTonality() {
         {data?.map((category, i) => (
           <MenuItem
             key={category.key}
-            selected={selectedCategory.category === i}
+            selected={selectedCategory === i}
             onClick={() => {
               setSelectedCategory(i)
               closeMenu()

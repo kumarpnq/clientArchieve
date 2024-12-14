@@ -44,6 +44,7 @@ function LanguagePerformance() {
   useEffect(() => {
     setRows([])
     setMetrics(initialMetrics)
+    setSelectedCategory(0)
     if (!(data && data[selectedCategory])) return
 
     const metrics = structuredClone(initialMetrics)

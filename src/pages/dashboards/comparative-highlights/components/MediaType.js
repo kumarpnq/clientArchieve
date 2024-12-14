@@ -52,6 +52,7 @@ function MediaType() {
   useEffect(() => {
     setRows([])
     setMetrics(initialMetrics)
+    setSelectedCategory({ category: 0, subCategory: 0 })
     if (
       !(
         data &&
@@ -180,7 +181,6 @@ function MediaType() {
     <BroadWidget
       title='Media Type Performance'
       description='Keep track of companies and their reputation'
-      height={280}
       loading={loading}
       metrics={metrics}
       mediaType={selectMediaType}

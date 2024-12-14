@@ -55,6 +55,7 @@ function TopPublication() {
   useEffect(() => {
     setRows([])
     setMetrics(initialMetrics)
+    setSelectedCategory({ category: 0, subCategory: 0 })
     if (
       !(
         data &&

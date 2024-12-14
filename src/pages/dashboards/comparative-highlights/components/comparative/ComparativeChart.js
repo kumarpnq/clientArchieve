@@ -8,10 +8,10 @@ import { selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/u
 import DataGrid from 'src/components/datagrid/DataGrid'
 
 const columns = [
-  { field: 'key', headerName: 'Company', minWidth: 200 },
-  { field: 'visScore', headerName: 'V Score', minWidth: 100, description: 'Visibility score' },
-  { field: 'imageScore', headerName: 'I Score', minWidth: 100, description: 'Image score' },
-  { field: 'qe', headerName: 'QE', minWidth: 100, description: 'Quality of Exposure' }
+  { field: 'key', headerName: 'Company', minWidth: 300 },
+  { field: 'visScore', headerName: 'V Score', minWidth: 150, description: 'Visibility score' },
+  { field: 'imageScore', headerName: 'I Score', minWidth: 150, description: 'Image score' },
+  { field: 'qe', headerName: 'QE', minWidth: 150, description: 'Quality of Exposure' }
 ]
 
 const initialMetrics = { labels: [], line: { QE: [] }, bar: { Image: [], Visibility: [] } }
@@ -41,16 +41,16 @@ function Comparative(props) {
 
     const newData = data.map(d => {
       metrics.labels.push(d.key)
-      metrics.bar.Visibility.push(Math.trunc(d.V_Score.value))
-      metrics.bar.Image.push(Math.trunc(d.I_Score.value))
-      metrics.line.QE.push(Math.trunc(d.QE.value))
+      metrics.bar.Visibility.push(d.V_Score.value.toFixed(4))
+      metrics.bar.Image.push(d.I_Score.value.toFixed(4))
+      metrics.line.QE.push(d.QE.value?.toFixed(4))
 
       return {
         id: d.key,
         key: d.key,
-        visScore: Math.trunc(d.V_Score.value),
-        imageScore: Math.trunc(d.I_Score.value),
-        qe: Math.trunc(d.QE.value)
+        visScore: d.V_Score.value?.toFixed(4),
+        imageScore: d.I_Score.value?.toFixed(4),
+        qe: d.QE.value.toFixed(4)
       }
     })
 

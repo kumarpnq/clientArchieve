@@ -12,7 +12,7 @@ export const GENRE_THEME = 'GENRE_THEME'
 
 export const WORD_CLOUDS = 'WORD_CLOUDS'
 
-export const PROMINENCE = 'PROMINANCE'
+export const PROMINENCE = 'PROMINENCE'
 
 export const ARTICLE_SIZE = 'ARTICLE_SIZE'
 
@@ -28,7 +28,7 @@ export const City = 'City'
 
 export const Region = 'Region'
 
-export const Journalist = 'Journlist'
+export const Journalist = 'Journalist'
 
 export const EditionType = 'EditionType'
 

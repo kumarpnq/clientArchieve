@@ -10,7 +10,7 @@ import DataGrid from 'src/components/datagrid/DataGrid'
 import Loading from 'src/components/Loading'
 
 const columns = [
-  { field: 'key', headerName: 'Company', minWidth: 200 },
+  { field: 'key', headerName: 'Company', minWidth: 300 },
   { field: 'volScore', headerName: 'Vol', minWidth: 100, description: 'Volume' },
   { field: 'volSov', headerName: 'Vol SOV', minWidth: 100, description: 'Volume Share of Voice' },
   { field: 'visScore', headerName: 'Vis', minWidth: 100, description: 'Visibility' },
@@ -91,30 +91,31 @@ function ComparativeTable() {
         </Stack>
       </Stack>
 
+      <Tabs
+        value={selectMediaType}
+        onChange={changeMediaType}
+        className='cancelSelection'
+        sx={{
+          mt: 0,
+          mb: 2,
+
+          '& .MuiTab-root': {
+            m: 0,
+            mr: 6,
+            minWidth: 50,
+            fontSize: 13
+          }
+        }}
+      >
+        <Tab label={All} value={All} />
+        <Tab label={Print} value={Print} />
+        <Tab label={Online} value={Online} />
+      </Tabs>
+
       {loading ? (
         <Loading />
       ) : (
         <>
-          <Tabs
-            value={selectMediaType}
-            onChange={changeMediaType}
-            className='cancelSelection'
-            sx={{
-              mt: 0,
-              mb: 2,
-
-              '& .MuiTab-root': {
-                m: 0,
-                mr: 6,
-                minWidth: 50,
-                fontSize: 13
-              }
-            }}
-          >
-            <Tab label={All} value={All} />
-            <Tab label={Print} value={Print} />
-            <Tab label={Online} value={Online} />
-          </Tabs>
           <Box flexGrow={1} className='cancelSelection'>
             <DataGrid columns={columns} rows={rows} />
           </Box>

@@ -34,7 +34,7 @@ function ThemeWordCloud() {
 
   useEffect(() => {
     setMetrics([])
-
+    setSelectedCategory(0)
     if (!(data && data[selectedCategory])) return
 
     const totalFrequency = data[selectedCategory]?.WordClouds?.buckets?.reduce(
@@ -114,6 +114,7 @@ function ThemeWordCloud() {
       loading={loading}
       apiActions={apiActions}
       metrics={metrics}
+      containerStyle={{ overflowY: 'auto' }}
       charts={{ wordCloud: { component: WordCloud, props: { options: { fontSizes } } } }}
     />
   )

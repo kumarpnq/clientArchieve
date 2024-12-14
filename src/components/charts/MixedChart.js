@@ -108,11 +108,8 @@ function MixedChart(props) {
               font: { size: 10 },
               callback: function (label) {
                 const labels = metrics.labels
-                if (/\s/.test(labels[label])) {
-                  return labels[label].split(' ').slice(0, 2)
-                } else {
-                  return labels[label]
-                }
+
+                return /\s/.test(labels[label]) ? labels[label]?.split(' ')?.at(0) : labels[label]
               }
             },
             grid: {

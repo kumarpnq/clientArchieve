@@ -27,8 +27,6 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { Tabs, Tab } from 'src/components/Tabs'
 import { All, Online, Print } from 'src/constants/filters'
 
-import Lottie from 'lottie-react'
-import loader from 'public/loader.json'
 import WidgetToolbar from './actions/WidgetToolbar'
 import DataGrid from '../datagrid/DataGrid'
 import Loading from '../Loading'
@@ -54,7 +52,7 @@ function BroadWidget(props) {
     title,
     description,
     charts,
-    height,
+    containerStyle = {},
     datagrid,
     apiActions,
     metrics,
@@ -97,7 +95,7 @@ function BroadWidget(props) {
       </Stack>
 
       <Divider sx={{ my: 3 }} />
-      <Box flexGrow={1} className='cancelSelection' height={height || 400}>
+      <Box className='cancelSelection' sx={{ height: 400, flexGrow: 1, ...containerStyle }}>
         {loading ? (
           <Loading width={250} />
         ) : (

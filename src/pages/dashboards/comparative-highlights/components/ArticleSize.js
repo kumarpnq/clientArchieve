@@ -58,6 +58,7 @@ function ArticleSize() {
 
   useEffect(() => {
     setRows([])
+    setSelectedCategory(0)
 
     if (!(data && data[selectedCategory])) return
 

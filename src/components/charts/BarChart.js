@@ -58,7 +58,7 @@ function BarChart(props) {
               callback: function (label) {
                 const labels = metrics.labels
 
-                return /\s/.test(labels[label]) ? labels[label].split(' ').slice(0, 2) : labels[label]
+                return /\s/.test(labels[label]) ? labels[label]?.split(' ')?.at(0) : labels[label]
               }
             },
             grid: {

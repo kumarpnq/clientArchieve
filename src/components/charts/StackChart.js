@@ -42,7 +42,16 @@ function StackChart(props) {
         scales: {
           x: {
             stacked: true,
-            ticks: { font: { size: 11 }, maxRotation: 0 },
+            ticks: {
+              font: { size: 11 },
+              maxRotation: 0,
+
+              callback: function (label) {
+                const labels = metrics.labels
+
+                return /\s/.test(labels[label]) ? labels[label]?.split(' ')?.at(0) : labels[label]
+              }
+            },
             grid: { drawOnChartArea: false }
           },
           y: { stacked: true, grid: { drawOnChartArea: false } }

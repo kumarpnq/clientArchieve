@@ -36,7 +36,7 @@ function ProminencePresence() {
   const { data, loading } = useChartAndGraphApi({
     reportType: PROMINENCE,
     mediaType: selectMediaType,
-    path: `data.doc.Report.CompanyTag.FilterCompany.Prominance.buckets`
+    path: `data.doc.Report.CompanyTag.FilterCompany.Prominence.buckets`
   })
   const [selectedCategory, setSelectedCategory] = useState(0)
   const { anchorEl, openMenu, closeMenu } = useMenu()
@@ -49,6 +49,7 @@ function ProminencePresence() {
   useEffect(() => {
     setRows([])
     setMetrics(initialMetrics)
+    setSelectedCategory(0)
     if (!(data && data[selectedCategory])) return
     const metrics = structuredClone(initialMetrics)
 
