@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { All, PEERS_VOLUME_VISIBILITY } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import BroadWidget from 'src/components/widgets/BroadWidget'
+import DataGrid from 'src/components/datagrid/DataGrid'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
@@ -69,6 +70,7 @@ function ComparativeDataGrid() {
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
       datagrid={{ columns, rows }}
+      table={DataGrid}
       render={['table']}
     />
   )

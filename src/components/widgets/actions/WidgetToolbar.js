@@ -11,9 +11,9 @@ const icons = {
 }
 
 function WidgetToolbar(props) {
-  const { apiActions, value, toggle, components, actions } = props
+  const { apiActions, value, toggle, render, actions } = props
 
-  const index = useMemo(() => components.indexOf(value), [components, value])
+  const index = useMemo(() => render.indexOf(value), [render, value])
 
   return (
     <Fragment>
@@ -50,13 +50,13 @@ function WidgetToolbar(props) {
                 <GridToolbarDensitySelector size='small' />
               </Fragment>
             )}
-            {components.length > 1 ? (
+            {render.length > 1 ? (
               <Button
-                startIcon={icons[index === components.length - 1 ? components[0] : components[index + 1]]}
+                startIcon={icons[index === render.length - 1 ? render[0] : render[index + 1]]}
                 size='small'
                 onClick={toggle}
               >
-                {index === components.length - 1 ? components[0] : components[index + 1]}
+                {index === render.length - 1 ? render[0] : render[index + 1]}
               </Button>
             ) : null}
           </Stack>

@@ -21,6 +21,17 @@ const StyledDataGrid = styled(MuiDataGrid)(({ theme }) => ({
     fontWeight: 600,
     color: theme.palette.text.secondary
   },
+
+  '.MuiDataGrid-iconButtonContainer': {
+    visibility: 'visible'
+  },
+  '.MuiDataGrid-sortIcon': {
+    opacity: '0.7 !important'
+  },
+
+  // '.MuiButtonBase-root.MuiIconButton-root': {
+  //   color: 'red'
+  // },
   '& .MuiDataGrid-main .MuiDataGrid-columnHeaders': {
     // backgroundColor: '#f6f8fa',
     borderRadius: '8px',
@@ -45,6 +56,9 @@ const DataGrid = props => {
     <StyledDataGrid
       disableColumnFilter
       disableColumnSelector
+      disableRowSelectionOnClick
+      disableColumnMenu
+      hideFooter
       slots={{
         ...slots,
         noRowsOverlay: () => (

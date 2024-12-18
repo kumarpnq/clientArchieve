@@ -28,7 +28,6 @@ import { Tabs, Tab } from 'src/components/Tabs'
 import { All, Online, Print } from 'src/constants/filters'
 
 import WidgetToolbar from './actions/WidgetToolbar'
-import DataGrid from '../datagrid/DataGrid'
 import Loading from '../Loading'
 
 const icons = {
@@ -42,16 +41,12 @@ const icons = {
   table: <GridViewOutlinedIcon />
 }
 
-const lookup = {
-  table: DataGrid,
-  charts: Chart
-}
-
 function BroadWidget(props) {
   const {
     title,
     description,
     charts,
+    table,
     containerStyle = {},
     datagrid,
     apiActions,
@@ -62,9 +57,10 @@ function BroadWidget(props) {
     loading = false
   } = props
 
-  const components = useMemo(() => render || Object.keys(lookup), [render])
-  const [value, toggle] = useToggle(components)
-  const Component = useMemo(() => lookup[value], [value])
+  const lookup = useMemo(() => ({ charts: Chart, table }), [table])
+
+  const [value, toggle] = useToggle(render)
+  const Component = useMemo(() => lookup[value], [value, lookup])
 
   return (
     <Card elevation={0} sx={{ p: 4, display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -95,7 +91,7 @@ function BroadWidget(props) {
       </Stack>
 
       <Divider sx={{ my: 3 }} />
-      <Box className='cancelSelection' sx={{ height: 400, flexGrow: 1, ...containerStyle }}>
+      <Box className='cancelSelection' pb={2} sx={{ height: 400, flexGrow: 1, ...containerStyle }}>
         {loading ? (
           <Loading width={250} />
         ) : (
@@ -104,7 +100,7 @@ function BroadWidget(props) {
             charts={charts}
             metrics={metrics}
             slots={{ toolbar: WidgetToolbar }}
-            slotProps={{ toolbar: { value, toggle, components, apiActions } }}
+            slotProps={{ toolbar: { value, toggle, render, apiActions } }}
           />
         )}
       </Box>
@@ -163,7 +159,7 @@ function Chart(props) {
   return (
     <Fragment>
       <slots.toolbar {...slotProps.toolbar} actions={actions} />
-      <SelectedChart.component metrics={metrics} {...(SelectedChart.props ?? {})} />
+      {metrics ? <SelectedChart.component metrics={metrics} {...(SelectedChart.props ?? {})} /> : null}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}

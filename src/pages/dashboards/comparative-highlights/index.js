@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Card, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material'
+import { Box, Card, ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery } from '@mui/material'
 import data from 'src/data/data.json'
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
@@ -27,6 +27,8 @@ import JournalistPerformance from './components/JournalistPerformance'
 import LanguagePerformance from './components/LanguagePerformance'
 import ArticleSize from './components/ArticleSize'
 import ThemeWordCloud from './components/ThemeWordCloud'
+import TempBarChart from 'src/components/charts/TempBarChart'
+import MultiLabelBarChart from 'src/components/charts/MultiLabelBarChart'
 
 // Breakpoints and column definitions
 const breakpoints = { lg: 1256, md: 1024, sm: 768, xs: 480, xxs: 0 }
@@ -35,6 +37,8 @@ const ReactGridLayout = WidthProvider(Responsive)
 
 const Page = () => {
   const { anchorEl, openMenu, closeMenu } = useMenu()
+  const { businessDailies, mainlines } = data
+  const matches = useMediaQuery('(min-width:1200px)')
 
   // const [layouts, setLayouts] = useLocalStorage({
   //   key: 'comparative',
@@ -78,78 +82,58 @@ const Page = () => {
         <Box key='3'>
           <ComparativeDataGrid />
         </Box>
-        {/*
-        <Box key='4'>
-          <Widget
-            title='Industry Visibility in Mainlines – Print'
-            openMenu={openMenu}
-            data={publications.data1.print}
-            charts={{
-              bar: { component: TempBarChart, props: { barPercentage: 0.3 } },
-              line: { component: LineChart },
-              stacked: { component: StackChart, props: { barPercentage: 0.15 } }
-            }}
-            table={
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      {[
-                        { title: 'Company', width: 130, align: 'left' },
-                        { title: 'Volume', width: 100, align: 'center' },
-                        { title: 'Volume SOV', width: 100, align: 'center' },
-                        { title: 'Visibility', width: 100, align: 'center' },
-                        { title: 'Visibility SOV', width: 100, align: 'center' }
-                      ].map(col => (
-                        <TableCell key={col.title} style={{ minWidth: col.width }} align={col.align}>
-                          {col.title}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {companies.labels.map((label, i) => (
-                      <TableRow
-                        key={label}
-                        sx={{
-                          '&:last-child td, &:last-child th': {
-                            border: 0
-                          }
-                        }}
-                      >
-                        <TableCell component='th' scope='row'>
-                          {label}
-                        </TableCell>
 
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data.Visbility[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data.Image[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            }
-          />
+        <Box key='4'>
+          <MediaType matches={matches} />
         </Box>
+
         <Box key='5'>
+          <TopPublication matches={matches} />
+        </Box>
+
+        <Box key='6'>
+          <RegionalPerformance matches={matches} />
+        </Box>
+
+        <Box key='7'>
+          <CityPerformance matches={matches} />
+        </Box>
+
+        <Box key='8'>
+          <ThemePerformance matches={matches} />
+        </Box>
+
+        <Box key='9'>
+          <ProminencePresence matches={matches} />
+        </Box>
+
+        <Box key='10'>
+          <ThemeWordCloud />
+        </Box>
+
+        <Box key='11'>
+          <JournalistTonality />
+        </Box>
+
+        <Box key='12'>
+          <JournalistPerformance matches={matches} />
+        </Box>
+
+        <Box key='13'>
+          <ArticleSize matches={matches} />
+        </Box>
+
+        <Box key='14'>
+          <LanguagePerformance matches={matches} />
+        </Box>
+
+        {/* <Box key='24'>
           <Widget
-            title='Industry Visibility in Business Dailies – Print'
+            title='  Tonality Distribution: Industry - Print'
             openMenu={openMenu}
-            data={publications.data2.print}
+            data={tonality.data1.print}
             charts={{
-              bar: { component: TempBarChart, props: { barPercentage: 0.3 } },
-              line: { component: LineChart },
-              stacked: { component: StackChart, props: { barPercentage: 0.15 } }
+              stacked: { component: StackChart, props: { barPercentage: 0.2 } }
             }}
             table={
               <TableContainer>
@@ -203,24 +187,9 @@ const Page = () => {
             }
           />
         </Box> */}
+      </ReactGridLayout>
 
-        <Box key='4'>
-          <MediaType />
-        </Box>
-
-        <Box key='5'>
-          <TopPublication />
-        </Box>
-
-        <Box key='6'>
-          <RegionalPerformance />
-        </Box>
-
-        <Box key='7'>
-          <CityPerformance />
-        </Box>
-
-        {/* <Card elevation={0} sx={{ p: 4 }} key='10'>
+      {/* <Card elevation={0} sx={{ p: 4 }} key='10'>
           <Stack direction='row' justifyContent='space-between' alignItems='center' mb={2}>
             <Stack>
               <Typography
@@ -439,7 +408,7 @@ const Page = () => {
           </Button>
         </Card> */}
 
-        {/* <Box key='11'>
+      {/* <Box key='11'>
           <Widget
             height={320}
             title='Colgate-Palmolive vs. Peers – Tonality Break-up'
@@ -452,108 +421,18 @@ const Page = () => {
             }}
           />
         </Box> */}
-        {/*
-        <Card elevation={0} sx={{ p: 4, height: { xs: 350, md: 400, lg: 500 } }} key='13'>
-          <BarChart data={mainlines.data1.print} barPercentage={0.3} />
-        </Card>
 
-        <Card elevation={0} sx={{ p: 4, height: { xs: 350, md: 400, lg: 500 } }} key='14'>
-          <BarChart data={businessDailies.data1.print} barPercentage={0.3} />
-        </Card>
+      {/* <Card elevation={0} sx={{ p: 4, height: { xs: 350, md: 400, lg: 500 } }} key='13'>
+        <TempBarChart data={mainlines.data1.print} barPercentage={0.3} />
+      </Card>
 
-        <Card elevation={0} sx={{ p: 4, height: { xs: 450, md: 500, lg: 700 } }} key='15'>
-          <MultiLabelBarChart data={businessDailies.data1.print} barPercentage={0.3} />
-        </Card> */}
+      <Card elevation={0} sx={{ p: 4, height: { xs: 350, md: 400, lg: 500 } }} key='14'>
+        <TempBarChart data={businessDailies.data1.print} barPercentage={0.3} />
+      </Card>
 
-        <Box key='8'>
-          <ThemePerformance />
-        </Box>
-
-        <Box key='9'>
-          <ProminencePresence />
-        </Box>
-
-        <Box key='10'>
-          <ThemeWordCloud />
-        </Box>
-
-        <Box key='11'>
-          <JournalistTonality />
-        </Box>
-
-        <Box key='12'>
-          <JournalistPerformance />
-        </Box>
-
-        <Box key='13'>
-          <ArticleSize />
-        </Box>
-
-        <Box key='14'>
-          <LanguagePerformance />
-        </Box>
-
-        {/* <Box key='24'>
-          <Widget
-            title='  Tonality Distribution: Industry - Print'
-            openMenu={openMenu}
-            data={tonality.data1.print}
-            charts={{
-              stacked: { component: StackChart, props: { barPercentage: 0.2 } }
-            }}
-            table={
-              <TableContainer>
-                <Table>
-                  <TableHead>
-                    <TableRow>
-                      {[
-                        { title: 'Company', width: 130, align: 'left' },
-                        { title: 'Volume', width: 100, align: 'center' },
-                        { title: 'Volume SOV', width: 100, align: 'center' },
-                        { title: 'Visibility', width: 100, align: 'center' },
-                        { title: 'Visibility SOV', width: 100, align: 'center' }
-                      ].map(col => (
-                        <TableCell key={col.title} style={{ minWidth: col.width }} align={col.align}>
-                          {col.title}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {companies.labels.map((label, i) => (
-                      <TableRow
-                        key={label}
-                        sx={{
-                          '&:last-child td, &:last-child th': {
-                            border: 0
-                          }
-                        }}
-                      >
-                        <TableCell component='th' scope='row'>
-                          {label}
-                        </TableCell>
-
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data.Visbility[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data.Image[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography variant='caption'>{companies.data2.QE[i]}</Typography>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            }
-          />
-        </Box> */}
-      </ReactGridLayout>
+      <Card elevation={0} sx={{ p: 4, height: { xs: 450, md: 500, lg: 700 } }} key='15'>
+        <MultiLabelBarChart data={businessDailies.data1.print} barPercentage={0.3} />
+      </Card> */}
 
       <Menu
         anchorEl={anchorEl}

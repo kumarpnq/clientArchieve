@@ -31,7 +31,7 @@ function MixedChart(props) {
         datasets: [
           ...Object.keys(metrics.line).map((label, i) => ({
             type: 'line',
-            label: 'QE',
+            label,
             data: metrics.line[label],
             yAxisID: 'y1',
             backgroundColor: lineColors[i],

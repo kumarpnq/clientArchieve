@@ -8,7 +8,7 @@ function MultiLabelBarChart(props) {
 
   const customScale = {
     id: 'customScale',
-    beforeDatasetsDraw(chart) {
+    afterDatasetsDraw(chart) {
       const { data, ctx, chartArea } = chart
       const { bottom, width } = chartArea
       const dataPointsLength = data.labels.length

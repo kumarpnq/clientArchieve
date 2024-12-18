@@ -3,7 +3,7 @@ import axios from 'axios'
 import useLoader from 'src/hooks/useLoader'
 import { useSelector } from 'react-redux'
 import { selectSelectedClient } from 'src/store/apps/user/userSlice'
-import { GENRE_THEME, Print } from 'src/constants/filters'
+import { Print } from 'src/constants/filters'
 import { getDateRange } from 'src/store/apps/filters/filterSlice'
 import { getValueFromPath } from 'src/utils/helper'
 
@@ -21,8 +21,8 @@ export const useChartAndGraphApi = config => {
 
   const formatDateTime = (mediaType, from, to) =>
     mediaType === Print
-      ? { fromDate: from.format('YYYY-MM-DD'), toDate: to.format('YYYY-MM-DD') }
-      : { fromDate: from.format('YYYY-MM-DD HH:mm:ss'), toDate: to.format('YYYY-MM-DD HH:mm:ss') }
+      ? { fromDate: from?.format('YYYY-MM-DD'), toDate: to?.format('YYYY-MM-DD') }
+      : { fromDate: from?.format('YYYY-MM-DD HH:mm:ss'), toDate: to?.format('YYYY-MM-DD HH:mm:ss') }
 
   const filterParams = filter => {
     const params = {}

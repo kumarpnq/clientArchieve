@@ -5,6 +5,8 @@ import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import DataGrid from 'src/components/datagrid/DataGrid'
+import DataTable from 'src/components/datatable/Table'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
@@ -39,26 +41,129 @@ const columns = [
 ]
 
 // const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
+const tableRange = 5
+const Title = 'Article Size'
+const Description = 'Keep track of companies and their reputation'
 
-function ArticleSize() {
+function ArticleSize(props) {
+  const { matches } = props
   const [selectMediaType, setSelectMediaType] = useState(Print)
-  const [rows, setRows] = useState([])
 
   const { data, loading } = useChartAndGraphApi({
     reportType: ARTICLE_SIZE,
     mediaType: selectMediaType,
     path: `data.doc.Report.CompanyTag.FilterCompany.ArticleSize.buckets`
   })
-  const [selectedCategory, setSelectedCategory] = useState(0)
-  const { anchorEl, openMenu, closeMenu } = useMenu()
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)
   }
 
+  return matches ? (
+    <ArticleTable data={data} loading={loading} selectMediaType={selectMediaType} changeMediaType={changeMediaType} />
+  ) : (
+    <ArticleWidget data={data} loading={loading} selectMediaType={selectMediaType} changeMediaType={changeMediaType} />
+  )
+}
+
+function ArticleTable(props) {
+  const { data, loading, changeMediaType, selectMediaType } = props
+
+  const [tableData, setTableData] = useState({
+    rows: [],
+    headline: [],
+    prominent: [],
+    passing: [],
+    total: [],
+    columnGroup: []
+  })
+
+  useEffect(() => {
+    // Reset table data
+    const initialTableData = {
+      rows: [],
+      headline: [],
+      prominent: [],
+      passing: [],
+      total: [],
+      columnGroup: []
+    }
+
+    // Early return if no data
+    if (!data || !data.length) {
+      setTableData(initialTableData)
+
+      return
+    }
+
+    // Create a deep clone of initial table data
+    const processedTableData = { ...initialTableData }
+
+    // Process data with added safety checks
+    data.slice(0, tableRange).forEach((dataItem, index) => {
+      const companies = dataItem?.Company?.buckets || []
+
+      // Collect company data
+      const headline = []
+      const passing = []
+      const prominent = []
+      const total = []
+
+      companies.slice(0, tableRange).forEach((company, companyIndex) => {
+        const Passing = company.Passing?.value ?? 0
+        const Headline = company.Headline?.value ?? 0
+        const Prominent = company.Prominent?.value ?? 0
+        const Total = Math.trunc(prominent + headline + passing)
+
+        // Add row names only on first iteration
+        if (index === 0) {
+          processedTableData.rows.push(company.key || `Company ${companyIndex + 1}`)
+        }
+
+        // Safely extract and process values
+        headline.push(Math.trunc(Headline))
+        passing.push(Math.trunc(Passing))
+        prominent.push(Math.trunc(Prominent))
+        total.push(Total)
+      })
+
+      // Add column group and scores
+      processedTableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
+      processedTableData.headline.push(headline)
+      processedTableData.passing.push(passing)
+      processedTableData.prominent.push(prominent)
+      processedTableData.total.push(total)
+    })
+
+    // Update state
+    setTableData(processedTableData)
+  }, [data])
+
+  // Render only if metrics are available
+
+  return (
+    <BroadWidget
+      title={Title}
+      description={Description}
+      loading={loading}
+      mediaType={selectMediaType}
+      changeMediaType={changeMediaType}
+      datagrid={{ columns, tableData, colGroupSpan: 4 }}
+      table={DataTable}
+      render={['table']}
+    />
+  )
+}
+
+function ArticleWidget(props) {
+  const { data, loading, changeMediaType, selectMediaType } = props
+  const [rows, setRows] = useState([])
+
+  const [selectedCategory, setSelectedCategory] = useState(0)
+  const { anchorEl, openMenu, closeMenu } = useMenu()
+
   useEffect(() => {
     setRows([])
-    setSelectedCategory(0)
 
     if (!(data && data[selectedCategory])) return
 
@@ -139,6 +244,7 @@ function ArticleSize() {
       apiActions={apiActions}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
+      table={DataGrid}
       datagrid={{ columns, rows }}
       render={['table']}
     />

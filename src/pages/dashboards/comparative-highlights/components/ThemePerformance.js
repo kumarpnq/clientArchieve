@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { GENRE_THEME, Print } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import BroadWidget from 'src/components/widgets/BroadWidget'
@@ -6,6 +6,9 @@ import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import MixedChart from 'src/components/charts/MixedChart'
+import DataGrid from 'src/components/datagrid/DataGrid'
+import CombinedBarChart from 'src/components/charts/CombinedBarChart'
+import DataTable from 'src/components/datatable/Table'
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
@@ -17,28 +20,140 @@ const columns = [
 ]
 
 const initialMetrics = { labels: [], line: { QE: [] }, bar: { Image: [], Visibility: [] } }
+const tableRange = 5
 
-function ThemePerformance() {
+const Title = 'Theme Performance'
+const Description = 'Keep track of companies and their reputation'
+
+function ThemePerformance(props) {
+  const { matches } = props
   const [selectMediaType, setSelectMediaType] = useState(Print)
-  const [rows, setRows] = useState([])
 
   const { data, loading } = useChartAndGraphApi({
     reportType: GENRE_THEME,
     mediaType: selectMediaType,
     path: `data.doc.Report.CompanyTag.FilterCompany.ReportingSubject.buckets`
   })
-  const [selectedCategory, setSelectedCategory] = useState(0)
-  const { anchorEl, openMenu, closeMenu } = useMenu()
-  const [metrics, setMetrics] = useState(initialMetrics)
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)
   }
 
+  return matches ? (
+    <ThemeTable data={data} loading={loading} selectMediaType={selectMediaType} changeMediaType={changeMediaType} />
+  ) : (
+    <ThemeWidget data={data} loading={loading} selectMediaType={selectMediaType} changeMediaType={changeMediaType} />
+  )
+}
+
+function ThemeTable(props) {
+  const { data, loading, changeMediaType, selectMediaType } = props
+
+  const [tableData, setTableData] = useState({
+    rows: [],
+    volScore: [],
+    visScore: [],
+    qe: [],
+    columnGroup: []
+  })
+
+  // Memoize metrics to prevent unnecessary re-renders
+  const metrics = useMemo(() => {
+    // Ensure all data exists and is properly structured
+    if (!tableData.rows.length || !tableData.columnGroup.length) return null
+
+    return {
+      labels: tableData.rows,
+      labelGroup: tableData.columnGroup,
+      bar: {
+        Visibility: tableData.visScore.length ? tableData.visScore.map(scores => scores || [0]) : [[0]],
+        Volume: tableData.volScore.length ? tableData.volScore.map(scores => scores || [0]) : [[0]]
+      },
+      line: {
+        QE: tableData.qe.length ? tableData.qe.map(scores => scores || [0]) : [[0]]
+      }
+    }
+  }, [tableData])
+
+  useEffect(() => {
+    // Reset table data
+    const initialTableData = {
+      rows: [],
+      volScore: [],
+      visScore: [],
+      qe: [],
+      columnGroup: []
+    }
+
+    // Early return if no data
+    if (!data || !data.length) {
+      setTableData(initialTableData)
+
+      return
+    }
+
+    // Create a deep clone of initial table data
+    const processedTableData = { ...initialTableData }
+
+    // Process data with added safety checks
+    data.slice(0, tableRange).forEach((dataItem, index) => {
+      const companies = dataItem?.Company?.buckets || []
+
+      // Collect company data
+      const volScore = []
+      const visScore = []
+      const qe = []
+
+      companies.slice(0, 5).forEach((company, companyIndex) => {
+        // Add row names only on first iteration
+        if (index === 0) {
+          processedTableData.rows.push(company.key || `Company ${companyIndex + 1}`)
+        }
+
+        // Safely extract and process values
+        volScore.push(Math.trunc(company.doc_count || 0))
+        visScore.push(Math.trunc(company.V_Score?.value || 0))
+        qe.push(Math.trunc(company.QE?.value || 0))
+      })
+
+      // Add column group and scores
+      processedTableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
+      processedTableData.volScore.push(volScore)
+      processedTableData.visScore.push(visScore)
+      processedTableData.qe.push(qe)
+    })
+
+    // Update state
+    setTableData(processedTableData)
+  }, [data])
+
+  return (
+    <BroadWidget
+      title={Title}
+      description={Description}
+      loading={loading}
+      mediaType={selectMediaType}
+      changeMediaType={changeMediaType}
+      datagrid={{ columns, tableData, colGroupSpan: 3 }}
+      table={DataTable}
+      metrics={metrics}
+      render={['charts', 'table']}
+      charts={{ bar: { component: CombinedBarChart } }}
+    />
+  )
+}
+
+function ThemeWidget(props) {
+  const { data, loading, changeMediaType, selectMediaType } = props
+
+  const [rows, setRows] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(0)
+  const { anchorEl, openMenu, closeMenu } = useMenu()
+  const [metrics, setMetrics] = useState(initialMetrics)
+
   useEffect(() => {
     setRows([])
     setMetrics(initialMetrics)
-    setSelectedCategory(0)
     if (!(data && data[selectedCategory])) return
     const metrics = structuredClone(initialMetrics)
 
@@ -113,15 +228,17 @@ function ThemePerformance() {
 
   return (
     <BroadWidget
-      title='Theme Performance'
-      description='Keep track of companies and their reputation'
+      title={Title}
+      description={Description}
       loading={loading}
       metrics={metrics}
       apiActions={apiActions}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
       datagrid={{ columns, rows }}
+      table={DataGrid}
       charts={{ bar: { component: MixedChart } }}
+      render={['charts', 'table']}
     />
   )
 }

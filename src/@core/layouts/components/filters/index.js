@@ -33,7 +33,7 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import { BASE_URL } from 'src/api/base'
-import { useDebouncedCallback } from '@mantine/hooks'
+import { useDebouncedCallback, useThrottledCallback } from '@mantine/hooks'
 import {
   getDateRange,
   setDateFrom,
@@ -214,7 +214,7 @@ function Filter() {
   )
 
   // * Filter actions methods
-  const toggleSelection = filterKey => {
+  const toggleSelectionAll = filterKey => {
     const { values, key, value } = filterState[filterKey]
     const selected = menuState[filterKey].selected
     if (selected.size === values.length) {
@@ -231,8 +231,8 @@ function Filter() {
 
     const selectAllMap = new Map(selectAll)
 
-    dispatch(updateFilters({ type: filterKey, payload: Array.from(selectAllMap.keys()).join(',') }))
     setMenuState(prev => ({ ...prev, [filterKey]: { ...prev[filterKey], selected: selectAllMap } }))
+    dispatch(updateFilters({ type: filterKey, payload: Array.from(selectAllMap.keys()).join(',') }))
   }
 
   const deleteSelectedFilter = (filterKey, key) => {
@@ -241,6 +241,10 @@ function Filter() {
     setMenuState(prev => ({ ...prev, [filterKey]: { ...prev[filterKey], selected } }))
     dispatch(updateFilters({ type: filterKey, payload: Array.from(selected.keys()).join(',') }))
   }
+
+  const reduxHandleSelection = useThrottledCallback((filterKey, selected) => {
+    dispatch(updateFilters({ type: filterKey, payload: Array.from(selected.keys()).join(',') }))
+  }, 1500)
 
   const handleSelectedFilter = (filterKey, key, value) => {
     const selected = menuState[filterKey].selected
@@ -251,7 +255,8 @@ function Filter() {
     }
 
     setMenuState(prev => ({ ...prev, [filterKey]: { ...prev[filterKey], selected } }))
-    dispatch(updateFilters({ type: filterKey, payload: Array.from(selected.keys()).join(',') }))
+
+    reduxHandleSelection(filterKey, selected)
   }
 
   // * Data fetching functions
@@ -454,7 +459,7 @@ function Filter() {
                   anchorEl={menuState[filterKey].anchorEl}
                   open={Boolean(menuState[filterKey].anchorEl)}
                   onClose={() => closeMenu(filterKey)}
-                  toggleSelection={() => toggleSelection(filterKey)}
+                  toggleSelection={() => toggleSelectionAll(filterKey)}
                   checked={menuState[filterKey].selected.size === filterState[filterKey].values.length}
                   disableScrollLock
                   search={{
@@ -475,7 +480,6 @@ function Filter() {
                       <MenuItem
                         key={value}
                         onClick={() => {
-                          // handleSelection(key, value)
                           handleSelectedFilter(filterKey, key, value)
                         }}
                         selected={menuState[filterKey]?.selected?.has(key)}
@@ -551,7 +555,7 @@ function Filter() {
                     sx={{ py: 0.1 }}
                     onClick={() => {
                       setMenuState(createMenuState())
-                      setInitialState()
+                      dispatch(setInitialState())
                     }}
                   >
                     Clear all

@@ -30,6 +30,7 @@ export const filterSlice = createSlice({
     },
     updateFilters: (state, action) => {
       const { type, payload } = action.payload
+
       if (type in state) {
         state[type] = payload
       } else {

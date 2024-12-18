@@ -1,119 +1,114 @@
-'use client'
-
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js'
 import { Chart } from 'react-chartjs-2'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
+const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f1c40f', '#9b59b6'] // Bar colors
 
-const CombinedBarChart = () => {
-  const regions = ['NY', 'Arlington', 'Chicago', 'Detroit', 'LA'] // Regions
-  const manufacturers = ['GM', 'FORD', 'HONDA', 'TOYOTA', 'VW'] // Manufacturers
-  const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f1c40f', '#9b59b6'] // Bar colors
+const CombinedBarChart = props => {
+  const { metrics } = props
 
-  // Production volumes for each region (each row corresponds to a manufacturer)
-  const dataValues = [
-    [29486, 1546, 3183, 3908, 1799], // GM
-    [41108, 10494, 2051, 5183, 3174], // FORD
-    [23522, 5541, 3511, 2852, 1024], // HONDA
-    [23298, 7224, 1242, 2532, 1244], // TOYOTA
-    [27675, 7388, 1970, 264, 1789] // VW
-  ]
+  const labels = useMemo(
+    () => Array.from({ length: metrics.labelGroup.length }, () => metrics.labels.map(v => v)).flat(),
+    [metrics.labels, metrics.labelGroup]
+  )
 
-  const bgcolors = Array.from({ length: regions.length }, (_, i) => colors.map(_ => colors[i]))
+  const legendMargin = {
+    id: 'legendMargin',
+    beforeInit(chart) {
+      const fitValue = chart.legend.fit
+      chart.legend.fit = function () {
+        fitValue.bind(chart.legend)()
 
-  const datasets = [
-    {
-      type: 'line',
-      label: 'QE',
-      data: [
-        100, 146, 155, 149, 110, 70, 169, 65, 40, 58, 120, 148, 150, 174, 100, 155, 149, 110, 70, 169, 111, 150, 174,
-        130, 150
-      ],
-      yAxisID: 'y1',
-      backgroundColor: ['#5b9afd'],
-      borderColor: '#5b9afd',
-      borderWidth: 1,
-      borderDash: [5, 5],
-      datalabels: {
-        display: 'auto',
-        align: 'top',
-        anchor: 'end',
-        clamp: true
+        return (this.height += 16)
       }
-    },
-    {
-      data: dataValues.flatMap(v => v),
-      barPercentage: 0.8,
-      categoryPercentage: 0.7,
-      backgroundColor: bgcolors.flat()
-    },
-    {
-      data: dataValues.flatMap(v => v),
-      barPercentage: 0.8,
-      categoryPercentage: 0.7
     }
-  ]
+  }
 
   const customScale = {
     id: 'customScale',
     beforeDatasetsDraw(chart) {
       const { ctx, chartArea, scales } = chart
-      const { bottom, width } = chartArea
+      const { bottom, width, left, right } = chartArea
       const { x, y } = scales
-      const dataPointsLength = regions.length
+      const dataPointsLength = metrics.labelGroup.length
       const segment = width / dataPointsLength
-      const segmentCenter = segment / 4 + 15
-      const paddingBottom = bottom + 50
+      const segmentCenter = segment / 2
+      const paddingBottom = bottom + 80
 
-      // ctx.save();
+      // Ensure context is restored to default state
+      ctx.restore()
+      ctx.save()
 
+      // Set text styling
+      ctx.font = '12px Arial'
+      ctx.textAlign = 'center'
+      ctx.fillStyle = 'grey'
+
+      // Draw vertical lines
       ctx.strokeStyle = '#ddd'
       ctx.lineWidth = 1
+
       function createLineStroke(linePoint) {
         const xPos = x.getPixelForValue(linePoint + 0.5)
         ctx.beginPath()
         ctx.moveTo(xPos, bottom)
-        ctx.lineTo(xPos, y.bottom + 70)
+        ctx.lineTo(xPos, bottom + 70)
         ctx.stroke()
       }
 
       let linePoint = -1
       createLineStroke(linePoint)
-      regions.forEach((_, index) => {
-        linePoint = linePoint + regions.length * (index - index + 1)
+      metrics.labelGroup.forEach((_, index) => {
+        linePoint = linePoint + metrics.labels.length * (index - index + 1)
         createLineStroke(linePoint)
       })
 
-      function ctxText(text, x, y) {
-        ctx.beginPath()
-        ctx.font = 'bold 16px'
-        ctx.fillStyle = 'grey'
-        ctx.textAlign = 'center'
-        ctx.fillText(text, x, y)
-      }
-
-      regions.forEach((region, i) => {
-        let num = i + 1
-        ctxText(region, segment * num - segmentCenter, paddingBottom)
+      // Draw text for label groups
+      metrics.labelGroup.forEach((region, i) => {
+        const xPosition = left + segment * (i + 0.5)
+        ctx.fillText(region, xPosition, paddingBottom)
       })
     }
   }
 
   return (
     <Chart
-      plugins={[customScale]}
+      plugins={[customScale, legendMargin]}
       type='bar'
       data={{
-        labels: Array.from({ length: regions.length }, () => manufacturers.map(v => v)).flat(),
-        datasets // All datasets (one per manufacturer)
+        labels,
+        datasets: [
+          ...Object.keys(metrics.line || {}).map(label => ({
+            type: 'line',
+            label,
+            data: metrics.line[label]?.flat(),
+            yAxisID: 'y1',
+            backgroundColor: ['#5b9afd'],
+            borderColor: '#5b9afd',
+            borderWidth: 1,
+            borderDash: [5, 5],
+            datalabels: {
+              display: 'auto',
+              align: 'top',
+              anchor: 'end',
+              clamp: true,
+              rotation: 0
+            }
+          })),
+
+          ...Object.keys(metrics.bar || {}).map((label, i) => ({
+            label,
+            data: metrics.bar[label].flatMap(v => v),
+            backgroundColor: colors[i % colors.length]
+          }))
+        ]
       }}
       options={{
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
           legend: {
-            display: false,
             position: 'top'
           },
           tooltip: {
@@ -121,14 +116,35 @@ const CombinedBarChart = () => {
             callbacks: {
               label: context => `${context.dataset.label}: ${context.raw}`
             }
+          },
+          datalabels: {
+            display: 'auto',
+            anchor: 'end',
+            align: 'end',
+            font: { size: 10 },
+            rotation: -90
           }
         },
         layout: {
-          padding: { bottom: 30 }
+          padding: { bottom: 60, top: 0 }
+        },
+
+        datasets: {
+          bar: {
+            maxBarThickness: 9,
+            categoryPercentage: 0.6
+          }
         },
         scales: {
           x: {
             beginAtZero: true,
+            ticks: {
+              maxRotation: 90,
+              minRotation: 90,
+              callback: function (label) {
+                return /\s/.test(labels[label]) ? labels[label]?.split(' ')?.at(0) : labels[label]
+              }
+            },
             grid: {
               drawOnChartArea: false
             }
@@ -143,10 +159,8 @@ const CombinedBarChart = () => {
             type: 'linear',
             display: true,
             position: 'right',
-
-            // grid line settings
             grid: {
-              drawOnChartArea: false // only want the grid lines for one axis to show up
+              drawOnChartArea: false
             }
           }
         }

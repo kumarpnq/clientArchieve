@@ -7,7 +7,7 @@ import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import useMenu from 'src/hooks/useMenu'
 
-const fontSizes = [16, 100]
+const fontSizes = [20, 100]
 
 function ThemeWordCloud() {
   const [selectMediaType, setSelectMediaType] = useState(Print)
@@ -34,7 +34,7 @@ function ThemeWordCloud() {
 
   useEffect(() => {
     setMetrics([])
-    setSelectedCategory(0)
+
     if (!(data && data[selectedCategory])) return
 
     const totalFrequency = data[selectedCategory]?.WordClouds?.buckets?.reduce(
@@ -46,7 +46,7 @@ function ThemeWordCloud() {
       const value = calculateFontSize(totalFrequency, data.doc_count)
 
       return {
-        text: data.key,
+        text: data.key?.at(0)?.toUpperCase() + data.key?.slice(1),
         value
       }
     })
@@ -110,12 +110,12 @@ function ThemeWordCloud() {
       description='Keep track of companies and their reputation'
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
-      render={['charts']}
       loading={loading}
       apiActions={apiActions}
       metrics={metrics}
-      containerStyle={{ overflowY: 'auto' }}
+      containerStyle={{ overflowY: 'auto', '& div:nth-child(2)': { height: '80% !important' } }}
       charts={{ wordCloud: { component: WordCloud, props: { options: { fontSizes } } } }}
+      render={['charts']}
     />
   )
 }
