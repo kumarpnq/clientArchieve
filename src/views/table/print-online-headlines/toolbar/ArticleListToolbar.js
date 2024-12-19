@@ -419,11 +419,11 @@ const ArticleListToolbar = ({
         </Fragment>
       )}
 
-      <CustomTooltip title='Image'>
+      {/* <CustomTooltip title='Image'>
         <Button onClick={handleImageDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
           <ImageIcon />
         </Button>
-      </CustomTooltip>
+      </CustomTooltip> */}
       <ImageDialog open={isImageDialogOpen} handleClose={handleImageDialogClose} selectedArticles={selectedArticles} />
       {isDossierVisible && (
         <Fragment>
