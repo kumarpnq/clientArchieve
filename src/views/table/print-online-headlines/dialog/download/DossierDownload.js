@@ -28,7 +28,8 @@ import {
   selectNotificationFlag,
   setFetchAutoStatusFlag,
   selectFetchAutoStatusFlag,
-  selectSelectedCompetitions
+  selectSelectedCompetitions,
+  selectedDateType
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 import toast from 'react-hot-toast'
