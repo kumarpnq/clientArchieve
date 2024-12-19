@@ -7,8 +7,9 @@ const oneDayBefore = dayjs('2024-10-01') // Subtract one day
 
 const initialState = {
   companyIds: '',
-  editionType: '',
   media: '',
+  editionType: '',
+  publicationGroup: '',
   publication: '',
   geography: '',
   language: '',

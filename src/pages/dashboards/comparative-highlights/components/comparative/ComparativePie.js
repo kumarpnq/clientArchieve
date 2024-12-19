@@ -1,13 +1,12 @@
+import dynamic from 'next/dynamic'
 import { Box, Card, Grid, LinearProgress, linearProgressClasses, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
-import DoughnutChart from 'src/components/charts/DoughnutChart'
 import { Tab, Tabs } from 'src/components/Tabs'
 import { Print, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
-
-import Lottie from 'lottie-react'
-import loader from 'public/loader.json'
 import Loading from 'src/components/Loading'
+
+const DoughnutChart = dynamic(() => import('src/components/charts/DoughnutChart'))
 
 const bgColor = ['#fc8166', '#fbd059', '#58d8ff', '#5d87fd', '#57c0bd', '#8acd82', '#2f839e']
 const initialValues = { labels: [], V_Score: [], doc_count: [] }

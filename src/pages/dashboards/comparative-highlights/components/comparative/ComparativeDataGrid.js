@@ -1,8 +1,10 @@
+import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
 import { All, PEERS_VOLUME_VISIBILITY } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
-import BroadWidget from 'src/components/widgets/BroadWidget'
-import DataGrid from 'src/components/datagrid/DataGrid'
+
+const BroadWidget = dynamic(() => import('src/components/widgets/BroadWidget'))
+const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },

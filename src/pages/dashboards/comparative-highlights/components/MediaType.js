@@ -1,14 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { EditionType, PEERS_VOLUME_VISIBILITY, Print } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
-import BroadWidget from 'src/components/widgets/BroadWidget'
-import BarChart from 'src/components/charts/BarChart'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
-import DataGrid from 'src/components/datagrid/DataGrid'
-import DataTable from 'src/components/datatable/Table'
-import CombinedBarChart from 'src/components/charts/CombinedBarChart'
+import dynamic from 'next/dynamic'
+
+const BarChart = dynamic(() => import('src/components/charts/BarChart'))
+const CombinedBarChart = dynamic(() => import('src/components/charts/CombinedBarChart'))
+const BroadWidget = dynamic(() => import('src/components/widgets/BroadWidget'))
+const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
+const DataTable = dynamic(() => import('src/components/datatable/Table'))
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
@@ -45,8 +47,11 @@ function MediaType(props) {
     reportType: PEERS_VOLUME_VISIBILITY,
     mediaType: selectMediaType,
     category: EditionType,
-    path: `data.doc.Report.${EditionType}.buckets`
+    path: `data.doc.Report.${EditionType}.buckets`,
+    range: 7
   })
+
+  console.log({ data })
 
   const changeMediaType = (event, newValue) => {
     setSelectMediaType(newValue)

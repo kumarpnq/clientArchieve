@@ -1,9 +1,10 @@
-import { Button, Grid, Menu, MenuItem, Stack } from '@mui/material'
+import { Button, Grid, IconButton, Stack } from '@mui/material'
 import { GridToolbarColumnsButton, GridToolbarDensitySelector } from '@mui/x-data-grid'
-import React, { Fragment, useMemo } from 'react'
-import useMenu from 'src/hooks/useMenu'
+import React, { Fragment, useEffect, useMemo } from 'react'
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
 import EqualizerIcon from '@mui/icons-material/Equalizer'
+import LaunchIcon from '@mui/icons-material/Launch'
+import CloseIcon from '@mui/icons-material/Close'
 
 const icons = {
   charts: <EqualizerIcon />,
@@ -11,9 +12,37 @@ const icons = {
 }
 
 function WidgetToolbar(props) {
-  const { apiActions, value, toggle, render, actions } = props
+  const { apiActions, value, toggle, render, actions, openModal, closeModal, modalState } = props
 
   const index = useMemo(() => render.indexOf(value), [render, value])
+
+  useEffect(() => {
+    // Handle browser back button
+    const handlePopState = event => {
+      if (modalState) {
+        // Prevent default behavior
+        event.preventDefault()
+        closeModal()
+
+        // Push the current state back to prevent URL change
+        window.history.pushState(null, '', window.location.pathname)
+
+        return false
+      }
+    }
+
+    // Add state to history when modal opens
+    if (modalState) {
+      window.history.pushState(null, '', window.location.pathname)
+    }
+
+    // Listen for popstate event
+    window.addEventListener('popstate', handlePopState)
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [modalState, closeModal])
 
   return (
     <Fragment>
@@ -41,7 +70,7 @@ function WidgetToolbar(props) {
           {apiActions}
         </Grid>
         <Grid item>
-          <Stack direction='row' gap={1} alignItems='flex-start'>
+          <Stack direction='row' gap={1} alignItems='center'>
             {actions ? (
               actions
             ) : (
@@ -59,6 +88,13 @@ function WidgetToolbar(props) {
                 {index === render.length - 1 ? render[0] : render[index + 1]}
               </Button>
             ) : null}
+            <Button
+              size='small'
+              onClick={modalState ? closeModal : openModal}
+              startIcon={modalState ? <CloseIcon fontSize='small' /> : <LaunchIcon fontSize='small' />}
+            >
+              {modalState ? 'Close' : 'Open'}
+            </Button>
           </Stack>
         </Grid>
       </Grid>

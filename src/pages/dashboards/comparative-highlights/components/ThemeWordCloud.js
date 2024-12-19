@@ -1,11 +1,13 @@
+import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
 import { Print, WORD_CLOUDS } from 'src/constants/filters'
-import BroadWidget from 'src/components/widgets/BroadWidget'
-import WordCloud from 'src/components/charts/WordCloud'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import useMenu from 'src/hooks/useMenu'
+
+const WordCloud = dynamic(() => import('src/components/charts/WordCloud'))
+const BroadWidget = dynamic(() => import('src/components/widgets/BroadWidget'))
 
 const fontSizes = [20, 100]
 

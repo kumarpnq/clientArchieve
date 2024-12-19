@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic'
 import { Box, Button, Card, IconButton, Stack, Switch, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
@@ -6,8 +7,9 @@ import FilterListIcon from '@mui/icons-material/FilterList'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SearchIcon from '@mui/icons-material/Search'
 import { Tab, Tabs } from 'src/components/Tabs'
-import DataGrid from 'src/components/datagrid/DataGrid'
 import Loading from 'src/components/Loading'
+
+const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },

@@ -1,12 +1,14 @@
+import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
-import { ARTICLE_SIZE, Print, Region } from 'src/constants/filters'
+import { ARTICLE_SIZE, Print } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
-import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
-import DataGrid from 'src/components/datagrid/DataGrid'
-import DataTable from 'src/components/datatable/Table'
+
+const BroadWidget = dynamic(() => import('src/components/widgets/BroadWidget'))
+const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
+const DataTable = dynamic(() => import('src/components/datatable/Table'))
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },

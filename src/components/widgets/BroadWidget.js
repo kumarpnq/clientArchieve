@@ -1,3 +1,4 @@
+import dynamic from 'next/dynamic'
 import {
   Box,
   Button,
@@ -7,6 +8,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Modal,
   Stack,
   Typography
 } from '@mui/material'
@@ -27,8 +29,9 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { Tabs, Tab } from 'src/components/Tabs'
 import { All, Online, Print } from 'src/constants/filters'
 
-import WidgetToolbar from './actions/WidgetToolbar'
+const WidgetToolbar = dynamic(() => import('./actions/WidgetToolbar'))
 import Loading from '../Loading'
+import useModal from 'src/hooks/useModal'
 
 const icons = {
   bar: <EqualizerIcon />,
@@ -61,8 +64,9 @@ function BroadWidget(props) {
 
   const [value, toggle] = useToggle(render)
   const Component = useMemo(() => lookup[value], [value, lookup])
+  const { modalState, openModal, closeModal } = useModal()
 
-  return (
+  const widget = (
     <Card elevation={0} sx={{ p: 4, display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Stack direction='row' justifyContent='space-between' alignItems='flex-end'>
         <div className='cancelSelection'>
@@ -100,11 +104,20 @@ function BroadWidget(props) {
             charts={charts}
             metrics={metrics}
             slots={{ toolbar: WidgetToolbar }}
-            slotProps={{ toolbar: { value, toggle, render, apiActions } }}
+            slotProps={{ toolbar: { value, toggle, render, apiActions, openModal, closeModal, modalState } }}
           />
         )}
       </Box>
     </Card>
+  )
+
+  return (
+    <Fragment>
+      {widget}
+      <Modal open={modalState} onClose={closeModal}>
+        <>{widget}</>
+      </Modal>
+    </Fragment>
   )
 }
 

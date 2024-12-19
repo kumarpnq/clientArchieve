@@ -73,99 +73,115 @@ const CombinedBarChart = props => {
   }
 
   return (
-    <Chart
-      plugins={[customScale, legendMargin]}
-      type='bar'
-      data={{
-        labels,
-        datasets: [
-          ...Object.keys(metrics.line || {}).map(label => ({
-            type: 'line',
-            label,
-            data: metrics.line[label]?.flat(),
-            yAxisID: 'y1',
-            backgroundColor: ['#5b9afd'],
-            borderColor: '#5b9afd',
-            borderWidth: 1,
-            borderDash: [5, 5],
-            datalabels: {
-              display: 'auto',
-              align: 'top',
-              anchor: 'end',
-              clamp: true,
-              rotation: 0
-            }
-          })),
-
-          ...Object.keys(metrics.bar || {}).map((label, i) => ({
-            label,
-            data: metrics.bar[label].flatMap(v => v),
-            backgroundColor: colors[i % colors.length]
-          }))
-        ]
+    <div
+      style={{
+        width: '100%',
+        overflowX: 'auto',
+        height: '95%'
       }}
-      options={{
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'top'
-          },
-          tooltip: {
-            display: false,
-            callbacks: {
-              label: context => `${context.dataset.label}: ${context.raw}`
-            }
-          },
-          datalabels: {
-            display: 'auto',
-            anchor: 'end',
-            align: 'end',
-            font: { size: 10 },
-            rotation: -90
-          }
-        },
-        layout: {
-          padding: { bottom: 60, top: 0 }
-        },
+    >
+      <div
+        style={{
+          minWidth: `${metrics.labelGroup.length * 400}px`,
+          width: '100%',
+          height: '100%'
+        }}
+      >
+        <Chart
+          plugins={[customScale, legendMargin]}
+          type='bar'
+          data={{
+            labels,
+            datasets: [
+              ...Object.keys(metrics.line || {}).map(label => ({
+                type: 'line',
+                label,
+                data: metrics.line[label]?.flat(),
+                yAxisID: 'y1',
+                backgroundColor: ['#5b9afd'],
+                borderColor: '#5b9afd',
+                borderWidth: 1,
+                borderDash: [5, 5],
+                datalabels: {
+                  display: 'auto',
+                  align: 'top',
+                  anchor: 'end',
+                  clamp: true,
+                  rotation: 0
+                }
+              })),
 
-        datasets: {
-          bar: {
-            maxBarThickness: 9,
-            categoryPercentage: 0.6
-          }
-        },
-        scales: {
-          x: {
-            beginAtZero: true,
-            ticks: {
-              maxRotation: 90,
-              minRotation: 90,
-              callback: function (label) {
-                return /\s/.test(labels[label]) ? labels[label]?.split(' ')?.at(0) : labels[label]
+              ...Object.keys(metrics.bar || {}).map((label, i) => ({
+                label,
+                data: metrics.bar[label].flatMap(v => v),
+                backgroundColor: colors[i % colors.length]
+              }))
+            ]
+          }}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top'
+              },
+              tooltip: {
+                display: false,
+                callbacks: {
+                  label: context => `${context.dataset.label}: ${context.raw}`
+                }
+              },
+              datalabels: {
+                display: 'auto',
+                anchor: 'end',
+                align: 'end',
+                font: { size: 10 },
+                rotation: -90
               }
             },
-            grid: {
-              drawOnChartArea: false
+            layout: {
+              padding: { bottom: 60, top: 0 }
+            },
+
+            datasets: {
+              bar: {
+                maxBarThickness: 9,
+                categoryPercentage: 0.6
+              }
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                ticks: {
+                  maxRotation: 90,
+                  minRotation: 90,
+                  callback: function (label) {
+                    return /\s/.test(labels[label]) ? labels[label]?.split(' ')?.at(0) : labels[label]
+                  }
+                },
+                grid: {
+                  drawOnChartArea: false
+                }
+              },
+              y: {
+                beginAtZero: true,
+                grid: {
+                  drawOnChartArea: false
+                }
+              },
+              y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                grid: {
+                  drawOnChartArea: false
+                }
+              }
             }
-          },
-          y: {
-            beginAtZero: true,
-            grid: {
-              drawOnChartArea: false
-            }
-          },
-          y1: {
-            type: 'linear',
-            display: true,
-            position: 'right',
-            grid: {
-              drawOnChartArea: false
-            }
-          }
-        }
-      }}
-    />
+          }}
+        />
+      </div>
+    </div>
   )
 }
 

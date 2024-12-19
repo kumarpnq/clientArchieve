@@ -5,8 +5,6 @@ const DataTable = React.memo(({ columns, tableData, colGroupSpan = 4, slots = {}
   // Memoize column fields to prevent unnecessary recalculations
   const columnFields = useMemo(() => columns.slice(1).map(col => col.field), [columns])
 
-  console.log({ tableData, columns })
-
   // Memoize table header rendering to optimize performance
   const renderColumnGroupHeader = useMemo(() => {
     if (!tableData.columnGroup) return null

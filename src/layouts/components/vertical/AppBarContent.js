@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -42,12 +42,18 @@ import axios from 'axios'
 import DateType from 'src/@core/layouts/components/shared-components/DateType'
 import { Tooltip } from 'recharts'
 
-import { tooltipClasses, Typography } from '@mui/material'
+import { Button, Menu, Stack, tooltipClasses, Typography } from '@mui/material'
 import styled from '@emotion/styled'
 import toast from 'react-hot-toast'
 import { CloseOutlined } from '@mui/icons-material'
 import dayjs from 'dayjs'
 import Filters from 'src/@core/layouts/components/filters'
+import useMenu from 'src/hooks/useMenu'
+import { DateTimePicker, LocalizationProvider } from '@mui/x-date-pickers-pro'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { getDateRange, setDateFrom, setDateTo } from 'src/store/apps/filters/filterSlice'
+import CloseIcon from '@mui/icons-material/Close'
+import DateRangeIcon from '@mui/icons-material/DateRange'
 
 const notifications = [
   {
@@ -116,6 +122,8 @@ const AppBarContent = props => {
   const endDateForPrint = useSelector(selectSelectedEndDate)
   const date = dayjs(startDateForPrint).add(1, 'day')
   const endDate = dayjs(endDateForPrint)
+  const { anchorEl: anchorElDate, openMenu: openDate, closeMenu: closeDate } = useMenu()
+  const { from, to } = useSelector(getDateRange)
 
   // Format the date
   const formattedDate = date.format('DD-MMM').toUpperCase()
@@ -128,6 +136,7 @@ const AppBarContent = props => {
   const router = useRouter()
   const currentRoute = router.pathname
 
+  const isDashboardRoute = useMemo(() => currentRoute.startsWith('/dashboards'), [currentRoute])
   const isOnAnalyticsPage = currentRoute === '/dashboards/analytics'
   const isOnVisibilityImageQePage = currentRoute === '/dashboards/visibility-image-qe'
   const isOnTonalityPage = currentRoute === '/dashboards/tonality'
@@ -173,6 +182,19 @@ const AppBarContent = props => {
           {auth.user && <Autocomplete hidden={hidden} settings={settings} />}
         </Box>
         <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
+          {isDashboardRoute ? (
+            <Button
+              startIcon={<DateRangeIcon />}
+              variant={'outlined'}
+              onClick={openDate}
+              sx={{
+                py: 1,
+                px: 2
+              }}
+            >
+              Date Range
+            </Button>
+          ) : null}
           <ModeToggler settings={settings} saveSettings={saveSettings} />
           {auth.user && (
             <>
@@ -184,48 +206,106 @@ const AppBarContent = props => {
           )}
         </Box>
       </Box>
-      {auth.user && (
-        <>
-          <Divider sx={{ mt: 1 }} />
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-            <Box>
-              <Competition settings={settings} />
+      {isDashboardRoute
+        ? null
+        : auth.user && (
+            <>
+              <Divider sx={{ mt: 1 }} />
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                <Box>
+                  <Competition settings={settings} />
 
-              {isShowMedia && <Media settings={settings} />}
-            </Box>
-            <Box>
-              <DateBar />
-              {isBothNews && (
-                <Typography
-                  component={'span'}
-                  sx={{ color: 'primary.main', fontSize: '1.5em' }}
-                  onClick={() => {
-                    toast(t => (
-                      <span>
-                        <Typography sx={{ textAlign: 'right' }}>
-                          <IconButton onClick={() => toast.dismiss(t.id)} size='small'>
-                            <CloseOutlined />
-                          </IconButton>
-                        </Typography>
-                        <Typography sx={{ color: 'primary.main', fontSize: '0.9em' }}>
-                          Print news from {formattedDate} : {formattedEndDate}.
-                        </Typography>
-                      </span>
-                    ))
-                  }}
-                >
-                  <div style={{ display: 'inline', cursor: 'pointer', color: '#28C76F' }}>*</div>
-                </Typography>
-              )}
+                  {isShowMedia && <Media settings={settings} />}
+                </Box>
+                <Box>
+                  <DateBar />
+                  {isBothNews && (
+                    <Typography
+                      component={'span'}
+                      sx={{ color: 'primary.main', fontSize: '1.5em' }}
+                      onClick={() => {
+                        toast(t => (
+                          <span>
+                            <Typography sx={{ textAlign: 'right' }}>
+                              <IconButton onClick={() => toast.dismiss(t.id)} size='small'>
+                                <CloseOutlined />
+                              </IconButton>
+                            </Typography>
+                            <Typography sx={{ color: 'primary.main', fontSize: '0.9em' }}>
+                              Print news from {formattedDate} : {formattedEndDate}.
+                            </Typography>
+                          </span>
+                        ))
+                      }}
+                    >
+                      <div style={{ display: 'inline', cursor: 'pointer', color: '#28C76F' }}>*</div>
+                    </Typography>
+                  )}
 
-              <DaysJumper settings={settings} />
-              {!isMedia && <DateType settings={settings} />}
-            </Box>
-          </Box>
-        </>
-      )}
+                  <DaysJumper settings={settings} />
+                  {!isMedia && <DateType settings={settings} />}
+                </Box>
+              </Box>
+            </>
+          )}
 
-      <Filters />
+      {isDashboardRoute ? <Filters /> : null}
+
+      <Menu
+        anchorEl={anchorElDate}
+        open={Boolean(anchorElDate)}
+        onClose={closeDate}
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 300px)',
+            px: 4,
+            pt: 1,
+            pb: 2,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            maxHeight: 450,
+            overflow: 'auto',
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          }
+        }}
+      >
+        <Stack direction='row' justifyContent='space-between' alignItems='center'>
+          <Typography variant='subtitle01' fontWeight={500}>
+            Date Range
+          </Typography>
+          <IconButton onClick={closeDate}>
+            <CloseIcon fontSize='small' />
+          </IconButton>
+        </Stack>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Typography variant='body2' color='text.tertiary' fontWeight={500} gutterBottom>
+            From
+          </Typography>
+          <DateTimePicker
+            slotProps={{
+              textField: { size: 'small', fullWidth: true }
+            }}
+            sx={{ mb: 2 }}
+            value={from}
+            onChange={date => dispatch(setDateFrom(date))}
+          />
+          <Typography variant='body2' color='text.tertiary' fontWeight={500} gutterBottom>
+            To
+          </Typography>
+          <DateTimePicker
+            slotProps={{
+              textField: { size: 'small', fullWidth: true }
+            }}
+            value={to}
+            onChange={date => dispatch(setDateTo(date))}
+          />
+        </LocalizationProvider>
+      </Menu>
     </Box>
   )
 }

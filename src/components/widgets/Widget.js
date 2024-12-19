@@ -7,6 +7,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Modal,
   Stack,
   Switch,
   Typography
@@ -16,7 +17,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
 import EqualizerIcon from '@mui/icons-material/Equalizer'
 import { useToggle } from '@mantine/hooks'
-import React, { useMemo, useState } from 'react'
+import React, { Fragment, useMemo, useState } from 'react'
 import TimelineIcon from '@mui/icons-material/Timeline'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import DonutLargeIcon from '@mui/icons-material/DonutLarge'
@@ -27,8 +28,10 @@ import useMenu from 'src/hooks/useMenu'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { Tabs, Tab } from 'src/components/Tabs'
 import { All, Online, Print } from 'src/constants/filters'
-
+import LaunchIcon from '@mui/icons-material/Launch'
+import CloseIcon from '@mui/icons-material/Close'
 import Loading from '../Loading'
+import useModal from 'src/hooks/useModal'
 
 const icons = {
   bar: <EqualizerIcon />,
@@ -67,10 +70,11 @@ function Widget(props) {
   const [Chart, setChart] = useState(defaultChart)
   const [value, toggle] = useToggle(['charts', 'table'])
   const { anchorEl, openMenu, closeMenu } = useMenu()
+  const { modalState, openModal, closeModal } = useModal()
 
   if (chartKeys.length === 0) return null
 
-  return (
+  const widget = (
     <Card
       elevation={0}
       sx={{
@@ -127,6 +131,10 @@ function Widget(props) {
               <GridViewOutlinedIcon />
             </IconButton>
           )}
+
+          <IconButton onClick={modalState ? closeModal : openModal}>
+            {modalState ? <CloseIcon fontSize='small' /> : <LaunchIcon fontSize='small' />}
+          </IconButton>
 
           <IconButton onClick={openOptions}>
             <MoreVertIcon fontSize='small' />
@@ -207,6 +215,15 @@ function Widget(props) {
         ))}
       </Menu>
     </Card>
+  )
+
+  return (
+    <Fragment>
+      {widget}
+      <Modal open={modalState} onClose={closeModal}>
+        <>{widget}</>
+      </Modal>
+    </Fragment>
   )
 }
 

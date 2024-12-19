@@ -1,49 +1,51 @@
 import React, { useState } from 'react'
-import { Box, Card, ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery } from '@mui/material'
-import data from 'src/data/data.json'
+import { Box, ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery } from '@mui/material'
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined'
 import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
+import dynamic from 'next/dynamic'
 
 import useMenu from 'src/hooks/useMenu'
-import WordCloud from 'src/components/charts/WordCloud'
 
+// *  React GRID Layout
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
-import { useLocalStorage } from '@mantine/hooks'
-import defaultLayouts from './layout'
-import Comparative from './components/comparative/ComparativeChart'
-import ComparativeTable from './components/comparative/ComparativeTable'
-import ComparativePie from './components/comparative/ComparativePie'
-import ComparativeDataGrid from './components/comparative/ComparativeDataGrid'
-import MediaType from './components/MediaType'
-import TopPublication from './components/TopPublication'
-import RegionalPerformance from './components/RegionalPerformance'
-import CityPerformance from './components/CityPerformance'
-import ThemePerformance from './components/ThemePerformance'
-import ProminencePresence from './components/Prominence'
-import JournalistTonality from './components/JournalistTonality'
-import JournalistPerformance from './components/JournalistPerformance'
-import LanguagePerformance from './components/LanguagePerformance'
-import ArticleSize from './components/ArticleSize'
-import ThemeWordCloud from './components/ThemeWordCloud'
-import TempBarChart from 'src/components/charts/TempBarChart'
-import MultiLabelBarChart from 'src/components/charts/MultiLabelBarChart'
+import defaultLayouts, { breakpoints, cols } from './layout'
+import LazyLoad from 'src/components/loaders/LazyLoad'
 
-// Breakpoints and column definitions
-const breakpoints = { lg: 1256, md: 1024, sm: 768, xs: 480, xxs: 0 }
-const cols = { lg: 16, md: 16, sm: 16, xs: 16, xxs: 16 }
+// * Tables and Charts
+const Comparative = dynamic(() => import('./components/comparative/ComparativeChart'))
+const ComparativeTable = dynamic(() => import('./components/comparative/ComparativeTable'))
+const ComparativePie = dynamic(() => import('./components/comparative/ComparativePie'))
+const ComparativeDataGrid = dynamic(() => import('./components/comparative/ComparativeDataGrid'))
+const MediaType = dynamic(() => import('./components/MediaType'))
+const TopPublication = dynamic(() => import('./components/TopPublication'))
+const RegionalPerformance = dynamic(() => import('./components/RegionalPerformance'))
+const CityPerformance = dynamic(() => import('./components/CityPerformance'))
+const ThemePerformance = dynamic(() => import('./components/ThemePerformance'))
+const Prominence = dynamic(() => import('./components/Prominence'))
+const JournalistTonality = dynamic(() => import('./components/JournalistTonality'))
+const JournalistPerformance = dynamic(() => import('./components/JournalistPerformance'))
+const LanguagePerformance = dynamic(() => import('./components/LanguagePerformance'))
+const ArticleSize = dynamic(() => import('./components/ArticleSize'))
+const ThemeWordCloud = dynamic(() => import('./components/ThemeWordCloud'))
+
 const ReactGridLayout = WidthProvider(Responsive)
 
 const Page = () => {
   const { anchorEl, openMenu, closeMenu } = useMenu()
-  const { businessDailies, mainlines } = data
   const matches = useMediaQuery('(min-width:1200px)')
 
   // const [layouts, setLayouts] = useLocalStorage({
   //   key: 'comparative',
   //   defaultValue: defaultLayouts,
   //   getInitialValueInEffect: false
+  // })
+
+  // Track loaded components
+  // const [loadedComponents, setLoadedComponents] = useLocalStorage({
+  //   key: 'loaded-components',
+  //   defaultValue: new Set(['0', '1', '2'])
   // })
 
   const [layouts, setLayouts] = useState(defaultLayouts)
@@ -73,58 +75,86 @@ const Page = () => {
           <Comparative openMenu={openMenu} />
         </Box>
         <Box key='1'>
-          <ComparativeTable />
+          <LazyLoad>
+            <ComparativeTable />
+          </LazyLoad>
         </Box>
 
         <Box key='2'>
-          <ComparativePie />
+          <LazyLoad>
+            <ComparativePie />
+          </LazyLoad>
         </Box>
         <Box key='3'>
-          <ComparativeDataGrid />
+          <LazyLoad>
+            <ComparativeDataGrid />
+          </LazyLoad>
         </Box>
 
         <Box key='4'>
-          <MediaType matches={matches} />
+          <LazyLoad>
+            <MediaType matches={matches} />
+          </LazyLoad>
         </Box>
 
         <Box key='5'>
-          <TopPublication matches={matches} />
+          <LazyLoad>
+            <TopPublication matches={matches} />
+          </LazyLoad>
         </Box>
 
         <Box key='6'>
-          <RegionalPerformance matches={matches} />
+          <LazyLoad>
+            <RegionalPerformance matches={matches} />
+          </LazyLoad>
         </Box>
 
         <Box key='7'>
-          <CityPerformance matches={matches} />
+          <LazyLoad>
+            <CityPerformance matches={matches} />
+          </LazyLoad>
         </Box>
 
         <Box key='8'>
-          <ThemePerformance matches={matches} />
+          <LazyLoad>
+            <ThemePerformance matches={matches} />
+          </LazyLoad>
         </Box>
 
         <Box key='9'>
-          <ProminencePresence matches={matches} />
+          <LazyLoad>
+            <Prominence matches={matches} />
+          </LazyLoad>
         </Box>
 
         <Box key='10'>
-          <ThemeWordCloud />
+          <LazyLoad>
+            <ThemeWordCloud />
+          </LazyLoad>
         </Box>
 
         <Box key='11'>
-          <JournalistTonality />
+          <LazyLoad>
+            <JournalistTonality />
+          </LazyLoad>
         </Box>
 
         <Box key='12'>
-          <JournalistPerformance matches={matches} />
+          <LazyLoad>
+            <JournalistPerformance matches={matches} />
+          </LazyLoad>
         </Box>
 
         <Box key='13'>
-          <ArticleSize matches={matches} />
+          <LazyLoad>
+            <ArticleSize matches={matches} />
+          </LazyLoad>
         </Box>
 
         <Box key='14'>
-          <LanguagePerformance matches={matches} />
+          <LazyLoad>
+            <LanguagePerformance matches={matches} />
+          </LazyLoad>
         </Box>
 
         {/* <Box key='24'>

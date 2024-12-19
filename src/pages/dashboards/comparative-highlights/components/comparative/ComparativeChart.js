@@ -1,11 +1,11 @@
+import dynamic from 'next/dynamic'
 import React, { useEffect, useState } from 'react'
-import MixedChart from 'src/components/charts/MixedChart'
-import Widget from 'src/components/widgets/Widget'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import { Print, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
-import { useSelector } from 'react-redux'
-import { selectSelectedEndDate, selectSelectedStartDate } from 'src/store/apps/user/userSlice'
-import DataGrid from 'src/components/datagrid/DataGrid'
+
+const Widget = dynamic(() => import('src/components/widgets/Widget'))
+const MixedChart = dynamic(() => import('src/components/charts/MixedChart'))
+const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },

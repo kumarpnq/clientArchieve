@@ -1,15 +1,16 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Print, PROMINENCE } from 'src/constants/filters'
+import dynamic from 'next/dynamic'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
-import BroadWidget from 'src/components/widgets/BroadWidget'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
-import BarChart from 'src/components/charts/BarChart'
-import DataGrid from 'src/components/datagrid/DataGrid'
-import MixedChart from 'src/components/charts/MixedChart'
-import DataTable from 'src/components/datatable/Table'
-import CombinedBarChart from 'src/components/charts/CombinedBarChart'
+
+const MixedChart = dynamic(() => import('src/components/charts/MixedChart'))
+const CombinedBarChart = dynamic(() => import('src/components/charts/CombinedBarChart'))
+const BroadWidget = dynamic(() => import('src/components/widgets/BroadWidget'))
+const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
+const DataTable = dynamic(() => import('src/components/datatable/Table'))
 
 const columns = [
   { field: 'key', headerName: 'Company', minWidth: 300 },
