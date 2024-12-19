@@ -8,6 +8,7 @@ import { FixedSizeList as List } from 'react-window'
 import dayjs from 'dayjs'
 import { styled } from '@mui/system'
 import { tooltipClasses } from '@mui/material/Tooltip'
+import Link from 'next/link'
 
 const Grid = props => {
   const {
@@ -132,9 +133,18 @@ const Grid = props => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
                 >
-                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
+                  <Link
+                    className='headline'
+                    style={{
+                      width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                      textDecoration: 'none',
+                      color: 'inherit'
+                    }}
+                    target='_blank'
+                    href={firstArticle.socialFeedlink}
+                  >
                     {firstArticle?.headline}
-                  </span>
+                  </Link>
 
                   <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
                     {firstArticle.publisher}
@@ -198,9 +208,18 @@ const Grid = props => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
                 >
-                  <span className='headline' style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}>
+                  <Link
+                    className='headline'
+                    style={{
+                      width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                      textDecoration: 'none',
+                      color: 'inherit'
+                    }}
+                    target='_blank'
+                    href={secondArticle.socialFeedlink}
+                  >
                     {secondArticle?.headline}
-                  </span>
+                  </Link>
 
                   <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
                     {secondArticle.publisher}{' '}
@@ -266,7 +285,14 @@ const Grid = props => {
         <td className='table-data'>
           <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-              <span className='headline'>{firstArticle?.headline}</span>
+              <Link
+                className='headline'
+                href={firstArticle.socialFeedlink}
+                target='_blank'
+                style={{ color: 'inherit', textDecoration: 'none' }}
+              >
+                {firstArticle?.headline}
+              </Link>
 
               <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
                 {firstArticle.publisher}{' '}
