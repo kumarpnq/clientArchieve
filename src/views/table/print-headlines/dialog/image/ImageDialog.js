@@ -7,18 +7,14 @@ import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
 import axios from 'axios'
 import JSZip from 'jszip'
-import * as XLSX from 'xlsx'
 import CircularProgress from '@mui/material/CircularProgress'
 import { BASE_URL } from 'src/api/base'
 import dayjs from 'dayjs'
 import ExcelJS from 'exceljs'
-import { saveAs } from 'file-saver'
 
 const ImageDialog = ({ open, handleClose, selectedArticles }) => {
   const [loadingJPG, setLoadingJPG] = useState(false)
   const [loadingPDF, setLoadingPDF] = useState(false)
-
-  console.log(selectedArticles)
 
   const fetchReadArticleFile = async (articleId, fileType) => {
     try {
@@ -116,7 +112,7 @@ const ImageDialog = ({ open, handleClose, selectedArticles }) => {
 
             // Use articleUploadId to name the file inside the zip archive
             // For example: articleUploadId might be something like '06CHANDIGARH-20241004-ECONOMIC_TIMES-0011-0006'
-            zip.file(`${article.articleUploadId}.${fileType}`, fileContent, { base64: true })
+            zip.file(`${article.articleUploadId.replace('.pdf', '')}.${fileType}`, fileContent, { base64: true })
           } else {
             console.log('Empty or invalid content in the response.')
           }
