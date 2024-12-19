@@ -81,8 +81,6 @@ const TableGrid = ({
     }
   })
 
-  console.log(firstPortionArticles)
-
   const toggleCheckboxSelection = (
     articleId,
     companies,
