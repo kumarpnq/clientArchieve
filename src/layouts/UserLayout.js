@@ -43,69 +43,69 @@ const UserLayout = ({ children, contentHeightFixed }) => {
 
   useEffect(() => {
     const newNavItems = [
-      {
-        title: 'Dashboards',
-        icon: 'tabler:smart-home',
-        badgeColor: 'error',
-        children: [
-          ...(dynamicScreens || []),
-          screenPermissions.wordClouds && {
-            title: 'Clouds',
-            path: '/dashboards/clouds',
-            icon: 'clarity:analytics-line'
-          },
-          screenPermissions.printDashboard && {
-            title: 'Print',
-            path: '/dashboards/print',
-            icon: 'arcticons:mobile-print'
-          },
-          screenPermissions.onlineDashboard && {
-            title: 'Online',
-            path: '/dashboards/online',
-            icon: 'fluent-mdl2:join-online-meeting'
-          },
-          screenPermissions.visibilityImageQE && {
-            title: 'Visibility Image QE',
-            path: '/dashboards/visibility-image-qe',
-            icon: 'mage:chart-up'
-          },
-          screenPermissions.visibilityAndCount && {
-            title: 'Visibility & Count ',
-            path: '/dashboards/visibility-&-count',
-            icon: 'oui:token-token-count'
-          },
-          screenPermissions.tonality && {
-            title: 'Tonality',
-            path: '/dashboards/tonality',
-            icon: 'material-symbols-light:tonality'
-          },
-          screenPermissions.peers && {
-            title: 'Peers',
-            path: '/dashboards/peers',
-            icon: 'line-md:peertube-alt'
-          },
-          screenPermissions.performance && {
-            title: 'Performance',
-            path: '/dashboards/performance',
-            icon: 'mingcute:performance-fill'
-          },
-          screenPermissions.kpiPeers && {
-            title: 'KPI Peers',
-            path: '/dashboards/kpi-peers',
-            icon: 'carbon:summary-kpi-mirror'
-          },
-          screenPermissions.publication && {
-            title: 'Publication',
-            path: '/dashboards/publication',
-            icon: 'ic:baseline-public'
-          },
-          screenPermissions.journalist && {
-            title: 'Journalist',
-            path: '/dashboards/journalist',
-            icon: 'oui:reporter'
-          }
-        ].filter(item => item)
-      },
+      // {
+      //   title: 'Dashboards',
+      //   icon: 'tabler:smart-home',
+      //   badgeColor: 'error',
+      //   children: [
+      //     ...(dynamicScreens || []),
+      //     screenPermissions.wordClouds && {
+      //       title: 'Clouds',
+      //       path: '/dashboards/clouds',
+      //       icon: 'clarity:analytics-line'
+      //     },
+      //     screenPermissions.printDashboard && {
+      //       title: 'Print',
+      //       path: '/dashboards/print',
+      //       icon: 'arcticons:mobile-print'
+      //     },
+      //     screenPermissions.onlineDashboard && {
+      //       title: 'Online',
+      //       path: '/dashboards/online',
+      //       icon: 'fluent-mdl2:join-online-meeting'
+      //     },
+      //     screenPermissions.visibilityImageQE && {
+      //       title: 'Visibility Image QE',
+      //       path: '/dashboards/visibility-image-qe',
+      //       icon: 'mage:chart-up'
+      //     },
+      //     screenPermissions.visibilityAndCount && {
+      //       title: 'Visibility & Count ',
+      //       path: '/dashboards/visibility-&-count',
+      //       icon: 'oui:token-token-count'
+      //     },
+      //     screenPermissions.tonality && {
+      //       title: 'Tonality',
+      //       path: '/dashboards/tonality',
+      //       icon: 'material-symbols-light:tonality'
+      //     },
+      //     screenPermissions.peers && {
+      //       title: 'Peers',
+      //       path: '/dashboards/peers',
+      //       icon: 'line-md:peertube-alt'
+      //     },
+      //     screenPermissions.performance && {
+      //       title: 'Performance',
+      //       path: '/dashboards/performance',
+      //       icon: 'mingcute:performance-fill'
+      //     },
+      //     screenPermissions.kpiPeers && {
+      //       title: 'KPI Peers',
+      //       path: '/dashboards/kpi-peers',
+      //       icon: 'carbon:summary-kpi-mirror'
+      //     },
+      //     screenPermissions.publication && {
+      //       title: 'Publication',
+      //       path: '/dashboards/publication',
+      //       icon: 'ic:baseline-public'
+      //     },
+      //     screenPermissions.journalist && {
+      //       title: 'Journalist',
+      //       path: '/dashboards/journalist',
+      //       icon: 'oui:reporter'
+      //     }
+      //   ].filter(item => item)
+      // },
       screenPermissions.onlineHeadlines && {
         title: 'Online News',
         icon: 'fluent-mdl2:news-search',
