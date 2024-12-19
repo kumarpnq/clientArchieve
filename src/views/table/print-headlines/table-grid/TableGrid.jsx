@@ -81,7 +81,17 @@ const TableGrid = ({
     }
   })
 
-  const toggleCheckboxSelection = (articleId, companies) => {
+  console.log(firstPortionArticles)
+
+  const toggleCheckboxSelection = (
+    articleId,
+    companies,
+    publication,
+    articleDate,
+    pageNumber,
+    size,
+    articleUploadId
+  ) => {
     // setTableSelectFunc(prev => ({
     //   ...prev,
     //   [articleId]: !prev[articleId] ? articleId : null
@@ -93,19 +103,35 @@ const TableGrid = ({
       if (updatedArticles.has(articleId)) {
         updatedArticles.delete(articleId)
       } else {
-        updatedArticles.set(articleId, { articleId, companies })
+        updatedArticles.set(articleId, {
+          articleId,
+          companies,
+          publication,
+          articleDate,
+          pageNumber,
+          size,
+          articleUploadId
+        })
       }
 
       return Array.from(updatedArticles.values())
     })
   }
 
-  const handleCheckboxChange = (articleId, companies) => {
-    toggleCheckboxSelection(articleId, companies)
+  const handleCheckboxChange = (articleId, companies, publication, articleDate, pageNumber, size, articleUploadId) => {
+    toggleCheckboxSelection(articleId, companies, publication, articleDate, pageNumber, size, articleUploadId)
   }
 
-  const handleCheckboxChangeTwo = (articleId, companies) => {
-    toggleCheckboxSelection(articleId, companies)
+  const handleCheckboxChangeTwo = (
+    articleId,
+    companies,
+    publication,
+    articleDate,
+    pageNumber,
+    size,
+    articleUploadId
+  ) => {
+    toggleCheckboxSelection(articleId, companies, publication, articleDate, pageNumber, size, articleUploadId)
   }
 
   const isArticleSelected = articleId => {
@@ -124,7 +150,17 @@ const TableGrid = ({
             <td className='table-data'>
               <Checkbox
                 checked={isArticleSelected(firstArticle.articleId)}
-                onChange={() => handleCheckboxChange(firstArticle.articleId, firstArticle.companies)}
+                onChange={() =>
+                  handleCheckboxChange(
+                    firstArticle.articleId,
+                    firstArticle.companies,
+                    firstArticle.publication,
+                    firstArticle.articleDate,
+                    firstArticle.pageNumber,
+                    firstArticle.size,
+                    firstArticle.articleUploadId
+                  )
+                }
               />
             </td>
             <td className='table-data'>
@@ -199,7 +235,17 @@ const TableGrid = ({
             <td className='table-data'>
               <Checkbox
                 checked={isArticleSelected(secondArticle.articleId)}
-                onChange={() => handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.companies)}
+                onChange={() =>
+                  handleCheckboxChangeTwo(
+                    secondArticle.articleId,
+                    secondArticle.companies,
+                    secondArticle.publication,
+                    secondArticle.articleDate,
+                    secondArticle.pageNumber,
+                    secondArticle.size,
+                    secondArticle.articleUploadId
+                  )
+                }
               />
             </td>
             <td className='table-data'>
@@ -279,7 +325,17 @@ const TableGrid = ({
         <td className='table-data'>
           <Checkbox
             checked={isArticleSelected(article.articleId)}
-            onChange={() => handleCheckboxChangeTwo(article.articleId, article.companies)}
+            onChange={() =>
+              handleCheckboxChangeTwo(
+                article.articleId,
+                article.companies,
+                article.publication,
+                article.articleDate,
+                article.pageNumber,
+                article.size,
+                article.articleUploadId
+              )
+            }
           />
         </td>
         <td className='table-data'>

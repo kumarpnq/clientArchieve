@@ -10,10 +10,15 @@ import JSZip from 'jszip'
 import * as XLSX from 'xlsx'
 import CircularProgress from '@mui/material/CircularProgress'
 import { BASE_URL } from 'src/api/base'
+import dayjs from 'dayjs'
+import ExcelJS from 'exceljs'
+import { saveAs } from 'file-saver'
 
 const ImageDialog = ({ open, handleClose, selectedArticles }) => {
   const [loadingJPG, setLoadingJPG] = useState(false)
   const [loadingPDF, setLoadingPDF] = useState(false)
+
+  console.log(selectedArticles)
 
   const fetchReadArticleFile = async (articleId, fileType) => {
     try {
@@ -46,33 +51,72 @@ const ImageDialog = ({ open, handleClose, selectedArticles }) => {
       const zip = new JSZip()
 
       if (fileType === 'jpg' || fileType === 'pdf') {
+        // Prepare data to export
         const dataToExport = selectedArticles.map(article => ({
-          ArticleId: article.articleId,
+          FileName: `${article.articleUploadId?.replace('.pdf', '.jpg')}`,
           Publication: article.publication,
-          ArticleDate: new Date(article.articleDate).toLocaleDateString('en-GB'),
+          ArticleDate: dayjs(article.ArticleDate).format('ddd, DD MMM-YY'),
           Companies: article.companies.map(company => company.name).join(', '),
           PageNumber: article.pageNumber,
-          Language: article.language
+          Space: article.size
         }))
 
-        const wb = XLSX.utils.book_new()
-        const ws = XLSX.utils.json_to_sheet(dataToExport)
-        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+        // Create a new workbook and a worksheet
+        const workbook = new ExcelJS.Workbook()
+        const worksheet = workbook.addWorksheet('Sheet1')
 
-        // Convert Excel blob to binary
-        const excelData = XLSX.write(wb, { bookType: 'xlsx', bookSST: false, type: 'binary' })
-        zip.file('articles.xlsx', excelData, { binary: true })
+        // Define worksheet columns
+        worksheet.columns = [
+          { header: 'FileName', key: 'fileName', width: 40 }, // Adjust width to make sure long filenames fit
+          { header: 'Publication', key: 'publication', width: 20 },
+          { header: 'ArticleDate', key: 'articleDate', width: 15 },
+          { header: 'Companies', key: 'companies', width: 25 },
+          { header: 'PageNumber', key: 'pageNumber', width: 10 },
+          { header: 'Space', key: 'space', width: 10 }
+        ]
+
+        // Add data to worksheet and create hyperlinks with styling
+        dataToExport.forEach(article => {
+          const row = worksheet.addRow({
+            fileName: article.FileName,
+            publication: article.Publication,
+            articleDate: article.ArticleDate,
+            companies: article.Companies,
+            pageNumber: article.PageNumber,
+            space: article.Space
+          })
+
+          // Create a hyperlink for the FileName cell
+          const fileNameCell = row.getCell('fileName')
+          fileNameCell.value = {
+            text: article.FileName, // Text shown in the cell
+            hyperlink: article.FileName // Actual hyperlink
+          }
+
+          // Apply styling (blue color and underline) to the hyperlink
+          fileNameCell.font = { color: { argb: 'FF0000FF' }, underline: true } // Blue text with underline
+        })
+
+        // Write the workbook to a buffer
+        const buffer = await workbook.xlsx.writeBuffer()
+
+        // Add the Excel file to the zip
+        zip.file('articles.xlsx', buffer)
       }
 
+      // Add article files (JPG or PDF) to the zip
       for (const article of selectedArticles) {
         try {
+          // Fetch the file content based on articleId and fileType (jpg or pdf)
           const fileContent = await fetchReadArticleFile(article.articleId, fileType)
 
           if (fileContent) {
+            // Determine the file type (jpg or pdf) for proper MIME type
             const fileSrc = `data:${fileType === 'jpg' ? 'image/jpeg' : 'application/pdf'};base64,${fileContent}`
 
-            // Add the file to the zip archive
-            zip.file(`downloaded_${article.articleId}.${fileType}`, fileContent, { base64: true })
+            // Use articleUploadId to name the file inside the zip archive
+            // For example: articleUploadId might be something like '06CHANDIGARH-20241004-ECONOMIC_TIMES-0011-0006'
+            zip.file(`${article.articleUploadId}.${fileType}`, fileContent, { base64: true })
           } else {
             console.log('Empty or invalid content in the response.')
           }
