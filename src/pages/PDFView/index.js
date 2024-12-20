@@ -134,6 +134,7 @@ const PDFView = () => {
         }
 
         // Middle logo with fallback
+        let middleLogoHeight = 0 // Define middle logo height
         try {
           const middleLogoUrl = `/publogos/${articleData?.pubGroupId}.jpg`
           let middleLogoBytes
@@ -147,15 +148,12 @@ const PDFView = () => {
 
           const middleLogoImage = await pdfDoc.embedJpg(middleLogoBytes)
 
-          // Set width and height for middle logo
-          const middleLogoWidth = 200 // Adjust width as necessary
-          const middleLogoHeight = (middleLogoImage.height / middleLogoImage.width) * middleLogoWidth
+          const middleLogoWidth = 200
+          middleLogoHeight = (middleLogoImage.height / middleLogoImage.width) * middleLogoWidth // Capture the height
 
-          // Calculate position to place the logo at the top-middle
-          const middleLogoX = (width - middleLogoWidth) / 2 // Center horizontally
-          const middleLogoY = height - middleLogoHeight - 5 // Top margin of 5px
+          const middleLogoX = (width - middleLogoWidth) / 2
+          const middleLogoY = height - middleLogoHeight - 5
 
-          // Draw middle logo in the center of the top with the adjusted Y position
           page.drawImage(middleLogoImage, {
             x: middleLogoX,
             y: middleLogoY,
@@ -181,14 +179,15 @@ const PDFView = () => {
 
         const textWidth = helveticaFont.widthOfTextAtSize(formattedDetails, textOptions.size)
         const textX = (width - textWidth) / 2
+        const textY = height - middleLogoHeight - 15 // Adjust the y position based on the logo height
 
         page.drawText(formattedDetails, {
           x: textX,
-          y: height - 40,
+          y: textY,
           ...textOptions
         })
 
-        // Article image
+        // Draw article image
         const imageUrl = articleData.JPGPATH
         const imageBytes = await axios.get(imageUrl, { responseType: 'arraybuffer' }).then(res => res.data)
         const embeddedImage = await pdfDoc.embedJpg(imageBytes)
@@ -197,7 +196,7 @@ const PDFView = () => {
 
         page.drawImage(embeddedImage, {
           x: (width - imageWidth) / 2,
-          y: height - 50 - imageHeight - 20,
+          y: textY - imageHeight - 20, // Adjust the position below the text
           width: imageWidth,
           height: imageHeight
         })
