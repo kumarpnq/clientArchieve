@@ -297,6 +297,7 @@ const TableSelection = () => {
               articleId: articleId,
               headline: articleData.headlines,
               summary: articleData.summary,
+              pubgroupId: publicationInfo?.pubgroupId,
               publication: publicationInfo.name,
               publicationId: publicationInfo.id,
               articleDate: `${articleInfo.articleDate}`,

@@ -31,6 +31,72 @@ const PDFView = () => {
     }
   }, [articleId, BASE_URL])
 
+  const publicationLogos = [
+    '6',
+    '8',
+    '10',
+    '19',
+    '21',
+    '32',
+    '35',
+    '36',
+    '46',
+    '48',
+    '51',
+    '52',
+    '53',
+    '54',
+    '87',
+    '98',
+    '99',
+    '121',
+    '148',
+    '164',
+    '183',
+    '199',
+    '209',
+    '213',
+    '218',
+    '232',
+    '241',
+    '244',
+    '258',
+    '335',
+    '336',
+    '337',
+    '374',
+    '383',
+    '410',
+    '573',
+    '773',
+    '775',
+    '776',
+    '777',
+    '822',
+    '869',
+    '922',
+    '996',
+    '999',
+    '1727',
+    '1769',
+    'BSPUNE',
+    'BSTDHYD',
+    'business_standard',
+    'ET_H',
+    'FINCHRONICLE',
+    'FREEPRESS',
+    'KASHMIRTIMES',
+    'MAILTODAY',
+    'METRONOW',
+    'MUMBAIMIRROR',
+    'thesunguardian',
+    'TSG_2018',
+    'blank_logo',
+    'ASSAM_TRIBUNE',
+    'BSCHENNAI',
+    'BSHD'
+  ]
+
   useEffect(() => {
     const createPDF = async () => {
       if (!articleData) return
@@ -41,26 +107,66 @@ const PDFView = () => {
         const { width, height } = page.getSize()
         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
-        // Embed the logo
-        const logoImageBytes = await axios.get(logoUrl, { responseType: 'arraybuffer' }).then(res => res.data)
-        const logoImage = await pdfDoc.embedJpg(logoImageBytes)
-        const logoWidth = 50
-        const logoHeight = (logoImage.height / logoImage.width) * logoWidth
+        // Embed the first logo (top-left)
+        try {
+          const logoImageBytes = await axios.get(logoUrl, { responseType: 'arraybuffer' }).then(res => res.data)
+          const logoImage = await pdfDoc.embedJpg(logoImageBytes)
+          const logoWidth = 50
+          const logoHeight = (logoImage.height / logoImage.width) * logoWidth
 
-        page.drawImage(logoImage, {
-          x: 10,
-          y: height - logoHeight - 10,
-          width: logoWidth,
-          height: logoHeight
-        })
+          // Top-left logo
+          page.drawImage(logoImage, {
+            x: 10,
+            y: height - logoHeight - 10,
+            width: logoWidth,
+            height: logoHeight
+          })
 
-        page.drawImage(logoImage, {
-          x: width - logoWidth - 10,
-          y: height - logoHeight - 10,
-          width: logoWidth,
-          height: logoHeight
-        })
+          // Top-right logo
+          page.drawImage(logoImage, {
+            x: width - logoWidth - 10,
+            y: height - logoHeight - 10,
+            width: logoWidth,
+            height: logoHeight
+          })
+        } catch (error) {
+          console.error('Error embedding top logos:', error)
+        }
 
+        // Middle logo with fallback
+        try {
+          const middleLogoUrl = `/publogos/${articleData?.pubGroupId}.jpg`
+          let middleLogoBytes
+          if (publicationLogos.includes(articleData?.pubGroupId)) {
+            middleLogoBytes = await axios.get(middleLogoUrl, { responseType: 'arraybuffer' }).then(res => res.data)
+          } else {
+            middleLogoBytes = await axios
+              .get('/publogos/perception&quant.jpg', { responseType: 'arraybuffer' })
+              .then(res => res.data)
+          }
+
+          const middleLogoImage = await pdfDoc.embedJpg(middleLogoBytes)
+
+          // Set width and height for middle logo
+          const middleLogoWidth = 200 // Adjust width as necessary
+          const middleLogoHeight = (middleLogoImage.height / middleLogoImage.width) * middleLogoWidth
+
+          // Calculate position to place the logo at the top-middle
+          const middleLogoX = (width - middleLogoWidth) / 2 // Center horizontally
+          const middleLogoY = height - middleLogoHeight - 5 // Top margin of 5px
+
+          // Draw middle logo in the center of the top with the adjusted Y position
+          page.drawImage(middleLogoImage, {
+            x: middleLogoX,
+            y: middleLogoY,
+            width: middleLogoWidth,
+            height: middleLogoHeight
+          })
+        } catch (error) {
+          console.error('Error embedding middle logo or fallback:', error)
+        }
+
+        // Text details
         const formattedDetails = `${dayjs(articleData?.articleDate).format('ddd, DD MMM YYYY')}; ${
           articleData?.publicationType
         } - ${articleData?.publicationName}; Size : ${articleData?.space}; Circulation: ${
@@ -74,14 +180,15 @@ const PDFView = () => {
         }
 
         const textWidth = helveticaFont.widthOfTextAtSize(formattedDetails, textOptions.size)
-        const x = (width - textWidth) / 2
+        const textX = (width - textWidth) / 2
 
         page.drawText(formattedDetails, {
-          x,
-          y: height - 50,
+          x: textX,
+          y: height - 40,
           ...textOptions
         })
 
+        // Article image
         const imageUrl = articleData.JPGPATH
         const imageBytes = await axios.get(imageUrl, { responseType: 'arraybuffer' }).then(res => res.data)
         const embeddedImage = await pdfDoc.embedJpg(imageBytes)
