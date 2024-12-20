@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { EditionType, PEERS_VOLUME_VISIBILITY, Print, PublicationGroup } from 'src/constants/filters'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
@@ -83,8 +83,10 @@ function TopPublicationTable(props) {
     qe: [],
     columnGroup: []
   })
-  const [selectedCategory, setSelectedCategory] = useState(0)
+
   const { anchorEl: categoryAnchorEl, openMenu: openCategory, closeMenu: closeCategory } = useMenu()
+  const { anchorEl: subCategoryAnchorEl, openMenu: openSubCategory, closeMenu: closeSubCategory } = useMenu()
+  const [selectedCategory, setSelectedCategory] = useState({ category: 0, subCategory: -1 })
 
   const metrics = useMemo(() => {
     // Ensure all data exists and is properly structured
@@ -113,15 +115,19 @@ function TopPublicationTable(props) {
       qe: [],
       columnGroup: []
     }
-    if (!(data && data[selectedCategory])) {
+    if (!(data && data[selectedCategory.category])) {
       setTableData(initialTableData)
 
       return
     }
 
-    const processedTableData = { ...initialTableData }
+    const tableData = { ...initialTableData }
+    const publicationGroups = data[selectedCategory.category]?.PublicationGroup?.buckets ?? []
 
-    data[selectedCategory]?.PublicationGroup?.buckets?.forEach((dataItem, index) => {
+    const newPublicationGroups =
+      selectedCategory.subCategory !== -1 ? [publicationGroups.at(selectedCategory.subCategory)] : publicationGroups
+
+    newPublicationGroups.forEach((dataItem, index) => {
       const companies = dataItem?.CompanyTag?.FilterCompany?.Company?.buckets || []
       const volScore = []
       const visScore = []
@@ -129,9 +135,9 @@ function TopPublicationTable(props) {
       const volSov = []
       const qe = []
 
-      companies?.forEach(company => {
+      companies?.forEach((company, companyIndex) => {
         if (index === 0) {
-          processedTableData.rows.push(company.key || `Company ${companyIndex + 1}`)
+          tableData.rows.push(company.key || `Company ${companyIndex + 1}`)
         }
         volScore.push(Math.trunc(company.doc_count ?? 0))
         volSov.push(Math.trunc(company.doc_sov ?? 0))
@@ -139,26 +145,35 @@ function TopPublicationTable(props) {
         visSov.push(Math.trunc(company.V_Sov?.value ?? 0))
         qe.push(Math.trunc(company.QE?.value ?? 0))
       })
-      processedTableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
-      processedTableData.volScore.push(volScore)
-      processedTableData.visSov.push(visSov)
-      processedTableData.visScore.push(visScore)
-      processedTableData.volSov.push(volSov)
-      processedTableData.qe.push(qe)
+      tableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
+      tableData.volScore.push(volScore)
+      tableData.visSov.push(visSov)
+      tableData.visScore.push(visScore)
+      tableData.volSov.push(volSov)
+      tableData.qe.push(qe)
     })
 
-    // Update state
-    setTableData(processedTableData)
-  }, [data, selectedCategory])
+    setTableData(tableData)
+  }, [data, selectedCategory.category, selectedCategory.subCategory])
+
+  useEffect(() => {
+    setSelectedCategory({ category: 0, subCategory: -1 })
+  }, [selectMediaType])
 
   const apiActions = data ? (
     <Stack direction='row' spacing={2}>
-      {data[selectedCategory] && (
+      {data[selectedCategory.category] && (
         <Button size='small' onClick={openCategory} endIcon={<KeyboardArrowDown />}>
-          {data[selectedCategory].key}
+          {data[selectedCategory.category].key}
         </Button>
       )}
-
+      {(data[selectedCategory.category]?.PublicationGroup?.buckets[selectedCategory.subCategory] ||
+        selectedCategory.subCategory === -1) && (
+        <Button size='small' onClick={openSubCategory} endIcon={<KeyboardArrowDown />}>
+          {data[selectedCategory.category]?.PublicationGroup?.buckets[selectedCategory.subCategory]?.key ??
+            'All Publication Groups'}
+        </Button>
+      )}
       <Menu
         anchorEl={categoryAnchorEl}
         open={Boolean(categoryAnchorEl)}
@@ -188,13 +203,64 @@ function TopPublicationTable(props) {
         {data?.map((category, i) => (
           <MenuItem
             key={category.key}
-            selected={selectedCategory === i}
+            selected={selectedCategory.category === i}
             onClick={() => {
-              setSelectedCategory(i)
+              setSelectedCategory({ subCategory: -1, category: i })
               closeCategory()
             }}
           >
             {category.key}
+          </MenuItem>
+        ))}
+      </Menu>
+
+      <Menu
+        anchorEl={subCategoryAnchorEl}
+        open={Boolean(subCategoryAnchorEl)}
+        onClose={closeSubCategory}
+        disableScrollLock
+        className='cancelSelection'
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 380px)',
+            py: 2,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            maxHeight: 450,
+            overflow: 'auto',
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          },
+          '& .MuiButtonBase-root:hover': {
+            backgroundColor: 'background.default'
+          }
+        }}
+      >
+        <MenuItem
+          selected={selectedCategory.subCategory === -1}
+          onClick={() => {
+            setSelectedCategory(prev => ({ ...prev, subCategory: -1 }))
+
+            closeSubCategory()
+          }}
+        >
+          All Publication Groups
+        </MenuItem>
+        {data[selectedCategory.category]?.PublicationGroup?.buckets?.map((subCategory, i) => (
+          <MenuItem
+            key={subCategory.key}
+            selected={selectedCategory.subCategory === i}
+            onClick={() => {
+              setSelectedCategory(prev => ({ ...prev, subCategory: i }))
+
+              closeSubCategory()
+            }}
+          >
+            {subCategory.key}
           </MenuItem>
         ))}
       </Menu>

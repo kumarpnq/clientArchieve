@@ -23,11 +23,18 @@ import DonutLargeIcon from '@mui/icons-material/DonutLarge'
 import PieChartIcon from '@mui/icons-material/PieChart'
 import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart'
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined'
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined'
+import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined'
 import AbcIcon from '@mui/icons-material/Abc'
 import useMenu from 'src/hooks/useMenu'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 import { Tabs, Tab } from 'src/components/Tabs'
 import { All, Online, Print } from 'src/constants/filters'
+
+// ** third party imports
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
 
 const WidgetToolbar = dynamic(() => import('./actions/WidgetToolbar'))
 import Loading from '../Loading'
@@ -124,6 +131,7 @@ function BroadWidget(props) {
 function Chart(props) {
   const { slots, slotProps, metrics, charts } = props
   const { anchorEl, openMenu, closeMenu } = useMenu()
+  const { anchorEl: downloadAnchorEl, openMenu: openDownloadMenu, closeMenu: closeDownloadMenu } = useMenu()
 
   const chartKeys = useMemo(() => Object.keys(charts || {}), [charts])
 
@@ -140,6 +148,54 @@ function Chart(props) {
   const [SelectedChart, setSelectedChart] = useState(defaultChart)
 
   if (chartKeys.length === 0) return null
+
+  // Function to handle JPEG download
+  const handleJPEGDownload = async () => {
+    try {
+      const chartContainer = document.getElementById('chart-container')
+
+      if (!chartContainer) {
+        return
+      }
+
+      // Use html2canvas to capture the chart as an image
+      const canvas = await html2canvas(chartContainer)
+
+      // Create a download link for the image
+      const dataURL = canvas.toDataURL('image/jpeg')
+      const link = document.createElement('a')
+      link.href = dataURL
+      link.download = 'chart.jpg'
+
+      // Trigger the download
+      document.body.appendChild(link)
+      link.click()
+    } catch (error) {
+      console.error('Error generating JPEG:', error)
+    }
+  }
+
+  const handlePDFDownload = async () => {
+    try {
+      const chartContainer = document.getElementById('chart-container')
+
+      if (!chartContainer) {
+        return
+      }
+
+      // Use html2canvas to capture the chart as an image
+      const canvas = await html2canvas(chartContainer)
+
+      // Create a PDF document
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      pdf.addImage(canvas.toDataURL('image/jpeg'), 'JPEG', 0, 0, 210, 297)
+
+      // Create a download link for the PDF
+      pdf.save('chart.pdf')
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+    }
+  }
 
   const actions = (
     <Fragment>
@@ -166,6 +222,23 @@ function Chart(props) {
           {chartKeys.length > 1 ? SelectedChart.name : defaultChart.name} Chart
         </Button>
       )}
+      <Button
+        variant='outlined'
+        onClick={openDownloadMenu}
+        startIcon={<DownloadOutlinedIcon />}
+        endIcon={<ArrowDropDownIcon />}
+        sx={{
+          alignItems: 'start',
+          textTransform: 'capitalize',
+          textWrap: 'nowrap',
+          textOverflow: 'ellipsis',
+          overflow: 'hidden',
+          borderColor: 'divider',
+          py: 1
+        }}
+      >
+        Download
+      </Button>
     </Fragment>
   )
 
@@ -203,7 +276,6 @@ function Chart(props) {
             selected={SelectedChart.name === key}
             onClick={() => {
               setSelectedChart({ ...charts[key], icon: icons[key], name: key })
-              toggle('charts')
               closeMenu()
             }}
           >
@@ -213,6 +285,61 @@ function Chart(props) {
             <ListItemIcon sx={{ minWidth: '0 !important' }}>{icons[key]}</ListItemIcon>
           </MenuItem>
         ))}
+      </Menu>
+
+      <Menu
+        anchorEl={downloadAnchorEl}
+        open={Boolean(downloadAnchorEl)}
+        onClose={closeDownloadMenu}
+        disableScrollLock
+        className='cancelSelection'
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 220px)',
+            mt: 2,
+            p: 0.2,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          },
+          '& .MuiButtonBase-root:hover': {
+            backgroundColor: 'background.default'
+          }
+        }}
+      >
+        <MenuItem
+          sx={{ px: 1.2 }}
+          onClick={() => {
+            handleJPEGDownload()
+            closeDownloadMenu()
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: '0 !important' }}>
+            <ImageOutlinedIcon />{' '}
+          </ListItemIcon>
+          <ListItemText primaryTypographyProps={{ textTransform: 'capitalize', variant: 'body2' }}>
+            Download JPEG
+          </ListItemText>
+        </MenuItem>
+        <MenuItem
+          sx={{ px: 1.2 }}
+          onClick={() => {
+            handlePDFDownload()
+            closeDownloadMenu()
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: '0 !important' }}>
+            <PictureAsPdfOutlinedIcon />{' '}
+          </ListItemIcon>
+          <ListItemText primaryTypographyProps={{ textTransform: 'capitalize', variant: 'body2' }}>
+            Download PDF
+          </ListItemText>
+        </MenuItem>
       </Menu>
     </Fragment>
   )

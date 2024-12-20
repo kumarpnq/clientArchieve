@@ -12,6 +12,7 @@ function BarChart(props) {
 
   return (
     <Bar
+      id='chart-container'
       data={{
         labels: metrics.labels,
         datasets: [

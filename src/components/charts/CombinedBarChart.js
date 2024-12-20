@@ -28,13 +28,14 @@ const CombinedBarChart = props => {
   const customScale = {
     id: 'customScale',
     beforeDatasetsDraw(chart) {
-      const { ctx, chartArea, scales } = chart
+      const { ctx, chartArea, data, scales } = chart
       const { bottom, width, left, right } = chartArea
       const { x, y } = scales
       const dataPointsLength = metrics.labelGroup.length
       const segment = width / dataPointsLength
       const segmentCenter = segment / 2
       const paddingBottom = bottom + 80
+      const labelGroup = data.datasets[1].labelGroup
 
       // Ensure context is restored to default state
       ctx.restore()
@@ -59,15 +60,17 @@ const CombinedBarChart = props => {
 
       let linePoint = -1
       createLineStroke(linePoint)
-      metrics.labelGroup.forEach((_, index) => {
+      labelGroup.forEach((_, index) => {
         linePoint = linePoint + metrics.labels.length * (index - index + 1)
         createLineStroke(linePoint)
       })
 
       // Draw text for label groups
-      metrics.labelGroup.forEach((region, i) => {
+      labelGroup.forEach((region, i) => {
         const xPosition = left + segment * (i + 0.5)
         ctx.fillText(region, xPosition, paddingBottom)
+
+        // ctx.textAlign = 'center'
       })
     }
   }
@@ -88,6 +91,7 @@ const CombinedBarChart = props => {
         }}
       >
         <Chart
+          id='chart-container'
           plugins={[customScale, legendMargin]}
           type='bar'
           data={{
@@ -114,7 +118,8 @@ const CombinedBarChart = props => {
               ...Object.keys(metrics.bar || {}).map((label, i) => ({
                 label,
                 data: metrics.bar[label].flatMap(v => v),
-                backgroundColor: colors[i % colors.length]
+                backgroundColor: colors[i % colors.length],
+                labelGroup: metrics.labelGroup
               }))
             ]
           }}

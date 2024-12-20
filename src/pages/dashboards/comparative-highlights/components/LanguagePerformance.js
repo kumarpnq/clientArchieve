@@ -65,6 +65,8 @@ function LanguageTable(props) {
     qe: [],
     columnGroup: []
   })
+  const [selectedCategory, setSelectedCategory] = useState(-1)
+  const { anchorEl, openMenu, closeMenu } = useMenu()
 
   // Memoize metrics to prevent unnecessary re-renders
   const metrics = useMemo(() => {
@@ -103,10 +105,11 @@ function LanguageTable(props) {
     }
 
     // Create a deep clone of initial table data
-    const processedTableData = { ...initialTableData }
+    const tableData = { ...initialTableData }
+    const languages = selectedCategory !== -1 ? [data.at(selectedCategory)] : data
 
     // Process data with added safety checks
-    data.slice(0, tableRange).forEach((dataItem, index) => {
+    languages.forEach((dataItem, index) => {
       const companies = dataItem?.CompanyTag?.FilterCompany?.Company?.buckets || []
 
       // Collect company data
@@ -115,10 +118,10 @@ function LanguageTable(props) {
       const visSov = []
       const qe = []
 
-      companies.slice(0, tableRange).forEach((company, companyIndex) => {
+      companies.forEach((company, companyIndex) => {
         // Add row names only on first iteration
         if (index === 0) {
-          processedTableData.rows.push(company.key || `Company ${companyIndex + 1}`)
+          tableData.rows.push(company.key || `Company ${companyIndex + 1}`)
         }
 
         // Safely extract and process values
@@ -129,18 +132,77 @@ function LanguageTable(props) {
       })
 
       // Add column group and scores
-      processedTableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
-      processedTableData.volScore.push(volScore)
-      processedTableData.visSov.push(visSov)
-      processedTableData.visScore.push(visScore)
-      processedTableData.qe.push(qe)
+      tableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
+      tableData.volScore.push(volScore)
+      tableData.visSov.push(visSov)
+      tableData.visScore.push(visScore)
+      tableData.qe.push(qe)
     })
 
     // Update state
-    setTableData(processedTableData)
-  }, [data])
+    setTableData(tableData)
+  }, [data, selectedCategory])
 
   // Render only if metrics are available
+
+  const apiActions = data ? (
+    <Stack direction='row' spacing={2}>
+      {(data[selectedCategory] || selectedCategory === -1) && (
+        <Button size='small' onClick={openMenu} endIcon={<KeyboardArrowDown />}>
+          {data[selectedCategory]?.key ?? 'All Languages'}
+        </Button>
+      )}
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+        disableScrollLock
+        className='cancelSelection'
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 380px)',
+            py: 2,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            maxHeight: 450,
+            overflow: 'auto',
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          },
+          '& .MuiButtonBase-root:hover': {
+            backgroundColor: 'background.default'
+          }
+        }}
+      >
+        <MenuItem
+          selected={selectedCategory === -1}
+          onClick={() => {
+            setSelectedCategory(-1)
+            closeMenu()
+          }}
+        >
+          All Languages
+        </MenuItem>
+        {data?.map((category, i) => (
+          <MenuItem
+            key={category.key}
+            selected={selectedCategory === i}
+            onClick={() => {
+              setSelectedCategory(i)
+              closeMenu()
+            }}
+          >
+            {category.key}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Stack>
+  ) : null
 
   return (
     <BroadWidget
@@ -149,6 +211,7 @@ function LanguageTable(props) {
       loading={loading}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
+      apiActions={apiActions}
       datagrid={{ columns, tableData, colGroupSpan: 4 }}
       table={DataTable}
       metrics={metrics}

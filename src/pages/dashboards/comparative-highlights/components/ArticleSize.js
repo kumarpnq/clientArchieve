@@ -43,7 +43,6 @@ const columns = [
 ]
 
 // const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
-const tableRange = 5
 const Title = 'Article Size'
 const Description = 'Keep track of companies and their reputation'
 
@@ -79,6 +78,8 @@ function ArticleTable(props) {
     total: [],
     columnGroup: []
   })
+  const [selectedCategory, setSelectedCategory] = useState(-1)
+  const { anchorEl, openMenu, closeMenu } = useMenu()
 
   useEffect(() => {
     // Reset table data
@@ -99,10 +100,11 @@ function ArticleTable(props) {
     }
 
     // Create a deep clone of initial table data
-    const processedTableData = { ...initialTableData }
+    const tableData = { ...initialTableData }
+    const articles = selectedCategory !== -1 ? [data.at(selectedCategory)] : data
 
     // Process data with added safety checks
-    data.slice(0, tableRange).forEach((dataItem, index) => {
+    articles.forEach((dataItem, index) => {
       const companies = dataItem?.Company?.buckets || []
 
       // Collect company data
@@ -111,37 +113,95 @@ function ArticleTable(props) {
       const prominent = []
       const total = []
 
-      companies.slice(0, tableRange).forEach((company, companyIndex) => {
-        const Passing = company.Passing?.value ?? 0
-        const Headline = company.Headline?.value ?? 0
-        const Prominent = company.Prominent?.value ?? 0
-        const Total = Math.trunc(prominent + headline + passing)
+      companies.forEach((company, companyIndex) => {
+        const Passing = Math.trunc(parseInt(company.Passing?.value || 0))
+        const Headline = Math.trunc(parseInt(company.Headline?.value || 0))
+        const Prominent = Math.trunc(parseInt(company.Prominent?.value || 0))
+        const Total = Passing + Headline + Prominent
 
         // Add row names only on first iteration
         if (index === 0) {
-          processedTableData.rows.push(company.key || `Company ${companyIndex + 1}`)
+          tableData.rows.push(company.key || `Company ${companyIndex + 1}`)
         }
 
         // Safely extract and process values
-        headline.push(Math.trunc(Headline))
-        passing.push(Math.trunc(Passing))
-        prominent.push(Math.trunc(Prominent))
+        headline.push(Headline)
+        passing.push(Passing)
+        prominent.push(Prominent)
         total.push(Total)
       })
 
       // Add column group and scores
-      processedTableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
-      processedTableData.headline.push(headline)
-      processedTableData.passing.push(passing)
-      processedTableData.prominent.push(prominent)
-      processedTableData.total.push(total)
+      tableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
+      tableData.headline.push(headline)
+      tableData.passing.push(passing)
+      tableData.prominent.push(prominent)
+      tableData.total.push(total)
     })
 
     // Update state
-    setTableData(processedTableData)
-  }, [data])
+    setTableData(tableData)
+  }, [data, selectedCategory])
 
   // Render only if metrics are available
+  const apiActions = data ? (
+    <Stack direction='row' spacing={2}>
+      {(data[selectedCategory] || selectedCategory === -1) && (
+        <Button size='small' onClick={openMenu} endIcon={<KeyboardArrowDown />}>
+          {data[selectedCategory]?.key ?? 'All Article Sizes'}
+        </Button>
+      )}
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+        disableScrollLock
+        className='cancelSelection'
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 380px)',
+            py: 2,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            maxHeight: 450,
+            overflow: 'auto',
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          },
+          '& .MuiButtonBase-root:hover': {
+            backgroundColor: 'background.default'
+          }
+        }}
+      >
+        <MenuItem
+          selected={selectedCategory === -1}
+          onClick={() => {
+            setSelectedCategory(-1)
+            closeMenu()
+          }}
+        >
+          All Article Sizes
+        </MenuItem>
+        {data?.map((category, i) => (
+          <MenuItem
+            key={category.key}
+            selected={selectedCategory === i}
+            onClick={() => {
+              setSelectedCategory(i)
+              closeMenu()
+            }}
+          >
+            {category.key}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Stack>
+  ) : null
 
   return (
     <BroadWidget
@@ -149,6 +209,7 @@ function ArticleTable(props) {
       description={Description}
       loading={loading}
       mediaType={selectMediaType}
+      apiActions={apiActions}
       changeMediaType={changeMediaType}
       datagrid={{ columns, tableData, colGroupSpan: 4 }}
       table={DataTable}

@@ -11,7 +11,7 @@ const LazyLoad = ({ children }) => {
     threshold: 0,
     triggerOnce: true,
     initialInView: false,
-    rootMargin: '400px',
+    rootMargin: `${window.innerHeight}px`,
 
     // Only start observing when shouldObserve is true
     skip: !shouldObserve

@@ -1,10 +1,12 @@
-import { Button, Grid, IconButton, Stack } from '@mui/material'
+import { Button, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack } from '@mui/material'
 import { GridToolbarColumnsButton, GridToolbarDensitySelector } from '@mui/x-data-grid'
 import React, { Fragment, useEffect, useMemo } from 'react'
 import GridViewOutlinedIcon from '@mui/icons-material/GridViewOutlined'
 import EqualizerIcon from '@mui/icons-material/Equalizer'
 import LaunchIcon from '@mui/icons-material/Launch'
 import CloseIcon from '@mui/icons-material/Close'
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 const icons = {
   charts: <EqualizerIcon />,
@@ -50,6 +52,7 @@ function WidgetToolbar(props) {
         container
         className='cancelSelection'
         mb={3}
+        rowSpacing={2}
         sx={{
           '& .MuiButtonBase-root.MuiButton-root, .MuiButtonBase-root.MuiButton-root:hover': {
             bgcolor: 'background.paper',
@@ -70,11 +73,26 @@ function WidgetToolbar(props) {
           {apiActions}
         </Grid>
         <Grid item>
-          <Stack direction='row' gap={1} alignItems='center'>
+          <Stack direction='row' gap={2} alignItems='center'>
             {actions ? (
               actions
             ) : (
               <Fragment>
+                <Button
+                  variant='outlined'
+                  startIcon={<DownloadOutlinedIcon />}
+                  sx={{
+                    alignItems: 'start',
+                    textTransform: 'capitalize',
+                    textWrap: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    borderColor: 'divider',
+                    py: 1
+                  }}
+                >
+                  Download
+                </Button>
                 <GridToolbarColumnsButton size='small' />
                 <GridToolbarDensitySelector size='small' />
               </Fragment>

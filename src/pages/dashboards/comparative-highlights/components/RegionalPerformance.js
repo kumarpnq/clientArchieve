@@ -74,6 +74,8 @@ function RegionalTable(props) {
     qe: [],
     columnGroup: []
   })
+  const [selectedCategory, setSelectedCategory] = useState(-1)
+  const { anchorEl, openMenu, closeMenu } = useMenu()
 
   // Memoize metrics to prevent unnecessary re-renders
   const metrics = useMemo(() => {
@@ -113,10 +115,12 @@ function RegionalTable(props) {
     }
 
     // Create a deep clone of initial table data
-    const processedTableData = { ...initialTableData }
+    const tableData = { ...initialTableData }
+
+    const regions = selectedCategory !== -1 ? [data.at(selectedCategory)] : data ?? []
 
     // Process data with added safety checks
-    data.slice(0, 5).forEach((dataItem, index) => {
+    regions.forEach((dataItem, index) => {
       const companies = dataItem?.CompanyTag?.FilterCompany?.Company?.buckets || []
 
       // Collect company data
@@ -126,10 +130,10 @@ function RegionalTable(props) {
       const volSov = []
       const qe = []
 
-      companies.slice(0, 5).forEach((company, companyIndex) => {
+      companies.forEach((company, companyIndex) => {
         // Add row names only on first iteration
         if (index === 0) {
-          processedTableData.rows.push(company.key || `Company ${companyIndex + 1}`)
+          tableData.rows.push(company.key || `Company ${companyIndex + 1}`)
         }
 
         // Safely extract and process values
@@ -141,17 +145,76 @@ function RegionalTable(props) {
       })
 
       // Add column group and scores
-      processedTableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
-      processedTableData.volScore.push(volScore)
-      processedTableData.visSov.push(visSov)
-      processedTableData.visScore.push(visScore)
-      processedTableData.volSov.push(volSov)
-      processedTableData.qe.push(qe)
+      tableData.columnGroup.push(dataItem.key || `Group ${index + 1}`)
+      tableData.volScore.push(volScore)
+      tableData.visSov.push(visSov)
+      tableData.visScore.push(visScore)
+      tableData.volSov.push(volSov)
+      tableData.qe.push(qe)
     })
 
     // Update state
-    setTableData(processedTableData)
-  }, [data])
+    setTableData(tableData)
+  }, [data, selectedCategory])
+
+  const apiActions = data ? (
+    <Stack direction='row' spacing={2}>
+      {(data[selectedCategory] || selectedCategory === -1) && (
+        <Button size='small' onClick={openMenu} endIcon={<KeyboardArrowDown />}>
+          {data[selectedCategory]?.key ?? 'All Regions'}
+        </Button>
+      )}
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+        disableScrollLock
+        className='cancelSelection'
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 380px)',
+            py: 2,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            maxHeight: 450,
+            overflow: 'auto',
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          },
+          '& .MuiButtonBase-root:hover': {
+            backgroundColor: 'background.default'
+          }
+        }}
+      >
+        <MenuItem
+          selected={selectedCategory === -1}
+          onClick={() => {
+            setSelectedCategory(-1)
+            closeMenu()
+          }}
+        >
+          All Regions
+        </MenuItem>
+        {data?.map((category, i) => (
+          <MenuItem
+            key={category.key}
+            selected={selectedCategory === i}
+            onClick={() => {
+              setSelectedCategory(i)
+              closeMenu()
+            }}
+          >
+            {category.key}
+          </MenuItem>
+        ))}
+      </Menu>
+    </Stack>
+  ) : null
 
   return (
     <BroadWidget
@@ -160,6 +223,7 @@ function RegionalTable(props) {
       loading={loading}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
+      apiActions={apiActions}
       datagrid={{ columns, tableData, colGroupSpan: 5 }}
       table={DataTable}
       metrics={metrics}
