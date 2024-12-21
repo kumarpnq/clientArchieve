@@ -209,7 +209,7 @@ const TableSelection = () => {
 
     const fetchArticlesApi = async () => {
       try {
-        setLoading(true)
+        // setLoading(true)
         setSelectedArticles([])
         setArticles([])
         const storedToken = localStorage.getItem('accessToken')
@@ -283,7 +283,8 @@ const TableSelection = () => {
             sortby: selectedSortBy,
 
             publicationCategory: publicationtype,
-            signal
+            signal,
+            setLoading
           })
 
           const totalRecords = response.count
@@ -341,7 +342,7 @@ const TableSelection = () => {
         console.error('Error fetching articles:', error)
         setArticles([])
       } finally {
-        setLoading(false)
+        // setLoading(false)
         setFetchTagsFlag(false)
       }
     }

@@ -324,7 +324,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                     window.open(url, '_blank')
                   }
                 }}
-                style={{ cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default' }}
+                style={{ cursor: article.articleType === 'print' ? 'pointer' : 'default' }}
               >
                 {article.headline}
               </span>
