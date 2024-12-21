@@ -152,7 +152,7 @@ const PDFView = () => {
           middleLogoHeight = (middleLogoImage.height / middleLogoImage.width) * middleLogoWidth // Capture the height
 
           const middleLogoX = (width - middleLogoWidth) / 2
-          const middleLogoY = height - middleLogoHeight - 5
+          const middleLogoY = height - middleLogoHeight - 30
 
           page.drawImage(middleLogoImage, {
             x: middleLogoX,
@@ -172,14 +172,14 @@ const PDFView = () => {
         }; Page : ${articleData?.pageNumber}`
 
         const textOptions = {
-          size: 7,
+          size: 9,
           font: helveticaFont,
           color: rgb(0, 0, 139 / 255)
         }
 
         const textWidth = helveticaFont.widthOfTextAtSize(formattedDetails, textOptions.size)
         const textX = (width - textWidth) / 2
-        const textY = height - middleLogoHeight - 15 // Adjust the y position based on the logo height
+        const textY = height - middleLogoHeight - 45 // Adjusted for margin-top of 5 units
 
         page.drawText(formattedDetails, {
           x: textX,
@@ -196,7 +196,7 @@ const PDFView = () => {
 
         page.drawImage(embeddedImage, {
           x: (width - imageWidth) / 2,
-          y: textY - imageHeight - 20, // Adjust the position below the text
+          y: textY - imageHeight - 15, // Adjust the position below the text
           width: imageWidth,
           height: imageHeight
         })
