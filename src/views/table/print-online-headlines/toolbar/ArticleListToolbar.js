@@ -507,9 +507,12 @@ const ArticleListToolbar = ({
           Filter by Magazine
         </MenuItem> */}
       </Menu>
+      <CustomTooltip title='Media'>
+        <Button onClick={handlePublicationTypeClick} sx={{ color: primaryColor, mr: 0 }}>
 
       <CustomTooltip title='Coming soon.'>
         <Button sx={{ color: '#f1e6b2', mr: 0 }}>
+
           <PublicationTypeIcon />
         </Button>
       </CustomTooltip>

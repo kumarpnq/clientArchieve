@@ -8,6 +8,7 @@ import invoice from 'src/store/apps/invoice'
 import calendar from 'src/store/apps/calendar'
 import permissions from 'src/store/apps/permissions'
 import userReducer from 'src/store/apps/user/userSlice' // Update this import
+import filter from 'src/store/apps/filters/filterSlice'
 
 export const store = configureStore({
   reducer: {
@@ -16,7 +17,8 @@ export const store = configureStore({
     invoice,
     calendar,
     permissions,
-    user: userReducer // Include the userReducer
+    user: userReducer, // Include the userReducer
+    filter
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

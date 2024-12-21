@@ -43,6 +43,95 @@ const UserLayout = ({ children, contentHeightFixed }) => {
 
   useEffect(() => {
     const newNavItems = [
+
+      {
+        title: 'Dashboards',
+        icon: 'tabler:smart-home',
+        badgeColor: 'error',
+        children: [
+          ...(dynamicScreens || []),
+          screenPermissions.wordClouds && {
+            title: 'Clouds',
+            path: '/dashboards/clouds',
+            icon: 'clarity:analytics-line'
+          },
+          { title: 'News', path: '/dashboards/news', icon: 'clarity:analytics-line' },
+          { title: 'Client Highlights', path: '/dashboards/client', icon: 'clarity:analytics-line' },
+          {
+            title: 'Comparative Highlights',
+            path: '/dashboards/comparative-highlights',
+            icon: 'clarity:analytics-line'
+          },
+          { title: 'Share of Voice', path: '/dashboards/share-of-voice', icon: 'clarity:analytics-line' },
+          { title: 'Publication / Media Type', path: '/dashboards/publication', icon: 'clarity:analytics-line' },
+          { title: 'Journalist', path: '/dashboards/journalist', icon: 'clarity:analytics-line' },
+          { title: 'Genre / Theme', path: '/dashboards/genre', icon: 'clarity:analytics-line' },
+          { title: 'Stock Movement', path: '/dashboards/stack', icon: 'clarity:analytics-line' },
+          { title: 'Headlines', path: '/dashboards/headlines', icon: 'clarity:analytics-line' },
+          { title: 'Social Media', path: '/dashboards/social', icon: 'clarity:analytics-line' },
+          { title: 'Geography', path: '/dashboards/geography', icon: 'clarity:analytics-line' },
+          { title: 'Language', path: '/dashboards/language', icon: 'clarity:analytics-line' },
+          { title: 'Top Management', path: '/dashboards/top-management', icon: 'clarity:analytics-line' },
+          { title: 'Prominence', path: '/dashboards/prominence', icon: 'clarity:analytics-line' },
+          { title: 'Article Size', path: '/dashboards/article', icon: 'clarity:analytics-line' },
+          { title: 'Key Stories', path: '/dashboards/stories', icon: 'clarity:analytics-line' },
+
+          // { title: 'Cat A', path: '/dashboards/cat-a', icon: 'clarity:analytics-line' },
+          // { title: 'Cat B', path: '/dashboards/cat-b', icon: 'clarity:analytics-line' },
+
+          screenPermissions.printDashboard && {
+            title: 'Print',
+            path: '/dashboards/print',
+            icon: 'arcticons:mobile-print'
+          },
+          screenPermissions.onlineDashboard && {
+            title: 'Online',
+            path: '/dashboards/online',
+            icon: 'fluent-mdl2:join-online-meeting'
+          },
+          screenPermissions.visibilityImageQE && {
+            title: 'Visibility Image QE',
+            path: '/dashboards/visibility-image-qe',
+            icon: 'mage:chart-up'
+          },
+          screenPermissions.visibilityAndCount && {
+            title: 'Visibility & Count ',
+            path: '/dashboards/visibility-&-count',
+            icon: 'oui:token-token-count'
+          },
+          screenPermissions.tonality && {
+            title: 'Tonality',
+            path: '/dashboards/tonality',
+            icon: 'material-symbols-light:tonality'
+          },
+          screenPermissions.peers && {
+            title: 'Peers',
+            path: '/dashboards/peers',
+            icon: 'line-md:peertube-alt'
+          },
+          screenPermissions.performance && {
+            title: 'Performance',
+            path: '/dashboards/performance',
+            icon: 'mingcute:performance-fill'
+          },
+          screenPermissions.kpiPeers && {
+            title: 'KPI Peers',
+            path: '/dashboards/kpi-peers',
+            icon: 'carbon:summary-kpi-mirror'
+          },
+          screenPermissions.publication && {
+            title: 'Publication',
+            path: '/dashboards/publication',
+            icon: 'ic:baseline-public'
+          },
+          screenPermissions.journalist && {
+            title: 'Journalist',
+            path: '/dashboards/journalist',
+            icon: 'oui:reporter'
+          }
+        ].filter(item => item)
+      },
+
       // {
       //   title: 'Dashboards',
       //   icon: 'tabler:smart-home',
@@ -106,6 +195,7 @@ const UserLayout = ({ children, contentHeightFixed }) => {
       //     }
       //   ].filter(item => item)
       // },
+
       screenPermissions.onlineHeadlines && {
         title: 'Online News',
         icon: 'fluent-mdl2:news-search',

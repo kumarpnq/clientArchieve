@@ -12,7 +12,7 @@ const Button = () => {
           props: { variant: 'text', color: 'primary' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.primary.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.primary?.main, 0.08)
             }
           })
         },
@@ -20,7 +20,7 @@ const Button = () => {
           props: { variant: 'text', color: 'secondary' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.secondary.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.secondary?.main, 0.08)
             }
           })
         },
@@ -28,7 +28,7 @@ const Button = () => {
           props: { variant: 'text', color: 'success' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.success.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.success?.main, 0.08)
             }
           })
         },
@@ -36,7 +36,7 @@ const Button = () => {
           props: { variant: 'text', color: 'error' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.error.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.error?.main, 0.08)
             }
           })
         },
@@ -44,7 +44,7 @@ const Button = () => {
           props: { variant: 'text', color: 'warning' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.warning.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.warning?.main, 0.08)
             }
           })
         },
@@ -52,7 +52,7 @@ const Button = () => {
           props: { variant: 'text', color: 'info' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.info.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.info?.main, 0.08)
             }
           })
         },
@@ -60,7 +60,7 @@ const Button = () => {
           props: { variant: 'outlined', color: 'primary' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.primary.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.primary?.main, 0.08)
             }
           })
         },
@@ -68,7 +68,7 @@ const Button = () => {
           props: { variant: 'outlined', color: 'secondary' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.secondary.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.secondary?.main, 0.08)
             }
           })
         },
@@ -76,7 +76,7 @@ const Button = () => {
           props: { variant: 'outlined', color: 'success' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.success.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.success?.main, 0.08)
             }
           })
         },
@@ -84,7 +84,7 @@ const Button = () => {
           props: { variant: 'outlined', color: 'error' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.error.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.error?.main, 0.08)
             }
           })
         },
@@ -92,7 +92,7 @@ const Button = () => {
           props: { variant: 'outlined', color: 'warning' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.warning.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.warning?.main, 0.08)
             }
           })
         },
@@ -100,56 +100,56 @@ const Button = () => {
           props: { variant: 'outlined', color: 'info' },
           style: ({ theme }) => ({
             '&:hover': {
-              backgroundColor: hexToRGBA(theme.palette.info.main, 0.08)
+              backgroundColor: hexToRGBA(theme.palette.info?.main, 0.08)
             }
           })
         },
         {
           props: { variant: 'tonal', color: 'primary' },
           style: ({ theme }) => ({
-            color: theme.palette.primary.main,
-            backgroundColor: hexToRGBA(theme.palette.primary.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.primary.main, 0.24) }
+            color: theme.palette.primary?.main,
+            backgroundColor: hexToRGBA(theme.palette.primary?.main, 0.16),
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.primary?.main, 0.24) }
           })
         },
         {
           props: { variant: 'tonal', color: 'secondary' },
           style: ({ theme }) => ({
-            color: theme.palette.secondary.main,
-            backgroundColor: hexToRGBA(theme.palette.secondary.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.secondary.main, 0.24) }
+            color: theme.palette.secondary?.main,
+            backgroundColor: hexToRGBA(theme.palette.secondary?.main, 0.16),
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.secondary?.main, 0.24) }
           })
         },
         {
           props: { variant: 'tonal', color: 'error' },
           style: ({ theme }) => ({
-            color: theme.palette.error.main,
-            backgroundColor: hexToRGBA(theme.palette.error.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.error.main, 0.24) }
+            color: theme.palette.error?.main,
+            backgroundColor: hexToRGBA(theme.palette.error?.main, 0.16),
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.error?.main, 0.24) }
           })
         },
         {
           props: { variant: 'tonal', color: 'warning' },
           style: ({ theme }) => ({
-            color: theme.palette.warning.main,
-            backgroundColor: hexToRGBA(theme.palette.warning.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.warning.main, 0.24) }
+            color: theme.palette.warning?.main,
+            backgroundColor: hexToRGBA(theme.palette.warning?.main, 0.16),
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.warning?.main, 0.24) }
           })
         },
         {
           props: { variant: 'tonal', color: 'info' },
           style: ({ theme }) => ({
-            color: theme.palette.info.main,
-            backgroundColor: hexToRGBA(theme.palette.info.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.info.main, 0.24) }
+            color: theme.palette.info?.main,
+            backgroundColor: hexToRGBA(theme.palette.info?.main, 0.16),
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.info?.main, 0.24) }
           })
         },
         {
           props: { variant: 'tonal', color: 'success' },
           style: ({ theme }) => ({
-            color: theme.palette.success.main,
-            backgroundColor: hexToRGBA(theme.palette.success.main, 0.16),
-            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.success.main, 0.24) }
+            color: theme.palette.success?.main,
+            backgroundColor: hexToRGBA(theme.palette.success?.main, 0.16),
+            '&:hover, &:active': { backgroundColor: hexToRGBA(theme.palette.success?.main, 0.24) }
           })
         }
       ],
@@ -219,22 +219,25 @@ const Button = () => {
         outlined: ({ theme, ownerState }) => ({
           padding: theme.spacing(2.25, 4.75),
           ...(ownerState.color === 'primary' && {
-            borderColor: theme.palette.primary.main
+            borderColor: theme.palette.primary?.main
           }),
           ...(ownerState.color === 'secondary' && {
-            borderColor: theme.palette.secondary.main
+            borderColor: theme.palette.secondary?.main
           }),
           ...(ownerState.color === 'success' && {
-            borderColor: theme.palette.success.main
+            borderColor: theme.palette.success?.main
           }),
           ...(ownerState.color === 'error' && {
-            borderColor: theme.palette.error.main
+            borderColor: theme.palette.error?.main
           }),
           ...(ownerState.color === 'warning' && {
-            borderColor: theme.palette.warning.main
+            borderColor: theme.palette.warning?.main
           }),
           ...(ownerState.color === 'info' && {
-            borderColor: theme.palette.info.main
+            borderColor: theme.palette.info?.main
+          }),
+          ...(ownerState.color === 'disabled' && {
+            borderColor: theme.palette.grey['500']
           })
         }),
         sizeSmall: ({ ownerState, theme }) => ({

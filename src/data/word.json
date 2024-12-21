@@ -1,0 +1,808 @@
+{
+  "words": [
+    {
+      "text": "word",
+      "value": 25
+    },
+    {
+      "text": "words",
+      "value": 75
+    },
+    {
+      "text": "sprite",
+      "value": 125
+    },
+    {
+      "text": "placed",
+      "value": 25
+    },
+    {
+      "text": "layout",
+      "value": 100
+    },
+    {
+      "text": "algorithm",
+      "value": 100
+    },
+    {
+      "text": "area",
+      "value": 100
+    },
+    {
+      "text": "without",
+      "value": 75
+    },
+    {
+      "text": "step",
+      "value": 75
+    },
+    {
+      "text": "bounding",
+      "value": 75
+    },
+    {
+      "text": "retrieve",
+      "value": 75
+    },
+    {
+      "text": "operation",
+      "value": 75
+    },
+    {
+      "text": "collision",
+      "value": 75
+    },
+    {
+      "text": "candidate",
+      "value": 75
+    },
+    {
+      "text": "7550",
+      "value": 50
+    },
+    {
+      "text": "placement",
+      "value": 50
+    },
+    {
+      "text": "time",
+      "value": 50
+    },
+    {
+      "text": "possible",
+      "value": 50
+    },
+    {
+      "text": "even",
+      "value": 50
+    },
+    {
+      "text": "simple",
+      "value": 50
+    },
+    {
+      "text": "starting",
+      "value": 50
+    },
+    {
+      "text": "previously",
+      "value": 50
+    },
+    {
+      "text": "move",
+      "value": 50
+    },
+    {
+      "text": "perform",
+      "value": 50
+    },
+    {
+      "text": "hierarchical",
+      "value": 50
+    },
+    {
+      "text": "draw",
+      "value": 50
+    },
+    {
+      "text": "pixel",
+      "value": 50
+    },
+    {
+      "text": "data",
+      "value": 50
+    },
+    {
+      "text": "separately",
+      "value": 50
+    },
+    {
+      "text": "expensive",
+      "value": 50
+    },
+    {
+      "text": "pixels",
+      "value": 50
+    },
+    {
+      "text": "masks",
+      "value": 50
+    },
+    {
+      "text": "implementation",
+      "value": 50
+    },
+    {
+      "text": "detection",
+      "value": 50
+    },
+    {
+      "text": "larger",
+      "value": 50
+    },
+    {
+      "text": "whole",
+      "value": 50
+    },
+    {
+      "text": "comparing",
+      "value": 50
+    },
+    {
+      "text": "box",
+      "value": 50
+    },
+    {
+      "text": "large",
+      "value": 50
+    },
+    {
+      "text": "think",
+      "value": 50
+    },
+    {
+      "text": "version",
+      "value": 50
+    },
+    {
+      "text": "single",
+      "value": 50
+    },
+    {
+      "text": "tree",
+      "value": 50
+    },
+    {
+      "text": "Cloud",
+      "value": 25
+    },
+    {
+      "text": "Generator",
+      "value": 25
+    },
+    {
+      "text": "Works",
+      "value": 25
+    },
+    {
+      "text": "positioning",
+      "value": 25
+    },
+    {
+      "text": "overlap",
+      "value": 25
+    },
+    {
+      "text": "available",
+      "value": 25
+    },
+    {
+      "text": "GitHub",
+      "value": 25
+    },
+    {
+      "text": "open",
+      "value": 25
+    },
+    {
+      "text": "source",
+      "value": 25
+    },
+    {
+      "text": "license",
+      "value": 25
+    },
+    {
+      "text": "d75cloud",
+      "value": 25
+    },
+    {
+      "text": "Note",
+      "value": 25
+    },
+    {
+      "text": "code",
+      "value": 25
+    },
+    {
+      "text": "converting",
+      "value": 25
+    },
+    {
+      "text": "text",
+      "value": 25
+    },
+    {
+      "text": "rendering",
+      "value": 25
+    },
+    {
+      "text": "final",
+      "value": 25
+    },
+    {
+      "text": "output",
+      "value": 25
+    },
+    {
+      "text": "requires",
+      "value": 25
+    },
+    {
+      "text": "additional",
+      "value": 25
+    },
+    {
+      "text": "development",
+      "value": 25
+    },
+    {
+      "text": "quite",
+      "value": 25
+    },
+    {
+      "text": "slow",
+      "value": 25
+    },
+    {
+      "text": "hundred",
+      "value": 25
+    },
+    {
+      "text": "run",
+      "value": 25
+    },
+    {
+      "text": "asynchronously",
+      "value": 25
+    },
+    {
+      "text": "configurable",
+      "value": 25
+    },
+    {
+      "text": "size",
+      "value": 25
+    },
+    {
+      "text": "makes",
+      "value": 25
+    },
+    {
+      "text": "animate",
+      "value": 25
+    },
+    {
+      "text": "stuttering",
+      "value": 25
+    },
+    {
+      "text": "recommended",
+      "value": 25
+    },
+    {
+      "text": "always",
+      "value": 25
+    },
+    {
+      "text": "use",
+      "value": 25
+    },
+    {
+      "text": "animations",
+      "value": 25
+    },
+    {
+      "text": "prevents",
+      "value": 25
+    },
+    {
+      "text": "browsers",
+      "value": 25
+    },
+    {
+      "text": "event",
+      "value": 25
+    },
+    {
+      "text": "loop",
+      "value": 25
+    },
+    {
+      "text": "blocking",
+      "value": 25
+    },
+    {
+      "text": "placing",
+      "value": 25
+    },
+    {
+      "text": "incredibly",
+      "value": 25
+    },
+    {
+      "text": "important",
+      "value": 25
+    },
+    {
+      "text": "Attempt",
+      "value": 25
+    },
+    {
+      "text": "place",
+      "value": 25
+    },
+    {
+      "text": "point",
+      "value": 25
+    },
+    {
+      "text": "usually",
+      "value": 25
+    },
+    {
+      "text": "near",
+      "value": 25
+    },
+    {
+      "text": "middle",
+      "value": 25
+    },
+    {
+      "text": "somewhere",
+      "value": 25
+    },
+    {
+      "text": "central",
+      "value": 25
+    },
+    {
+      "text": "horizontal",
+      "value": 25
+    },
+    {
+      "text": "line",
+      "value": 25
+    },
+    {
+      "text": "intersects",
+      "value": 25
+    },
+    {
+      "text": "one",
+      "value": 25
+    },
+    {
+      "text": "along",
+      "value": 25
+    },
+    {
+      "text": "increasing",
+      "value": 25
+    },
+    {
+      "text": "spiral",
+      "value": 25
+    },
+    {
+      "text": "Repeat",
+      "value": 25
+    },
+    {
+      "text": "intersections",
+      "value": 25
+    },
+    {
+      "text": "found",
+      "value": 25
+    },
+    {
+      "text": "hard",
+      "value": 25
+    },
+    {
+      "text": "part",
+      "value": 25
+    },
+    {
+      "text": "making",
+      "value": 25
+    },
+    {
+      "text": "efficiently",
+      "value": 25
+    },
+    {
+      "text": "According",
+      "value": 25
+    },
+    {
+      "text": "Jonathan",
+      "value": 25
+    },
+    {
+      "text": "Feinberg",
+      "value": 25
+    },
+    {
+      "text": "Wordle",
+      "value": 25
+    },
+    {
+      "text": "uses",
+      "value": 25
+    },
+    {
+      "text": "combination",
+      "value": 25
+    },
+    {
+      "text": "boxes",
+      "value": 25
+    },
+    {
+      "text": "quadtrees",
+      "value": 25
+    },
+    {
+      "text": "achieve",
+      "value": 25
+    },
+    {
+      "text": "reasonable",
+      "value": 25
+    },
+    {
+      "text": "speeds",
+      "value": 25
+    },
+    {
+      "text": "Glyphs",
+      "value": 25
+    },
+    {
+      "text": "JavaScript",
+      "value": 25
+    },
+    {
+      "text": "isnt",
+      "value": 25
+    },
+    {
+      "text": "way",
+      "value": 25
+    },
+    {
+      "text": "precise",
+      "value": 25
+    },
+    {
+      "text": "glyph",
+      "value": 25
+    },
+    {
+      "text": "shapes",
+      "value": 25
+    },
+    {
+      "text": "via",
+      "value": 25
+    },
+    {
+      "text": "DOM",
+      "value": 25
+    },
+    {
+      "text": "except",
+      "value": 25
+    },
+    {
+      "text": "perhaps",
+      "value": 25
+    },
+    {
+      "text": "SVG",
+      "value": 25
+    },
+    {
+      "text": "fonts",
+      "value": 25
+    },
+    {
+      "text": "Instead",
+      "value": 25
+    },
+    {
+      "text": "hidden",
+      "value": 25
+    },
+    {
+      "text": "canvas",
+      "value": 25
+    },
+    {
+      "text": "element",
+      "value": 25
+    },
+    {
+      "text": "Retrieving",
+      "value": 25
+    },
+    {
+      "text": "many",
+      "value": 25
+    },
+    {
+      "text": "batch",
+      "value": 25
+    },
+    {
+      "text": "Sprites",
+      "value": 25
+    },
+    {
+      "text": "initial",
+      "value": 25
+    },
+    {
+      "text": "performed",
+      "value": 25
+    },
+    {
+      "text": "using",
+      "value": 25
+    },
+    {
+      "text": "doesnt",
+      "value": 25
+    },
+    {
+      "text": "copy",
+      "value": 25
+    },
+    {
+      "text": "appropriate",
+      "value": 25
+    },
+    {
+      "text": "position",
+      "value": 25
+    },
+    {
+      "text": "representing",
+      "value": 25
+    },
+    {
+      "text": "advantage",
+      "value": 25
+    },
+    {
+      "text": "involves",
+      "value": 25
+    },
+    {
+      "text": "relevant",
+      "value": 25
+    },
+    {
+      "text": "rather",
+      "value": 25
+    },
+    {
+      "text": "previous",
+      "value": 25
+    },
+    {
+      "text": "Somewhat",
+      "value": 25
+    },
+    {
+      "text": "surprisingly",
+      "value": 25
+    },
+    {
+      "text": "lowlevel",
+      "value": 25
+    },
+    {
+      "text": "hack",
+      "value": 25
+    },
+    {
+      "text": "made",
+      "value": 25
+    },
+    {
+      "text": "tremendous",
+      "value": 25
+    },
+    {
+      "text": "difference",
+      "value": 25
+    },
+    {
+      "text": "constructing",
+      "value": 25
+    },
+    {
+      "text": "compressed",
+      "value": 25
+    },
+    {
+      "text": "blocks",
+      "value": 25
+    },
+    {
+      "text": "25bit",
+      "value": 25
+    },
+    {
+      "text": "7550bit",
+      "value": 25
+    },
+    {
+      "text": "integers",
+      "value": 25
+    },
+    {
+      "text": "thus",
+      "value": 25
+    },
+    {
+      "text": "reducing",
+      "value": 25
+    },
+    {
+      "text": "number",
+      "value": 25
+    },
+    {
+      "text": "checks",
+      "value": 25
+    },
+    {
+      "text": "memory",
+      "value": 25
+    },
+    {
+      "text": "times",
+      "value": 25
+    },
+    {
+      "text": "fact",
+      "value": 25
+    },
+    {
+      "text": "turned",
+      "value": 25
+    },
+    {
+      "text": "beat",
+      "value": 25
+    },
+    {
+      "text": "quadtree",
+      "value": 25
+    },
+    {
+      "text": "everything",
+      "value": 25
+    },
+    {
+      "text": "tried",
+      "value": 25
+    },
+    {
+      "text": "areas",
+      "value": 25
+    },
+    {
+      "text": "font",
+      "value": 25
+    },
+    {
+      "text": "sizes",
+      "value": 25
+    },
+    {
+      "text": "primarily",
+      "value": 25
+    },
+    {
+      "text": "needs",
+      "value": 25
+    },
+    {
+      "text": "test",
+      "value": 25
+    },
+    {
+      "text": "per",
+      "value": 25
+    },
+    {
+      "text": "whereas",
+      "value": 25
+    },
+    {
+      "text": "compare",
+      "value": 25
+    },
+    {
+      "text": "every",
+      "value": 25
+    },
+    {
+      "text": "overlaps",
+      "value": 25
+    },
+    {
+      "text": "slightly",
+      "value": 25
+    },
+    {
+      "text": "Another",
+      "value": 25
+    },
+    {
+      "text": "possibility",
+      "value": 25
+    },
+    {
+      "text": "merge",
+      "value": 25
+    },
+    {
+      "text": "fairly",
+      "value": 25
+    },
+    {
+      "text": "though",
+      "value": 25
+    },
+    {
+      "text": "compared",
+      "value": 25
+    },
+    {
+      "text": "analagous",
+      "value": 25
+    },
+    {
+      "text": "mask",
+      "value": 25
+    },
+    {
+      "text": "essentially",
+      "value": 25
+    },
+    {
+      "text": "ORing",
+      "value": 25
+    },
+    {
+      "text": "block",
+      "value": 25
+    }
+  ]
+}

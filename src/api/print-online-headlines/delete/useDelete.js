@@ -16,7 +16,8 @@ const useDelete = () => {
       password,
       articleTypeAndIds
     }
-    console.log(req)
+
+    // console.log(req)
     try {
       setLoading(true)
 

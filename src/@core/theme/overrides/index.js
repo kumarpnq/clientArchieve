@@ -37,6 +37,7 @@ import MuiIconButton from './icon-button'
 import MuiButtonGroup from './button-group'
 import MuiAutocomplete from './autocomplete'
 import MuiToggleButton from './toggleButton'
+import CssBaseline from './cssbaseline'
 
 const Overrides = settings => {
   const { skin } = settings
@@ -71,9 +72,11 @@ const Overrides = settings => {
   const breadcrumb = MuiBreadcrumb()
   const buttonGroup = MuiButtonGroup()
   const autocomplete = MuiAutocomplete(skin)
+  const MuiCssBaseline = CssBaseline()
 
   return Object.assign(
     chip,
+    MuiCssBaseline,
     list,
     menu,
     tabs,

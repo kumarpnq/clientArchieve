@@ -118,7 +118,6 @@ const TaggingDialog = ({ open, onClose, selectedArticles, tags, fetchTagsFlag, s
               label='Select Tag'
               onChange={handleTagSelectChange}
               MenuProps={{
-                disableScrollLock: true,
                 PaperProps: {
                   style: {
                     maxHeight: 200,
