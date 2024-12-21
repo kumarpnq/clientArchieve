@@ -74,8 +74,9 @@ const UserLayout = ({ children, contentHeightFixed }) => {
           { title: 'Prominence', path: '/dashboards/prominence', icon: 'clarity:analytics-line' },
           { title: 'Article Size', path: '/dashboards/article', icon: 'clarity:analytics-line' },
           { title: 'Key Stories', path: '/dashboards/stories', icon: 'clarity:analytics-line' },
-          { title: 'Cat A', path: '/dashboards/cat-a', icon: 'clarity:analytics-line' },
-          { title: 'Cat B', path: '/dashboards/cat-b', icon: 'clarity:analytics-line' },
+
+          // { title: 'Cat A', path: '/dashboards/cat-a', icon: 'clarity:analytics-line' },
+          // { title: 'Cat B', path: '/dashboards/cat-b', icon: 'clarity:analytics-line' },
 
           screenPermissions.printDashboard && {
             title: 'Print',

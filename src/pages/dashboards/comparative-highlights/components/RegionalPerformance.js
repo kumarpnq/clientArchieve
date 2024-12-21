@@ -5,6 +5,7 @@ import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const MixedChart = dynamic(() => import('src/components/charts/MixedChart'))
 const CombinedBarChart = dynamic(() => import('src/components/charts/CombinedBarChart'))
@@ -169,7 +170,6 @@ function RegionalTable(props) {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
-        disableScrollLock
         className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
@@ -178,7 +178,7 @@ function RegionalTable(props) {
             borderRadius: 2,
             boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
             backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
             maxHeight: 450,
             overflow: 'auto',
 
@@ -224,11 +224,11 @@ function RegionalTable(props) {
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
       apiActions={apiActions}
-      datagrid={{ columns, tableData, colGroupSpan: 5 }}
+      datagrid={{ columns, tableData, colGroupSpan: 5, id: 'regional-table' }}
       table={DataTable}
       metrics={metrics}
       render={['charts', 'table']}
-      charts={{ bar: { component: CombinedBarChart } }}
+      charts={{ bar: { component: CombinedBarChart, id: 'regional-combined-chart' } }}
     />
   )
 }
@@ -280,7 +280,6 @@ function RegionalWidget(props) {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
-        disableScrollLock
         className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
@@ -289,7 +288,7 @@ function RegionalWidget(props) {
             borderRadius: 2,
             boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
             backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
             maxHeight: 450,
             overflow: 'auto',
 
@@ -329,7 +328,7 @@ function RegionalWidget(props) {
       changeMediaType={changeMediaType}
       table={DataGrid}
       datagrid={{ columns, rows }}
-      charts={{ bar: { component: MixedChart } }}
+      charts={{ bar: { component: MixedChart, id: 'regional-mixed-chart' } }}
       render={['charts', 'table']}
     />
   )

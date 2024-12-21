@@ -99,7 +99,7 @@ function useCustomTooltip() {
         {
           label: 'Data',
           data,
-          backgroundColor
+          backgroundColor: backgroundColor.flat()
         }
       ]
     }

@@ -67,7 +67,7 @@ function JournalistTonality() {
       changeMediaType={changeMediaType}
       datagrid={{ columns, rows }}
       table={DataGrid}
-      charts={{ stack: { component: StackChart } }}
+      charts={{ stack: { component: StackChart, id: 'journalist-tonality-stack-chart' } }}
       render={['charts', 'table']}
     />
   )

@@ -549,7 +549,6 @@ function Filter() {
                 onClose={() => closeMenu(filterKey)}
                 toggleSelection={() => toggleSelectionAll(filterKey)}
                 checked={menuState[filterKey].selected.size === filterState[filterKey].values.length}
-                disableScrollLock
                 search={{
                   display: 'search' in filterState[filterKey] || 'filter' in filterState[filterKey],
                   props: {

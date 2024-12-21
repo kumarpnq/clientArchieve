@@ -25,9 +25,9 @@ const defaultOptions = {
 }
 
 function WordCloud(props) {
-  const { metrics, options } = props
+  const { metrics, options, id } = props
 
-  return <Cloud words={metrics} callbacks={callbacks} options={{ ...defaultOptions, ...options }} />
+  return <Cloud id={id} words={metrics} callbacks={callbacks} options={{ ...defaultOptions, ...options }} />
 }
 
 export default memo(WordCloud)

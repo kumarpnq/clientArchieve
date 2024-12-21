@@ -5,6 +5,7 @@ import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import dynamic from 'next/dynamic'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const BarChart = dynamic(() => import('src/components/charts/BarChart'))
 const CombinedBarChart = dynamic(() => import('src/components/charts/CombinedBarChart'))
@@ -163,7 +164,6 @@ function MediaTable(props) {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
-        disableScrollLock
         className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
@@ -172,7 +172,7 @@ function MediaTable(props) {
             borderRadius: 2,
             boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
             backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
             maxHeight: 450,
             overflow: 'auto',
 
@@ -218,11 +218,11 @@ function MediaTable(props) {
       apiActions={apiActions}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}
-      datagrid={{ columns, tableData, colGroupSpan: 4 }}
+      datagrid={{ columns, tableData, colGroupSpan: 4, id: 'media-table' }}
       table={DataTable}
       metrics={metrics}
       render={['charts', 'table']}
-      charts={{ bar: { component: CombinedBarChart } }}
+      charts={{ bar: { component: CombinedBarChart, id: 'media-combined-chart' } }}
     />
   )
 }
@@ -275,7 +275,6 @@ function MediaWidget(props) {
         anchorEl={categoryAnchorEl}
         open={Boolean(categoryAnchorEl)}
         onClose={closeCategory}
-        disableScrollLock
         className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
@@ -284,7 +283,7 @@ function MediaWidget(props) {
             borderRadius: 2,
             boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
             backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
             maxHeight: 450,
             overflow: 'auto',
 
@@ -324,7 +323,7 @@ function MediaWidget(props) {
       apiActions={apiActions}
       datagrid={{ columns, rows: tableData }}
       table={DataGrid}
-      charts={{ bar: { component: BarChart, props: { barPercentage: 0.3 } } }}
+      charts={{ bar: { component: BarChart, id: 'media-bar-chart', props: { barPercentage: 0.3 } } }}
       render={['charts', 'table']}
     />
   )

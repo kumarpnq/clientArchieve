@@ -1,25 +1,34 @@
 import useCustomTooltip from 'src/hooks/useCustomTooltip'
-import React, { memo } from 'react'
+import React, { memo, useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
+import { useSelector } from 'react-redux'
+import { selectUserData } from 'src/store/apps/user/userSlice'
 
 const backgroundColor = ['#3e8ef1', '#75b5f6', '#badbfa']
+const clientColor = ['#7367F0', '#b2a6fc']
 
 function BarChart(props) {
-  const { metrics, ...rest } = props
+  const { metrics, id, ...rest } = props
   const customTooltip = useCustomTooltip()
+  const { clientList } = useSelector(selectUserData)
+  const clientCompanyName = useMemo(() => clientList[0]?.priorityCompanyName ?? '', [clientList])
+  const companyIndex = useMemo(() => metrics.labels.indexOf(clientCompanyName), [metrics.labels, clientCompanyName])
 
   if (!metrics) return null
 
   return (
     <Bar
-      id='chart-container'
+      id={id}
       data={{
         labels: metrics.labels,
         datasets: [
           ...Object.keys(metrics.bar).map((label, i) => ({
             label,
             data: metrics.bar[label],
-            backgroundColor: backgroundColor[i],
+            backgroundColor: Array.from({ length: metrics.labels.length }, (_, index) =>
+              index === companyIndex ? clientColor[i] : backgroundColor[i]
+            ),
+
             ...rest
           }))
         ]

@@ -32,6 +32,9 @@ import LaunchIcon from '@mui/icons-material/Launch'
 import CloseIcon from '@mui/icons-material/Close'
 import Loading from '../Loading'
 import useModal from 'src/hooks/useModal'
+import { exportChartAsJPEG, exportChartAsPDF } from './export'
+import DataTable from '../datatable/Table'
+import { exportColumnGroupTable, exportTable } from '../datatable/export'
 
 const icons = {
   bar: <EqualizerIcon />,
@@ -44,20 +47,12 @@ const icons = {
 }
 
 function Widget(props) {
-  const {
-    title,
-    openMenu: openOptions,
-    charts,
-    table,
-    metrics,
-    mediaType,
-    changeMediaType,
-    height,
-    loading = false
-  } = props
+  const { title, charts, table, metrics, render, mediaType, changeMediaType, height, datagrid, loading = false } = props
   const chartKeys = useMemo(() => Object.keys(charts || {}), [charts])
 
   const defaultChart = useMemo(() => {
+    if (!render.includes('charts')) return {}
+
     const name = chartKeys.at(0)
 
     return {
@@ -65,14 +60,13 @@ function Widget(props) {
       icon: icons[name],
       name
     }
-  }, [charts, chartKeys])
+  }, [charts, chartKeys, render])
 
   const [Chart, setChart] = useState(defaultChart)
-  const [value, toggle] = useToggle(['charts', 'table'])
+  const [value, toggle] = useToggle(render)
   const { anchorEl, openMenu, closeMenu } = useMenu()
+  const { anchorEl: optionAnchorEl, openMenu: openOption, closeMenu: closeOption } = useMenu()
   const { modalState, openModal, closeModal } = useModal()
-
-  if (chartKeys.length === 0) return null
 
   const widget = (
     <Card
@@ -107,6 +101,7 @@ function Widget(props) {
             startIcon={value === 'charts' ? Chart.icon : defaultChart.icon}
             endIcon={chartKeys.length > 1 && <ArrowDropDownIcon />}
             sx={{
+              display: chartKeys.length ? 'inline-flex' : 'none',
               alignItems: 'start',
               textTransform: 'capitalize',
               textWrap: 'nowrap',
@@ -136,7 +131,7 @@ function Widget(props) {
             {modalState ? <CloseIcon fontSize='small' /> : <LaunchIcon fontSize='small' />}
           </IconButton>
 
-          <IconButton onClick={openOptions}>
+          <IconButton onClick={openOption}>
             <MoreVertIcon fontSize='small' />
           </IconButton>
         </Stack>
@@ -167,17 +162,75 @@ function Widget(props) {
         {loading ? (
           <Loading />
         ) : value === 'charts' ? (
-          <Chart.component metrics={metrics} {...(Chart.props ?? {})} />
+          <Chart.component id={Chart.id} metrics={metrics} {...(Chart.props ?? {})} />
         ) : (
-          table
+          <DataTable {...datagrid} height={330} />
         )}
       </Box>
+
+      <Menu
+        anchorEl={optionAnchorEl}
+        open={Boolean(optionAnchorEl)}
+        onClose={closeOption}
+        className='cancelSelection'
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 300px)',
+            p: 0.5,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          },
+          '& .MuiButtonBase-root:hover': {
+            backgroundColor: 'background.default'
+          }
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            closeOption()
+            if (value === 'charts') {
+              exportChartAsJPEG(Chart.id)
+
+              return
+            }
+
+            const { tableData, columns } = datagrid
+            tableData.columns = columns
+
+            exportTable(tableData, 'xlsx')
+          }}
+        >
+          <ListItemText>Download as {value === 'charts' ? 'JPEG' : 'XLSX'}</ListItemText>
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            closeOption()
+            if (value === 'charts') {
+              exportChartAsPDF(Chart.id)
+
+              return
+            }
+
+            const { tableData, columns } = datagrid
+            tableData.columns = columns
+
+            exportTable(tableData, 'csv')
+          }}
+        >
+          <ListItemText>Download as {value === 'charts' ? 'PDF' : 'CSV'}</ListItemText>
+        </MenuItem>
+      </Menu>
 
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
-        disableScrollLock
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
             width: 'min(100%, 200px)',

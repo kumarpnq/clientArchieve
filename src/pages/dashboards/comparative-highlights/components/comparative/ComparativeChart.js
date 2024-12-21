@@ -17,9 +17,9 @@ const columns = [
 const initialMetrics = { labels: [], line: { QE: [] }, bar: { Image: [], Visibility: [] } }
 
 function Comparative(props) {
-  const { openMenu } = props
   const [selectMediaType, setSelectMediaType] = useState(Print)
-  const [rows, setRows] = useState([])
+
+  const [tableData, setTableData] = useState({ rows: [], visScore: [], imageScore: [], qe: [] })
   const [metrics, setMetrics] = useState(initialMetrics)
 
   const { data, loading } = useChartAndGraphApi({
@@ -33,45 +33,48 @@ function Comparative(props) {
   }
 
   useEffect(() => {
-    setRows([])
-    setMetrics(initialMetrics)
-    if (!data) return
+    const initialTable = { rows: [], visScore: [], imageScore: [], qe: [] }
+    if (!data) {
+      setMetrics(initialMetrics)
+      setTableData(initialTable)
+
+      return
+    }
 
     const metrics = structuredClone(initialMetrics)
+    const newTable = { ...initialTable }
 
-    const newData = data.map(d => {
+    data.forEach(d => {
       metrics.labels.push(d.key)
       metrics.bar.Visibility.push(Math.trunc(d.V_Score.value))
       metrics.bar.Image.push(Math.trunc(d.I_Score.value))
       metrics.line.QE.push(Math.trunc(d.QE.value))
 
-      return {
-        id: d.key,
-        key: d.key,
-        visScore: Math.trunc(d.V_Score.value),
-        imageScore: Math.trunc(d.I_Score.value),
-        qe: Math.trunc(d.QE.value)
-      }
+      newTable.rows.push(d.key),
+        newTable.visScore.push(Math.trunc(d.V_Score.value)),
+        newTable.imageScore.push(Math.trunc(d.I_Score.value)),
+        newTable.qe.push(Math.trunc(d.QE.value))
     })
 
     setMetrics(metrics)
 
-    setRows(newData)
+    setTableData(newTable)
   }, [data])
 
   return (
     <Widget
       title='Comparative Key Highlights'
-      openMenu={openMenu}
       loading={loading}
       metrics={metrics}
       mediaType={selectMediaType}
       height={370}
       changeMediaType={changeMediaType}
+      datagrid={{ columns, tableData }}
+      render={['charts', 'table']}
       charts={{
-        bar: { component: MixedChart }
+        bar: { component: MixedChart, id: 'comparative-mixed-chart' }
       }}
-      table={<DataGrid columns={columns} rows={rows} />}
+      table={<DataGrid columns={columns} rows={tableData} />}
     />
   )
 }

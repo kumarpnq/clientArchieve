@@ -1,9 +1,32 @@
-import React, { useMemo } from 'react'
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
+import React, { Fragment, useMemo } from 'react'
+import {
+  Box,
+  Button,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from '@mui/material'
+import DownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined'
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import { exportColumnGroupTable } from './export'
+import useMenu from 'src/hooks/useMenu'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
-const DataTable = React.memo(({ columns, tableData, colGroupSpan = 4, slots = {}, slotProps = {} }) => {
+const DataTable = React.memo(props => {
+  const { columns, tableData, colGroupSpan = 4, id, height, slots = {}, slotProps = {} } = props
+
   // Memoize column fields to prevent unnecessary recalculations
-  const columnFields = useMemo(() => columns.slice(1).map(col => col.field), [columns])
+  const columnFields = useMemo(() => columns.slice(1), [columns])
+  const { anchorEl, closeMenu, openMenu } = useMenu()
+  tableData.columnFields = columnFields
+  tableData.id = id
 
   // Memoize table header rendering to optimize performance
   const renderColumnGroupHeader = useMemo(() => {
@@ -23,9 +46,7 @@ const DataTable = React.memo(({ columns, tableData, colGroupSpan = 4, slots = {}
 
   // Memoize column headers rendering
   const renderColumnHeaders = useMemo(() => {
-    if (!tableData.columnGroup) return null
-
-    return (
+    return tableData.columnGroup ? (
       <TableRow>
         <TableCell sx={{ minWidth: columns[0].minWidth }}>{columns[0].headerName}</TableCell>
         {tableData.columnGroup.map(() =>
@@ -35,6 +56,14 @@ const DataTable = React.memo(({ columns, tableData, colGroupSpan = 4, slots = {}
             </TableCell>
           ))
         )}
+      </TableRow>
+    ) : (
+      <TableRow>
+        {columns.map(col => (
+          <TableCell key={col.headerName} sx={{ minWidth: col.minWidth }} align='center'>
+            {col.headerName}
+          </TableCell>
+        ))}
       </TableRow>
     )
   }, [tableData.columnGroup, columns])
@@ -58,23 +87,95 @@ const DataTable = React.memo(({ columns, tableData, colGroupSpan = 4, slots = {}
           ? tableData.columnGroup.map((_, colGroupIndex) =>
               columnFields.map(colField => (
                 <TableCell component='th' scope='row' align='center' key={`${colField}-${colGroupIndex}-${row}`}>
-                  <Typography variant='caption'>{tableData[colField][colGroupIndex][row] ?? '-'}</Typography>
+                  <Typography variant='caption'>{tableData[colField.field][colGroupIndex][row] ?? '-'}</Typography>
                 </TableCell>
               ))
             )
           : columnFields.map(colField => (
               <TableCell component='th' scope='row' align='center' key={colField}>
-                <Typography variant='caption'>{tableData[colField][row] ?? '-'}</Typography>
+                <Typography variant='caption'>{tableData[colField.field][row] ?? '-'}</Typography>
               </TableCell>
             ))}
       </TableRow>
     ))
   }, [tableData, columnFields])
 
+  const handleDownload = format => {
+    if (tableData.rows.length > 0 && tableData.columnGroup.length > 0) {
+      exportColumnGroupTable(tableData, format)
+    }
+  }
+
+  const actions = (
+    <Fragment>
+      <Button
+        variant='outlined'
+        onClick={openMenu}
+        startIcon={<DownloadOutlinedIcon />}
+        endIcon={<KeyboardArrowDown />}
+        sx={{
+          alignItems: 'start',
+          textTransform: 'capitalize',
+          textWrap: 'nowrap',
+          textOverflow: 'ellipsis',
+          overflow: 'hidden',
+          borderColor: 'divider',
+          py: 1
+        }}
+      >
+        Export
+      </Button>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={closeMenu}
+        className='cancelSelection'
+        sx={{
+          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+            width: 'min(100%, 220px)',
+            mt: 2,
+            p: 0.2,
+            borderRadius: 2,
+            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            backdropFilter: 'blur(2px)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
+
+            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+            border: '1px solid',
+            borderColor: 'divider'
+          },
+          '& .MuiButtonBase-root:hover': {
+            backgroundColor: 'background.default'
+          }
+        }}
+      >
+        <MenuItem
+          sx={{ px: 1.2 }}
+          onClick={() => {
+            handleDownload('xlsx')
+            closeMenu()
+          }}
+        >
+          <ListItemText primaryTypographyProps={{ variant: 'body2' }}>Download as XLSX</ListItemText>
+        </MenuItem>
+        <MenuItem
+          sx={{ px: 1.2 }}
+          onClick={() => {
+            handleDownload('csv')
+            closeMenu()
+          }}
+        >
+          <ListItemText primaryTypographyProps={{ variant: 'body2' }}>Download as CSV</ListItemText>
+        </MenuItem>
+      </Menu>
+    </Fragment>
+  )
+
   return (
     <Box>
-      {slots.toolbar && <slots.toolbar {...slotProps.toolbar} actions={true} />}
-      <TableContainer sx={{ flexGrow: 1, height: 425 }}>
+      {slots.toolbar && <slots.toolbar {...slotProps.toolbar} actions={actions} />}
+      <TableContainer sx={{ flexGrow: 1, height: height || 425 }}>
         <Table stickyHeader>
           <TableHead
             sx={{

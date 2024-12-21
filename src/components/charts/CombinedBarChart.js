@@ -1,15 +1,20 @@
 import React, { useMemo } from 'react'
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js'
 import { Chart } from 'react-chartjs-2'
+import { selectUserData } from 'src/store/apps/user/userSlice'
+import { useSelector } from 'react-redux'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
 const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f1c40f', '#9b59b6'] // Bar colors
+const clientColor = ['#7367F0', '#b2a6fc']
 
 const CombinedBarChart = props => {
-  const { metrics } = props
+  const { metrics, id } = props
+  const { clientList } = useSelector(selectUserData)
+  const clientCompanyName = useMemo(() => clientList[0]?.priorityCompanyName ?? '', [clientList])
 
   const labels = useMemo(
-    () => Array.from({ length: metrics.labelGroup.length }, () => metrics.labels.map(v => v)).flat(),
+    () => Array.from({ length: metrics.labelGroup.length }, (_, i) => metrics.labels.map(v => v)).flat(),
     [metrics.labels, metrics.labelGroup]
   )
 
@@ -91,7 +96,7 @@ const CombinedBarChart = props => {
         }}
       >
         <Chart
-          id='chart-container'
+          id={id}
           plugins={[customScale, legendMargin]}
           type='bar'
           data={{
@@ -118,7 +123,7 @@ const CombinedBarChart = props => {
               ...Object.keys(metrics.bar || {}).map((label, i) => ({
                 label,
                 data: metrics.bar[label].flatMap(v => v),
-                backgroundColor: colors[i % colors.length],
+                backgroundColor: labels.map(v => (v === clientCompanyName ? clientColor[i] : colors[i])),
                 labelGroup: metrics.labelGroup
               }))
             ]

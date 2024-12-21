@@ -5,6 +5,7 @@ import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const BroadWidget = dynamic(() => import('src/components/widgets/BroadWidget'))
 const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
@@ -156,7 +157,6 @@ function ArticleTable(props) {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
-        disableScrollLock
         className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
@@ -165,7 +165,7 @@ function ArticleTable(props) {
             borderRadius: 2,
             boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
             backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
             maxHeight: 450,
             overflow: 'auto',
 
@@ -211,7 +211,7 @@ function ArticleTable(props) {
       mediaType={selectMediaType}
       apiActions={apiActions}
       changeMediaType={changeMediaType}
-      datagrid={{ columns, tableData, colGroupSpan: 4 }}
+      datagrid={{ columns, tableData, colGroupSpan: 4, id: 'article-table' }}
       table={DataTable}
       render={['table']}
     />
@@ -261,7 +261,6 @@ function ArticleWidget(props) {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
         className='cancelSelection'
-        disableScrollLock
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
             width: 'min(100%, 380px)',
@@ -269,7 +268,7 @@ function ArticleWidget(props) {
             borderRadius: 2,
             boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
             backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
             maxHeight: 450,
             overflow: 'auto',
 
@@ -303,7 +302,6 @@ function ArticleWidget(props) {
       title='Article Size'
       description='Keep track of companies and their reputation'
       loading={loading}
-      data={data}
       apiActions={apiActions}
       mediaType={selectMediaType}
       changeMediaType={changeMediaType}

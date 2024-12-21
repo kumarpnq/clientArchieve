@@ -5,10 +5,11 @@ import { Bar } from 'react-chartjs-2'
 const barColors = ['#3e8ef1', '#75b5f6', '#badbfa']
 
 function StackChart(props) {
-  const { metrics, ...rest } = props
+  const { metrics, id, ...rest } = props
 
   return (
     <Bar
+      id={id}
       data={{
         labels: metrics.labels,
         datasets: [

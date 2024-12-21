@@ -8,6 +8,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SearchIcon from '@mui/icons-material/Search'
 import { Tab, Tabs } from 'src/components/Tabs'
 import Loading from 'src/components/Loading'
+import Widget from 'src/components/widgets/Widget'
 
 const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
 
@@ -21,7 +22,7 @@ const columns = [
 
 function ComparativeTable() {
   const [selectMediaType, setSelectMediaType] = useState(All)
-  const [rows, setRows] = useState([])
+  const [tableData, setTableData] = useState({ rows: [], visScore: [], volScore: [], visSov: [], volSov: [] })
 
   const { data, loading } = useChartAndGraphApi({
     reportType: PEERS_VOLUME_VISIBILITY,
@@ -38,92 +39,35 @@ function ComparativeTable() {
   }
 
   useEffect(() => {
-    setRows([])
+    const initialTable = { rows: [], visScore: [], volScore: [], visSov: [], volSov: [] }
+    if (!data) {
+      setTableData(initialTable)
 
-    if (!data) return
+      return
+    }
 
-    const newData = data.map((d, i) => {
-      return {
-        id: d.key,
-        key: d.key,
-        volScore: d.doc_count,
-        volSov: Math.trunc(d.doc_sov),
-        visScore: Math.trunc(d.V_Score.value),
-        visSov: Math.trunc(d.V_Sov.value)
-      }
+    const newTable = { ...initialTable }
+
+    data.forEach(d => {
+      newTable.rows.push(d.key), newTable.volScore.push(Math.trunc(d.doc_count))
+      newTable.volSov.push(Math.trunc(d.doc_sov))
+      newTable.visScore.push(Math.trunc(d.V_Score.value))
+      newTable.visSov.push(Math.trunc(d.V_Sov.value))
     })
 
-    setRows(newData)
+    setTableData(newTable)
   }, [data])
 
   return (
-    <Card elevation={0} sx={{ p: 4, display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <Stack direction='row' justifyContent='space-between' alignItems='center' mb={1}>
-        <Typography
-          variant='subtitle1'
-          fontWeight={500}
-          sx={{ overflow: 'hidden', display: '-webkit-box', WebkitBoxOrient: 'vertical', WebkitLineClamp: '1' }}
-        >
-          Comparative Key Highlights
-        </Typography>
-
-        <Stack direction='row' alignItems='center' spacing={1} className='cancelSelection'>
-          <Switch />
-          <Button
-            variant='outlined'
-            startIcon={<FilterListIcon />}
-            sx={{
-              alignItems: 'start',
-              textTransform: 'capitalize',
-              textWrap: 'nowrap',
-              textOverflow: 'ellipsis',
-              overflow: 'hidden',
-              py: 1
-            }}
-          >
-            Filters
-          </Button>
-
-          <IconButton>
-            <SearchIcon fontSize='small' />
-          </IconButton>
-          <IconButton>
-            <MoreVertIcon fontSize='small' />
-          </IconButton>
-        </Stack>
-      </Stack>
-
-      <Tabs
-        value={selectMediaType}
-        onChange={changeMediaType}
-        className='cancelSelection'
-        sx={{
-          mt: 0,
-          mb: 2,
-
-          '& .MuiTab-root': {
-            m: 0,
-            mr: 6,
-            minWidth: 50,
-            fontSize: 13
-          }
-        }}
-      >
-        <Tab label={All} value={All} />
-        <Tab label={Print} value={Print} />
-        <Tab label={Online} value={Online} />
-      </Tabs>
-
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <Box flexGrow={1} className='cancelSelection'>
-            <DataGrid columns={columns} rows={rows} />
-          </Box>
-        </>
-      )}
-    </Card>
+    <Widget
+      title='Comparative Key Highlights'
+      loading={loading}
+      mediaType={selectMediaType}
+      height={320}
+      changeMediaType={changeMediaType}
+      datagrid={{ columns, tableData }}
+      render={['table']}
+    />
   )
 }
 

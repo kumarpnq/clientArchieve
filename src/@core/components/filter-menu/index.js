@@ -5,13 +5,13 @@ import React from 'react'
 import SearchIcon from '@mui/icons-material/Search'
 import Stack from '@mui/material/Stack'
 import { Checkbox, FormControlLabel } from '@mui/material'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 function Menu(props) {
   const { search, toggleSelection, checked, children, ...rest } = props
 
   return (
     <MuiMenu
-      disableScrollLock
       sx={{
         '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
           width: 'min(100%, 380px)',
@@ -68,7 +68,7 @@ function Menu(props) {
           borderRadius: 2,
           boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
           backdropFilter: 'blur(2px)',
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
           maxHeight: 450,
           overflow: 'auto',
 

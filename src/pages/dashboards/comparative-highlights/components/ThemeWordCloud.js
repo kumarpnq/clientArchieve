@@ -5,6 +5,7 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
 import useMenu from 'src/hooks/useMenu'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const WordCloud = dynamic(() => import('src/components/charts/WordCloud'))
 const BroadWidget = dynamic(() => import('src/components/widgets/BroadWidget'))
@@ -68,7 +69,6 @@ function ThemeWordCloud() {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
-        disableScrollLock
         className='cancelSelection'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
@@ -77,7 +77,7 @@ function ThemeWordCloud() {
             borderRadius: 2,
             boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
             backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
             maxHeight: 450,
             overflow: 'auto',
 
@@ -116,7 +116,7 @@ function ThemeWordCloud() {
       apiActions={apiActions}
       metrics={metrics}
       containerStyle={{ overflowY: 'auto', '& div:nth-child(2)': { height: '80% !important' } }}
-      charts={{ wordCloud: { component: WordCloud, props: { options: { fontSizes } } } }}
+      charts={{ wordCloud: { component: WordCloud, id: 'theme-word-cloud', props: { options: { fontSizes } } } }}
       render={['charts']}
     />
   )

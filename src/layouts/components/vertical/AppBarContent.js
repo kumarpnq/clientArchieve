@@ -54,6 +54,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { getDateRange, setDateFrom, setDateTo } from 'src/store/apps/filters/filterSlice'
 import CloseIcon from '@mui/icons-material/Close'
 import DateRangeIcon from '@mui/icons-material/DateRange'
+import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
 const notifications = [
   {
@@ -264,7 +265,7 @@ const AppBarContent = props => {
             borderRadius: 2,
             boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
             backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
+            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
             maxHeight: 450,
             overflow: 'auto',
 

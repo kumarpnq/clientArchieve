@@ -1,10 +1,6 @@
 import React, { useState } from 'react'
-import { Box, ListItemIcon, ListItemText, Menu, MenuItem, useMediaQuery } from '@mui/material'
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined'
-import DashboardCustomizeOutlinedIcon from '@mui/icons-material/DashboardCustomizeOutlined'
+import { Box, useMediaQuery } from '@mui/material'
 import dynamic from 'next/dynamic'
-
-import useMenu from 'src/hooks/useMenu'
 
 // *  React GRID Layout
 import { Responsive, WidthProvider } from 'react-grid-layout'
@@ -33,7 +29,6 @@ const ThemeWordCloud = dynamic(() => import('./components/ThemeWordCloud'))
 const ReactGridLayout = WidthProvider(Responsive)
 
 const Page = () => {
-  const { anchorEl, openMenu, closeMenu } = useMenu()
   const matches = useMediaQuery('(min-width:1200px)')
 
   // const [layouts, setLayouts] = useLocalStorage({
@@ -72,7 +67,7 @@ const Page = () => {
         cols={cols}
       >
         <Box key='0'>
-          <Comparative openMenu={openMenu} />
+          <Comparative />
         </Box>
         <Box key='1'>
           <LazyLoad>
@@ -463,43 +458,6 @@ const Page = () => {
       <Card elevation={0} sx={{ p: 4, height: { xs: 450, md: 500, lg: 700 } }} key='15'>
         <MultiLabelBarChart data={businessDailies.data1.print} barPercentage={0.3} />
       </Card> */}
-
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={closeMenu}
-        disableScrollLock
-        sx={{
-          '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-            width: 'min(100%, 300px)',
-            p: 0.5,
-            borderRadius: 2,
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-
-            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            border: '1px solid',
-            borderColor: 'divider'
-          },
-          '& .MuiButtonBase-root:hover': {
-            backgroundColor: 'background.default'
-          }
-        }}
-      >
-        <MenuItem>
-          <ListItemIcon>
-            <FileDownloadOutlinedIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText>Download</ListItemText>
-        </MenuItem>
-        <MenuItem>
-          <ListItemIcon>
-            <DashboardCustomizeOutlinedIcon fontSize='small' />
-          </ListItemIcon>
-          <ListItemText>Customization</ListItemText>
-        </MenuItem>
-      </Menu>
     </Box>
   )
 }
