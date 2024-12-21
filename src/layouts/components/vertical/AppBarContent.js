@@ -126,10 +126,11 @@ const AppBarContent = props => {
   const { anchorEl: anchorElDate, openMenu: openDate, closeMenu: closeDate } = useMenu()
   const { from, to } = useSelector(getDateRange)
 
+  const dispatch = useDispatch()
+
   // Format the date
   const formattedDate = date.format('DD-MMM').toUpperCase()
   const formattedEndDate = endDate.format('DD-MMM').toUpperCase()
-
   const [dataShort, setDataShort] = useState([])
 
   // ** Hook
