@@ -1,24 +1,9 @@
-// PublicationInfo.js
-
-import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Card from '@mui/material/Card'
 
 const PublicationInfo = ({ articles }) => {
-  // Dummy data for illustration
-  const [publicationInfo, setPublicationInfo] = useState({
-    mediaType: articles.publicationCategory,
-    publicationType: articles.publicationType,
-    publication: articles.publication,
-    language: articles.language,
-    pageNumber: articles.pageNumber,
-    size: articles.size,
-    circulation: articles.circulation,
-    edition: articles.editionTypeName
-  })
-
   const formattedDate = new Date(articles.articleDate).toLocaleDateString('en-US', {
     day: 'numeric',
     month: 'short',
@@ -61,7 +46,7 @@ const PublicationInfo = ({ articles }) => {
             Media Type :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {articles.mediaType}
+            {articles.media}
           </Typography>
         </Grid>
 
@@ -78,7 +63,7 @@ const PublicationInfo = ({ articles }) => {
             Publication :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {articles.publication}
+            {articles.publicationName}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -102,7 +87,7 @@ const PublicationInfo = ({ articles }) => {
             Size :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {articles.size}
+            {articles.space}
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -118,7 +103,7 @@ const PublicationInfo = ({ articles }) => {
             Edition :
           </Typography>
           <Typography variant='body2' color='textSecondary' style={{ display: 'inline', marginLeft: '4px' }}>
-            {articles.edition}
+            {articles.city}
           </Typography>
         </Grid>
       </Grid>

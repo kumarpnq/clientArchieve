@@ -1,6 +1,5 @@
 import { Box, Checkbox, CircularProgress, Tooltip, tooltipClasses, Typography, useMediaQuery } from '@mui/material'
 import React from 'react'
-import Pagination from '../Pagination'
 import SelectBox from 'src/@core/components/select'
 import { Icon } from '@iconify/react'
 import dayjs from 'dayjs'
@@ -42,6 +41,18 @@ const getTooltipContent = row => {
           {companies.length > 1 ? companies.map(company => company.name).join(', ') : companies[0]?.name || 'N/A'}
         </Typography>
       </Typography>
+      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+        Edition :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.city || 'N/A'}
+        </Typography>
+      </Typography>
+      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+        Page :{' '}
+        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+          {row.pageNumber || 'N/A'}
+        </Typography>
+      </Typography>
     </Box>
   )
 }
@@ -70,7 +81,15 @@ const TableGrid = ({
     }
   })
 
-  const toggleCheckboxSelection = (articleId, companies) => {
+  const toggleCheckboxSelection = (
+    articleId,
+    companies,
+    publication,
+    articleDate,
+    pageNumber,
+    size,
+    articleUploadId
+  ) => {
     // setTableSelectFunc(prev => ({
     //   ...prev,
     //   [articleId]: !prev[articleId] ? articleId : null
@@ -82,19 +101,35 @@ const TableGrid = ({
       if (updatedArticles.has(articleId)) {
         updatedArticles.delete(articleId)
       } else {
-        updatedArticles.set(articleId, { articleId, companies })
+        updatedArticles.set(articleId, {
+          articleId,
+          companies,
+          publication,
+          articleDate,
+          pageNumber,
+          size,
+          articleUploadId
+        })
       }
 
       return Array.from(updatedArticles.values())
     })
   }
 
-  const handleCheckboxChange = (articleId, companies) => {
-    toggleCheckboxSelection(articleId, companies)
+  const handleCheckboxChange = (articleId, companies, publication, articleDate, pageNumber, size, articleUploadId) => {
+    toggleCheckboxSelection(articleId, companies, publication, articleDate, pageNumber, size, articleUploadId)
   }
 
-  const handleCheckboxChangeTwo = (articleId, companies) => {
-    toggleCheckboxSelection(articleId, companies)
+  const handleCheckboxChangeTwo = (
+    articleId,
+    companies,
+    publication,
+    articleDate,
+    pageNumber,
+    size,
+    articleUploadId
+  ) => {
+    toggleCheckboxSelection(articleId, companies, publication, articleDate, pageNumber, size, articleUploadId)
   }
 
   const isArticleSelected = articleId => {
@@ -113,7 +148,17 @@ const TableGrid = ({
             <td className='table-data'>
               <Checkbox
                 checked={isArticleSelected(firstArticle.articleId)}
-                onChange={() => handleCheckboxChange(firstArticle.articleId, firstArticle.companies)}
+                onChange={() =>
+                  handleCheckboxChange(
+                    firstArticle.articleId,
+                    firstArticle.companies,
+                    firstArticle.publication,
+                    firstArticle.articleDate,
+                    firstArticle.pageNumber,
+                    firstArticle.size,
+                    firstArticle.articleUploadId
+                  )
+                }
               />
             </td>
             <td className='table-data'>
@@ -135,7 +180,7 @@ const TableGrid = ({
                 <CustomTooltip title={getTooltipContent(firstArticle)} arrow>
                   <span
                     className='headline'
-                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem', cursor: 'pointer' }}
                     onClick={async () => {
                       const articleCode = await generateLink(firstArticle?.articleId)
                       const url = `/PDFView?articleId=${articleCode}`
@@ -188,7 +233,17 @@ const TableGrid = ({
             <td className='table-data'>
               <Checkbox
                 checked={isArticleSelected(secondArticle.articleId)}
-                onChange={() => handleCheckboxChangeTwo(secondArticle.articleId, secondArticle.companies)}
+                onChange={() =>
+                  handleCheckboxChangeTwo(
+                    secondArticle.articleId,
+                    secondArticle.companies,
+                    secondArticle.publication,
+                    secondArticle.articleDate,
+                    secondArticle.pageNumber,
+                    secondArticle.size,
+                    secondArticle.articleUploadId
+                  )
+                }
               />
             </td>
             <td className='table-data'>
@@ -209,7 +264,7 @@ const TableGrid = ({
                 <CustomTooltip title={getTooltipContent(secondArticle)} arrow>
                   <span
                     className='headline'
-                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem', cursor: 'pointer' }}
                     onClick={async () => {
                       const articleCode = await generateLink(secondArticle?.articleId)
                       const url = `/PDFView?articleId=${articleCode}`
@@ -268,7 +323,17 @@ const TableGrid = ({
         <td className='table-data'>
           <Checkbox
             checked={isArticleSelected(article.articleId)}
-            onChange={() => handleCheckboxChangeTwo(article.articleId, article.companies)}
+            onChange={() =>
+              handleCheckboxChangeTwo(
+                article.articleId,
+                article.companies,
+                article.publication,
+                article.articleDate,
+                article.pageNumber,
+                article.size,
+                article.articleUploadId
+              )
+            }
           />
         </td>
         <td className='table-data'>
@@ -294,6 +359,7 @@ const TableGrid = ({
                   const url = `/PDFView?articleId=${articleCode}`
                   window.open(url, '_blank')
                 }}
+                style={{ cursor: 'pointer' }}
               >
                 {article.headline}
               </span>

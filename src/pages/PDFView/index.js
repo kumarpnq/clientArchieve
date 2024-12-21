@@ -31,6 +31,72 @@ const PDFView = () => {
     }
   }, [articleId, BASE_URL])
 
+  const publicationLogos = [
+    '6',
+    '8',
+    '10',
+    '19',
+    '21',
+    '32',
+    '35',
+    '36',
+    '46',
+    '48',
+    '51',
+    '52',
+    '53',
+    '54',
+    '87',
+    '98',
+    '99',
+    '121',
+    '148',
+    '164',
+    '183',
+    '199',
+    '209',
+    '213',
+    '218',
+    '232',
+    '241',
+    '244',
+    '258',
+    '335',
+    '336',
+    '337',
+    '374',
+    '383',
+    '410',
+    '573',
+    '773',
+    '775',
+    '776',
+    '777',
+    '822',
+    '869',
+    '922',
+    '996',
+    '999',
+    '1727',
+    '1769',
+    'BSPUNE',
+    'BSTDHYD',
+    'business_standard',
+    'ET_H',
+    'FINCHRONICLE',
+    'FREEPRESS',
+    'KASHMIRTIMES',
+    'MAILTODAY',
+    'METRONOW',
+    'MUMBAIMIRROR',
+    'thesunguardian',
+    'TSG_2018',
+    'blank_logo',
+    'ASSAM_TRIBUNE',
+    'BSCHENNAI',
+    'BSHD'
+  ]
+
   useEffect(() => {
     const createPDF = async () => {
       if (!articleData) return
@@ -41,51 +107,87 @@ const PDFView = () => {
         const { width, height } = page.getSize()
         const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
 
-        // Embed the logo
-        const logoImageBytes = await axios.get(logoUrl, { responseType: 'arraybuffer' }).then(res => res.data)
-        const logoImage = await pdfDoc.embedJpg(logoImageBytes)
-        const logoWidth = 50 // Adjust width as needed
-        const logoHeight = (logoImage.height / logoImage.width) * logoWidth
+        // Embed the first logo (top-left)
+        try {
+          const logoImageBytes = await axios.get(logoUrl, { responseType: 'arraybuffer' }).then(res => res.data)
+          const logoImage = await pdfDoc.embedJpg(logoImageBytes)
+          const logoWidth = 50
+          const logoHeight = (logoImage.height / logoImage.width) * logoWidth
 
-        // Place the logo in the top left corner
-        page.drawImage(logoImage, {
-          x: 10, // 10 points from the left edge
-          y: height - logoHeight - 10, // 10 points from the top edge
-          width: logoWidth,
-          height: logoHeight
-        })
+          // Top-left logo
+          page.drawImage(logoImage, {
+            x: 10,
+            y: height - logoHeight - 10,
+            width: logoWidth,
+            height: logoHeight
+          })
 
-        // Place the logo in the top right corner
-        page.drawImage(logoImage, {
-          x: width - logoWidth - 10, // 10 points from the right edge
-          y: height - logoHeight - 10, // 10 points from the top edge
-          width: logoWidth,
-          height: logoHeight
-        })
+          // Top-right logo
+          page.drawImage(logoImage, {
+            x: width - logoWidth - 10,
+            y: height - logoHeight - 10,
+            width: logoWidth,
+            height: logoHeight
+          })
+        } catch (error) {
+          console.error('Error embedding top logos:', error)
+        }
 
-        // Format the details string as required
+        // Middle logo with fallback
+        let middleLogoHeight = 0 // Define middle logo height
+        try {
+          const middleLogoUrl = `/publogos/${articleData?.pubGroupId}.jpg`
+          let middleLogoBytes
+          if (publicationLogos.includes(articleData?.pubGroupId)) {
+            middleLogoBytes = await axios.get(middleLogoUrl, { responseType: 'arraybuffer' }).then(res => res.data)
+          } else {
+            middleLogoBytes = await axios
+              .get('/publogos/perception&quant.jpg', { responseType: 'arraybuffer' })
+              .then(res => res.data)
+          }
+
+          const middleLogoImage = await pdfDoc.embedJpg(middleLogoBytes)
+
+          const middleLogoWidth = 200
+          middleLogoHeight = (middleLogoImage.height / middleLogoImage.width) * middleLogoWidth // Capture the height
+
+          const middleLogoX = (width - middleLogoWidth) / 2
+          const middleLogoY = height - middleLogoHeight - 30
+
+          page.drawImage(middleLogoImage, {
+            x: middleLogoX,
+            y: middleLogoY,
+            width: middleLogoWidth,
+            height: middleLogoHeight
+          })
+        } catch (error) {
+          console.error('Error embedding middle logo or fallback:', error)
+        }
+
+        // Text details
         const formattedDetails = `${dayjs(articleData?.articleDate).format('ddd, DD MMM YYYY')}; ${
           articleData?.publicationType
         } - ${articleData?.publicationName}; Size : ${articleData?.space}; Circulation: ${
           articleData?.circulation
         }; Page : ${articleData?.pageNumber}`
 
-        // Define text styling
         const textOptions = {
-          size: 7,
+          size: 9,
           font: helveticaFont,
-          color: rgb(0, 0, 139)
+          color: rgb(0, 0, 139 / 255)
         }
 
         const textWidth = helveticaFont.widthOfTextAtSize(formattedDetails, textOptions.size)
-        const x = (width - textWidth) / 2
+        const textX = (width - textWidth) / 2
+        const textY = height - middleLogoHeight - 45 // Adjusted for margin-top of 5 units
 
         page.drawText(formattedDetails, {
-          x,
-          y: height - 50,
+          x: textX,
+          y: textY,
           ...textOptions
         })
 
+        // Draw article image
         const imageUrl = articleData.JPGPATH
         const imageBytes = await axios.get(imageUrl, { responseType: 'arraybuffer' }).then(res => res.data)
         const embeddedImage = await pdfDoc.embedJpg(imageBytes)
@@ -94,12 +196,11 @@ const PDFView = () => {
 
         page.drawImage(embeddedImage, {
           x: (width - imageWidth) / 2,
-          y: height - 50 - imageHeight - 20,
+          y: textY - imageHeight - 15, // Adjust the position below the text
           width: imageWidth,
           height: imageHeight
         })
 
-        // Serialize the PDF
         const pdfBytes = await pdfDoc.save()
         const blob = new Blob([pdfBytes], { type: 'application/pdf' })
         const pdfUrl = URL.createObjectURL(blob)
@@ -127,12 +228,7 @@ const PDFView = () => {
   )
 }
 
-let isAuthenticated = false
-if (typeof window !== 'undefined') {
-  isAuthenticated = Boolean(window.localStorage.getItem('userData'))
-}
-
 PDFView.getLayout = page => <BlankLayout>{page}</BlankLayout>
-PDFView.guestGuard = !isAuthenticated
+PDFView.guestGuard = false
 
 export default PDFView

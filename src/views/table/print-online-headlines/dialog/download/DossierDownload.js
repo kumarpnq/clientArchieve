@@ -28,7 +28,8 @@ import {
   selectNotificationFlag,
   setFetchAutoStatusFlag,
   selectFetchAutoStatusFlag,
-  selectSelectedCompetitions
+  selectSelectedCompetitions,
+  selectedDateType
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 import toast from 'react-hot-toast'
@@ -68,6 +69,7 @@ const DossierDownload = ({
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
+  const selectedTypeOfDate = useSelector(selectedDateType)
 
   const handleEmailChange = event => {
     const { value } = event.target
@@ -89,6 +91,9 @@ const DossierDownload = ({
   const handleSelectedEmailChange = event => {
     setSelectedEmail(event.target.value)
   }
+
+  const articleIds =
+    dataForDossierDownload.length && dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'p' })))
 
   const handleSubmit = () => {
     dispatch(setNotificationFlag(!notificationFlag))
@@ -118,7 +123,9 @@ const DossierDownload = ({
 
     const articleIds =
       dataForDossierDownload.length &&
-      dataForDossierDownload?.flatMap(i => i?.articleId?.map(id => ({ id, type: 'p' })))
+      dataForDossierDownload?.flatMap(i =>
+        i?.articleId?.map(id => ({ id: Number(id.articleId), type: id.articleType === 'print' ? 'p' : 'o' }))
+      )
 
     const recordsPerPage = dataForDossierDownload.length && dataForDossierDownload.map(i => i.recordsPerPage).join('')
 
@@ -242,7 +249,8 @@ const DossierDownload = ({
       ...(selectPageOrAll !== 'A' && { page }),
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       clientIds: clientId,
-      companyIds: selectedCompanyIds.join(',')
+      companyIds: selectedCompanyIds.join(','),
+      dateType: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE'
     }
 
     if (editionType !== '') {
@@ -381,7 +389,7 @@ const DossierDownload = ({
             onChange={handleDossierTypeChange}
           >
             <FormControlLabel value='word' control={<Radio />} label='Word Dossier' />
-            <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' />
+            {/* <FormControlLabel value='pdf' control={<Radio />} label='PDF Dossier' disabled /> */}
           </RadioGroup>
         </FormControl>
         <Grid container spacing={2}>

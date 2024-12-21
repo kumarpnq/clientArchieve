@@ -28,7 +28,8 @@ import {
   selectNotificationFlag,
   setFetchAutoStatusFlag,
   selectFetchAutoStatusFlag,
-  selectSelectedCompetitions
+  selectSelectedCompetitions,
+  selectedDateType
 } from 'src/store/apps/user/userSlice'
 import useDossierRequest from 'src/api/print-headlines/Dossier/useDossierRequest'
 import dayjs from 'dayjs'
@@ -71,6 +72,7 @@ const DossierDialog = ({
   const dispatch = useDispatch()
   const notificationFlag = useSelector(selectNotificationFlag)
   const autoNotificationFlag = useSelector(selectFetchAutoStatusFlag)
+  const selectedTypeOfDate = useSelector(selectedDateType)
 
   const handleEmailChange = event => {
     const { value } = event.target
@@ -247,7 +249,8 @@ const DossierDialog = ({
       ...(selectPageOrAll !== 'A' && { recordsPerPage }),
       requestEntity,
       clientIds: clientId,
-      companyIds: selectedCompanyIds.join(',')
+      companyIds: selectedCompanyIds.join(','),
+      dateType: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE'
     }
 
     if (editionType !== '') {

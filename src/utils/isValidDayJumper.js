@@ -1,8 +1,6 @@
 import dayjs from 'dayjs'
 
 export function validateDateRange(fromDate, endDate, dayJumper, screenType) {
-  // console.log(fromDate, endDate, dayJumper, screenType)
-
   const today = dayjs()
   let expectedFromDate
   let expectedEndDate = today
