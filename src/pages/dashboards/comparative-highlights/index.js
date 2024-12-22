@@ -6,7 +6,8 @@ import dynamic from 'next/dynamic'
 import { Responsive, WidthProvider } from 'react-grid-layout'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
-import defaultLayouts, { breakpoints, cols } from './layout'
+
+// import { breakpoints, cols } from './layout'
 import LazyLoad from 'src/components/loaders/LazyLoad'
 
 // * Tables and Charts
@@ -27,6 +28,83 @@ const ArticleSize = dynamic(() => import('./components/ArticleSize'))
 const ThemeWordCloud = dynamic(() => import('./components/ThemeWordCloud'))
 
 const ReactGridLayout = WidthProvider(Responsive)
+
+const breakpoints = { lg: 1256, md: 1024, xs: 480, xxs: 0 }
+
+const cols = { lg: 16, md: 16, xs: 16, xxs: 16 }
+
+const defaultLayouts = {
+  lg: [
+    { i: '0', x: 0, y: 0, w: 12, h: 28 }, // lg width is 10
+    { i: '1', x: 0, y: 12, w: 12, h: 28 },
+    { i: '2', x: 12, y: 0, w: 4, h: 56 },
+    { i: '3', x: 0, y: 28, w: 16, h: 35 },
+    { i: '4', x: 0, y: 58, w: 16, h: 35 },
+    { i: '5', x: 0, y: 58, w: 16, h: 35 },
+    { i: '6', x: 0, y: 75, w: 16, h: 35 },
+    { i: '7', x: 0, y: 110, w: 16, h: 35 },
+    { i: '8', x: 0, y: 145, w: 16, h: 35 },
+    { i: '9', x: 0, y: 180, w: 16, h: 35 },
+    { i: '10', x: 0, y: 215, w: 16, h: 35, isResizable: false },
+    { i: '11', x: 0, y: 350, w: 16, h: 35 },
+    { i: '12', x: 0, y: 285, w: 16, h: 35 },
+    { i: '13', x: 0, y: 320, w: 16, h: 35 },
+    { i: '14', x: 8, y: 355, w: 16, h: 35 }
+  ],
+
+  md: [
+    { i: '0', x: 0, y: 0, w: 10, h: 28 }, // lg width is 10
+    { i: '1', x: 0, y: 35, w: 10, h: 28 },
+    { i: '2', x: 10, y: 0, w: 6, h: 56 },
+    { i: '3', x: 0, y: 50, w: 16, h: 35 },
+    { i: '4', x: 0, y: 75, w: 16, h: 35 },
+    { i: '5', x: 6, y: 100, w: 16, h: 35 },
+    { i: '6', x: 0, y: 135, w: 16, h: 35 },
+    { i: '7', x: 0, y: 170, w: 16, h: 35 },
+    { i: '8', x: 0, y: 205, w: 16, h: 35 },
+    { i: '9', x: 0, y: 240, w: 16, h: 35 },
+    { i: '10', x: 0, y: 275, w: 16, h: 35, isResizable: false },
+    { i: '11', x: 0, y: 310, w: 16, h: 35 },
+    { i: '12', x: 8, y: 345, w: 16, h: 35 },
+    { i: '13', x: 0, y: 380, w: 16, h: 35 },
+    { i: '14', x: 8, y: 415, w: 16, h: 35 }
+  ],
+
+  // sm: [
+  //   { i: '0', x: 0, y: 0, w: 16, h: 35 }, // lg width is 10
+  //   { i: '1', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '2', x: 0, y: 0, w: 16, h: 50 },
+  //   { i: '3', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '4', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '5', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '6', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '7', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '8', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '9', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '10', x: 0, y: 0, w: 16, h: 35, isResizable: false },
+  //   { i: '11', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '12', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '13', x: 0, y: 0, w: 16, h: 35 },
+  //   { i: '14', x: 0, y: 0, w: 16, h: 35 }
+  // ],
+  xs: [
+    { i: '0', x: 0, y: 0, w: 16, h: 35 }, // lg width is 10
+    { i: '1', x: 0, y: 0, w: 16, h: 35 },
+    { i: '2', x: 8, y: 0, w: 16, h: 50 },
+    { i: '3', x: 0, y: 0, w: 16, h: 35 },
+    { i: '4', x: 0, y: 0, w: 16, h: 35 },
+    { i: '5', x: 0, y: 0, w: 16, h: 35 },
+    { i: '6', x: 0, y: 0, w: 16, h: 35 },
+    { i: '7', x: 0, y: 0, w: 16, h: 35 },
+    { i: '8', x: 0, y: 0, w: 16, h: 35 },
+    { i: '9', x: 0, y: 0, w: 16, h: 35 },
+    { i: '10', x: 0, y: 0, w: 16, h: 35, isResizable: false },
+    { i: '11', x: 0, y: 0, w: 16, h: 35 },
+    { i: '12', x: 0, y: 0, w: 16, h: 35 },
+    { i: '13', x: 0, y: 0, w: 16, h: 35 },
+    { i: '14', x: 0, y: 0, w: 16, h: 35 }
+  ]
+}
 
 const Page = () => {
   const matches = useMediaQuery('(min-width:1200px)')
