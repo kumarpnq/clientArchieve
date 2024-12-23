@@ -1,9 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import dayjs from 'dayjs'
 
-const now = dayjs('2024-11-10') // Current date and time
-// const oneDayBefore = now.subtract(1, 'day') // Subtract one day
-const oneDayBefore = dayjs('2024-10-01') // Subtract one day
+const now = dayjs() // Current date and time
+const oneDayBefore = dayjs().subtract(1, 'day') // Subtract one day
 
 const initialState = {
   companyIds: '',

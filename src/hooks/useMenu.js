@@ -1,17 +1,17 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react'
 
 function useMenu() {
-    const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null)
 
-    const openMenu = useCallback(function (e) {
-        setAnchorEl(e.currentTarget);
-    }, []);
+  const openMenu = useCallback(function (e) {
+    setAnchorEl(e.currentTarget)
+  }, [])
 
-    const closeMenu = useCallback(function () {
-        setAnchorEl(null);
-    }, []);
+  const closeMenu = useCallback(function () {
+    setAnchorEl(null)
+  }, [])
 
-    return { anchorEl, openMenu, closeMenu };
+  return { anchorEl, openMenu, closeMenu }
 }
 
-export default useMenu;
+export default useMenu

@@ -303,11 +303,6 @@ const TableSelection = () => {
             dateType: selectedTypeOfDate === 'AD' ? 'ARTICLE_DATE' : 'CREATED_DATE',
             fromDate: shortCutData?.searchCriteria?.fromDate || formattedFromDate,
             toDate: shortCutData?.searchCriteria?.toDate || formattedToDate,
-
-            // printFromDate: formattedStartDateForPrint,
-            // printToDate: formattedEndDateForPrint,
-            // onlineFromDate: formattedStartDateForOnline,
-            // onlineToDate: formattedEndDateOnline,
             page: currentPage,
             recordsPerPage: recordsPerPage,
             sortby: selectedSortBy,
@@ -317,7 +312,14 @@ const TableSelection = () => {
             geography: selectedCitiesString,
             language: selectedLanguagesString,
             media: selectedMedia.join(','),
-            tags: shortCutData?.searchCriteria?.tags || selectedTagString
+            tags: shortCutData?.searchCriteria?.tags || selectedTagString,
+            headline: searchParameters.searchHeadline,
+            body: searchParameters.searchBody,
+            journalist: searchParameters.journalist,
+            wordCombo: searchParameters.combinationOfWords,
+            anyWord: searchParameters.anyOfWords,
+            ignoreWords: searchParameters.ignoreThis,
+            phrase: searchParameters.exactPhrase
           }
 
           // const response = await axios.get(`${BASE_URL}/clientWiseSocialFeedAndArticles/`,
@@ -430,7 +432,8 @@ const TableSelection = () => {
     selectedTypeOfDate,
     shortCutData?.searchCriteria?.fromDate,
     shortCutData?.searchCriteria?.toDate,
-    shortCutData?.searchCriteria?.tags
+    shortCutData?.searchCriteria?.tags,
+    searchParameters
   ])
 
   // Open the date filter popover

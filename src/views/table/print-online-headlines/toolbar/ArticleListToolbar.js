@@ -508,7 +508,9 @@ const ArticleListToolbar = ({
         </MenuItem> */}
       </Menu>
       <CustomTooltip title='Media'>
-        <Button onClick={handlePublicationTypeClick} sx={{ color: primaryColor, mr: 0 }}></Button>
+        <Button onClick={handlePublicationTypeClick} sx={{ color: primaryColor, mr: 0 }}>
+          <ImageIcon />
+        </Button>
       </CustomTooltip>
 
       <CustomTooltip title='Coming soon.'>
