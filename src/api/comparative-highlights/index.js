@@ -66,7 +66,10 @@ export const useChartAndGraphApi = config => {
 
       // const URL = `http://127.0.0.1:5000/api/v1/report/getChartAndGraphData`
 
-      const { data } = await axios.get(`${ELASTIC_SERVER}/?${urlParams}`, { params, headers })
+      const { data } = await axios.get(`${ELASTIC_SERVER}/api/v1/report/getChartAndGraphData/?${urlParams}`, {
+        params,
+        headers
+      })
 
       const result = getValueFromPath(data, path)
 
