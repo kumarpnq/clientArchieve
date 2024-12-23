@@ -181,7 +181,7 @@ const AppBarContent = props => {
               <IconifyIcon fontSize='1.5rem' icon='tabler:menu-2' />
             </IconButton>
           ) : null}
-          {auth.user && <Autocomplete hidden={hidden} settings={settings} />}
+          {/* {auth.user && <Autocomplete hidden={hidden} settings={settings} />} */}
         </Box>
         <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
           {isDashboardRoute ? (
@@ -200,7 +200,7 @@ const AppBarContent = props => {
           <ModeToggler settings={settings} saveSettings={saveSettings} />
           {auth.user && (
             <>
-              <ShortcutsDropdown settings={settings} shortcuts={dataShort} />
+              {/* <ShortcutsDropdown settings={settings} shortcuts={dataShort} /> */}
               <NotificationDropdown settings={settings} notifications={notifications} />
               <ClientDropdown />
               <UserDropdown settings={settings} />
