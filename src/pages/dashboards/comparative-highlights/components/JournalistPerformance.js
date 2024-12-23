@@ -150,23 +150,10 @@ function JournalistTable(props) {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
         className='cancelSelection'
+        variant='translucent'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-            width: 'min(100%, 380px)',
-            py: 2,
-            borderRadius: 2,
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            backdropFilter: 'blur(2px)',
-            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
-            maxHeight: 450,
-            overflow: 'auto',
-
-            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            border: '1px solid',
-            borderColor: 'divider'
-          },
-          '& .MuiButtonBase-root:hover': {
-            backgroundColor: 'background.default'
+            width: 'min(100%, 380px)'
           }
         }}
       >
@@ -257,23 +244,10 @@ function JournalistWidget(props) {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
         className='cancelSelection'
+        variant='translucent'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-            width: 'min(100%, 380px)',
-            py: 2,
-            borderRadius: 2,
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            backdropFilter: 'blur(2px)',
-            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
-            maxHeight: 450,
-            overflow: 'auto',
-
-            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            border: '1px solid',
-            borderColor: 'divider'
-          },
-          '& .MuiButtonBase-root:hover': {
-            backgroundColor: 'background.default'
+            width: 'min(100%, 380px)'
           }
         }}
       >

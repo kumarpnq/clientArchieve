@@ -1,17 +1,24 @@
 import React, { memo } from 'react'
 import { Doughnut } from 'react-chartjs-2'
+import { useSelector } from 'react-redux'
+import { getChartColor } from 'src/store/apps/preference/preferenceSlice'
 
 function DoughnutChart(props) {
-  const { data, cutout, radius, labels } = props
+  const { metrics, cutout, radius } = props
+
+  const { colors: ChartColors } = useSelector(getChartColor)
 
   return (
     <Doughnut
       data={{
-        labels,
+        labels: metrics.labels,
         datasets: [
           {
-            data,
-            backgroundColor: ['#fc8166', '#fbd059', '#58d8ff', '#5d87fd', '#57c0bd', '#8acd82', '#2f839e'],
+            data: metrics.data,
+
+            // backgroundColor: ['#fc8166', '#fbd059', '#58d8ff', '#5d87fd', '#57c0bd', '#8acd82', '#2f839e'],
+
+            backgroundColor: ChartColors,
             borderWidth: 10,
             borderRadius: {
               outerStart: 10,
@@ -19,6 +26,7 @@ function DoughnutChart(props) {
               innerStart: 10,
               innerEnd: 10
             },
+
             barThickness: 26
           }
         ]

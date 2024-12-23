@@ -3,14 +3,17 @@ import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Lege
 import { Chart } from 'react-chartjs-2'
 import { selectUserData } from 'src/store/apps/user/userSlice'
 import { useSelector } from 'react-redux'
+import { getChartColor } from 'src/store/apps/preference/preferenceSlice'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend)
+
 const colors = ['#3498db', '#2ecc71', '#e74c3c', '#f1c40f', '#9b59b6'] // Bar colors
 const clientColor = ['#7367F0', '#b2a6fc']
 
 const CombinedBarChart = props => {
   const { metrics, id } = props
   const { clientList } = useSelector(selectUserData)
+  const { colors: ChartColors } = useSelector(getChartColor)
   const clientCompanyName = useMemo(() => clientList[0]?.priorityCompanyName ?? '', [clientList])
 
   const labels = useMemo(
@@ -123,7 +126,10 @@ const CombinedBarChart = props => {
               ...Object.keys(metrics.bar || {}).map((label, i) => ({
                 label,
                 data: metrics.bar[label].flatMap(v => v),
-                backgroundColor: labels.map(v => (v === clientCompanyName ? clientColor[i] : colors[i])),
+
+                // backgroundColor: labels.map(v => (v === clientCompanyName ? clientColor[i] : ChartColors[i])),
+
+                backgroundColor: ChartColors,
                 labelGroup: metrics.labelGroup
               }))
             ]

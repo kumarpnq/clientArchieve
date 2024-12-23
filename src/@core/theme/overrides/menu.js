@@ -4,6 +4,28 @@ import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 const Menu = () => {
   return {
     MuiMenu: {
+      variants: [
+        {
+          props: { variant: 'translucent' },
+          style: ({ theme }) => ({
+            '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
+              marginTop: '8px',
+              padding: '2px',
+              borderRadius: '8px',
+              boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+              backdropFilter: 'blur(2px)',
+              backgroundColor: hexToRGBA(theme.palette.background.paper, 0.8),
+
+              // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
+              border: '1px solid',
+              borderColor: theme.palette.divider
+            },
+            '& .MuiButtonBase-root:hover': {
+              backgroundColor: theme.palette.background.default
+            }
+          })
+        }
+      ],
       styleOverrides: {
         paper: ({ theme }) => ({
           '& .MuiMenuItem-root .MuiCheckbox-root.Mui-checked path:first-of-type': {

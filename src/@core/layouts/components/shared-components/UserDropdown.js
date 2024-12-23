@@ -155,10 +155,10 @@ const UserDropdown = props => {
             Settings
           </Box>
         </MenuItemStyled> */}
-        <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/theme-settings')}>
+        <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/settings')}>
           <Box sx={styles}>
             <Icon icon='tabler:settings' />
-            Theme Settings
+            Settings
           </Box>
         </MenuItemStyled>
         {/* <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/account-settings/billing')}>

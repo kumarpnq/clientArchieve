@@ -26,7 +26,7 @@ import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart'
 import useMenu from 'src/hooks/useMenu'
 import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
-import { Tabs, Tab } from 'src/components/Tabs'
+import { Tabs, Tab } from 'src/components/tabs/Tabs'
 import { All, Online, Print } from 'src/constants/filters'
 import LaunchIcon from '@mui/icons-material/Launch'
 import CloseIcon from '@mui/icons-material/Close'
@@ -173,21 +173,10 @@ function Widget(props) {
         open={Boolean(optionAnchorEl)}
         onClose={closeOption}
         className='cancelSelection'
+        variant='translucent'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-            width: 'min(100%, 300px)',
-            p: 0.5,
-            borderRadius: 2,
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            backdropFilter: 'blur(2px)',
-            backgroundColor: 'rgba(255, 255, 255, 0.8)',
-
-            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            border: '1px solid',
-            borderColor: 'divider'
-          },
-          '& .MuiButtonBase-root:hover': {
-            backgroundColor: 'background.default'
+            width: 'min(100%, 300px)'
           }
         }}
       >
@@ -231,21 +220,10 @@ function Widget(props) {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={closeMenu}
+        variant='translucent'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-            width: 'min(100%, 200px)',
-            p: 0.5,
-            borderRadius: 2,
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            backdropFilter: 'blur(2px)',
-            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
-
-            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            border: '1px solid',
-            borderColor: 'divider'
-          },
-          '& .MuiButtonBase-root:hover': {
-            backgroundColor: 'background.default'
+            width: 'min(100%, 200px)'
           }
         }}
       >

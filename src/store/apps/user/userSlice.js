@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit'
+import Colors from 'src/data/colors'
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     data: null,
     selectedClient: null,
+    chartColors: Colors.BlueShades,
     selectedCompetitions: [],
     selectedStartDate: null,
     selectedEndDate: null,
@@ -102,6 +104,8 @@ export const {
   setUserDashboardId,
   setClearDateFilter
 } = userSlice.actions
+
+export const selectChartColors = state => state.user.chartColors
 
 export const selectUserData = state => state.user.data
 

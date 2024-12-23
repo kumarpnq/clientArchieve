@@ -5,9 +5,8 @@ import { Button, Menu, MenuItem, Stack } from '@mui/material'
 import useMenu from 'src/hooks/useMenu'
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown'
 import dynamic from 'next/dynamic'
-import { hexToRGBA } from 'src/@core/utils/hex-to-rgba'
 
-const BarChart = dynamic(() => import('src/components/charts/BarChart'))
+const MixedChart = dynamic(() => import('src/components/charts/MixedChart'))
 const CombinedBarChart = dynamic(() => import('src/components/charts/CombinedBarChart'))
 const BroadWidget = dynamic(() => import('src/components/widgets/BroadWidget'))
 const DataGrid = dynamic(() => import('src/components/datagrid/DataGrid'))
@@ -33,7 +32,7 @@ const columns = [
   }
 ]
 
-const initialMetrics = { labels: [], bar: { Volume: [], Visibility: [] } }
+const initialMetrics = { labels: [], line: { Volume: [] }, bar: { Visibility: [] } }
 const initialTableData = { rows: [], volScore: [], volSov: [], visScore: [], visSov: [], columnGroup: [] }
 const tableRange = 5
 
@@ -165,23 +164,10 @@ function MediaTable(props) {
         open={Boolean(anchorEl)}
         onClose={closeMenu}
         className='cancelSelection'
+        variant='translucent'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-            width: 'min(100%, 380px)',
-            py: 2,
-            borderRadius: 2,
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            backdropFilter: 'blur(2px)',
-            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
-            maxHeight: 450,
-            overflow: 'auto',
-
-            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            border: '1px solid',
-            borderColor: 'divider'
-          },
-          '& .MuiButtonBase-root:hover': {
-            backgroundColor: 'background.default'
+            width: 'min(100%, 380px)'
           }
         }}
       >
@@ -242,7 +228,7 @@ function MediaWidget(props) {
 
     const newData = data[selectedCategory]?.CompanyTag?.FilterCompany?.Company?.buckets?.map(data => {
       metrics.labels.push(data.key)
-      metrics.bar.Volume.push(Math.trunc(data.doc_count))
+      metrics.line.Volume.push(Math.trunc(data.doc_count))
       metrics.bar.Visibility.push(Math.trunc(data.V_Score.value))
 
       return {
@@ -276,23 +262,10 @@ function MediaWidget(props) {
         open={Boolean(categoryAnchorEl)}
         onClose={closeCategory}
         className='cancelSelection'
+        variant='translucent'
         sx={{
           '.MuiPaper-root.MuiMenu-paper.MuiPopover-paper': {
-            width: 'min(100%, 380px)',
-            py: 2,
-            borderRadius: 2,
-            boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            backdropFilter: 'blur(2px)',
-            backgroundColor: theme => hexToRGBA(theme.palette.background.paper, 0.8),
-            maxHeight: 450,
-            overflow: 'auto',
-
-            // boxShadow: 'rgba(0, 0, 0, 0.1) 0px 20px 25px -5px, rgba(0, 0, 0, 0.04) 0px 10px 10px -5px',
-            border: '1px solid',
-            borderColor: 'divider'
-          },
-          '& .MuiButtonBase-root:hover': {
-            backgroundColor: 'background.default'
+            width: 'min(100%, 380px)'
           }
         }}
       >
@@ -323,7 +296,9 @@ function MediaWidget(props) {
       apiActions={apiActions}
       datagrid={{ columns, rows: tableData }}
       table={DataGrid}
-      charts={{ bar: { component: BarChart, id: 'media-bar-chart', props: { barPercentage: 0.3 } } }}
+      charts={{
+        bar: { component: MixedChart, id: 'media-mixed-chart', props: { barPercentage: 0.3, datalabels: true } }
+      }}
       render={['charts', 'table']}
     />
   )

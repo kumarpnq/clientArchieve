@@ -2,9 +2,11 @@ import dynamic from 'next/dynamic'
 import { Box, Card, Grid, LinearProgress, linearProgressClasses, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { useChartAndGraphApi } from 'src/api/comparative-highlights'
-import { Tab, Tabs } from 'src/components/Tabs'
+import { Tab, Tabs } from 'src/components/tabs/Tabs'
 import { Print, VISIBILITY_IMAGE_SCORE } from 'src/constants/filters'
 import Loading from 'src/components/Loading'
+import { useSelector } from 'react-redux'
+import { getChartColor } from 'src/store/apps/preference/preferenceSlice'
 
 const DoughnutChart = dynamic(() => import('src/components/charts/DoughnutChart'))
 
@@ -14,6 +16,7 @@ const initialValues = { labels: [], V_Score: [], doc_count: [] }
 function ComparativePie() {
   const [tabSelected, setTabSelected] = useState('V_Score')
   const [values, setValues] = useState({ labels: [], V_Score: [], doc_count: [] })
+  const { colors: ChartColors } = useSelector(getChartColor)
 
   const { data, loading } = useChartAndGraphApi({
     reportType: VISIBILITY_IMAGE_SCORE,
@@ -90,7 +93,11 @@ function ComparativePie() {
           {data && values.labels.length > 0 ? (
             <>
               <Box sx={{ height: 300, width: '100%', overflow: 'auto' }}>
-                <DoughnutChart labels={values.labels} data={values[tabSelected]} cutout='80%' radius='85%' />
+                <DoughnutChart
+                  metrics={{ labels: values.labels, data: values[tabSelected] }}
+                  cutout='80%'
+                  radius='85%'
+                />
               </Box>
 
               <Box mt={4} flexGrow={1} sx={{ overflowY: 'auto' }}>
@@ -125,7 +132,7 @@ function ComparativePie() {
                               },
                               [`& .${linearProgressClasses.bar}`]: {
                                 borderRadius: '5px',
-                                backgroundColor: bgColor[i]
+                                backgroundColor: ChartColors[i]
                               }
                             }}
                           />

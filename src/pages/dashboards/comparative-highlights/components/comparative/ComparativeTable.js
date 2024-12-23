@@ -6,7 +6,7 @@ import { All, Online, Print, PEERS_VOLUME_VISIBILITY } from 'src/constants/filte
 import FilterListIcon from '@mui/icons-material/FilterList'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import SearchIcon from '@mui/icons-material/Search'
-import { Tab, Tabs } from 'src/components/Tabs'
+import { Tab, Tabs } from 'src/components/tabs/Tabs'
 import Loading from 'src/components/Loading'
 import Widget from 'src/components/widgets/Widget'
 

@@ -18,6 +18,7 @@ import Customizer from 'src/@core/components/customizer'
 import Navigation from './components/vertical/navigation'
 import Footer from './components/shared-components/footer'
 import ScrollToTop from 'src/@core/components/scroll-to-top'
+import { useRouter } from 'next/router'
 
 const VerticalLayoutWrapper = styled('div')({
   height: '100%',
@@ -46,6 +47,7 @@ const ContentWrapper = styled('main')(({ theme }) => ({
 const VerticalLayout = props => {
   // ** Props
   const { hidden, settings, children, scrollToTop, footerProps, contentHeightFixed, verticalLayoutProps } = props
+  const router = useRouter()
 
   // ** Vars
   const { skin, navHidden, contentWidth } = settings
@@ -88,12 +90,14 @@ const VerticalLayout = props => {
           sx={{ ...(contentHeightFixed && { maxHeight: '100vh' }) }}
         >
           {/* AppBar Component */}
-          <AppBar
-            toggleNavVisibility={toggleNavVisibility}
-            appBarContent={verticalLayoutProps.appBar?.content}
-            appBarProps={verticalLayoutProps.appBar?.componentProps}
-            {...props}
-          />
+          {router.pathname.startsWith('/settings') ? null : (
+            <AppBar
+              toggleNavVisibility={toggleNavVisibility}
+              appBarContent={verticalLayoutProps.appBar?.content}
+              appBarProps={verticalLayoutProps.appBar?.componentProps}
+              {...props}
+            />
+          )}
 
           {/* Content */}
           <ContentWrapper

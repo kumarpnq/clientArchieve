@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from 'react'
 import { Chart } from 'react-chartjs-2'
 import { useSelector } from 'react-redux'
+import { getChartColor } from 'src/store/apps/preference/preferenceSlice'
 import { selectUserData } from 'src/store/apps/user/userSlice'
 
 let delayed = false
@@ -11,6 +12,7 @@ const clientColor = ['#7367F0', '#b2a6fc']
 function MixedChart(props) {
   const { metrics, id, ...rest } = props
   const { clientList } = useSelector(selectUserData)
+  const { colors: ChartColors } = useSelector(getChartColor)
   const clientCompanyName = useMemo(() => clientList[0]?.priorityCompanyName ?? '', [clientList])
   const companyIndex = useMemo(() => metrics.labels.indexOf(clientCompanyName), [metrics.labels, clientCompanyName])
 
@@ -58,7 +60,7 @@ function MixedChart(props) {
               label,
               data: metrics.bar[label],
               backgroundColor: Array.from({ length: metrics.labels.length }, (_, index) =>
-                index === companyIndex ? clientColor[i] : barColors[i]
+                index === companyIndex ? clientColor[i] : ChartColors[i]
               ),
 
               yAxisID: 'y',

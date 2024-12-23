@@ -92,6 +92,7 @@
     "react-window": "^1.8.10",
     "react-wordcloud": "^1.2.7",
     "recharts": "2.5.0",
+    "redux-persist": "^6.0.0",
     "slick-carousel": "^1.8.1",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
