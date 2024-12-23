@@ -6,8 +6,7 @@ import { selectSelectedClient } from 'src/store/apps/user/userSlice'
 import { Print } from 'src/constants/filters'
 import { getDateRange } from 'src/store/apps/filters/filterSlice'
 import { getValueFromPath } from 'src/utils/helper'
-
-const URL = 'http://51.222.9.159:5000/api/v1/report/getChartAndGraphData'
+import { ELASTIC_SERVER } from '../base'
 
 export const useChartAndGraphApi = config => {
   const { reportType, mediaType, category, subCategory, range = 10, path } = config
@@ -67,7 +66,7 @@ export const useChartAndGraphApi = config => {
 
       // const URL = `http://127.0.0.1:5000/api/v1/report/getChartAndGraphData`
 
-      const { data } = await axios.get(`${URL}/?${urlParams}`, { params, headers })
+      const { data } = await axios.get(`${ELASTIC_SERVER}/?${urlParams}`, { params, headers })
 
       const result = getValueFromPath(data, path)
 
