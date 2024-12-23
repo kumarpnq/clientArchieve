@@ -453,16 +453,22 @@ const ToolbarComponent = ({
           onClose={() => closeDropdown(setMediaAnchor)}
           PaperProps={{ style: { maxHeight: 300 } }}
         >
-          {
+          {/* {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          }
+          } */}
 
           {
             <ListItem>
-              <TextField placeholder='Search Media' size='small' value={searchTerm} onChange={handleSearchChange} />
+              <TextField
+                placeholder='Search Media'
+                size='small'
+                value={searchTerm}
+                onChange={handleSearchChange}
+                fullWidth
+              />
             </ListItem>
           }
           {media.map((item, index) => (

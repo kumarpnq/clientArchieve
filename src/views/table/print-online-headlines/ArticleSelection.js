@@ -361,7 +361,8 @@ const TableSelection = () => {
               companyTag,
               children,
               feedData,
-              feedInfo
+              feedInfo,
+              author
             } = item._source
 
             return {
@@ -372,7 +373,8 @@ const TableSelection = () => {
               publicationId: publicationInfo?.id,
               articleDate: `${articleInfo?.articleDate || feedData?.feedDate}`,
               articleUploadId: uploadInfo?.uploadId,
-              articleJournalist: articleInfo?.journalist,
+              city: uploadInfo?.city || feedInfo?.city,
+              articleJournalist: articleInfo?.journalist || author?.name,
               companies:
                 item.fields?.companyTag?.map(company => ({
                   id: company.id,
@@ -380,17 +382,17 @@ const TableSelection = () => {
                 })) || [],
               clientId: '',
               clientName: '',
-              editionType: '',
-              editionTypeName: '',
-              publicationCategory: '',
-              circulation: 0,
-              publicationType: '',
-              language: articleData?.language,
+              editionType: publicationInfo?.editionType,
+              editionTypeName: publicationInfo?.editionTypeName,
+              publicationCategory: publicationInfo?.publicationCategory,
+              circulation: publicationInfo?.circulation,
+              publicationType: publicationInfo?.publicationType,
+              language: articleData?.language || feedData?.language,
               size: articleData?.space,
               pageNumber: articleData?.pageNumber,
               children: children || [],
               link: feedInfo?.link || '',
-              articleType: item?._index === 'printarticle' ? 'print' : 'online'
+              articleType: item?._index === 'printarticleindex' ? 'print' : 'online'
             }
           })
 
@@ -553,6 +555,7 @@ const TableSelection = () => {
       />
       {/* Toolbar with Date Filter */}
       <ArticleListToolbar
+        selectedEditionType={selectedEditionType}
         setSelectedEditionType={setSelectedEditionType}
         selectedPublicationType={selectedPublicationType}
         setSearchQuery={setSearchQuery}

@@ -89,7 +89,7 @@ const ToolbarComponent = ({
   }
 
   const handleSelectAllMedia = () => {
-    const allMediaIds = media.map(item => item.publicationGroupId)
+    const allMediaIds = media.map(item => item.publicationId)
     setSelectedMedia(allMediaIds)
   }
 
@@ -107,16 +107,16 @@ const ToolbarComponent = ({
     })
   }
 
-  const handleMediaSelect = publicationGroupId => {
+  const handleMediaSelect = publicationId => {
     setSelectedMedia(prevSelected => {
-      const isAlreadySelected = prevSelected.includes(publicationGroupId)
+      const isAlreadySelected = prevSelected.includes(publicationId)
 
       if (isAlreadySelected) {
         // If already selected, remove from the list
-        return prevSelected.filter(id => id !== publicationGroupId)
+        return prevSelected.filter(id => id !== publicationId)
       } else {
         // If not selected, add to the list
-        return [...prevSelected, publicationGroupId]
+        return [...prevSelected, publicationId]
       }
     })
   }
@@ -469,16 +469,22 @@ const ToolbarComponent = ({
           onClose={() => closeDropdown(setMediaAnchor)}
           PaperProps={{ style: { maxHeight: 300 } }}
         >
-          {
+          {/* {
             <ListItem sx={{ justifyContent: 'space-between' }}>
               <Button onClick={handleSelectAllMedia}>Select All</Button>
               <Button onClick={() => setSelectedMedia([])}>Deselect All</Button>
             </ListItem>
-          }
+          } */}
 
           {
             <ListItem>
-              <TextField placeholder='Search Media' size='small' value={searchTerm} onChange={handleSearchChange} />
+              <TextField
+                placeholder='Search Media'
+                size='small'
+                value={searchTerm}
+                onChange={handleSearchChange}
+                fullWidth
+              />
             </ListItem>
           }
           {media.map((item, index) => (

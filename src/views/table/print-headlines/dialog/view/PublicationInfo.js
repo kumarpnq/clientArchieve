@@ -1,10 +1,9 @@
 // PublicationInfo.js
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
-import Divider from '@mui/material/Divider'
 import Card from '@mui/material/Card'
 
 const PublicationInfo = ({ articles }) => {
@@ -17,7 +16,7 @@ const PublicationInfo = ({ articles }) => {
     pageNumber: articles.pageNumber,
     size: articles.size,
     circulation: articles.circulation,
-    edition: articles.editionTypeName
+    edition: articles.city
   })
 
   const formattedDate = new Date(articles.articleDate).toLocaleDateString('en-US', {

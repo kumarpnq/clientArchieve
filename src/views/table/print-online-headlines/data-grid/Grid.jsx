@@ -33,43 +33,52 @@ const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} cl
   })
 )
 
-const getTooltipContent = row => (
-  <Box>
-    <ListItem>
-      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Summary :{' '}
-        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {row.summary}
+const getTooltipContent = row => {
+  return (
+    <Box>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Summary :{' '}
+          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+            {row.summary}
+          </Typography>
         </Typography>
-      </Typography>
-    </ListItem>
-    <ListItem></ListItem>
-    <ListItem>
-      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Companies :{' '}
-        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {row.companies?.length > 0 ? row.companies?.map(company => company.name).join(', ') : row.companies[0]?.name}
+      </ListItem>
+      <ListItem></ListItem>
+      <ListItem>
+        <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+          Companies :{' '}
+          <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+            {row.companies?.length > 0
+              ? row.companies?.map(company => company.name).join(', ')
+              : row.companies[0]?.name}
+          </Typography>
         </Typography>
-      </Typography>
-    </ListItem>
-    <ListItem>
-      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Edition Type :{' '}
-        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {row.editionTypeName}
-        </Typography>
-      </Typography>
-    </ListItem>
-    <ListItem>
-      <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
-        Page Number :{' '}
-        <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
-          {row.pageNumber}
-        </Typography>
-      </Typography>
-    </ListItem>
-  </Box>
-)
+      </ListItem>
+      {row.articleType === 'print' && (
+        <>
+          {' '}
+          <ListItem>
+            <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+              Edition Type :{' '}
+              <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+                {row.city}
+              </Typography>
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Typography variant='body2' sx={{ fontWeight: 600, color: 'primary.main' }}>
+              Page Number :{' '}
+              <Typography component='span' sx={{ color: 'text.primary', fontWeight: 'normal', fontSize: '0.812rem' }}>
+                {row.pageNumber}
+              </Typography>
+            </Typography>
+          </ListItem>
+        </>
+      )}
+    </Box>
+  )
+}
 
 const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
   const isNotResponsive = useMediaQuery('(min-width: 1000px )')
@@ -155,7 +164,10 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 >
                   <span
                     className='headline'
-                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    style={{
+                      width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                      cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default'
+                    }}
                     onClick={async () => {
                       if (firstArticle.articleType === 'print') {
                         const articleCode = await generateLink(firstArticle?.articleId)
@@ -228,7 +240,10 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 >
                   <span
                     className='headline'
-                    style={{ width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem' }}
+                    style={{
+                      width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                      cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default'
+                    }}
                     onClick={async () => {
                       if (secondArticle.articleType === 'print') {
                         const articleCode = await generateLink(secondArticle?.articleId)
@@ -309,6 +324,7 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                     window.open(url, '_blank')
                   }
                 }}
+                style={{ cursor: article.articleType === 'print' ? 'pointer' : 'default' }}
               >
                 {article.headline}
               </span>

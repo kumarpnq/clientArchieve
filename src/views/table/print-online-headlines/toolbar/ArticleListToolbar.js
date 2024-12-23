@@ -419,13 +419,13 @@ const ArticleListToolbar = ({
         </Fragment>
       )}
 
-      <CustomTooltip title='Image'>
+      {/* <CustomTooltip title='Image'>
         <Button onClick={handleImageDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
           <ImageIcon />
         </Button>
-      </CustomTooltip>
+      </CustomTooltip> */}
       <ImageDialog open={isImageDialogOpen} handleClose={handleImageDialogClose} selectedArticles={selectedArticles} />
-      {/* {isDossierVisible && (
+      {isDossierVisible && (
         <Fragment>
           <CustomTooltip title='Dossier'>
             <Button onClick={handleDossierDialogOpen} sx={{ color: primaryColor, mr: 0 }}>
@@ -443,7 +443,7 @@ const ArticleListToolbar = ({
             allCheck={allCheck}
           />
         </Fragment>
-      )} */}
+      )}
       {isExcelDumpVisible && (
         <Fragment>
           <CustomTooltip title='Excel Dump'>
@@ -503,13 +503,16 @@ const ArticleListToolbar = ({
         <MenuItem onClick={() => handleSortBy('online')} selected={selectedSortBy === 'online'}>
           Filter by Online
         </MenuItem>
-        <MenuItem onClick={() => handleSortBy('magazine')} selected={selectedSortBy === 'magazine'}>
+        {/* <MenuItem onClick={() => handleSortBy('magazine')} selected={selectedSortBy === 'magazine'}>
           Filter by Magazine
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
-
       <CustomTooltip title='Media'>
         <Button onClick={handlePublicationTypeClick} sx={{ color: primaryColor, mr: 0 }}>
+
+      <CustomTooltip title='Coming soon.'>
+        <Button sx={{ color: '#f1e6b2', mr: 0 }}>
+
           <PublicationTypeIcon />
         </Button>
       </CustomTooltip>
@@ -523,17 +526,15 @@ const ArticleListToolbar = ({
           <MenuItem
             key={publicationType.publicationTypeId}
             onClick={() => handlePublicationTypeSelection(publicationType)}
-            selected={
-              selectedPublicationType && selectedPublicationType.publicationTypeId === publicationType.publicationTypeId
-            }
+            selected={selectedPublicationType?.includes(publicationType)}
           >
             {publicationType.publicationTypeName}
           </MenuItem>
         ))}
       </Menu>
 
-      <CustomTooltip title='Edition'>
-        <Button onClick={handleEditionTypeClick} sx={{ color: primaryColor, mr: 0 }}>
+      <CustomTooltip title='Coming soon.'>
+        <Button sx={{ mr: 0, color: '#f1e6b2' }}>
           <EditionTypeIcon />
         </Button>
       </CustomTooltip>
@@ -542,7 +543,7 @@ const ArticleListToolbar = ({
           <MenuItem
             key={editionType.editionTypeId}
             onClick={() => handleEditionTypeSelection(editionType)}
-            selected={selectedEditionType && selectedEditionType.editionTypeId === editionType.editionTypeId}
+            selected={selectedEditionType?.includes(editionType)}
           >
             {editionType.editionTypeName}
           </MenuItem>

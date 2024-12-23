@@ -34,9 +34,11 @@ export const fetchArticles = async ({
   publicationCategory,
   sortby,
   language,
-  signal
+  signal,
+  setLoading
 }) => {
   try {
+    setLoading(true)
     const storedToken = localStorage.getItem('accessToken')
 
     const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : null
@@ -89,29 +91,15 @@ export const fetchArticles = async ({
         }
 
         return str.join('&')
-      },
-      signal
+      }
+
+      // signal
     })
 
     return response.data.data
   } catch (error) {
-    if (axios.isCancel(error)) {
-      console.log('Request canceled:', error.message)
-    } else if (error.response && error.response.status === 401) {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('userData')
-      window.location.href = '/login'
-    } else {
-      throw error
-    }
+    console.log('Error:', error.message)
   } finally {
-    // No need for cancel here as we are using the source
-  }
-}
-
-// Function to cancel the fetch
-export const cancelFetchArticles = () => {
-  if (source) {
-    source.cancel('Request canceled by user')
+    setLoading(false)
   }
 }
