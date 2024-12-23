@@ -112,10 +112,10 @@ const AdvancedSearchForm = ({ open, onClose, setSearchParameters }) => {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancel} color='primary'>
+        <Button onClick={handleCancel} color='primary' variant='outlined'>
           Cancel
         </Button>
-        <Button onClick={handleSearch} color='primary'>
+        <Button onClick={handleSearch} color='primary' variant='contained'>
           Search
         </Button>
       </DialogActions>
