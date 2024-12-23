@@ -22,7 +22,8 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux' // Import useSelector from react-redux
-import { selectUserData, setShortCutFlag, shortCutFlag } from 'src/store/apps/user/userSlice'
+import { selectUserData, setShortCutFlag } from 'src/store/apps/user/userSlice'
+import { Stack } from '@mui/material'
 
 // ** Styled Components
 const BadgeContentSpan = styled('span')(({ theme }) => ({
@@ -31,12 +32,6 @@ const BadgeContentSpan = styled('span')(({ theme }) => ({
   borderRadius: '50%',
   backgroundColor: theme.palette.success.main,
   boxShadow: `0 0 0 2px ${theme.palette.background.paper}`
-}))
-
-const MenuItemStyled = styled(MenuItem)(({ theme }) => ({
-  '&:hover .MuiBox-root, &:hover .MuiBox-root svg': {
-    color: theme.palette.primary.main
-  }
 }))
 
 const UserDropdown = props => {
@@ -112,37 +107,43 @@ const UserDropdown = props => {
         {/*make pn to png */}
       </Badge>
       <Menu
+        variant='translucent'
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => handleDropdownClose()}
-        sx={{ '& .MuiMenu-paper': { width: 230, mt: 4.75 } }}
+        sx={{ '& .MuiMenu-paper': { width: 330, mt: 4.75, borderRadius: '10px' } }}
         anchorOrigin={{ vertical: 'bottom', horizontal: direction === 'ltr' ? 'right' : 'left' }}
         transformOrigin={{ vertical: 'top', horizontal: direction === 'ltr' ? 'right' : 'left' }}
       >
-        <Box sx={{ py: 1.75, px: 6 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Badge
-              overlap='circular'
-              badgeContent={<BadgeContentSpan />}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right'
+        <Stack direction='row' sx={{ pt: 1.75, pb: 6, px: 4, alignItems: 'center' }}>
+          <Badge
+            overlap='circular'
+            badgeContent={<BadgeContentSpan />}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right'
+            }}
+          >
+            <Avatar alt={UserName || 'Profile Pic'} src='/images/avatars/1.pn' sx={{ width: '3rem', height: '3rem' }} />{' '}
+            {/*make pn to png */}
+          </Badge>
+          <Box sx={{ display: 'flex', ml: 4, alignItems: 'flex-start', flexDirection: 'column' }}>
+            <Typography
+              sx={{
+                fontWeight: 500,
+                overflow: 'hidden',
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: '1',
+                textOverflow: 'ellipsis'
               }}
             >
-              <Avatar
-                alt={UserName || 'Profile Pic'}
-                src='/images/avatars/1.pn'
-                sx={{ width: '2.5rem', height: '2.5rem' }}
-              />{' '}
-              {/*make pn to png */}
-            </Badge>
-            <Box sx={{ display: 'flex', ml: 2.5, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 500 }}>{UserName}</Typography>
-              <Typography variant='body2'>Admin</Typography>
-            </Box>
+              {UserName}
+            </Typography>
+            <Typography variant='body2'>Admin</Typography>
           </Box>
-        </Box>
-        <Divider sx={{ my: theme => `${theme.spacing(2)} !important` }} />
+        </Stack>
+
         {/* <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/user-profile/profile')}>
           <Box sx={styles}>
             <Icon icon='tabler:user-check' />
@@ -155,12 +156,12 @@ const UserDropdown = props => {
             Settings
           </Box>
         </MenuItemStyled> */}
-        <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/settings')}>
+        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/settings')}>
           <Box sx={styles}>
             <Icon icon='tabler:settings' />
             Settings
           </Box>
-        </MenuItemStyled>
+        </MenuItem>
         {/* <MenuItemStyled sx={{ p: 0 }} onClick={() => handleDropdownClose('/pages/account-settings/billing')}>
           <Box sx={styles}>
             <Icon icon='tabler:credit-card' />
@@ -188,12 +189,12 @@ const UserDropdown = props => {
         </MenuItemStyled> */}
 
         {/* <Divider sx={{ my: theme => `${theme.spacing(2)} !important` }} /> */}
-        <MenuItemStyled sx={{ p: 0 }} onClick={handleLogout}>
+        <MenuItem sx={{ p: 0 }} onClick={handleLogout}>
           <Box sx={styles}>
             <Icon icon='tabler:logout' />
             Sign Out
           </Box>
-        </MenuItemStyled>
+        </MenuItem>
       </Menu>
     </Fragment>
   )
