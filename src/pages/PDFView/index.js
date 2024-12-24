@@ -5,6 +5,7 @@ import BlankLayout from 'src/@core/layouts/BlankLayout'
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import { Box, CircularProgress } from '@mui/material'
 import dayjs from 'dayjs'
+import { publicationLogos } from './activeLogos'
 
 const logoUrl = '/images/logo.jpg'
 
@@ -30,72 +31,6 @@ const PDFView = () => {
       fetchArticleViewData()
     }
   }, [articleId, BASE_URL])
-
-  const publicationLogos = [
-    '6',
-    '8',
-    '10',
-    '19',
-    '21',
-    '32',
-    '35',
-    '36',
-    '46',
-    '48',
-    '51',
-    '52',
-    '53',
-    '54',
-    '87',
-    '98',
-    '99',
-    '121',
-    '148',
-    '164',
-    '183',
-    '199',
-    '209',
-    '213',
-    '218',
-    '232',
-    '241',
-    '244',
-    '258',
-    '335',
-    '336',
-    '337',
-    '374',
-    '383',
-    '410',
-    '573',
-    '773',
-    '775',
-    '776',
-    '777',
-    '822',
-    '869',
-    '922',
-    '996',
-    '999',
-    '1727',
-    '1769',
-    'BSPUNE',
-    'BSTDHYD',
-    'business_standard',
-    'ET_H',
-    'FINCHRONICLE',
-    'FREEPRESS',
-    'KASHMIRTIMES',
-    'MAILTODAY',
-    'METRONOW',
-    'MUMBAIMIRROR',
-    'thesunguardian',
-    'TSG_2018',
-    'blank_logo',
-    'ASSAM_TRIBUNE',
-    'BSCHENNAI',
-    'BSHD'
-  ]
 
   useEffect(() => {
     const createPDF = async () => {
