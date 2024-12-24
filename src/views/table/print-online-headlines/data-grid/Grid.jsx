@@ -2,6 +2,7 @@ import {
   Box,
   Checkbox,
   CircularProgress,
+  Link,
   ListItem,
   styled,
   Tooltip,
@@ -162,22 +163,39 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
                 >
-                  <span
-                    className='headline'
-                    style={{
-                      width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
-                      cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default'
-                    }}
-                    onClick={async () => {
-                      if (firstArticle.articleType === 'print') {
-                        const articleCode = await generateLink(firstArticle?.articleId)
-                        const url = `/PDFView?articleId=${articleCode}`
-                        window.open(url, '_blank')
-                      }
-                    }}
-                  >
-                    {firstArticle.headline}
-                  </span>
+                  {firstArticle.articleType === 'print' ? (
+                    <span
+                      className='headline'
+                      style={{
+                        width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                        cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default'
+                      }}
+                      onClick={async () => {
+                        if (firstArticle.articleType === 'print') {
+                          const articleCode = await generateLink(firstArticle?.articleId)
+                          const url = `/PDFView?articleId=${articleCode}`
+                          window.open(url, '_blank')
+                        }
+                      }}
+                    >
+                      {firstArticle.headline}
+                    </span>
+                  ) : (
+                    <Link
+                      target='_blank'
+                      href={firstArticle.link}
+                      className='headline'
+                      style={{
+                        width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                        cursor: 'pointer',
+                        textDecoration: 'none',
+                        color: 'inherit'
+                      }}
+                    >
+                      {firstArticle.headline}
+                    </Link>
+                  )}
+
                   <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
                     {firstArticle.publication}{' '}
                     <span style={{ marginLeft: '4px' }}>({dayjs(firstArticle.articleDate).format('DD-MM-YYYY')})</span>
@@ -238,22 +256,39 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
                 <div
                   style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}
                 >
-                  <span
-                    className='headline'
-                    style={{
-                      width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
-                      cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default'
-                    }}
-                    onClick={async () => {
-                      if (secondArticle.articleType === 'print') {
-                        const articleCode = await generateLink(secondArticle?.articleId)
-                        const url = `/PDFView?articleId=${articleCode}`
-                        window.open(url, '_blank')
-                      }
-                    }}
-                  >
-                    {secondArticle.headline}
-                  </span>
+                  {secondArticle.articleType === 'print' ? (
+                    <span
+                      className='headline'
+                      style={{
+                        width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                        cursor: firstArticle.articleType === 'print' ? 'pointer' : 'default'
+                      }}
+                      onClick={async () => {
+                        if (secondArticle.articleType === 'print') {
+                          const articleCode = await generateLink(secondArticle?.articleId)
+                          const url = `/PDFView?articleId=${articleCode}`
+                          window.open(url, '_blank')
+                        }
+                      }}
+                    >
+                      {secondArticle.headline}
+                    </span>
+                  ) : (
+                    <Link
+                      target='_blank'
+                      href={secondArticle.link}
+                      className='headline'
+                      style={{
+                        width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                        cursor: 'pointer',
+                        textDecoration: 'none',
+                        color: 'inherit'
+                      }}
+                    >
+                      {firstArticle.headline}
+                    </Link>
+                  )}
+
                   <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
                     {secondArticle.publication}
                     <span style={{ marginLeft: '4px' }}>({dayjs(secondArticle.articleDate).format('DD-MM-YYYY')})</span>
@@ -315,19 +350,36 @@ const Grid = ({ articles, loading, selectedArticles, setSelectedArticles }) => {
         <td className='table-data'>
           <CustomTooltip title={getTooltipContent(article)} arrow>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem', justifyContent: 'space-between' }}>
-              <span
-                className='headline'
-                onClick={async () => {
-                  if (article.articleType === 'print') {
-                    const articleCode = await generateLink(article?.articleId)
-                    const url = `/PDFView?articleId=${articleCode}`
-                    window.open(url, '_blank')
-                  }
-                }}
-                style={{ cursor: article.articleType === 'print' ? 'pointer' : 'default' }}
-              >
-                {article.headline}
-              </span>
+              {article.articleType === 'print' ? (
+                <span
+                  className='headline'
+                  onClick={async () => {
+                    if (article.articleType === 'print') {
+                      const articleCode = await generateLink(article?.articleId)
+                      const url = `/PDFView?articleId=${articleCode}`
+                      window.open(url, '_blank')
+                    }
+                  }}
+                  style={{ cursor: article.articleType === 'print' ? 'pointer' : 'default' }}
+                >
+                  {article.headline}
+                </span>
+              ) : (
+                <Link
+                  target='_blank'
+                  href={article.link}
+                  className='headline'
+                  style={{
+                    width: isNavCollapsed?.navCollapsed ? '30rem' : '25rem',
+                    cursor: 'pointer',
+                    textDecoration: 'none',
+                    color: 'inherit'
+                  }}
+                >
+                  {article.headline}
+                </Link>
+              )}
+
               <span style={{ fontSize: '0.7em', textAlign: 'left' }}>
                 {article.publication}
                 <span style={{ marginLeft: '4px' }}>({dayjs(article.articleDate).format('DD-MM-YYYY')})</span>
