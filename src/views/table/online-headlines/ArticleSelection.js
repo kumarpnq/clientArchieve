@@ -398,7 +398,8 @@ const TableSelection = () => {
               socialFeedlink: feedInfo?.link,
               feedDate: `${feedData.feedDate}`,
               articleUploadId: uploadInfo?.uploadId,
-              socialFeedAuthorName: feedData?.journalist,
+
+              // socialFeedAuthorName: feedData?.journalist,
               companies:
                 item.fields?.company?.map(company => ({
                   id: company.id,

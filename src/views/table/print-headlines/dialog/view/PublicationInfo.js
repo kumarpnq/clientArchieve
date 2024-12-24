@@ -1,22 +1,23 @@
 // PublicationInfo.js
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Paper from '@mui/material/Paper'
 import Card from '@mui/material/Card'
+import generateLink from 'src/api/generateLink/generateLink'
+import axios from 'axios'
 
 const PublicationInfo = ({ articles }) => {
-  // Dummy data for illustration
   const [publicationInfo, setPublicationInfo] = useState({
-    mediaType: articles.publicationCategory,
-    publicationType: articles.publicationType,
-    publication: articles.publication,
-    language: articles.language,
-    pageNumber: articles.pageNumber,
-    size: articles.size,
-    circulation: articles.circulation,
-    edition: articles.city
+    mediaType: '',
+    publicationType: '',
+    publication: '',
+    language: '',
+    pageNumber: '',
+    size: '',
+    circulation: '',
+    edition: ''
   })
 
   const formattedDate = new Date(articles.articleDate).toLocaleDateString('en-US', {
@@ -24,6 +25,32 @@ const PublicationInfo = ({ articles }) => {
     month: 'short',
     year: 'numeric'
   })
+
+  useEffect(() => {
+    const fetchArticleViewData = async () => {
+      const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL
+      try {
+        const articleCode = await generateLink(articles.articleId)
+        const response = await axios.get(`${BASE_URL}/articleView/?articleCode=${articleCode}`)
+        const data = response.data
+        setPublicationInfo({
+          mediaType: data.media,
+          publicationType: data.publicationType,
+          publication: data.publicationName,
+          language: data.language,
+          pageNumber: data.pageNumber,
+          size: data.space,
+          circulation: data.circulation,
+          edition: data.editionTypeName
+        })
+      } catch (error) {
+        console.log('Error fetching article view data:', error.message)
+      }
+    }
+    if (articles.articleId) {
+      fetchArticleViewData()
+    }
+  }, [articles.articleId])
 
   return (
     <Card sx={{ padding: '7px' }}>
